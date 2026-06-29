@@ -56,6 +56,7 @@ import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
+import { StatusActions } from "./status-actions";
 import { slugs } from "@/hooks/use-fields";
 
 interface DashboardProps {
@@ -136,50 +137,12 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       <TableToolbar table={table} slug={slug} />
       <div className="flex items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const ids = table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original._id);
-              table.options.meta?.setStatusMany(ids, "ACCEPTANCE");
-              setRowSelection({});
-            }}
-            disabled={table.getSelectedRowModel().rows.length === 0}
-            className="hover:bg-green-500 hover:text-white"
-          >
-            Accept
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const ids = table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original._id);
-              table.options.meta?.setStatusMany(ids, "PENDING");
-              setRowSelection({});
-            }}
-            disabled={table.getSelectedRowModel().rows.length === 0}
-          >
-            Pending
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const ids = table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original._id);
-              table.options.meta?.setStatusMany(ids, "REJECTION");
-              setRowSelection({});
-            }}
-            disabled={table.getSelectedRowModel().rows.length === 0}
-            className="hover:bg-red-500 hover:text-white"
-          >
-            Reject
-          </Button>
+          {setStatusMany && (
+            <StatusActions
+              table={table}
+              onSuccess={() => setRowSelection({})}
+            />
+          )}
         </div>
         <Label htmlFor="view-selector" className="sr-only">
           View
