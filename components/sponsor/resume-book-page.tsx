@@ -28,6 +28,7 @@ const dummyData = [
     status: "ACCEPTANCE",
     terms: true,
     mlh: true,
+    resume: "https://example.com/resumes/alice-johnson.pdf",
   },
   {
     _id: 2,
@@ -47,6 +48,7 @@ const dummyData = [
     status: "ACCEPTANCE",
     terms: true,
     mlh: true,
+    resume: "https://example.com/resumes/bob-smith.pdf",
   },
   {
     _id: 3,
@@ -85,6 +87,7 @@ const dummyData = [
     status: "ACCEPTANCE",
     terms: true,
     mlh: true,
+    resume: "https://example.com/resumes/david-kim.pdf",
   },
   {
     _id: 5,
@@ -104,6 +107,7 @@ const dummyData = [
     status: "ACCEPTANCE",
     terms: true,
     mlh: true,
+    resume: "https://example.com/resumes/eva-chen.pdf",
   },
   {
     _id: 6,
@@ -180,6 +184,7 @@ const dummyData = [
     status: "ACCEPTANCE",
     terms: true,
     mlh: true,
+    resume: "https://example.com/resumes/isabella-garcia.pdf",
   },
   {
     _id: 10,
@@ -218,6 +223,7 @@ const dummyData = [
     status: "ACCEPTANCE",
     terms: true,
     mlh: true,
+    resume: "https://example.com/resumes/katherine-brown.pdf",
   },
   {
     _id: 12,

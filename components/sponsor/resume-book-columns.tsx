@@ -1,5 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { ResumeBookSheet } from "./resume-book-sheet";
 
 export interface ResumeBookRow {
   _id?: number;
@@ -19,6 +21,7 @@ export interface ResumeBookRow {
   status: string;
   terms: boolean;
   mlh: boolean;
+  resume?: string;
 }
 
 export const columns: ColumnDef<ResumeBookRow>[] = [
@@ -28,9 +31,14 @@ export const columns: ColumnDef<ResumeBookRow>[] = [
     cell: ({ row }) => {
       const item = row.original;
       return (
-        <span className="font-medium">
-          {item.firstname} {item.lastname}
-        </span>
+        <ResumeBookSheet item={item}>
+          <Button
+            variant="link"
+            className="text-foreground w-fit px-0 text-left"
+          >
+            {item.firstname} {item.lastname}
+          </Button>
+        </ResumeBookSheet>
       );
     },
     enableHiding: false,
@@ -61,33 +69,6 @@ export const columns: ColumnDef<ResumeBookRow>[] = [
     cell: ({ row }) => (
       <Label className="text-muted-foreground px-1.5">
         {row.original.grade}
-      </Label>
-    ),
-  },
-  {
-    accessorKey: "age",
-    header: "Age",
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.age}
-      </Label>
-    ),
-  },
-  {
-    accessorKey: "gender",
-    header: "Gender",
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.gender}
-      </Label>
-    ),
-  },
-  {
-    accessorKey: "telephone",
-    header: "Telephone",
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.telephone}
       </Label>
     ),
   },
