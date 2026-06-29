@@ -29,6 +29,7 @@ import {
   Figma,
   Presentation,
   Mail,
+  FileText,
 } from "lucide-react";
 import DetailRow from "../row";
 
@@ -37,6 +38,7 @@ interface SubmissionRecord {
   _creationTime: number;
   teamName: string;
   projectName: string;
+  description: string;
   devpost: string;
   github: string[];
   figma: string[];
@@ -57,6 +59,7 @@ export const schema = undefined;
 export const csvFields = [
   "teamName",
   "projectName",
+  "description",
   "devpost",
   "github",
   "figma",
@@ -146,6 +149,11 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                   icon={FolderOpen}
                   label="Project Name"
                   value={item.projectName}
+                />
+                <DetailRow
+                  icon={FileText}
+                  label="Project Description"
+                  value={item.description}
                 />
                 <DetailRow
                   icon={Calendar}
@@ -243,6 +251,13 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
   );
 }
 
+function truncateDescription(description: string, maxLength: number = 75): string {
+  if (description.length <= maxLength) {
+    return description;
+  }
+  return description.substring(0, maxLength).trim() + "...";
+}
+
 export const columns: ColumnDef<SubmissionRecord>[] = [
   {
     id: "select",
@@ -294,6 +309,15 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
       <Label className="text-muted-foreground px-1.5">
         {row.original.projectName}
       </Label>
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground px-1.5 text-sm">
+        {truncateDescription(row.original.description)}
+      </span>
     ),
   },
   {

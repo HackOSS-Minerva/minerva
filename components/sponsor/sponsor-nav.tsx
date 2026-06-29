@@ -23,6 +23,11 @@ const getInvolvedItems = [
     description: "Browse participant resumes and profiles.",
   },
   {
+    href: "/sponsor/team-projects",
+    label: "Team Projects",
+    description: "Browse submitted team projects and demo links.",
+  },
+  {
     href: "/sponsor/analytics",
     label: "Hackathon Analytics",
     description: "View event statistics and insights.",
@@ -78,6 +83,7 @@ export function SponsorNav({ tenant }: { tenant: string }) {
               className={cn(
                 "gap-1 transition-all",
                 pathname.includes("/sponsor/resume-book") ||
+                  pathname.includes("/sponsor/team-projects") ||
                   pathname.includes("/sponsor/analytics")
                   ? "bg-background shadow-sm"
                   : "",

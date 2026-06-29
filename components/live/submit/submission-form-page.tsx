@@ -8,6 +8,7 @@ import { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { LiveNav } from "@/components/live/live-nav";
 import {
@@ -54,6 +55,7 @@ export function SubmissionFormPage({
   // Form states
   const [teamName, setTeamName] = useState("");
   const [projectName, setProjectName] = useState("");
+  const [description, setDescription] = useState("");
   const [devpost, setDevpost] = useState("");
   const [githubLinks, setGithubLinks] = useState<string[]>([""]);
   const [figmaLinks, setFigmaLinks] = useState<string[]>([""]);
@@ -72,6 +74,7 @@ export function SubmissionFormPage({
     const submissionSchema = z.object({
       teamName: z.string().min(1, "Team name is required."),
       projectName: z.string().min(1, "Project name is required."),
+      description: z.string().min(1, "Project description is required."),
       devpost: z.url("Please enter a valid URL (e.g., https://devpost.com/...)"),
       github: z.array(optionalUrl),
       figma: z.array(optionalUrl),
@@ -88,13 +91,29 @@ export function SubmissionFormPage({
       path: ["links"],
     });
 
-    const result = submissionSchema.safeParse({
-      teamName,
-      projectName,
-      devpost,
-      github: githubLinks,
-      figma: figmaLinks,
-      canva: canvaLinks,
+    const result = submissionSchema
+      .extend({
+        description: z
+          .string()
+          .min(1, "Project description is required.")
+          .max(300, "Description must be under 300 characters.")
+          .refine((val) => {
+            const sentenceCount = (val.match(/[.!?]+/g) || []).length;
+            return sentenceCount >= 1;
+          }, "Please provide at least 1 sentence ending with a period, exclamation, or question mark.")
+          .refine((val) => {
+            const sentenceCount = (val.match(/[.!?]+/g) || []).length;
+            return sentenceCount <= 3;
+          }, "Please keep the description to 1-3 sentences."),
+      })
+      .safeParse({
+        teamName,
+        projectName,
+        devpost,
+        description,
+        github: githubLinks,
+        figma: figmaLinks,
+        canva: canvaLinks,
       presentation,
       invites,
     });
@@ -128,6 +147,7 @@ export function SubmissionFormPage({
         workos: userId,
         teamName,
         projectName,
+        description,
         devpost,
         github: githubLinks.filter((l) => l.trim() !== ""),
         figma: figmaLinks.filter((l) => l.trim() !== ""),
@@ -221,6 +241,28 @@ export function SubmissionFormPage({
                 />
                 {errors.projectName && (
                   <p className="text-destructive text-sm mt-1">{errors.projectName}</p>
+                )}
+              </Field>
+
+              {/* Project Description */}
+              <Field>
+                <FieldLabel htmlFor="description" className="text-primary font-medium">
+                  Project Description <span className="text-destructive">*</span>
+                </FieldLabel>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Describe your project in 1-3 sentences..."
+                  className="text-primary mt-1"
+                  required
+                  maxLength={300}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  1-3 sentences, max 300 characters. ({description.length}/300)
+                </p>
+                {errors.description && (
+                  <p className="text-destructive text-sm mt-1">{errors.description}</p>
                 )}
               </Field>
 

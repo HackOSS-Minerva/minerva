@@ -29,6 +29,7 @@ export const add = mutation({
     workos: v.string(),
     teamName: v.string(),
     projectName: v.string(),
+    description: v.string(),
     devpost: v.string(),
     github: v.array(v.string()),
     figma: v.array(v.string()),
