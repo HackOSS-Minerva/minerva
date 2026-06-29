@@ -12,6 +12,7 @@ import * as superadmins from "@/components/dashboards/dashboards/superadmins";
 import * as volunteers from "@/components/dashboards/dashboards/volunteers";
 import * as attendance from "@/components/dashboards/dashboards/attendance";
 import * as feedback from "@/components/dashboards/dashboards/feedback";
+import * as submissions from "@/components/dashboards/dashboards/submissions";
 
 type slugs =
   | "participants"
@@ -20,7 +21,8 @@ type slugs =
   | "superadmins"
   | "volunteers"
   | "attendance"
-  | "feedback";
+  | "feedback"
+  | "submissions";
 
 type DashboardQueryArgs = { tenant: string; eventid?: string };
 
@@ -39,6 +41,7 @@ const DASHBOARDS = {
   volunteers,
   attendance,
   feedback,
+  submissions,
 } as const;
 
 const QUERIES: Record<slugs, DashboardQuery> = {
@@ -49,6 +52,7 @@ const QUERIES: Record<slugs, DashboardQuery> = {
   volunteers: api.volunteers.get,
   attendance: api.checkins.getByEvent,
   feedback: api.feedback.get,
+  submissions: api.submissions.get,
 };
 
 export const useDashboard = (eventid?: string) => {
@@ -70,6 +74,7 @@ export const useDashboard = (eventid?: string) => {
     volunteers: useMutation(api.volunteers.remove),
     attendance: useMutation(api.checkins.remove),
     feedback: useMutation(api.feedback.remove),
+    submissions: useMutation(api.submissions.remove),
   } as const;
 
   const allDeleteManyMutations = {
@@ -80,6 +85,7 @@ export const useDashboard = (eventid?: string) => {
     volunteers: useMutation(api.volunteers.deleteMany),
     attendance: useMutation(api.checkins.deleteMany),
     feedback: useMutation(api.feedback.deleteMany),
+    submissions: useMutation(api.submissions.deleteMany),
   } as const;
 
   const allUpdateMutations = {
@@ -114,7 +120,7 @@ export const useDashboard = (eventid?: string) => {
 
   return {
     dashboard: DASHBOARDS[slug],
-    data: data ?? [],
+    data: (data ?? []) as any,
     onDelete,
     onDeleteMany,
     onUpdate,

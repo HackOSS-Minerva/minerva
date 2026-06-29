@@ -44,7 +44,7 @@ const resourceItems = [
   },
 ];
 
-const participateItems = [
+const participateItems: { href: string; label: string; description: string; external?: boolean }[] = [
   {
     href: "/login",
     label: "Register",
@@ -56,10 +56,9 @@ const participateItems = [
     description: "Find teammates with complementary skills.",
   },
   {
-    href: "https://designverse-2026.devpost.com",
+    href: "/submit",
     label: "Submit Project",
-    description: "Submit your finished project for judging.",
-    external: true,
+    description: "Submit your finished project details.",
   },
 ];
 

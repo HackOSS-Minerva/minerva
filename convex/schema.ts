@@ -160,4 +160,19 @@ export default defineSchema({
     timestamp: v.number(),
     tenant: v.string(),
   }),
+
+  submissions: defineTable({
+    teamName: v.string(),
+    projectName: v.string(),
+    devpost: v.string(),
+    github: v.array(v.string()),
+    figma: v.array(v.string()),
+    canva: v.array(v.string()),
+    presentation: v.optional(v.string()),
+    invites: v.array(v.string()),
+    tenant: v.string(),
+    workos: v.string(),
+    timestamp: v.number(),
+  })
+    .index("by_tenant_workos", ["tenant", "workos"]),
 });

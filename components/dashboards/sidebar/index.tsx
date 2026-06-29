@@ -75,6 +75,11 @@ const data = {
       url: "/admin/dashboards/feedback",
       icon: IconReport,
     },
+    {
+      title: "Submissions",
+      url: "/admin/dashboards/submissions",
+      icon: IconListDetails,
+    },
   ],
   navClouds: [
     {

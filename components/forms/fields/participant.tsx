@@ -5,7 +5,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import type { FieldApi } from "@tanstack/react-form";
-import { Input from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import {
   NativeSelect,
   NativeSelectOption,

@@ -44,7 +44,7 @@ export function ScheduleSection() {
 
   const { current, next } = getCurrentAndNextEvents();
   const nextEventCountdown = useCountdown(
-    next ? new Date(next.start.dateTime).getTime() : null,
+    next ? new Date(next.start.dateTime) : null,
   );
 
   const formatTime = (dateTime: string, timeZone: string) => {

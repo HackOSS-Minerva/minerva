@@ -11,6 +11,7 @@ const DASHBOARD_TITLES: Record<string, string> = {
   volunteers: "Volunteers",
   attendance: "Attendance",
   feedback: "Feedback",
+  submissions: "Submissions",
 };
 
 interface PageProps {

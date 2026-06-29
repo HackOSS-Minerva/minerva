@@ -59,14 +59,16 @@ import { TableToolbar } from "./toolbar";
 import { slugs } from "@/hooks/use-fields";
 
 interface DashboardProps {
-  data: SuperUser[];
-  columns: ColumnDef<SuperUser>[];
-  csvFields: string[];
-  onDelete?: (obj: { id: string }) => void;
-  onDeleteMany?: (obj: { ids: string[] }) => void;
-  onUpdate?: (obj: unknown) => void;
-  setStatus?: (status: string) => void;
-  setStatusMany?: (obj: { ids: string[]; status: string }) => void;
+  data: any[];
+  dashboard: {
+    columns: ColumnDef<any>[];
+    csvFields: string[];
+  };
+  onDelete?: (...args: any[]) => any;
+  onDeleteMany?: (...args: any[]) => any;
+  onUpdate?: (...args: any[]) => any;
+  setStatus?: (...args: any[]) => any;
+  setStatusMany?: (...args: any[]) => any;
 }
 
 export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
@@ -93,7 +95,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     setStatusMany,
   } = dashboard;
 
-  const table = useReactTable<SuperUser>({
+  const table = useReactTable<any>({
     data,
     columns,
     state: {
@@ -282,7 +284,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               const ids = table
                 .getSelectedRowModel()
                 .rows.map((row) => row.original._id);
-              onDeleteMany({ ids });
+              onDeleteMany?.({ ids });
               setRowSelection({});
             }}
             disabled={table.getSelectedRowModel().rows.length === 0}

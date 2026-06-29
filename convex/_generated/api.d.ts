@@ -14,6 +14,7 @@ import type * as ideas from "../ideas.js";
 import type * as judges from "../judges.js";
 import type * as participants from "../participants.js";
 import type * as speakers from "../speakers.js";
+import type * as submissions from "../submissions.js";
 import type * as superadmins from "../superadmins.js";
 import type * as volunteers from "../volunteers.js";
 
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   judges: typeof judges;
   participants: typeof participants;
   speakers: typeof speakers;
+  submissions: typeof submissions;
   superadmins: typeof superadmins;
   volunteers: typeof volunteers;
 }>;

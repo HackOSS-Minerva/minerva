@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-export function useCountdown(targetDate: string | Date | null) {
+export function useCountdown(targetDate: string | Date | number | null) {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -10,9 +10,13 @@ export function useCountdown(targetDate: string | Date | null) {
     seconds: number;
   } | null>(null);
 
+  // Normalize to a stable primitive so object references (e.g. `new Date()`)
+  // passed on every render don't retrigger the effect infinitely.
+  const targetTime =
+    targetDate == null ? null : new Date(targetDate).getTime();
+
   useEffect(() => {
-    if (!targetDate) return;
-    const targetTime = new Date(targetDate).getTime();
+    if (targetTime == null) return;
 
     const calculate = () => {
       const now = Date.now();
@@ -34,7 +38,7 @@ export function useCountdown(targetDate: string | Date | null) {
     calculate();
     const interval = setInterval(calculate, 1000);
     return () => clearInterval(interval);
-  }, [targetDate]);
+  }, [targetTime]);
 
   return timeLeft;
 }

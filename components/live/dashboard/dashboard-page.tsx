@@ -3,6 +3,7 @@
 import { useTenant } from "@/hooks/use-tenant";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
+import { SubmissionSection } from "@/components/live/dashboard/submission-section";
 import { LiveNav } from "@/components/live/live-nav";
 import { Separator } from "@/components/ui/separator";
 
@@ -30,6 +31,18 @@ export function DashboardPage({ tenant }: DashboardPageProps) {
 
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
       <Separator className="my-6" />
+      
+      {live.submission && (
+        <>
+          <SubmissionSection
+            tenant={tenant}
+            submissionDeadline={new Date(live.submission.deadline).getTime()}
+            requirements={live.submission.requirements}
+          />
+          <Separator className="my-6" />
+        </>
+      )}
+
       <ScheduleSection />
     </div>
   );

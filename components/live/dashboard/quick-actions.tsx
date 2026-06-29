@@ -27,9 +27,8 @@ export function QuickActions() {
     },
     {
       label: "Submit Project",
-      href: submissionUrl ?? "#",
+      href: `/${name}/live/submit`,
       icon: IconUpload,
-      external: !!submissionUrl,
     },
     {
       label: "Venue Information",
@@ -42,22 +41,7 @@ export function QuickActions() {
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
       {actions.map((action) => {
         const Icon = action.icon;
-        return action.external ? (
-          <a
-            key={action.label}
-            href={action.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
-            <Card className="cursor-pointer transition-colors hover:bg-accent">
-              <CardContent className="flex flex-col items-center gap-2 py-4 text-center">
-                <Icon className="h-6 w-6 text-primary" />
-                <span className="text-sm font-medium">{action.label}</span>
-              </CardContent>
-            </Card>
-          </a>
-        ) : (
+        return (
           <Link key={action.label} href={action.href} className="block">
             <Card className="cursor-pointer transition-colors hover:bg-accent">
               <CardContent className="flex flex-col items-center gap-2 py-4 text-center">
