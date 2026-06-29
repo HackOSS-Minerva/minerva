@@ -1,0 +1,22 @@
+{
+  "name": "DesignVerse",
+  "domain": "https://www.designverseucr.org",
+  "discord": "https://discord.com/invite/MmSvY3tu",
+  "email": "designverseucr@gmail.com",
+  "instagram": "https://www.instagram.com/designverseucr",
+  "linkedin": "https://www.linkedin.com/company/designverseucr/",
+  "heart": "❤️",
+  "logo": "https://tqfjy845ra.ufs.sh/f/4aAN1y5vwqTS3nlK7oMtN4EzlI87PeDSGbBR1y3Jdiokmhvc",
+  "calendarid": "6082adc591688d15b42ff0466b92f158c1f566ee5071b712352ff046ac755e99@group.calendar.google.com",
+  "event": {
+    "name": "DesignVerse 2026",
+    "status": "live",
+    "startTime": "2026-10-28T00:00:00.000Z",
+    "endTime": "2026-06-30T23:59:59.000Z",
+    "submission": {
+      "url": "https://designverse-2026.devpost.com",
+      "deadline": "2025-07-21T23:59:59.000Z",
+      "requirements": "Submit a link to your project repository, demo video (max 3 minutes), and a text description of your project."
+    }
+  }
+}

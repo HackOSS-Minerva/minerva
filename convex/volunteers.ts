@@ -1,0 +1,151 @@
+import { query, mutation } from "./_generated/server";
+import { v } from "convex/values";
+import { availabilities, dietrestrictions, genders, shirts } from "./schema";
+import { statuses } from "../data/status";
+
+export const getbyid = query({
+  args: { id: v.id("volunteers") },
+  handler: async (ctx, { id }) => {
+    const volunteer = await ctx.db.get("volunteers", id);
+    if (!volunteer) return null;
+    return { id: volunteer._id, user: volunteer };
+  },
+});
+
+export const get = query({
+  args: { tenant: v.string() },
+  handler: async (ctx, { tenant }) => {
+    return await ctx.db
+      .query("volunteers")
+      .filter((q) => q.eq(q.field("tenant"), tenant))
+      .collect();
+  },
+});
+
+export const getstatus = query({
+  args: { tenant: v.string(), workos: v.string() },
+  handler: async (ctx, { tenant, workos }) => {
+    const volunteer = await ctx.db
+      .query("volunteers")
+      .filter((q) =>
+        q.and(q.eq(q.field("tenant"), tenant), q.eq(q.field("workos"), workos)),
+      )
+      .first();
+
+    if (!volunteer) return null;
+    return volunteer.status;
+  },
+});
+
+export const add = mutation({
+  args: {
+    tenant: v.string(),
+    workos: v.string(),
+    user: v.object({
+      firstname: v.string(),
+      lastname: v.string(),
+      email: v.string(),
+      telephone: v.string(),
+      discord: v.string(),
+      gender: genders,
+      shirt: shirts,
+      terms: v.boolean(),
+      dietrestriction: dietrestrictions,
+      availabilities: v.array(availabilities),
+    }),
+  },
+  handler: async (ctx, { tenant, workos, user }) => {
+    const id = await ctx.db.insert("volunteers", {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      telephone: user.telephone,
+      discord: user.discord,
+      gender: user.gender,
+      shirt: user.shirt,
+      terms: user.terms,
+      dietrestriction: user.dietrestriction,
+      availabilities: user.availabilities,
+      status: "PENDING",
+      tenant: tenant,
+      workos: workos,
+    });
+
+    const created = await ctx.db.get("volunteers", id);
+    if (!created) throw new Error("Failed to create volunteer");
+
+    return { id, user: created };
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id("volunteers"),
+    updates: v.object({
+      firstname: v.string(),
+      lastname: v.string(),
+      email: v.string(),
+      telephone: v.string(),
+      discord: v.string(),
+      gender: genders,
+      shirt: shirts,
+      terms: v.boolean(),
+      dietrestriction: dietrestrictions,
+      availabilities: v.array(availabilities),
+    }),
+  },
+  handler: async (ctx, { id, updates }) => {
+    await ctx.db.patch(id, updates);
+    const volunteer = await ctx.db.get("volunteers", id);
+    if (!volunteer) return null;
+    return { id: volunteer._id, user: volunteer };
+  },
+});
+
+export const remove = mutation({
+  args: { id: v.id("volunteers") },
+  handler: async (ctx, { id }) => {
+    await ctx.db.delete(id);
+    return { success: true };
+  },
+});
+
+export const deleteMany = mutation({
+  args: { ids: v.array(v.id("volunteers")) },
+  handler: async (ctx, { ids }) => {
+    for (const id of ids) {
+      await ctx.db.delete(id);
+    }
+    return { success: true };
+  },
+});
+
+export const setStatus = mutation({
+  args: {
+    id: v.id("volunteers"),
+    status: v.union(...statuses.map((s) => v.literal(s))),
+  },
+  handler: async (ctx, { id, status }) => {
+    await ctx.db.patch(id, { status });
+    const volunteer = await ctx.db.get("volunteers", id);
+    if (!volunteer) throw new Error("Volunteer not found");
+
+    return { status: "success" };
+  },
+});
+
+export const setStatusMany = mutation({
+  args: {
+    ids: v.array(v.id("volunteers")),
+    status: v.union(...statuses.map((s) => v.literal(s))),
+  },
+  handler: async (ctx, { ids, status }) => {
+    for (const id of ids) {
+      await ctx.db.patch(id, { status });
+      const volunteer = await ctx.db.get("volunteers", id);
+      if (!volunteer) throw new Error(`Volunteer ${id} not found`);
+    }
+
+    return { status: "success" };
+  },
+});
