@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import Image from "next/image";
 import Link from "next/link";
@@ -32,6 +32,11 @@ const participateItems = [
     label: "Orientation",
     description:
       "Review judging criteria, rubrics, and event guidelines.",
+  },
+  {
+    href: "/judge/certificate",
+    label: "Certificate",
+    description: "Download your certificate of service.",
   },
 ];
 
@@ -85,7 +90,8 @@ export function JudgeNav({ tenant }: { tenant: string }) {
                 "gap-1 transition-all",
                 (pathname.includes("/judge/register") ||
                   pathname.includes("/judge/assignments") ||
-                  pathname.includes("/judge/orientation"))
+                  pathname.includes("/judge/orientation") ||
+                  pathname.includes("/judge/certificate"))
                   ? "bg-background shadow-sm"
                   : "",
                 "text-foreground",
