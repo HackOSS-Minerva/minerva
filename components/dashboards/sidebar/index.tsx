@@ -11,6 +11,7 @@ import {
   IconListDetails,
   IconQrcode,
   IconReport,
+  IconUserCheck,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useTenant } from "@/hooks/use-tenant";
@@ -50,6 +51,11 @@ const data = {
       title: "Judges",
       url: "/admin/dashboards/judges",
       icon: IconListDetails,
+    },
+    {
+      title: "Assignments",
+      url: "/admin/assignments",
+      icon: IconUserCheck,
     },
   ],
   navDashboards: [
