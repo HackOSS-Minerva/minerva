@@ -8,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { LiveNav } from "@/components/live/live-nav";
 import VenueMarkdown from "@/tenants/designverse/descriptions/venue.mdx";
 
 interface VenuePageProps {
@@ -17,8 +16,7 @@ interface VenuePageProps {
 
 export function VenuePage({ tenant }: VenuePageProps) {
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} />
+    <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

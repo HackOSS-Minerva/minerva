@@ -3,7 +3,6 @@
 import { useTenant } from "@/hooks/use-tenant";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
-import { SponsorNav } from "@/components/sponsor/sponsor-nav";
 import { Separator } from "@/components/ui/separator";
 
 interface SponsorDashboardPageProps {
@@ -15,7 +14,7 @@ export function SponsorDashboardPage({ tenant }: SponsorDashboardPageProps) {
 
   if (!live) {
     return (
-      <div className="mx-auto flex w-3/4 flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Sponsor Dashboard</h1>
         <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
         <p className="mt-2 text-muted-foreground">
@@ -26,8 +25,7 @@ export function SponsorDashboardPage({ tenant }: SponsorDashboardPageProps) {
   }
 
   return (
-    <div className="w-3/4 mx-auto space-y-6 px-4 py-6 md:py-10">
-      <SponsorNav tenant={tenant} />
+    <div className="space-y-6">
       <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
 
       <HeroSection startTime={live.startTime} endTime={live.endTime} />

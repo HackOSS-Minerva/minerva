@@ -1,7 +1,6 @@
 "use client"
 
 import { useTenant } from "@/hooks/use-tenant";
-import { JudgeNav } from "@/components/judge/judge-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -106,9 +105,7 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <JudgeNav tenant={tenant} />
-
+    <div className="space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Judge Certificate</h1>
         <p className="text-sm text-muted-foreground">

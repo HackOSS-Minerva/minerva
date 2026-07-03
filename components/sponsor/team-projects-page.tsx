@@ -1,6 +1,5 @@
 "use client";
 
-import { SponsorNav } from "@/components/sponsor/sponsor-nav";
 import { SponsorDataTable } from "@/components/sponsor/sponsor-data-table";
 import { columns } from "./team-projects-columns";
 import type { TeamProjectsRow } from "./team-projects-columns";
@@ -104,9 +103,7 @@ const dummyData: TeamProjectsRow[] = [
 
 export function TeamProjectsPage({ tenant }: TeamProjectsPageProps) {
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 md:py-10">
-      <SponsorNav tenant={tenant} />
-
+    <div className="space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Team Projects</h1>
         <p className="text-sm text-muted-foreground">

@@ -4,7 +4,6 @@ import { useTenant } from "@/hooks/use-tenant";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
 import { CheckinSection } from "@/components/live/dashboard/checkin-section";
-import { JudgeNav } from "@/components/judge/judge-nav";
 import { Separator } from "@/components/ui/separator";
 
 interface JudgeDashboardPageProps {
@@ -16,7 +15,7 @@ export function JudgeDashboardPage({ tenant }: JudgeDashboardPageProps) {
 
   if (!live) {
     return (
-      <div className="mx-auto flex w-3/4 flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Judge Dashboard</h1>
         <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
         <p className="mt-2 text-muted-foreground">
@@ -27,8 +26,7 @@ export function JudgeDashboardPage({ tenant }: JudgeDashboardPageProps) {
   }
 
   return (
-    <div className="w-3/4 mx-auto space-y-6 px-4 py-6 md:py-10">
-      <JudgeNav tenant={tenant} />
+    <div className="space-y-6">
       <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
 
       <HeroSection startTime={live.startTime} endTime={live.endTime} />

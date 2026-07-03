@@ -8,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { LiveNav } from "@/components/live/live-nav";
 import CodeOfConductMarkdown from "@/tenants/designverse/descriptions/code-of-conduct.mdx";
 
 interface CodeOfConductPageProps {
@@ -17,8 +16,7 @@ interface CodeOfConductPageProps {
 
 export function CodeOfConductPage({ tenant }: CodeOfConductPageProps) {
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} />
+    <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

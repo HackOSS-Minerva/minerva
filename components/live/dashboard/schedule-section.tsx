@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import { IconClock, IconSearch } from "@tabler/icons-react";
 
@@ -13,6 +14,7 @@ export function ScheduleSection() {
   const { data, isLoading, isError, error } = useSchedule();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDay, setSelectedDay] = useState<string>("all");
+  const [showPastEvents, setShowPastEvents] = useState(false);
 
   const now = Date.now();
 
@@ -123,6 +125,22 @@ export function ScheduleSection() {
     );
   }
 
+  const otherEvents = filteredItems.filter(
+    (e) =>
+      e.id !== filteredCurrent?.id &&
+      e.id !== filteredNext?.id,
+  );
+
+  const pastEvents = otherEvents.filter((event) => {
+    const end = new Date(event.end.dateTime).getTime();
+    return now > end;
+  });
+
+  const upcomingEvents = otherEvents.filter((event) => {
+    const end = new Date(event.end.dateTime).getTime();
+    return now <= end;
+  });
+
   return (
     <div>
       <h2 className="mb-4 text-lg font-semibold">Schedule</h2>
@@ -144,17 +162,17 @@ export function ScheduleSection() {
           <Tabs value={selectedDay} onValueChange={setSelectedDay}>
             <TabsList className="flex-wrap">
               <TabsTrigger value="all" className="text-xs">
-              All
-            </TabsTrigger>
-            {uniqueDays.map((day) => (
-              <TabsTrigger key={day} value={day} className="text-xs">
-                {formatDayButtonLabel(
-                  data?.items.find((e) => getEventDayLabel(e.start.dateTime) === day)
-                    ?.start.dateTime ?? day,
-                )}
+                All
               </TabsTrigger>
-            ))}
-          </TabsList>
+              {uniqueDays.map((day) => (
+                <TabsTrigger key={day} value={day} className="text-xs">
+                  {formatDayButtonLabel(
+                    data?.items.find((e) => getEventDayLabel(e.start.dateTime) === day)
+                      ?.start.dateTime ?? day,
+                  )}
+                </TabsTrigger>
+              ))}
+            </TabsList>
           </Tabs>
         )}
 
@@ -208,43 +226,62 @@ export function ScheduleSection() {
           </div>
         )}
 
-        {!filteredCurrent && !filteredNext && (
-          <p className="text-sm text-muted-foreground">No upcoming events.</p>
+        {!filteredCurrent && !filteredNext && upcomingEvents.length === 0 && (
+          <p className="text-center text-sm text-muted-foreground">No upcoming events.</p>
         )}
 
-        {filteredItems.length > 0 && (
+        {upcomingEvents.length > 0 && (
           <div className="mt-3 space-y-2">
-              {filteredItems
-                .filter(
-                  (e) =>
-                    e.id !== filteredCurrent?.id &&
-                    e.id !== filteredNext?.id,
-                )
-                .sort(
-                  (a, b) =>
+            {upcomingEvents
+              .sort((a, b) =>
+                new Date(a.start.dateTime).getTime() -
+                new Date(b.start.dateTime).getTime(),
+              )
+              .map((event) => (
+                <div
+                  key={event.id}
+                  className="rounded-lg border p-3"
+                >
+                  <h4 className="text-sm font-medium">{event.summary}</h4>
+                  <p className="text-xs text-muted-foreground">
+                    {formatTime(event.start.dateTime, event.start.timeZone)} –{" "}
+                    {formatTime(event.end.dateTime, event.end.timeZone)}
+                    {event.location && ` · ${event.location}`}
+                  </p>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {pastEvents.length > 0 && (
+          <div className="mt-4 space-y-2">
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowPastEvents(!showPastEvents)}
+                className="w-full"
+              >
+                {showPastEvents ? "Hide past events" : "Show past events"}
+              </Button>
+            </div>
+            {showPastEvents && (
+              <div className="space-y-2">
+                {pastEvents
+                  .sort((a, b) =>
                     new Date(a.start.dateTime).getTime() -
                     new Date(b.start.dateTime).getTime(),
-                )
-                .map((event) => {
-                  const start = new Date(event.start.dateTime).getTime();
-                  const end = new Date(event.end.dateTime).getTime();
-                  const isPast = now > end;
-                  return (
+                  )
+                  .map((event) => (
                     <div
                       key={event.id}
-                      className={`rounded-lg border p-3 ${
-                        isPast
-                          ? "opacity-50"
-                          : ""
-                      }`}
+                      className="rounded-lg border p-3 opacity-50"
                     >
                       <div className="flex items-center justify-between">
                         <h4 className="text-sm font-medium">{event.summary}</h4>
-                        {isPast && (
-                          <Badge variant="outline" className="text-[10px]">
-                            Past
-                          </Badge>
-                        )}
+                        <Badge variant="outline" className="text-[10px]">
+                          Past
+                        </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
                         {formatTime(event.start.dateTime, event.start.timeZone)} –{" "}
@@ -252,10 +289,11 @@ export function ScheduleSection() {
                         {event.location && ` · ${event.location}`}
                       </p>
                     </div>
-                  );
-                })}
-            </div>
-          )}
+                  ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import { JudgeNav } from "@/components/judge/judge-nav";
 import { JudgeDataTable } from "@/components/judge/judge-data-table";
 import { columns } from "@/components/judge/judge-submissions-columns";
 import type { JudgeSubmissionRow } from "@/components/judge/judge-submissions-columns";
@@ -104,9 +103,7 @@ interface SubmissionsPageProps {
 
 export function SubmissionsPage({ tenant }: SubmissionsPageProps) {
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 md:py-10">
-      <JudgeNav tenant={tenant} />
-
+    <div className="space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Project Submissions</h1>
         <p className="text-sm text-muted-foreground">

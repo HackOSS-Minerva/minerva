@@ -1,6 +1,5 @@
 "use client";
 
-import { SponsorNav } from "@/components/sponsor/sponsor-nav";
 import { SponsorDataTable } from "@/components/sponsor/sponsor-data-table";
 import { csvFields } from "@/components/dashboards/dashboards/participants";
 import { columns } from "./resume-book-columns";
@@ -248,9 +247,7 @@ const dummyData = [
 
 export function ResumeBookPage({ tenant }: SponsorResumeBookPageProps) {
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 md:py-10">
-      <SponsorNav tenant={tenant} />
-
+    <div className="space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Resume Book</h1>
         <p className="text-sm text-muted-foreground">

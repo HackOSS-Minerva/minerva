@@ -1,7 +1,6 @@
 "use client";
 
 import { useTenant } from "@/hooks/use-tenant";
-import { JudgeNav } from "@/components/judge/judge-nav";
 import {
   Card,
   CardContent,
@@ -20,8 +19,7 @@ export function RegisterPage({ tenant }: RegisterPageProps) {
   const JudgeHeader = tenantConfig ? null : null;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <JudgeNav tenant={tenant} />
+    <div className="space-y-6">
       <FormLockModal form="judge" />
 
       <div className="flex flex-col gap-1">

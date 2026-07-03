@@ -9,7 +9,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { PackingChecklist } from "@/components/live/dashboard/packing-checklist";
-import { LiveNav } from "@/components/live/live-nav";
 
 interface PackingListPageProps {
   tenant: string;
@@ -17,8 +16,7 @@ interface PackingListPageProps {
 
 export function PackingListPage({ tenant }: PackingListPageProps) {
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} />
+    <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

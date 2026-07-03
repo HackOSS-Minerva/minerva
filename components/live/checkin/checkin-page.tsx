@@ -9,7 +9,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LiveNav } from "@/components/live/live-nav";
 import { QRCodeSVG } from "qrcode.react";
 
 interface CheckinPageProps {
@@ -25,8 +24,7 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
   });
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} />
+    <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

@@ -10,7 +10,6 @@ import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { LiveNav } from "@/components/live/live-nav";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -144,8 +143,7 @@ export function SubmissionFormPage({
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} />
+    <div className="space-y-8">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

@@ -1,6 +1,5 @@
 "use client";
 
-import { JudgeNav } from "@/components/judge/judge-nav";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -46,9 +45,7 @@ const dummyAssignments = [
 
 export function AssignmentsPage({ tenant }: AssignmentsPageProps) {
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <JudgeNav tenant={tenant} />
-
+    <div className="space-y-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Your Assignments</h1>
         <p className="text-sm text-muted-foreground">

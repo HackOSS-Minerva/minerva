@@ -9,7 +9,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { IdeaBoard } from "@/components/live/teams/idea-board";
-import { LiveNav } from "@/components/live/live-nav";
 
 interface TeamsPageProps {
   tenant: string;
@@ -17,8 +16,7 @@ interface TeamsPageProps {
 
 export function TeamsPage({ tenant }: TeamsPageProps) {
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} />
+    <div className="space-y-8">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

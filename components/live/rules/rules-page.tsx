@@ -8,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { LiveNav } from "@/components/live/live-nav";
 import RulesMarkdown from "@/tenants/designverse/descriptions/rules.mdx";
 
 interface RulesPageProps {
@@ -17,8 +16,7 @@ interface RulesPageProps {
 
 export function RulesPage({ tenant }: RulesPageProps) {
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} />
+    <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
