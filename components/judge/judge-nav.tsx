@@ -28,6 +28,11 @@ const participateItems = [
     description: "See your assigned teams and judging slots.",
   },
   {
+    href: "/judge/submissions",
+    label: "Project Submissions",
+    description: "Browse all submitted team projects and demo links.",
+  },
+  {
     href: "/judge/orientation",
     label: "Orientation",
     description:
@@ -90,6 +95,7 @@ export function JudgeNav({ tenant }: { tenant: string }) {
                 "gap-1 transition-all",
                 (pathname.includes("/forms/judge") ||
                   pathname.includes("/judge/assignments") ||
+                  pathname.includes("/judge/submissions") ||
                   pathname.includes("/judge/orientation") ||
                   pathname.includes("/judge/certificate"))
                   ? "bg-background shadow-sm"
