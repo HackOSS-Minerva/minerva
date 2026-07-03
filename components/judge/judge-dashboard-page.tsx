@@ -3,6 +3,7 @@
 import { useTenant } from "@/hooks/use-tenant";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
+import { CheckinSection } from "@/components/live/dashboard/checkin-section";
 import { JudgeNav } from "@/components/judge/judge-nav";
 import { Separator } from "@/components/ui/separator";
 
@@ -25,10 +26,13 @@ export function JudgeDashboardPage({ tenant }: JudgeDashboardPageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 md:py-10">
+    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
       <JudgeNav tenant={tenant} />
 
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
+      <Separator className="my-6" />
+
+      <CheckinSection tenant={tenant} />
       <Separator className="my-6" />
 
       <ScheduleSection />

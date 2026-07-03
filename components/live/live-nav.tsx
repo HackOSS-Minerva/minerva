@@ -46,6 +46,11 @@ const resourceItems = [
 
 const participateItems: { href: string; label: string; description: string; external?: boolean }[] = [
   {
+    href: "/checkin",
+    label: "Check-in",
+    description: "Show your QR code to check in at the event.",
+  },
+  {
     href: "/forms/judge",
     label: "Register",
     description: "Create an account or sign in.",
@@ -138,7 +143,7 @@ export function LiveNav({ tenant }: { tenant: string }) {
             size="sm"
             className={cn(
               "gap-1 transition-all",
-              pathname.includes("/forms/judge") ? "bg-background shadow-sm" : "",
+              pathname.includes("/forms/judge") || pathname.includes("/live/checkin") ? "bg-background shadow-sm" : "",
               "text-foreground",
             )}
           >

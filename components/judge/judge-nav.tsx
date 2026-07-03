@@ -18,6 +18,11 @@ const navItems = [{ href: "/judge/dashboard", label: "Dashboard" }];
 
 const participateItems = [
   {
+    href: "/live/checkin",
+    label: "Check-in",
+    description: "Show your QR code to check in at the event.",
+  },
+  {
     href: "/forms/judge",
     label: "Register",
     description: "Register as a judge for the event.",
@@ -93,7 +98,8 @@ export function JudgeNav({ tenant }: { tenant: string }) {
               size="sm"
               className={cn(
                 "gap-1 transition-all",
-                (pathname.includes("/forms/judge") ||
+                (pathname.includes("/live/checkin") ||
+                  pathname.includes("/forms/judge") ||
                   pathname.includes("/judge/assignments") ||
                   pathname.includes("/judge/submissions") ||
                   pathname.includes("/judge/orientation") ||

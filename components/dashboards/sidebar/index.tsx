@@ -46,17 +46,17 @@ const data = {
       url: "/admin/dashboards/submissions",
       icon: IconClipboardList,
     },
+    {
+      title: "Judges",
+      url: "/admin/dashboards/judges",
+      icon: IconListDetails,
+    },
   ],
   navDashboards: [
     {
       title: "Attendance",
       url: "/admin/dashboards/attendance",
       icon: IconReport,
-    },
-    {
-      title: "Judges",
-      url: "/admin/dashboards/judges",
-      icon: IconListDetails,
     },
     {
       title: "Participants",
