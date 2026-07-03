@@ -17,7 +17,7 @@ export function DashboardPage({ tenant }: DashboardPageProps) {
 
   if (!live) {
     return (
-      <div className="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-16 text-center">
+      <div className="mx-auto flex w-3/4 flex-col items-center justify-center px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
         <p className="mt-2 text-muted-foreground">
@@ -28,7 +28,7 @@ export function DashboardPage({ tenant }: DashboardPageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
+    <div className="w-3/4 mx-auto space-y-6 px-4 py-6 md:py-10">
       <LiveNav tenant={tenant} />
       <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
 
