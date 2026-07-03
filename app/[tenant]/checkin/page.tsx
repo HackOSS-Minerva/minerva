@@ -1,28 +1,12 @@
 import { Card, CardTitle, CardContent, CardHeader } from "@/components/ui/card";
 import { QRCodeSVG } from "qrcode.react";
-import { withAuth } from "@workos-inc/authkit-nextjs";
 
 const Checkin = async () => {
-  const { user } = await withAuth();
-
-  if (!user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <p className="text-sm text-muted-foreground">
-          Please sign in to view your check-in pass.
-        </p>
-      </div>
-    );
-  }
-
-  const { id, firstName, lastName, email } = user;
-  const firstname = firstName ?? "";
-  const lastname = lastName ?? "";
   const qrcode = JSON.stringify({
-    id,
-    firstname,
-    lastname,
-    email,
+    id: "visitor",
+    firstname: "Guest",
+    lastname: "User",
+    email: "guest@example.com",
   });
 
   return (
@@ -30,7 +14,7 @@ const Checkin = async () => {
       <Card className="border-none">
         <CardHeader>
           <CardTitle className="text-center text-primary">
-            {firstname} {lastname}
+            Guest User
           </CardTitle>
         </CardHeader>
         <CardContent>

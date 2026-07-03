@@ -18,5 +18,35 @@
       "deadline": "2026-10-31T23:59:59.000Z",
       "requirements": "Submit a link to your project repository, demo video (max 3 minutes), and a text description of your project."
     }
+  },
+  "formLocks": {
+    "participant": {
+      "opens": "2026-06-29T23:59:59.000Z",
+      "closes": "2026-06-30T23:59:59.000Z"
+    },
+    "judge": {
+      "opens": "2026-06-29T23:59:59.000Z",
+      "closes": "2026-06-30T23:59:59.000Z"
+    },
+    "speaker": {
+      "opens": "2026-06-29T23:59:59.000Z",
+      "closes": "2026-06-30T23:59:59.000Z"
+    },
+    "superadmin": {
+      "opens": "2026-06-29T23:59:59.000Z",
+      "closes": "2026-06-30T23:59:59.000Z"
+    },
+    "volunteer": {
+      "opens": "2026-06-29T23:59:59.000Z",
+      "closes": "2026-06-30T23:59:59.000Z"
+    },
+    "submission": {
+      "opens": "2026-06-29T23:59:59.000Z",
+      "closes": "2026-06-30T23:59:59.000Z"
+    },
+    "feedback": {
+      "opens": "2026-06-29T23:59:59.000Z",
+      "closes": "2026-06-30T23:59:59.000Z"
+    }
   }
 }

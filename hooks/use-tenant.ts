@@ -17,11 +17,17 @@ export interface LiveInfo {
   status: string;
   startTime: string;
   endTime: string;
+  openOffset?: string;
   submission: {
     url: string;
     deadline: string;
     requirements: string;
   };
+}
+
+export interface FormLock {
+  opens: string;
+  closes: string;
 }
 
 export interface TenantConfig {
@@ -35,6 +41,7 @@ export interface TenantConfig {
   logo: string;
   calendarid: string;
   event?: LiveInfo;
+  formLocks?: Record<string, FormLock>;
 }
 
 export const useTenant = () => {

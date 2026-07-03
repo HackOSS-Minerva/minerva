@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTenant } from "@/hooks/use-tenant";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface FeedbackContentProps {
   tenant: string;
@@ -86,6 +87,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   return (
     <>
       <Image src={tenantConfig.logo} alt="logo" width={200} height={200} />
+      <FormLockModal form="feedback" />
       <Card className="w-full sm:max-w-md border-none">
         <CardHeader>
           <Header />

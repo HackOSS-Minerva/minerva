@@ -3,7 +3,6 @@
 import { useParams } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import * as participant from "@/components/forms/fields/participant";
 import * as judge from "@/components/forms/fields/judge";
 import * as speaker from "@/components/forms/fields/speaker";
@@ -13,6 +12,7 @@ import * as Posthog from "@/lib/posthog";
 // import { useSendEmail } from "./use-send-email";
 import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
+import { useRef, useMemo } from "react";
 
 export type slugs =
   | "participant"
@@ -40,7 +40,6 @@ const MUTATIONS = {
 export const useFields = () => {
   const { form } = useParams<{ form: slugs }>();
   const slug = form;
-  const { user } = useAuth();
 
   const {
     headers,
@@ -60,7 +59,6 @@ export const useFields = () => {
       case "volunteer": {
         const result = await add({
           tenant,
-          workos: user!.id,
           user: {
             firstname: firstname,
             lastname: lastname,
@@ -104,32 +102,33 @@ export const useFields = () => {
         if (value.resume) {
           const file = value.resume as File;
           url = await uploadFile(
-            `${tenant}/participants/resumes/${user!.id}.pdf`,
+            `${tenant}/participants/resumes/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}.pdf`,
             file,
           );
         }
 
-        const result = await add({
-          tenant,
-          workos: user!.id,
-          user: {
-            firstname: firstname,
-            lastname: lastname,
-            email: email,
-            telephone: value.telephone as string,
-            gender: value.gender as string,
-            shirt: value.shirt as string,
-            discord: value.discord as string,
-            major: value.major as string,
-            age: value.age as string,
-            country: value.country as string,
-            school: value.school as string,
-            grade: value.grade as string,
-            mlh_marketing: Boolean(value.mlh),
-            dietrestriction: value.dietrestriction as string,
-            resume: url,
+        const result = await add(
+          {
+            tenant,
+            user: {
+              firstname: firstname,
+              lastname: lastname,
+              email: email,
+              telephone: value.telephone as string,
+              gender: value.gender as string,
+              shirt: value.shirt as string,
+              discord: value.discord as string,
+              major: value.major as string,
+              age: value.age as string,
+              country: value.country as string,
+              school: value.school as string,
+              grade: value.grade as string,
+              mlh_marketing: Boolean(value.mlh_marketing),
+              dietrestriction: value.dietrestriction as string,
+              resume: url || undefined,
+            },
           },
-        });
+        );
 
         if (result.user) {
           Posthog.pending("participant", result.user, tenant);
@@ -156,13 +155,8 @@ export const useFields = () => {
       }
 
       case "judge": {
-        let url = "";
-        const file = value.picture as File;
-        url = await uploadFile(`${tenant}/judges/pictures/${user!.id}`, file);
-
         const result = await add({
           tenant,
-          workos: user!.id,
           user: {
             firstname: firstname,
             lastname: lastname,
@@ -174,7 +168,7 @@ export const useFields = () => {
             title: value.title as string,
             organization: value.organization as string,
             dietrestriction: value.dietrestriction as string,
-            picture: url,
+            picture: value.picture as string,
           },
         });
 
@@ -205,11 +199,10 @@ export const useFields = () => {
       case "speaker": {
         let url = "";
         const file = value.picture as File;
-        url = await uploadFile(`${tenant}/speakers/pictures/${user!.id}`, file);
+        url = await uploadFile(`${tenant}/speakers/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`, file);
 
         const result = await add({
           tenant,
-          workos: user!.id,
           user: {
             firstname: firstname,
             lastname: lastname,
@@ -252,7 +245,6 @@ export const useFields = () => {
       case "superadmin": {
         const result = await add({
           tenant,
-          workos: user!.id,
           user: {
             firstname: firstname,
             lastname: lastname,
@@ -265,7 +257,6 @@ export const useFields = () => {
             age: value.age as string,
             grade: value.grade as string,
             team: value.team as string,
-            authId: user!.id,
             dietrestriction: value.dietrestriction as string,
           },
         });

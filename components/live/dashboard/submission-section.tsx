@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { useCountdown } from "@/hooks/use-countdown";
 import { IconExternalLink, IconCheck } from "@tabler/icons-react";
 import Link from "next/link";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
@@ -25,20 +24,12 @@ export function SubmissionSection({
   const now = Date.now();
   const isPastDeadline = now > submissionDeadline;
 
-  const { user } = useAuth();
-  
-  // Check if this user has already submitted a project
-  const submission = useQuery(
-    api.submissions.getByUser,
-    user?.id
-      ? {
-          tenant: tenant.toLowerCase(),
-          workos: user.id,
-        }
-      : "skip"
+  const submissions = useQuery(
+    api.submissions.get,
+    { tenant: tenant.toLowerCase() }
   );
 
-  const hasSubmitted = !!submission;
+  const hasSubmitted = false;
 
   return (
     <Card>
@@ -83,16 +74,9 @@ export function SubmissionSection({
           </div>
         )}
 
-        {hasSubmitted && (
-          <div className="rounded-lg bg-muted/50 p-3 text-sm border border-border">
-            <p className="font-medium text-foreground">Current Submission: <span className="font-semibold text-primary">{submission.projectName}</span></p>
-            <p className="text-xs text-muted-foreground mt-0.5">Team: {submission.teamName}</p>
-          </div>
-        )}
-
-        {!hasSubmitted && (
+        {!isPastDeadline && (
           <div className="flex flex-wrap gap-3">
-            <Button asChild disabled={isPastDeadline}>
+            <Button asChild>
               <Link href={`/${tenant}/live/submit`}>
                 Submit Project
                 <IconExternalLink className="ml-1 h-4 w-4" />

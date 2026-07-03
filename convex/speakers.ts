@@ -13,12 +13,12 @@ export const getbyid = query({
 });
 
 export const getstatus = query({
-  args: { tenant: v.string(), workos: v.string() },
-  handler: async (ctx, { tenant, workos }) => {
+  args: { tenant: v.string(), email: v.string() },
+  handler: async (ctx, { tenant, email }) => {
     const speaker = await ctx.db
       .query("speakers")
       .filter((q) =>
-        q.and(q.eq(q.field("tenant"), tenant), q.eq(q.field("workos"), workos)),
+        q.and(q.eq(q.field("tenant"), tenant), q.eq(q.field("email"), email)),
       )
       .first();
 
@@ -40,7 +40,6 @@ export const get = query({
 export const add = mutation({
   args: {
     tenant: v.string(),
-    workos: v.string(),
     user: v.object({
       firstname: v.string(),
       lastname: v.string(),
@@ -55,7 +54,7 @@ export const add = mutation({
       picture: v.string(),
     }),
   },
-  handler: async (ctx, { tenant, workos, user }) => {
+  handler: async (ctx, { tenant, user }) => {
     const id = await ctx.db.insert("speakers", {
       firstname: user.firstname,
       lastname: user.lastname,
@@ -70,7 +69,6 @@ export const add = mutation({
       picture: user.picture,
       status: "PENDING",
       tenant: tenant,
-      workos: workos,
     });
 
     const created = await ctx.db.get("speakers", id);

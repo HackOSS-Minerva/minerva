@@ -1,5 +1,4 @@
 import { TeamsPage } from "@/components/live/teams/teams-page";
-import { withAuth } from "@workos-inc/authkit-nextjs";
 
 interface TeamsRouteProps {
   params: {
@@ -9,19 +8,8 @@ interface TeamsRouteProps {
 
 const TeamsRoute = async ({ params }: TeamsRouteProps) => {
   const { tenant } = await params;
-  const { user } = await withAuth();
 
-  return (
-    <TeamsPage
-      tenant={tenant}
-      userId={user?.id ?? ""}
-      userName={
-        user?.firstName
-          ? `${user.firstName} ${user.lastName ?? ""}`
-          : "Anonymous"
-      }
-    />
-  );
+  return <TeamsPage tenant={tenant} />;
 };
 
 export default TeamsRoute;

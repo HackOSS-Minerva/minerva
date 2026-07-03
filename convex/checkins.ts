@@ -1,49 +1,5 @@
-import { mutation, query, type MutationCtx } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-
-const ROLE_TABLES = [
-  "participants",
-  "judges",
-  "speakers",
-  "superadmins",
-  "volunteers",
-] as const;
-
-const ROLE_MAP: Record<string, string> = {
-  participants: "participant",
-  judges: "judge",
-  speakers: "speaker",
-  superadmins: "superadmin",
-  volunteers: "volunteer",
-};
-
-/**
- * Resolves a user's role by checking which role table contains a document
- * matching the given WorkOS user ID and tenant.
- */
-async function resolveRole(
-  ctx: MutationCtx,
-  workos: string,
-  tenant: string,
-): Promise<string | null> {
-  for (const table of ROLE_TABLES) {
-    const doc = await ctx.db
-      .query(table)
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("workos"), workos),
-          q.eq(q.field("tenant"), tenant),
-        ),
-      )
-      .first();
-
-    if (doc) {
-      return ROLE_MAP[table];
-    }
-  }
-
-  return null;
-}
 
 export const checkin = mutation({
   args: {
@@ -57,7 +13,6 @@ export const checkin = mutation({
   handler: async (ctx, args) => {
     const { userid, eventid, firstname, lastname, email, tenant } = args;
 
-    // Check if a checkin already exists for this user + event
     const existing = await ctx.db
       .query("checkins")
       .withIndex("by_user_event", (q) =>
@@ -69,21 +24,13 @@ export const checkin = mutation({
       throw new Error("User already checked into this event");
     }
 
-    // Resolve the role from the database using the WorkOS user ID
-    const role = await resolveRole(ctx, userid, tenant);
-    if (!role) {
-      throw new Error(
-        "User not found in any role. They must register before checking in.",
-      );
-    }
-
     const id = await ctx.db.insert("checkins", {
       userid,
       eventid,
       firstname,
       lastname,
       email,
-      role,
+      role: "VISITOR",
       timestamp: Date.now(),
       tenant,
     });
@@ -103,12 +50,10 @@ export const getByEvent = query({
   handler: async (ctx, args) => {
     const { eventid, tenant } = args;
 
-    // If no event selected, return empty
     if (!eventid) {
       return [];
     }
 
-    // Query checkins by eventid using the tenant filter
     const allCheckins = await ctx.db
       .query("checkins")
       .withIndex("by_event_tenant", (q) =>

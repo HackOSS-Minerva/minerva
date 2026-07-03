@@ -10,7 +10,19 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconDotsVertical, IconX } from "@tabler/icons-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  IconCircleCheck,
+  IconAlertTriangle,
+  IconCircleX,
+  IconDotsVertical,
+  IconX,
+} from "@tabler/icons-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +32,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import {
   Calendar,
   Users,
@@ -46,7 +60,7 @@ interface SubmissionRecord {
   presentation?: string;
   invites: string[];
   tenant: string;
-  workos: string;
+  vetted: "verified" | "needs_review" | "disqualified";
   timestamp: number;
 }
 
@@ -66,6 +80,7 @@ export const csvFields = [
   "canva",
   "presentation",
   "invites",
+  "vetted",
   "timestamp",
 ];
 
@@ -132,114 +147,97 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                   </Button>
                 </DrawerClose>
               </div>
-              <p className="text-sm text-muted-foreground">{item.projectName}</p>
+              <p className="text-sm text-muted-foreground">
+                Submitted {formatTimestamp(item.timestamp)}
+              </p>
             </DrawerHeader>
           </div>
 
-          <div className="flex flex-col gap-4 overflow-y-auto text-sm">
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-foreground">Overview</p>
-              <div className="grid gap-3">
-                <DetailRow
-                  icon={Users}
-                  label="Team Name"
-                  value={item.teamName}
-                />
-                <DetailRow
-                  icon={FolderOpen}
-                  label="Project Name"
-                  value={item.projectName}
-                />
-                <DetailRow
-                  icon={FileText}
-                  label="Project Description"
-                  value={item.description}
-                />
-                <DetailRow
-                  icon={Calendar}
-                  label="Submitted"
-                  value={formatTimestamp(item.timestamp)}
-                />
+          <div className="flex-1 overflow-y-auto">
+            <div className="grid gap-5">
+              <div className="flex flex-col gap-1">
+                <h3 className="text-lg font-semibold">{item.projectName}</h3>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                  {item.description}
+                </p>
               </div>
-            </div>
 
-            <hr />
-
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-foreground">Links</p>
-              <div className="grid gap-3">
+              <div className="grid gap-4">
                 <DetailRow
                   icon={LinkIcon}
                   label="Devpost"
                   value={
-                    <a
-                      href={item.devpost}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary underline underline-offset-2 break-all hover:opacity-80 transition-opacity"
-                    >
-                      {item.devpost}
-                    </a>
+                    item.devpost ? (
+                      <a
+                        href={item.devpost}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+                      >
+                        {item.devpost}
+                      </a>
+                    ) : (
+                      "No devpost link"
+                    )
                   }
                 />
+
                 <DetailRow
                   icon={Github}
                   label="GitHub"
                   value={
-                    <LinkList links={item.github} fallback="No GitHub links" />
+                    item.github && item.github.length > 0 ? (
+                      <LinkList links={item.github} />
+                    ) : (
+                      "No GitHub links"
+                    )
                   }
                 />
+
                 <DetailRow
                   icon={Figma}
                   label="Figma"
                   value={
-                    <LinkList links={item.figma} fallback="No Figma links" />
+                    item.figma && item.figma.length > 0 ? (
+                      <LinkList links={item.figma} />
+                    ) : (
+                      "No Figma links"
+                    )
                   }
                 />
+
                 <DetailRow
                   icon={Presentation}
-                  label="Canva"
+                  label="Canva / Presentation"
                   value={
-                    <LinkList links={item.canva} fallback="No Canva links" />
-                  }
-                />
-                {item.presentation && (
-                  <DetailRow
-                    icon={Presentation}
-                    label="Presentation"
-                    value={
+                    item.canva && item.canva.length > 0 ? (
+                      <LinkList links={item.canva} />
+                    ) : item.presentation ? (
                       <a
                         href={item.presentation}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary underline underline-offset-2 break-all hover:opacity-80 transition-opacity"
+                        className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
                       >
                         {item.presentation}
                       </a>
-                    }
-                  />
-                )}
-              </div>
-            </div>
-
-            <hr />
-
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-foreground">Team</p>
-              <div className="grid gap-3">
-                <DetailRow
-                  icon={Mail}
-                  label="Invites"
-                  value={
-                    item.invites && item.invites.length > 0 ? (
-                      <div className="flex flex-col gap-1">
-                        {item.invites.map((inv, i) => (
-                          <span key={i}>{inv}</span>
-                        ))}
-                      </div>
                     ) : (
-                      "No invites"
+                      "No presentation link"
                     )
+                  }
+                />
+
+                <DetailRow
+                  icon={Users}
+                  label="Team Members"
+                  value={
+                    item.invites && item.invites.length > 0
+                      ? item.invites.map((email, i) => (
+                          <span key={i} className="block text-sm">
+                            {email}
+                          </span>
+                        ))
+                      : "No invites"
                   }
                 />
               </div>
@@ -257,6 +255,18 @@ function truncateDescription(description: string, maxLength: number = 75): strin
   }
   return description.substring(0, maxLength).trim() + "...";
 }
+
+const vettedConfig: Record<string, { icon: React.ElementType; color: string; label: string }> = {
+  verified: { icon: IconCircleCheck, color: "text-emerald-500", label: "Verified" },
+  needs_review: { icon: IconAlertTriangle, color: "text-amber-500", label: "Needs Review" },
+  disqualified: { icon: IconCircleX, color: "text-red-500", label: "Disqualified" },
+};
+
+const vettedCycle: Record<string, string> = {
+  needs_review: "verified",
+  verified: "disqualified",
+  disqualified: "needs_review",
+};
 
 export const columns: ColumnDef<SubmissionRecord>[] = [
   {
@@ -335,6 +345,30 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     ),
   },
   {
+    accessorKey: "vetted",
+    header: "Vetted",
+    cell: ({ row }) => {
+      const vetted = row.original.vetted ?? "needs_review";
+      const config = vettedConfig[vetted];
+      if (!config) return <span className="text-muted-foreground px-1.5">—</span>;
+      const Icon = config.icon;
+      return (
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center justify-center px-1.5 cursor-pointer">
+                <Icon className={`h-5 w-5 ${config.color}`} />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <p>{config.label}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    },
+  },
+  {
     id: "actions",
     cell: ({ table, row }) => (
       <DropdownMenu>
@@ -352,7 +386,7 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
           <DropdownMenuItem
             variant="destructive"
             onClick={() =>
-              table.options.meta?.onDelete(row.original._id as number)
+              table.options.meta?.onDelete(row.original._id as unknown as number)
             }
           >
             Delete

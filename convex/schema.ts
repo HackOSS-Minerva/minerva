@@ -56,7 +56,6 @@ export default defineSchema({
     resume: v.optional(v.string()),
     status: statuses,
     tenant: v.string(),
-    workos: v.string(),
   }),
 
   judges: defineTable({
@@ -73,7 +72,6 @@ export default defineSchema({
     picture: v.string(),
     status: statuses,
     tenant: v.string(),
-    workos: v.string(),
   }),
 
   speakers: defineTable({
@@ -90,7 +88,6 @@ export default defineSchema({
     picture: v.string(),
     status: statuses,
     tenant: v.string(),
-    workos: v.string(),
   }),
 
   superadmins: defineTable({
@@ -107,9 +104,7 @@ export default defineSchema({
     team: teams,
     status: statuses,
     dietrestriction: dietrestrictions,
-    authId: v.string(),
     tenant: v.string(),
-    workos: v.string(),
   }),
 
   checkins: defineTable({
@@ -138,7 +133,6 @@ export default defineSchema({
     availabilities: v.array(availabilities),
     status: statuses,
     tenant: v.string(),
-    workos: v.string(),
   }),
 
   feedback: defineTable({
@@ -172,8 +166,11 @@ export default defineSchema({
     presentation: v.optional(v.string()),
     invites: v.array(v.string()),
     tenant: v.string(),
-    workos: v.string(),
     timestamp: v.number(),
-  })
-    .index("by_tenant_workos", ["tenant", "workos"]),
+    vetted: v.union(
+      v.literal("verified"),
+      v.literal("needs_review"),
+      v.literal("disqualified")
+    ),
+  }),
 });

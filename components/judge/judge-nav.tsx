@@ -18,7 +18,7 @@ const navItems = [{ href: "/judge/dashboard", label: "Dashboard" }];
 
 const participateItems = [
   {
-    href: "/judge/register",
+    href: "/forms/judge",
     label: "Register",
     description: "Register as a judge for the event.",
   },
@@ -46,7 +46,7 @@ export function JudgeNav({ tenant }: { tenant: string }) {
   const logo = tenantConfig?.logo;
 
   return (
-    <nav className="flex items-center justify-between gap-1">
+    <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
       {logo && (
         <Link
           href={`/${tenant}/judge/dashboard`}
@@ -88,7 +88,7 @@ export function JudgeNav({ tenant }: { tenant: string }) {
               size="sm"
               className={cn(
                 "gap-1 transition-all",
-                (pathname.includes("/judge/register") ||
+                (pathname.includes("/forms/judge") ||
                   pathname.includes("/judge/assignments") ||
                   pathname.includes("/judge/orientation") ||
                   pathname.includes("/judge/certificate"))

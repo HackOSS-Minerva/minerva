@@ -13,11 +13,9 @@ import { LiveNav } from "@/components/live/live-nav";
 
 interface TeamsPageProps {
   tenant: string;
-  userId: string;
-  userName: string;
 }
 
-export function TeamsPage({ tenant, userId, userName }: TeamsPageProps) {
+export function TeamsPage({ tenant }: TeamsPageProps) {
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-4 py-6 md:py-10">
       <LiveNav tenant={tenant} />
@@ -26,12 +24,6 @@ export function TeamsPage({ tenant, userId, userName }: TeamsPageProps) {
           <BreadcrumbItem>
             <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
               Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/login`}>
-              Participate
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -47,7 +39,7 @@ export function TeamsPage({ tenant, userId, userName }: TeamsPageProps) {
         </p>
       </div>
 
-      <IdeaBoard tenant={tenant} userId={userId} userName={userName} />
+      <IdeaBoard tenant={tenant} />
     </div>
   );
 }

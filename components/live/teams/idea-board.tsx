@@ -18,32 +18,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxGroup,
-  ComboboxLabel,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { roles } from "@/data/roles";
 
 interface IdeaBoardProps {
   tenant: string;
-  userId: string;
-  userName: string;
 }
 
-type FilterValue = string;
-
-export function IdeaBoard({ tenant, userId, userName }: IdeaBoardProps) {
+export function IdeaBoard({ tenant }: IdeaBoardProps) {
   const ideas = useIdeas(tenant);
   const addIdea = useMutation(api.ideas.add);
   const removeIdea = useMutation(api.ideas.remove);
@@ -54,8 +36,7 @@ export function IdeaBoard({ tenant, userId, userName }: IdeaBoardProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedRolesInput, setSelectedRolesInput] = useState<string[]>([]);
-  const [selectedFilters, setSelectedFilters] = useState<FilterValue[]>([]);
-  const [inputValue, setInputValue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCreateIdea = async () => {
     if (!title.trim()) return;
@@ -63,8 +44,8 @@ export function IdeaBoard({ tenant, userId, userName }: IdeaBoardProps) {
       tenant,
       title: title.trim(),
       description: description.trim(),
-      authorid: userId,
-      author: userName,
+      authorid: "",
+      author: "Anonymous",
       skills: selectedRolesInput,
     });
     setTitle("");
@@ -80,7 +61,7 @@ export function IdeaBoard({ tenant, userId, userName }: IdeaBoardProps) {
 
   const handleConfirmDelete = async () => {
     if (!selectedIdeaId) return;
-    await removeIdea({ id: selectedIdeaId });
+    await removeIdea({ id: selectedIdeaId as any });
     setDeleteIdeaOpen(false);
     setSelectedIdeaId(null);
   };
@@ -90,27 +71,6 @@ export function IdeaBoard({ tenant, userId, userName }: IdeaBoardProps) {
       prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     );
   };
-
-  const anchor = useComboboxAnchor();
-
-  const roleFilterOptions = roles.map((role) => ({
-    value: `role:${role}`,
-    label: role,
-    group: "Role",
-    columnId: "role",
-  }));
-
-  const handleFilterChange = (values: FilterValue[]) => {
-    setSelectedFilters(values);
-  };
-
-  // Get selected roles from combobox filters
-  const selectedRolesFromFilter = selectedFilters
-    .filter((f) => f.startsWith("role:"))
-    .map((f) => f.replace("role:", ""));
-
-  // Determine the search query: use inputValue for text search
-  const currentSearchQuery = inputValue;
 
   if (ideas === undefined) {
     return (
@@ -127,123 +87,83 @@ export function IdeaBoard({ tenant, userId, userName }: IdeaBoardProps) {
     );
   }
 
+  const query = searchQuery.toLowerCase();
   const filteredIdeas = ideas.filter((idea) => {
-    const query = currentSearchQuery.toLowerCase();
     const matchesSearch =
       !query ||
       idea.title.toLowerCase().includes(query) ||
       idea.description.toLowerCase().includes(query);
-
-    const matchesRoles =
-      selectedRolesFromFilter.length === 0 ||
-      (idea as Idea).skills?.some((skill: string) =>
-        selectedRolesFromFilter.includes(skill),
-      );
-
-    return matchesSearch && matchesRoles;
+    return matchesSearch;
   });
 
   return (
-    <div className="gap-3 flex flex-col">
-      <div className="flex-col gap-4 space-y-0 md:flex-row md:items-center md:justify-between">
-        <div className="flex w-full flex-col gap-2 md:flex-1 md:flex-row md:items-center">
-          <Combobox
-            multiple
-            autoHighlight
-            value={selectedFilters.filter((f) => f.startsWith("role:"))}
-            onValueChange={handleFilterChange}
-            onInputValueChange={setInputValue}
-            filteredItems={roleFilterOptions}
-          >
-            <ComboboxChips ref={anchor} className="w-full md:flex-1">
-              <ComboboxValue>
-                {(values: FilterValue[]) => (
-                  <>
-                    {values.map((value) => {
-                      const option = roleFilterOptions.find(
-                        (o) => o.value === value,
-                      );
-                      return (
-                        <ComboboxChip key={value}>
-                          {option?.label ?? value}
-                        </ComboboxChip>
-                      );
-                    })}
-                  </>
-                )}
-              </ComboboxValue>
-              <ComboboxChipsInput placeholder="Search or filter by role..." />
-            </ComboboxChips>
-            <ComboboxContent anchor={anchor}>
-              <ComboboxEmpty>No results found.</ComboboxEmpty>
-              <ComboboxList>
-                <ComboboxGroup>
-                  <ComboboxLabel>Roles</ComboboxLabel>
-                  {roleFilterOptions.map((opt) => (
-                    <ComboboxItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </ComboboxItem>
-                  ))}
-                </ComboboxGroup>
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
-          <Dialog open={newIdeaOpen} onOpenChange={setNewIdeaOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="whitespace-nowrap">
-                <IconPlus className="mr-1 h-4 w-4" />
-                New Idea
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Share Your Idea</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 pt-4">
-                <div>
-                  <label className="text-sm font-medium">Title</label>
-                  <Input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. AI Study Buddy"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Description</label>
-                  <Textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe your idea... (Include how people can contact you, e.g. Discord, email)"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">
-                    Roles Needed (select all that apply)
-                  </label>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {roles.map((role) => {
-                      const isSelected = selectedRolesInput.includes(role);
-                      return (
-                        <Button
-                          key={role}
-                          type="button"
-                          variant={isSelected ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => toggleRole(role)}
-                        >
-                          {role}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <Button onClick={handleCreateIdea} className="w-full">
-                  Post Idea
-                </Button>
+    <div>
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <Input
+          type="text"
+          placeholder="Search ideas by title, description..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-sm"
+        />
+
+        <Dialog open={newIdeaOpen} onOpenChange={setNewIdeaOpen}>
+          <DialogTrigger asChild>
+            <Button className="shrink-0">
+              <IconPlus className="mr-2 h-4 w-4" />
+              New Idea
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Share Your Idea</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Title</label>
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Idea title"
+                />
               </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+              <div>
+                <label className="text-sm font-medium">Description</label>
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Describe your idea..."
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Looking for</label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Select the roles you need for your team.
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {roles.map((role) => {
+                    const isSelected = selectedRolesInput.includes(role);
+                    return (
+                      <Button
+                        key={role}
+                        type="button"
+                        variant={isSelected ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => toggleRole(role)}
+                      >
+                        {role}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+              <Button onClick={handleCreateIdea} className="w-full">
+                Post Idea
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredIdeas.length === 0 && (
@@ -269,16 +189,6 @@ export function IdeaBoard({ tenant, userId, userName }: IdeaBoardProps) {
                   by {idea.author}
                 </p>
               </div>
-              {idea.authorid === userId && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 shrink-0"
-                  onClick={() => handleDeleteClick(idea._id)}
-                >
-                  <IconTrash className="h-4 w-4" />
-                </Button>
-              )}
             </div>
 
             {(idea as Idea).skills?.length > 0 && (

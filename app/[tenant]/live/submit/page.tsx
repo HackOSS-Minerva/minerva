@@ -1,5 +1,4 @@
 import { SubmissionFormPage } from "@/components/live/submit/submission-form-page";
-import { withAuth } from "@workos-inc/authkit-nextjs";
 
 interface SubmitRouteProps {
   params: {
@@ -9,15 +8,8 @@ interface SubmitRouteProps {
 
 const SubmitRoute = async ({ params }: SubmitRouteProps) => {
   const { tenant } = await params;
-  const { user } = await withAuth();
 
-  return (
-    <SubmissionFormPage
-      tenant={tenant}
-      userId={user?.id ?? ""}
-      userEmail={user?.email ?? ""}
-    />
-  );
+  return <SubmissionFormPage tenant={tenant} />;
 };
 
 export default SubmitRoute;

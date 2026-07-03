@@ -9,6 +9,7 @@ import {
   IconCopy,
   IconDownload,
   IconLayoutColumns,
+  IconSwords,
   IconTrash,
 } from "@tabler/icons-react";
 import {
@@ -57,7 +58,6 @@ import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
 import { StatusActions } from "./status-actions";
-import { slugs } from "@/hooks/use-fields";
 
 interface DashboardProps {
   data: any[];
@@ -83,7 +83,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     pageSize: 10,
   });
 
-  const { dashboard: slug } = useParams<{ dashboard: slugs | "attendance" }>();
+  const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
 
   const {
@@ -121,141 +121,152 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     meta: {
-      onDelete: (id) => onDelete?.({ id }),
-      onUpdate: (obj) => onUpdate?.(obj),
-      setStatus: (status) => setStatus?.(status),
-      setStatusMany: (ids: string[], status: string) =>
-        setStatusMany?.({ ids, status }),
+      onDelete: (id: any) => {
+        onDelete?.(id);
+        setRowSelection({});
+      },
+      onDeleteMany: (ids: any) => {
+        onDeleteMany?.(ids);
+        setRowSelection({});
+      },
+      onUpdate: onUpdate,
+      setStatus: setStatus,
+      setStatusMany: (ids: any, status: any) => {
+        setStatusMany?.(ids, status);
+        setRowSelection({});
+      },
     },
   });
 
   return (
-    <Tabs
-      defaultValue="outline"
-      className="w-full flex-col justify-start gap-6"
-    >
-      <TableToolbar table={table} slug={slug} />
-      <div className="flex items-center justify-between px-4 lg:px-6">
-        <div className="flex items-center gap-2">
-          {setStatusMany && (
-            <StatusActions
-              table={table}
-              onSuccess={() => setRowSelection({})}
-            />
-          )}
-        </div>
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
-        <Select defaultValue="accepted">
-          <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
-            size="sm"
-            id="view-selector"
-          >
-            <SelectValue placeholder="Select a view" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="accepted">Accepted</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const rows = table.getFilteredRowModel().rows;
-              const emails = rows.map((row) => row.original.email);
-              const csv = emails.join(",");
-              navigator.clipboard.writeText(csv);
-              toast.success(`Copied ${emails.length} emails to clipboard`);
-            }}
-            disabled={table.getFilteredRowModel().rows.length === 0}
-          >
-            <IconCopy />
-            <span className="hidden lg:inline ml-1">Copy Emails</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const rows = table
-                .getFilteredRowModel()
-                .rows.map((row) => row.original);
-              const blob = convertToCSV(
-                rows as unknown as Record<string, unknown>[],
-                csvFields,
-              );
-              const now = new Date();
-              const pad = (n: number) => String(n).padStart(2, "0");
-              const timestamp = `${pad(now.getMonth() + 1)}_${pad(now.getDate())}_${now.getFullYear()}_${pad(now.getHours())}_${pad(now.getMinutes())}_${pad(now.getSeconds())}`;
-              const filename = `${tenant.name.toUpperCase()}_${slug.toUpperCase()}_${timestamp}.csv`;
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = filename;
-              a.click();
-              URL.revokeObjectURL(url);
-              toast.success(`Downloaded ${rows.length} rows as CSV`);
-            }}
-            disabled={table.getFilteredRowModel().rows.length === 0}
-          >
-            <IconDownload />
-            <span className="hidden lg:inline ml-1">Download CSV</span>
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span>Columns</span>
-                <IconChevronDown />
+    <Tabs defaultValue="outline">
+      <div className="flex items-start px-4 lg:px-6">
+        <TableToolbar table={table} slug={slug} />
+        <div className="ml-auto flex items-center gap-2">
+          <Select defaultValue="accepted">
+            <SelectTrigger
+              className="flex w-fit @4xl/main:hidden"
+              size="sm"
+              id="view-selector"
+            >
+              <SelectValue placeholder="Select a view" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="accepted">Accepted</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="flex items-center gap-2">
+            {slug === "submissions" ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  console.log("Vet Projects clicked");
+                }}
+                disabled={table.getSelectedRowModel().rows.length === 0}
+              >
+                <IconSwords />
+                <span className="hidden lg:inline ml-1">Vet Projects</span>
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide(),
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const rows = table.getFilteredRowModel().rows;
+                  const emails = rows.map((row) => row.original.email);
+                  const csv = emails.join(",");
+                  navigator.clipboard.writeText(csv);
+                  toast.success(`Copied ${emails.length} emails to clipboard`);
+                }}
+                disabled={table.getFilteredRowModel().rows.length === 0}
+              >
+                <IconCopy />
+                <span className="hidden lg:inline ml-1">Copy Emails</span>
+              </Button>
+            )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const ids = table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original._id);
-              onDeleteMany?.({ ids });
-              setRowSelection({});
-            }}
-            disabled={table.getSelectedRowModel().rows.length === 0}
-            className="hover:bg-red-500 hover:text-white"
-          >
-            <IconTrash />
-            <span className="hidden lg:inline ml-1">Delete</span>
-          </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const rows = table
+                  .getFilteredRowModel()
+                  .rows.map((row) => row.original);
+                const blob = convertToCSV(
+                  rows as unknown as Record<string, unknown>[],
+                  csvFields,
+                );
+                const now = new Date();
+                const pad = (n: number) => String(n).padStart(2, "0");
+                const timestamp = `${pad(now.getMonth() + 1)}_${pad(now.getDate())}_${now.getFullYear()}_${pad(now.getHours())}_${pad(now.getMinutes())}_${pad(now.getSeconds())}`;
+                const filename = `${tenant.name.toUpperCase()}_${slug.toUpperCase()}_${timestamp}.csv`;
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+                toast.success(`Downloaded ${rows.length} rows as CSV`);
+              }}
+              disabled={table.getFilteredRowModel().rows.length === 0}
+            >
+              <IconDownload />
+              <span className="hidden lg:inline ml-1">Download CSV</span>
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <IconLayoutColumns />
+                  <span>Columns</span>
+                  <IconChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {table
+                  .getAllColumns()
+                  .filter(
+                    (column) =>
+                      typeof column.accessorFn !== "undefined" &&
+                      column.getCanHide(),
+                  )
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const ids = table
+                  .getSelectedRowModel()
+                  .rows.map((row) => row.original._id);
+                onDeleteMany?.({ ids });
+                setRowSelection({});
+              }}
+              disabled={table.getSelectedRowModel().rows.length === 0}
+              className="hover:bg-red-500 hover:text-white"
+            >
+              <IconTrash />
+              <span className="hidden lg:inline ml-1">Delete</span>
+            </Button>
+          </div>
         </div>
       </div>
       <TabsContent

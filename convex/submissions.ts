@@ -11,22 +11,9 @@ export const get = query({
   },
 });
 
-export const getByUser = query({
-  args: { tenant: v.string(), workos: v.string() },
-  handler: async (ctx, { tenant, workos }) => {
-    return await ctx.db
-      .query("submissions")
-      .withIndex("by_tenant_workos", (q) =>
-        q.eq("tenant", tenant).eq("workos", workos)
-      )
-      .first();
-  },
-});
-
 export const add = mutation({
   args: {
     tenant: v.string(),
-    workos: v.string(),
     teamName: v.string(),
     projectName: v.string(),
     description: v.string(),
@@ -37,23 +24,20 @@ export const add = mutation({
     presentation: v.optional(v.string()),
     invites: v.array(v.string()),
   },
-  handler: async (ctx, args) => {
-    const existing = await ctx.db
-      .query("submissions")
-      .withIndex("by_tenant_workos", (q) =>
-        q.eq("tenant", args.tenant).eq("workos", args.workos)
-      )
-      .first();
-
-    if (existing) {
-      throw new ConvexError(
-        "You have already submitted a project. Duplicate submissions are not allowed."
-      );
-    }
-
+  handler: async (ctx, { tenant, teamName, projectName, description, devpost, github, figma, canva, presentation, invites }) => {
     const id = await ctx.db.insert("submissions", {
-      ...args,
+      teamName,
+      projectName,
+      description,
+      devpost,
+      github,
+      figma,
+      canva,
+      presentation,
+      invites,
+      tenant,
       timestamp: Date.now(),
+      vetted: "needs_review",
     });
     return { success: true, id };
   },
@@ -72,6 +56,24 @@ export const deleteMany = mutation({
   handler: async (ctx, { ids }) => {
     for (const id of ids) {
       await ctx.db.delete(id);
+    }
+    return { success: true };
+  },
+});
+
+export const updateVetted = mutation({
+  args: { id: v.id("submissions"), vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")) },
+  handler: async (ctx, { id, vetted }) => {
+    await ctx.db.patch(id, { vetted });
+    return { success: true };
+  },
+});
+
+export const updateVettedMany = mutation({
+  args: { ids: v.array(v.id("submissions")), vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")) },
+  handler: async (ctx, { ids, vetted }) => {
+    for (const id of ids) {
+      await ctx.db.patch(id, { vetted });
     }
     return { success: true };
   },

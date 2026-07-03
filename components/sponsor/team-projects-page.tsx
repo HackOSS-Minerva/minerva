@@ -3,6 +3,7 @@
 import { SponsorNav } from "@/components/sponsor/sponsor-nav";
 import { SponsorDataTable } from "@/components/sponsor/sponsor-data-table";
 import { columns } from "./team-projects-columns";
+import type { TeamProjectsRow } from "./team-projects-columns";
 
 interface TeamProjectsPageProps {
   tenant: string;

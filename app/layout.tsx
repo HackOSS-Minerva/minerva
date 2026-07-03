@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Minerva",
-  description: "Authentication with WorkOS and Convex",
+  description: "Minerva",
 };
 
 export default function RootLayout({ children }: LayoutProps) {

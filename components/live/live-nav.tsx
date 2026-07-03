@@ -46,7 +46,7 @@ const resourceItems = [
 
 const participateItems: { href: string; label: string; description: string; external?: boolean }[] = [
   {
-    href: "/login",
+    href: "/forms/judge",
     label: "Register",
     description: "Create an account or sign in.",
   },
@@ -68,7 +68,7 @@ export function LiveNav({ tenant }: { tenant: string }) {
   const logo = tenantConfig?.logo;
 
   return (
-    <nav className="flex items-center justify-between gap-1">
+    <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
       {logo && (
         <Link
           href={`/${tenant}/live/dashboard`}
@@ -138,7 +138,7 @@ export function LiveNav({ tenant }: { tenant: string }) {
             size="sm"
             className={cn(
               "gap-1 transition-all",
-              pathname.includes("/login") ? "bg-background shadow-sm" : "",
+              pathname.includes("/forms/judge") ? "bg-background shadow-sm" : "",
               "text-foreground",
             )}
           >
@@ -150,7 +150,7 @@ export function LiveNav({ tenant }: { tenant: string }) {
           {participateItems.map((item) => (
             <DropdownMenuItem key={item.label} asChild>
               <Link
-                href={item.external ? item.href : `/${tenant}/live${item.href}`}
+                href={item.external ? item.href : item.href.startsWith("/forms") ? `/${tenant}${item.href}` : `/${tenant}/live${item.href}`}
                 target={item.external ? "_blank" : undefined}
                 rel={item.external ? "noopener noreferrer" : undefined}
                 className="flex flex-col items-start gap-0.5"

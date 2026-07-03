@@ -9,6 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface RegisterPageProps {
   tenant: string;
@@ -21,6 +22,7 @@ export function RegisterPage({ tenant }: RegisterPageProps) {
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
       <JudgeNav tenant={tenant} />
+      <FormLockModal form="judge" />
 
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Judge Registration</h1>

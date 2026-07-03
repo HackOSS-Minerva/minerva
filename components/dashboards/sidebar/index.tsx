@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   IconCamera,
+  IconClipboardList,
   IconDatabase,
   IconFileAi,
   IconFileDescription,
@@ -37,6 +38,13 @@ const data = {
       title: "Schedule",
       url: "/admin/schedule",
       icon: IconListDetails,
+    },
+  ],
+  navJudging: [
+    {
+      title: "Submissions",
+      url: "/admin/dashboards/submissions",
+      icon: IconClipboardList,
     },
   ],
   navDashboards: [
@@ -74,11 +82,6 @@ const data = {
       title: "Feedback",
       url: "/admin/dashboards/feedback",
       icon: IconReport,
-    },
-    {
-      title: "Submissions",
-      url: "/admin/dashboards/submissions",
-      icon: IconListDetails,
     },
   ],
   navClouds: [
@@ -171,6 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain label="Dashboards" items={data.navDashboards} />
+        <NavMain label="Judging" items={data.navJudging} />
         <NavMain label="Utilities" items={data.navUtilities} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

@@ -1,11 +1,11 @@
 "use client"
 
 import { useTenant } from "@/hooks/use-tenant";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { JudgeNav } from "@/components/judge/judge-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Mail, Download } from "lucide-react";
 import { toast } from "sonner";
 
 interface CertificatePageProps {
@@ -13,14 +13,21 @@ interface CertificatePageProps {
 }
 
 export function CertificatePage({ tenant }: CertificatePageProps) {
-  const { user } = useAuth();
   const { tenant: tenantConfig } = useTenant();
 
-  const judgeName = user?.firstName && user?.lastName
-    ? user.firstName + " " + user.lastName
-    : "Alex J. Morgan";
+  const judgeName = "Alex J. Morgan";
 
   const certificateId = "CERT-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+  const handleEmail = () => {
+    const tenantName = tenantConfig?.name || "DesignVerse 2026";
+    const subject = encodeURIComponent(`Judge Certificate - ${judgeName} - ${tenantName}`);
+    const body = encodeURIComponent(
+      `Hello,\n\nPlease find attached my Judge Certificate of Service for ${tenantName}.\n\nName: ${judgeName}\nRole: Judge\n\nBest regards,\n${judgeName}`,
+    );
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    toast.success("Email client opened.");
+  };
 
   const handleDownload = () => {
     const tenantName = tenantConfig?.name || "DesignVerse 2026";
@@ -42,15 +49,15 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
       "    h1 { font-size: 3rem; color: #1e3a8a; margin-bottom: 1.5rem; font-family: Georgia, serif; font-style: italic; }" +
       "    .subtitle { font-size: 1.25rem; color: #374151; margin-bottom: 2rem; }" +
       "    .recipient { font-size: 2.5rem; font-weight: bold; color: #0f172a; margin: 1rem 0; border-bottom: 2px solid #d1d5db; display: inline-block; padding: 0.5rem 3rem; }" +
-      "    .body-text { font-size: 1.1rem; color: #374151; line-height: 1.8; margin: 2rem 0; max-width: 600px; margin-left: auto; margin-right: auto; }" +
+      "    .body_text { font-size: 1.1rem; color: #374151; line-height: 1.8; margin: 2rem 0; max-width: 600px; margin-left: auto; margin-right: auto; }" +
       "    .details { display: flex; justify-content: space-around; margin: 2rem 0; text-align: center; }" +
-      "    .detail-item { display: flex; flex-direction: column; }" +
-      "    .detail-label { font-size: 0.8rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.1em; margin-bottom: 0.25rem; }" +
-      "    .detail-value { font-size: 1rem; color: #0f172a; font-weight: 600; }" +
-      "    .signature { display: flex; justify-content: space-around; margin-top: 3rem; }" +
-      "    .signature-block { text-align: center; }" +
-      "    .signature-line { width: 200px; border-bottom: 1px solid #374151; margin-bottom: 0.5rem; padding-bottom: 0.5rem; }" +
-      "    .signature-role { font-size: 0.85rem; color: #64748b; }" +
+      "    .detail_item { display: flex; flex-direction: column; }" +
+      "    .detail_label { font-size: 0.8rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.1em; margin-bottom: 0.25rem; }" +
+      "    .detail_value { font-size: 1rem; color: #0f172a; font-weight: 600; }" +
+      "    .signature { display: flex; justify-content: space-around; margin-top: 3rem; text-align: center; }" +
+      "    .signature_block { text-align: center; }" +
+      "    .signature_line { width: 200px; border-bottom: 1px solid #374151; margin-bottom: 0.5rem; padding-bottom: 0.5rem; }" +
+      "    .signature_role { font-size: 0.85rem; color: #64748b; }" +
       "    .seal { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); display: flex; align-items: center; justify-content: center; margin: 2rem auto 0; font-size: 3rem; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }" +
       "  </style>" +
       "</head>" +
@@ -58,35 +65,27 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
       "  <div class=\"certificate\">" +
       "    <div class=\"header\">Certificate of Service</div>" +
       "    <h1>Certificate</h1>" +
-      "    <p class=\"subtitle\">This certificate is proudly presented to</p>" +
+      "    <div class=\"subtitle\">Proudly presented to</div>" +
       "    <div class=\"recipient\">" + judgeName + "</div>" +
-      "    <p class=\"body-text\">" +
-      "      In recognition of your valuable service and dedication as a <strong>" + role + "</strong> at" +
-      "      <strong>" + tenantName + "</strong>. Your expertise, thoughtful evaluation, and commitment to excellence" +
-      "      have significantly contributed to the success of this event." +
-      "    </p>" +
+      "    <div class=\"body_text\">In recognition of your valuable service and dedication as a Judge at <strong>" + tenantName + "</strong>.</div>" +
       "    <div class=\"details\">" +
-      "      <div class=\"detail-item\">" +
-      "        <span class=\"detail-label\">Certificate ID</span>" +
-      "        <span class=\"detail-value\">" + certificateId + "</span>" +
+      "      <div class=\"detail_item\">" +
+      "        <div class=\"detail_label\">Certificate ID</div>" +
+      "        <div class=\"detail_value\">" + certificateId + "</div>" +
       "      </div>" +
-      "      <div class=\"detail-item\">" +
-      "        <span class=\"detail-label\">Organization</span>" +
-      "        <span class=\"detail-value\">" + tenantName + "</span>" +
-      "      </div>" +
-      "      <div class=\"detail-item\">" +
-      "        <span class=\"detail-label\">Role</span>" +
-      "        <span class=\"detail-value\">" + role + "</span>" +
+      "      <div class=\"detail_item\">" +
+      "        <div class=\"detail_label\">Date Issued</div>" +
+      "        <div class=\"detail_value\">" + new Date().toLocaleDateString() + "</div>" +
       "      </div>" +
       "    </div>" +
       "    <div class=\"signature\">" +
-      "      <div class=\"signature-block\">" +
-      "        <div class=\"signature-line\"></div>" +
-      "        <div class=\"signature-role\">Event Director</div>" +
+      "      <div class=\"signature_block\">" +
+      "        <div class=\"signature_line\"></div>" +
+      "        <div class=\"signature_role\">Event Director</div>" +
       "      </div>" +
-      "      <div class=\"signature-block\">" +
-      "        <div class=\"signature-line\"></div>" +
-      "        <div class=\"signature-role\">" + organization + "</div>" +
+      "      <div class=\"signature_block\">" +
+      "        <div class=\"signature_line\"></div>" +
+      "        <div class=\"signature_role\">" + organization + "</div>" +
       "      </div>" +
       "    </div>" +
       "    <div class=\"seal\">★</div>" +
@@ -165,7 +164,12 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
               and open it in any browser to print or save as PDF.
             </p>
             <Button onClick={handleDownload} className="w-full">
+              <Download className="mr-2 h-4 w-4" />
               Download Certificate
+            </Button>
+            <Button onClick={handleEmail} variant="outline" className="w-full">
+              <Mail className="mr-2 h-4 w-4" />
+              Email Certificate
             </Button>
           </CardContent>
         </Card>
