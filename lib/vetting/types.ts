@@ -13,6 +13,7 @@ export type FindingCode =
   | "repo_fork_detected"
   | "repo_template_detected"
   | "repo_empty_or_no_event_commits"
+  | "commit_scan_truncated"
   | "commit_before_event"
   | "commit_after_deadline_grace"
   | "git_contributor_count_exceeds_limit"

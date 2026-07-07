@@ -1,5 +1,11 @@
 import { query, mutation } from "./_generated/server";
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
+
+const vettedStatus = v.union(
+  v.literal("verified"),
+  v.literal("needs_review"),
+  v.literal("disqualified"),
+);
 
 export const get = query({
   args: { tenant: v.string() },
@@ -8,6 +14,13 @@ export const get = query({
       .query("submissions")
       .filter((q) => q.eq(q.field("tenant"), tenant))
       .collect();
+  },
+});
+
+export const getById = query({
+  args: { id: v.id("submissions") },
+  handler: async (ctx, { id }) => {
+    return await ctx.db.get(id);
   },
 });
 
@@ -24,7 +37,21 @@ export const add = mutation({
     presentation: v.optional(v.string()),
     invites: v.array(v.string()),
   },
-  handler: async (ctx, { tenant, teamName, projectName, description, devpost, github, figma, canva, presentation, invites }) => {
+  handler: async (
+    ctx,
+    {
+      tenant,
+      teamName,
+      projectName,
+      description,
+      devpost,
+      github,
+      figma,
+      canva,
+      presentation,
+      invites,
+    },
+  ) => {
     const id = await ctx.db.insert("submissions", {
       teamName,
       projectName,
@@ -38,6 +65,7 @@ export const add = mutation({
       tenant,
       timestamp: Date.now(),
       vetted: "needs_review",
+      vettingStatus: "not_started",
     });
     return { success: true, id };
   },
@@ -62,7 +90,7 @@ export const deleteMany = mutation({
 });
 
 export const updateVetted = mutation({
-  args: { id: v.id("submissions"), vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")) },
+  args: { id: v.id("submissions"), vetted: vettedStatus },
   handler: async (ctx, { id, vetted }) => {
     await ctx.db.patch(id, { vetted });
     return { success: true };
@@ -70,11 +98,35 @@ export const updateVetted = mutation({
 });
 
 export const updateVettedMany = mutation({
-  args: { ids: v.array(v.id("submissions")), vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")) },
+  args: { ids: v.array(v.id("submissions")), vetted: vettedStatus },
   handler: async (ctx, { ids, vetted }) => {
     for (const id of ids) {
       await ctx.db.patch(id, { vetted });
     }
+    return { success: true };
+  },
+});
+
+export const queueVetting = mutation({
+  args: { id: v.id("submissions") },
+  handler: async (ctx, { id }) => {
+    const submission = await ctx.db.get(id);
+    if (!submission) throw new Error("Submission not found");
+
+    await ctx.db.patch(id, { vettingStatus: "queued" });
+    return { success: true };
+  },
+});
+
+export const queueVettingMany = mutation({
+  args: { ids: v.array(v.id("submissions")) },
+  handler: async (ctx, { ids }) => {
+    for (const id of ids) {
+      const submission = await ctx.db.get(id);
+      if (!submission) throw new Error(`Submission ${id} not found`);
+      await ctx.db.patch(id, { vettingStatus: "queued" });
+    }
+
     return { success: true };
   },
 });

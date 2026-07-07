@@ -65,6 +65,7 @@ const findingCode = v.union(
   v.literal("repo_fork_detected"),
   v.literal("repo_template_detected"),
   v.literal("repo_empty_or_no_event_commits"),
+  v.literal("commit_scan_truncated"),
   v.literal("commit_before_event"),
   v.literal("commit_after_deadline_grace"),
   v.literal("git_contributor_count_exceeds_limit"),
