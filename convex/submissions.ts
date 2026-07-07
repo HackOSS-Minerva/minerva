@@ -7,6 +7,16 @@ const vettedStatus = v.union(
   v.literal("disqualified"),
 );
 
+function uniqueNormalizedEmails(emails: string[]): string[] {
+  return Array.from(
+    new Set(
+      emails
+        .map((email) => email.trim().toLowerCase())
+        .filter((email) => email.length > 0),
+    ),
+  );
+}
+
 export const get = query({
   args: { tenant: v.string() },
   handler: async (ctx, { tenant }) => {
@@ -52,6 +62,15 @@ export const add = mutation({
       invites,
     },
   ) => {
+    const normalizedInvites = uniqueNormalizedEmails(invites);
+    const declaredTeamCount = 1 + normalizedInvites.length;
+
+    if (declaredTeamCount > 4) {
+      throw new Error(
+        "Teams can include at most 4 people including the submitter.",
+      );
+    }
+
     const id = await ctx.db.insert("submissions", {
       teamName,
       projectName,
@@ -61,7 +80,7 @@ export const add = mutation({
       figma,
       canva,
       presentation,
-      invites,
+      invites: normalizedInvites,
       tenant,
       timestamp: Date.now(),
       vetted: "needs_review",
