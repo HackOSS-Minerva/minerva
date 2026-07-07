@@ -198,6 +198,7 @@ export const searchMappingCandidates = query({
 export const createManualMapping = mutation({
   args: {
     tenant: v.string(),
+    submissionId: v.id("submissions"),
     identityType,
     identityValue: v.string(),
     mappedEmail: v.string(),
@@ -205,14 +206,66 @@ export const createManualMapping = mutation({
     note: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identityValue = args.identityValue.trim().toLowerCase();
+    const mappedEmail = args.mappedEmail.trim().toLowerCase();
+    const submission = await ctx.db.get(args.submissionId);
+
+    if (!submission) {
+      throw new Error("Submission not found");
+    }
+
+    if (submission.tenant !== args.tenant) {
+      throw new Error("Submission does not belong to this tenant");
+    }
+
+    const declaredEmails = new Set(
+      submission.invites.map((email) => email.trim().toLowerCase()),
+    );
+    const participants = await ctx.db
+      .query("participants")
+      .filter((q) => q.eq(q.field("tenant"), args.tenant))
+      .collect();
+    const isTenantParticipant = participants.some(
+      (participant) => participant.email.trim().toLowerCase() === mappedEmail,
+    );
+
+    if (!declaredEmails.has(mappedEmail) && !isTenantParticipant) {
+      throw new Error(
+        "Mapped email must match a tenant participant or declared submission member",
+      );
+    }
+
+    const existing = await ctx.db
+      .query("gitIdentityMappings")
+      .withIndex("by_tenant_identity", (q) =>
+        q
+          .eq("tenant", args.tenant)
+          .eq("identityType", args.identityType)
+          .eq("identityValue", identityValue),
+      )
+      .first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        mappedEmail,
+        createdByOrganizerEmail: args.createdByOrganizerEmail,
+        note: args.note,
+      });
+
+      return { success: true, id: existing._id, created: false };
+    }
+
     const id = await ctx.db.insert("gitIdentityMappings", {
-      ...args,
-      identityValue: args.identityValue.trim().toLowerCase(),
-      mappedEmail: args.mappedEmail.trim().toLowerCase(),
+      tenant: args.tenant,
+      identityType: args.identityType,
+      identityValue,
+      mappedEmail,
+      createdByOrganizerEmail: args.createdByOrganizerEmail,
       createdAt: Date.now(),
+      note: args.note,
     });
 
-    return { success: true, id };
+    return { success: true, id, created: true };
   },
 });
 

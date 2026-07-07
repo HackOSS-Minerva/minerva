@@ -32,20 +32,15 @@ import {
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import {
-  Calendar,
   Users,
-  FolderOpen,
   Link as LinkIcon,
   Github,
   Figma,
   Presentation,
-  Mail,
-  FileText,
 } from "lucide-react";
 import DetailRow from "../row";
+import { VettingSummary } from "../vetting-summary";
 
 interface SubmissionRecord {
   _id: string;
@@ -61,6 +56,9 @@ interface SubmissionRecord {
   invites: string[];
   tenant: string;
   vetted: "verified" | "needs_review" | "disqualified";
+  vettingStatus?: "not_started" | "queued" | "running" | "completed" | "failed";
+  latestVettingRunId?: string;
+  lastVettedAt?: number;
   timestamp: number;
 }
 
@@ -240,6 +238,8 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                       : "No invites"
                   }
                 />
+
+                <VettingSummary submissionId={item._id} />
               </div>
             </div>
           </div>
@@ -249,23 +249,66 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
   );
 }
 
-function truncateDescription(description: string, maxLength: number = 75): string {
+function truncateDescription(
+  description: string,
+  maxLength: number = 75,
+): string {
   if (description.length <= maxLength) {
     return description;
   }
   return description.substring(0, maxLength).trim() + "...";
 }
 
-const vettedConfig: Record<string, { icon: React.ElementType; color: string; label: string }> = {
-  verified: { icon: IconCircleCheck, color: "text-emerald-500", label: "Verified" },
-  needs_review: { icon: IconAlertTriangle, color: "text-amber-500", label: "Needs Review" },
-  disqualified: { icon: IconCircleX, color: "text-red-500", label: "Disqualified" },
+const vettedConfig: Record<
+  string,
+  { icon: React.ElementType; color: string; label: string }
+> = {
+  verified: {
+    icon: IconCircleCheck,
+    color: "text-emerald-500",
+    label: "Verified",
+  },
+  needs_review: {
+    icon: IconAlertTriangle,
+    color: "text-amber-500",
+    label: "Needs Review",
+  },
+  disqualified: {
+    icon: IconCircleX,
+    color: "text-red-500",
+    label: "Disqualified",
+  },
 };
 
-const vettedCycle: Record<string, string> = {
-  needs_review: "verified",
-  verified: "disqualified",
-  disqualified: "needs_review",
+const vettingStatusConfig: Record<
+  NonNullable<SubmissionRecord["vettingStatus"]>,
+  { icon: React.ElementType; color: string; label: string }
+> = {
+  not_started: {
+    icon: IconAlertTriangle,
+    color: "text-muted-foreground",
+    label: "Not Started",
+  },
+  queued: {
+    icon: IconAlertTriangle,
+    color: "text-blue-500",
+    label: "Queued",
+  },
+  running: {
+    icon: IconAlertTriangle,
+    color: "text-blue-500",
+    label: "Running",
+  },
+  completed: {
+    icon: IconCircleCheck,
+    color: "text-emerald-500",
+    label: "Completed",
+  },
+  failed: {
+    icon: IconCircleX,
+    color: "text-red-500",
+    label: "Failed",
+  },
 };
 
 export const columns: ColumnDef<SubmissionRecord>[] = [
@@ -350,7 +393,9 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     cell: ({ row }) => {
       const vetted = row.original.vetted ?? "needs_review";
       const config = vettedConfig[vetted];
-      if (!config) return <span className="text-muted-foreground px-1.5">—</span>;
+      if (!config) {
+        return <span className="text-muted-foreground px-1.5">-</span>;
+      }
       const Icon = config.icon;
       return (
         <TooltipProvider delayDuration={200}>
@@ -362,6 +407,36 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
             </TooltipTrigger>
             <TooltipContent side="top">
               <p>{config.label}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    },
+  },
+  {
+    accessorKey: "vettingStatus",
+    header: "Vetting",
+    cell: ({ row }) => {
+      const status = row.original.vettingStatus ?? "not_started";
+      const config = vettingStatusConfig[status];
+      const Icon = config.icon;
+
+      return (
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center gap-1.5 px-1.5 text-sm text-muted-foreground">
+                <Icon className={`h-4 w-4 ${config.color}`} />
+                <span className="hidden xl:inline">{config.label}</span>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <p>
+                {config.label}
+                {row.original.lastVettedAt
+                  ? ` at ${formatTimestamp(row.original.lastVettedAt)}`
+                  : ""}
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -385,9 +460,7 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
         <DropdownMenuContent align="end" className="w-32">
           <DropdownMenuItem
             variant="destructive"
-            onClick={() =>
-              table.options.meta?.onDelete(row.original._id as unknown as number)
-            }
+            onClick={() => table.options.meta?.onDelete(row.original._id)}
           >
             Delete
           </DropdownMenuItem>
