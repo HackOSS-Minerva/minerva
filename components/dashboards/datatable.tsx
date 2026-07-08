@@ -57,6 +57,7 @@ import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import type { VettingBatchResult } from "@/hooks/use-dashboard";
 import { TableToolbar } from "./toolbar";
+import { cn } from "@/lib/utils";
 
 type DashboardRow = {
   _id?: string;
@@ -92,6 +93,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
+  const isSubmissions = slug === "submissions";
 
   const {
     data,
@@ -197,6 +199,27 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       toast.error("Failed to queue project vetting");
     } finally {
       setVetting(false);
+    }
+  };
+
+  const submissionsColumnClass = (columnId: string) => {
+    if (!isSubmissions) return undefined;
+
+    switch (columnId) {
+      case "select":
+        return "w-10";
+      case "timestamp":
+        return "w-[8.75rem]";
+      case "teamName":
+        return "w-[16.5rem]";
+      case "projectName":
+        return "w-[13.5rem]";
+      case "vetted":
+        return "w-[11rem]";
+      case "description":
+        return "w-auto min-w-0";
+      default:
+        return undefined;
     }
   };
 
@@ -339,13 +362,17 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg border">
-          <Table>
+          <Table className={isSubmissions ? "table-fixed" : undefined}>
             <TableHeader className="bg-muted sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} colSpan={header.colSpan}>
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={submissionsColumnClass(header.column.id)}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -367,7 +394,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
                     className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          submissionsColumnClass(cell.column.id),
+                          isSubmissions && "overflow-hidden",
+                        )}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),

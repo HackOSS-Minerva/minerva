@@ -126,12 +126,6 @@ const getMappingsForTenant = makeFunctionReference<
   Doc<"gitIdentityMappings">[]
 >("vetting:getMappingsForTenant");
 
-const getSubmissionGitIdentities = makeFunctionReference<
-  "query",
-  { submissionId: Id<"submissions"> },
-  Doc<"submissionGitIdentities">[]
->("vetting:getSubmissionGitIdentities");
-
 const findMatchingContributors = makeFunctionReference<
   "query",
   {
@@ -283,13 +277,12 @@ function serializeFindings(
 function mapContributorToSubmittedIdentity(args: {
   contributor: ExtractedContributor;
   mappings: Doc<"gitIdentityMappings">[];
-  gitIdentities: Doc<"submissionGitIdentities">[];
   declaredEmails: string[];
 }): {
   mappedEmail: string;
-  mappingSource: "manual" | "oauth" | "email";
+  mappingSource: "manual" | "email";
 } | null {
-  const { contributor, mappings, gitIdentities, declaredEmails } = args;
+  const { contributor, mappings, declaredEmails } = args;
   const identityCandidates = [
     contributor.githubUserId
       ? { type: "github_user_id", value: contributor.githubUserId }
@@ -316,43 +309,6 @@ function mapContributorToSubmittedIdentity(args: {
     );
     if (manual) {
       return { mappedEmail: manual.mappedEmail, mappingSource: "manual" };
-    }
-  }
-
-  for (const identity of gitIdentities) {
-    if (
-      contributor.githubUserId &&
-      identity.providerUserId === contributor.githubUserId
-    ) {
-      return {
-        mappedEmail:
-          identity.email ?? identity.primaryEmail ?? identity.username,
-        mappingSource: "oauth",
-      };
-    }
-
-    if (
-      contributor.githubUsername &&
-      identity.username.toLowerCase() ===
-        contributor.githubUsername.toLowerCase()
-    ) {
-      return {
-        mappedEmail:
-          identity.email ?? identity.primaryEmail ?? identity.username,
-        mappingSource: "oauth",
-      };
-    }
-
-    if (
-      contributor.authorEmail &&
-      identity.verifiedEmails
-        .map((email) => email.toLowerCase())
-        .includes(contributor.authorEmail)
-    ) {
-      return {
-        mappedEmail: identity.email ?? contributor.authorEmail,
-        mappingSource: "email",
-      };
     }
   }
 
@@ -487,19 +443,6 @@ export const runSubmissionVetting = action({
       const mappings = await ctx.runQuery(getMappingsForTenant, {
         tenant: submission.tenant,
       });
-      const gitIdentities = await ctx.runQuery(getSubmissionGitIdentities, {
-        submissionId,
-      });
-
-      if (!submission.submittedByGithubUserId) {
-        allFindings.push(
-          finding({
-            code: "submitter_missing_github_oauth",
-            message: "Submitter does not have a recorded GitHub identity.",
-            evidence: { submissionId },
-          }),
-        );
-      }
 
       if (declaredTeamCount > event.teamSizeLimit) {
         allFindings.push(
@@ -805,7 +748,6 @@ export const runSubmissionVetting = action({
           const mapped = mapContributorToSubmittedIdentity({
             contributor,
             mappings,
-            gitIdentities,
             declaredEmails,
           });
           const mappedContributor = {

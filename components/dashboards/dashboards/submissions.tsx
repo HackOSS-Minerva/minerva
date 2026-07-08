@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -20,19 +21,13 @@ import {
   IconCircleCheck,
   IconAlertTriangle,
   IconCircleX,
-  IconDotsVertical,
   IconX,
 } from "@tabler/icons-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
+  ArrowUpRight,
   Users,
   Link as LinkIcon,
   Github,
@@ -94,6 +89,17 @@ function formatTimestamp(ts: number): string {
   });
 }
 
+function formatCompactTimestamp(ts: number): string {
+  const date = new Date(ts);
+  return date.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
 function LinkList({
   links,
   fallback = "None",
@@ -123,135 +129,171 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
   const isMobile = useIsMobile();
 
   return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
-      <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.teamName}
+    <SubmissionDetailsDrawer
+      item={item}
+      direction={isMobile ? "bottom" : "right"}
+      trigger={
+        <Button
+          variant="ghost"
+          className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
+        >
+          <span className="min-w-0 truncate font-medium text-foreground">
+            {item.teamName}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground group-hover:text-foreground">
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </span>
         </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="flex h-full flex-col gap-5 px-4 py-5">
-          <div className="flex items-start justify-between">
-            <DrawerHeader className="gap-1 p-0 w-full">
-              <div className="flex items-center justify-between w-full">
-                <DrawerTitle>{item.teamName}</DrawerTitle>
-                <DrawerClose asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Close submission"
-                  >
-                    <IconX className="h-4 w-4" />
-                  </Button>
-                </DrawerClose>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Submitted {formatTimestamp(item.timestamp)}
+      }
+    />
+  );
+}
+
+function SubmissionDetailsDrawer({
+  item,
+  direction,
+  trigger,
+  open,
+  onOpenChange,
+}: {
+  item: SubmissionRecord;
+  direction: "bottom" | "right";
+  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  return (
+    <Drawer direction={direction} open={open} onOpenChange={onOpenChange}>
+      {trigger ? <DrawerTrigger asChild>{trigger}</DrawerTrigger> : null}
+      <SubmissionDetailsContent item={item} />
+    </Drawer>
+  );
+}
+
+function SubmissionDetailsContent({ item }: { item: SubmissionRecord }) {
+  return (
+    <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-xl">
+      <div className="flex h-full flex-col gap-5 px-4 py-5">
+        <div className="flex items-start justify-between">
+          <DrawerHeader className="gap-1 p-0 w-full">
+            <div className="flex items-center justify-between w-full">
+              <DrawerTitle>{item.teamName}</DrawerTitle>
+              <DrawerClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Close submission"
+                >
+                  <IconX className="h-4 w-4" />
+                </Button>
+              </DrawerClose>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Submitted {formatTimestamp(item.timestamp)}
+            </p>
+          </DrawerHeader>
+        </div>
+
+        <div className="flex-1 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:theme(colors.border)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border">
+          <div className="grid gap-5">
+            <VettingSummary submissionId={item._id} />
+
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-semibold">{item.projectName}</h3>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                {item.description}
               </p>
-            </DrawerHeader>
-          </div>
+            </div>
 
-          <div className="flex-1 overflow-y-auto">
-            <div className="grid gap-5">
-              <div className="flex flex-col gap-1">
-                <h3 className="text-lg font-semibold">{item.projectName}</h3>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {item.description}
-                </p>
-              </div>
+            <div className="grid gap-4">
+              <DetailRow
+                icon={LinkIcon}
+                label="Devpost"
+                value={
+                  item.devpost ? (
+                    <a
+                      href={item.devpost}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+                    >
+                      {item.devpost}
+                    </a>
+                  ) : (
+                    "No devpost link"
+                  )
+                }
+              />
 
-              <div className="grid gap-4">
-                <DetailRow
-                  icon={LinkIcon}
-                  label="Devpost"
-                  value={
-                    item.devpost ? (
-                      <a
-                        href={item.devpost}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
-                      >
-                        {item.devpost}
-                      </a>
-                    ) : (
-                      "No devpost link"
-                    )
-                  }
-                />
+              <DetailRow
+                icon={Github}
+                label="GitHub"
+                value={
+                  item.github && item.github.length > 0 ? (
+                    <LinkList links={item.github} />
+                  ) : (
+                    "No GitHub links"
+                  )
+                }
+              />
 
-                <DetailRow
-                  icon={Github}
-                  label="GitHub"
-                  value={
-                    item.github && item.github.length > 0 ? (
-                      <LinkList links={item.github} />
-                    ) : (
-                      "No GitHub links"
-                    )
-                  }
-                />
+              <DetailRow
+                icon={Figma}
+                label="Figma"
+                value={
+                  item.figma && item.figma.length > 0 ? (
+                    <LinkList links={item.figma} />
+                  ) : (
+                    "No Figma links"
+                  )
+                }
+              />
 
-                <DetailRow
-                  icon={Figma}
-                  label="Figma"
-                  value={
-                    item.figma && item.figma.length > 0 ? (
-                      <LinkList links={item.figma} />
-                    ) : (
-                      "No Figma links"
-                    )
-                  }
-                />
+              <DetailRow
+                icon={Presentation}
+                label="Canva / Presentation"
+                value={
+                  item.canva && item.canva.length > 0 ? (
+                    <LinkList links={item.canva} />
+                  ) : item.presentation ? (
+                    <a
+                      href={item.presentation}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+                    >
+                      {item.presentation}
+                    </a>
+                  ) : (
+                    "No presentation link"
+                  )
+                }
+              />
 
-                <DetailRow
-                  icon={Presentation}
-                  label="Canva / Presentation"
-                  value={
-                    item.canva && item.canva.length > 0 ? (
-                      <LinkList links={item.canva} />
-                    ) : item.presentation ? (
-                      <a
-                        href={item.presentation}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
-                      >
-                        {item.presentation}
-                      </a>
-                    ) : (
-                      "No presentation link"
-                    )
-                  }
-                />
-
-                <DetailRow
-                  icon={Users}
-                  label="Team Members"
-                  value={
-                    item.invites && item.invites.length > 0
-                      ? item.invites.map((email, i) => (
-                          <span key={i} className="block text-sm">
-                            {email}
-                          </span>
-                        ))
-                      : "No invites"
-                  }
-                />
-
-                <VettingSummary submissionId={item._id} />
-              </div>
+              <DetailRow
+                icon={Users}
+                label="Team Members"
+                value={
+                  item.invites && item.invites.length > 0
+                    ? item.invites.map((email, i) => (
+                        <span key={i} className="block text-sm">
+                          {email}
+                        </span>
+                      ))
+                    : "No invites"
+                }
+              />
             </div>
           </div>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </div>
+    </DrawerContent>
   );
 }
 
 function truncateDescription(
   description: string,
-  maxLength: number = 75,
+  maxLength: number = 52,
 ): string {
   if (description.length <= maxLength) {
     return description;
@@ -311,6 +353,46 @@ const vettingStatusConfig: Record<
   },
 };
 
+function ReviewCell({ item }: { item: SubmissionRecord }) {
+  const vetted = item.vetted ?? "needs_review";
+  const vettedStatus = vettedConfig[vetted];
+  const status = item.vettingStatus ?? "not_started";
+  const runStatus = vettingStatusConfig[status];
+
+  if (!vettedStatus || !runStatus) {
+    return <span className="text-muted-foreground px-1.5">-</span>;
+  }
+
+  const showRunStatus = status === "queued" || status === "running";
+  const visibleStatus = showRunStatus ? runStatus : vettedStatus;
+  const VisibleIcon = visibleStatus.icon;
+
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="ml-auto inline-flex max-w-full items-center justify-end gap-1.5 px-1.5 text-sm">
+            <VisibleIcon
+              className={`h-4 w-4 shrink-0 ${visibleStatus.color}`}
+            />
+            <span className="truncate whitespace-nowrap">
+              {visibleStatus.label}
+            </span>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="top">
+          <p>
+            {vettedStatus.label} / {runStatus.label}
+            {item.lastVettedAt
+              ? ` at ${formatTimestamp(item.lastVettedAt)}`
+              : ""}
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
 export const columns: ColumnDef<SubmissionRecord>[] = [
   {
     id: "select",
@@ -342,9 +424,18 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     accessorKey: "timestamp",
     header: "Submitted",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5 whitespace-nowrap">
-        {formatTimestamp(row.original.timestamp)}
-      </Label>
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Label className="text-muted-foreground block truncate px-1.5 whitespace-nowrap">
+              {formatCompactTimestamp(row.original.timestamp)}
+            </Label>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>{formatTimestamp(row.original.timestamp)}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
   },
   {
@@ -359,7 +450,7 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     accessorKey: "projectName",
     header: "Project",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
+      <Label className="text-muted-foreground block truncate px-1.5">
         {row.original.projectName}
       </Label>
     ),
@@ -368,104 +459,16 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => (
-      <span className="text-muted-foreground px-1.5 text-sm">
+      <span className="block truncate px-1.5 text-sm text-muted-foreground">
         {truncateDescription(row.original.description)}
       </span>
     ),
   },
   {
-    accessorKey: "devpost",
-    header: "Devpost",
-    cell: ({ row }) => (
-      <a
-        href={row.original.devpost}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary underline underline-offset-2 text-sm px-1.5 hover:opacity-80 transition-opacity"
-      >
-        View Submission
-      </a>
-    ),
-  },
-  {
     accessorKey: "vetted",
-    header: "Vetted",
+    header: "Review",
     cell: ({ row }) => {
-      const vetted = row.original.vetted ?? "needs_review";
-      const config = vettedConfig[vetted];
-      if (!config) {
-        return <span className="text-muted-foreground px-1.5">-</span>;
-      }
-      const Icon = config.icon;
-      return (
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex items-center justify-center px-1.5 cursor-pointer">
-                <Icon className={`h-5 w-5 ${config.color}`} />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              <p>{config.label}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
+      return <ReviewCell item={row.original} />;
     },
-  },
-  {
-    accessorKey: "vettingStatus",
-    header: "Vetting",
-    cell: ({ row }) => {
-      const status = row.original.vettingStatus ?? "not_started";
-      const config = vettingStatusConfig[status];
-      const Icon = config.icon;
-
-      return (
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex items-center gap-1.5 px-1.5 text-sm text-muted-foreground">
-                <Icon className={`h-4 w-4 ${config.color}`} />
-                <span className="hidden xl:inline">{config.label}</span>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              <p>
-                {config.label}
-                {row.original.lastVettedAt
-                  ? ` at ${formatTimestamp(row.original.lastVettedAt)}`
-                  : ""}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ table, row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() => table.options.meta?.onDelete(row.original._id)}
-          >
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
   },
 ];
