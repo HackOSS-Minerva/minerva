@@ -430,17 +430,6 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
   }
 
   const { latestRun, repos, contributors } = summary;
-  const displayFindings = [
-    ...categorizedFindings.globalFindings,
-    ...categorizedFindings.repoFindings,
-    ...categorizedFindings.peopleFindings,
-  ];
-  const reviewRequiredCount = displayFindings.filter(
-    (finding) => finding.severity === "review_required",
-  ).length;
-  const warningCount = displayFindings.filter(
-    (finding) => finding.severity === "warning",
-  ).length;
   const resultLabel = latestRun.result
     ? latestRun.result === "verified"
       ? "Verified"
@@ -477,17 +466,6 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
               {resultLabel}
             </Badge>
           ) : null}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-md border border-border/70 p-2.5">
-          <div className="text-lg font-semibold">{reviewRequiredCount}</div>
-          <div className="text-xs text-muted-foreground">Needs review</div>
-        </div>
-        <div className="rounded-md border border-border/70 p-2.5">
-          <div className="text-lg font-semibold">{warningCount}</div>
-          <div className="text-xs text-muted-foreground">Warnings</div>
         </div>
       </div>
 
