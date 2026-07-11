@@ -104,14 +104,6 @@ function formatDate(timestamp?: number) {
   });
 }
 
-function titleCase(value: string) {
-  return value
-    .split("_")
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
 function contributorLabel(contributor: Doc<"repoVettingContributors">) {
   return (
     contributor.githubUsername ??
@@ -473,7 +465,6 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline">{titleCase(latestRun.status)}</Badge>
           {latestRun.result ? (
             <Badge
               variant="outline"
@@ -543,32 +534,17 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                       {repo.owner}/{repo.name}
                       <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                     </a>
-                    <div className="flex flex-wrap gap-1.5">
+                    {repo.isPrivate ? (
                       <Badge
                         variant="outline"
-                        className={
-                          repo.accessible
-                            ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/20 dark:text-emerald-300"
-                            : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300"
-                        }
+                        className="border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300"
                       >
-                        {repo.accessible ? "Accessible" : "Inaccessible"}
+                        Private
                       </Badge>
-                      <Badge variant="outline">
-                        {titleCase(repo.visibility ?? "unknown")}
-                      </Badge>
-                      {repo.isPrivate ? (
-                        <Badge
-                          variant="outline"
-                          className="border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300"
-                        >
-                          Private
-                        </Badge>
-                      ) : null}
-                    </div>
+                    ) : null}
                   </div>
 
-                  <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+                  <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
                     <div
                       className={cn(
                         "rounded-md border border-border/70 p-2",
@@ -595,27 +571,7 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                       </div>
                       <div>{formatDate(repo.pushedAt)}</div>
                     </div>
-                    <div className="rounded-md border border-border/70 p-2">
-                      <div className="flex items-center gap-1.5 font-medium">
-                        <GitBranch className="h-3.5 w-3.5" />
-                        Default branch
-                      </div>
-                      <div>{repo.defaultBranch ?? "Unknown"}</div>
-                    </div>
                   </div>
-
-                  {repoFindings.length > 0 ? (
-                    <div className="grid gap-2">
-                      {repoFindings.map((finding) => (
-                        <IssueRow key={finding._id} finding={finding} />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                      No repository issues found.
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -625,17 +581,6 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
             No repository evidence was recorded.
           </div>
         )}
-        {categorizedFindings.repoFindings.some(
-          (finding) => !finding.repoUrl,
-        ) ? (
-          <div className="grid gap-2">
-            {categorizedFindings.repoFindings
-              .filter((finding) => !finding.repoUrl)
-              .map((finding) => (
-                <IssueRow key={finding._id} finding={finding} />
-              ))}
-          </div>
-        ) : null}
       </div>
 
       <Separator />
@@ -695,12 +640,6 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                       {contributor.mappingSource.replace("_", " ")}
                     </Badge>
                   </div>
-
-                  {contributor.mappedEmail ? (
-                    <div className="text-xs text-muted-foreground">
-                      Mapped to {contributor.mappedEmail}
-                    </div>
-                  ) : null}
 
                   {isUnmapped ? (
                     <form
