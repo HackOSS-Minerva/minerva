@@ -37,3 +37,6 @@ jobs:
 
       - name: Build
         run: bun run build
+    
+    env:
+        NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
