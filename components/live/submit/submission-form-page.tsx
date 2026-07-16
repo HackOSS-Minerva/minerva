@@ -39,6 +39,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 import {
   captureAnalyticsEvent,
   trackSubmissionCompleted,
@@ -205,6 +206,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
         </p>
       </div>
 
+      <FormLockModal form="submission" />
       <Card>
         <CardHeader>
           <CardTitle>Project Details</CardTitle>
