@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { useTenant } from "@/hooks/use-tenant";
+import { trackDashboardViewed } from "@/lib/posthog";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
 import { SubmissionSection } from "@/components/live/dashboard/submission-section";
@@ -13,6 +15,10 @@ interface DashboardPageProps {
 
 export function DashboardPage({ tenant }: DashboardPageProps) {
   const { live } = useTenant();
+
+  useEffect(() => {
+    trackDashboardViewed({ tenant, role: "participant", dashboard: "live" });
+  }, [tenant]);
 
   if (!live) {
     return (

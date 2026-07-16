@@ -1,5 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { isDuplicateCheckin } from "../lib/checkins/duplicate-scope";
+import { resolveCanonicalCheckinRole } from "../lib/checkins/role-resolution";
 
 export const checkin = mutation({
   args: {
@@ -15,14 +17,40 @@ export const checkin = mutation({
 
     const existing = await ctx.db
       .query("checkins")
-      .withIndex("by_user_event", (q) =>
-        q.eq("userid", userid).eq("eventid", eventid),
+      .withIndex("by_user_event_tenant", (q) =>
+        q.eq("userid", userid).eq("eventid", eventid).eq("tenant", tenant),
       )
       .first();
 
-    if (existing) {
+    if (existing && isDuplicateCheckin(existing, { userid, eventid, tenant })) {
       throw new Error("User already checked into this event");
     }
+
+    const [participants, judges, speakers, volunteers] = await Promise.all([
+      ctx.db
+        .query("participants")
+        .filter((q) => q.eq(q.field("tenant"), tenant))
+        .collect(),
+      ctx.db
+        .query("judges")
+        .filter((q) => q.eq(q.field("tenant"), tenant))
+        .collect(),
+      ctx.db
+        .query("speakers")
+        .filter((q) => q.eq(q.field("tenant"), tenant))
+        .collect(),
+      ctx.db
+        .query("volunteers")
+        .filter((q) => q.eq(q.field("tenant"), tenant))
+        .collect(),
+    ]);
+    const role = resolveCanonicalCheckinRole({
+      email,
+      participants,
+      judges,
+      speakers,
+      volunteers,
+    });
 
     const id = await ctx.db.insert("checkins", {
       userid,
@@ -30,7 +58,7 @@ export const checkin = mutation({
       firstname,
       lastname,
       email,
-      role: "VISITOR",
+      role,
       timestamp: Date.now(),
       tenant,
     });

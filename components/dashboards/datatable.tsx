@@ -129,8 +129,8 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         onDeleteMany?.(ids);
         setRowSelection({});
       },
-      onUpdate: onUpdate,
-      setStatus: setStatus,
+      onUpdate: (obj) => onUpdate?.(obj),
+      setStatus: (status) => setStatus?.(status),
       setStatusMany: (ids: any, status: any) => {
         setStatusMany?.(ids, status);
         setRowSelection({});
