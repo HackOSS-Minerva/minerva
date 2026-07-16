@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import {
   dietrestrictions,
   genders,
@@ -84,6 +85,18 @@ export const add = mutation({
     const created = await ctx.db.get("superadmins", id);
     if (!created) throw new Error("Failed to create superadmin");
 
+    await ctx.scheduler.runAfter(0, internal.emails.send, {
+      type: "CONFIRMATION",
+      role: "superadmin",
+      tenant,
+      user: {
+        firstname: created.firstname,
+        lastname: created.lastname,
+        email: created.email,
+      },
+      idempotencyKey: `${id}:CONFIRMATION`,
+    });
+
     return { id, user: created };
   },
 });
@@ -138,9 +151,28 @@ export const setStatus = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { id, status }) => {
-    await ctx.db.patch(id, { status });
     const superadmin = await ctx.db.get("superadmins", id);
     if (!superadmin) throw new Error("Superadmin not found");
+
+    if (superadmin.status === status) {
+      return { status: "unchanged" };
+    }
+
+    await ctx.db.patch(id, { status });
+
+    if (status !== "PENDING") {
+      await ctx.scheduler.runAfter(0, internal.emails.send, {
+        type: status,
+        role: "superadmin",
+        tenant: superadmin.tenant,
+        user: {
+          firstname: superadmin.firstname,
+          lastname: superadmin.lastname,
+          email: superadmin.email,
+        },
+        idempotencyKey: `${id}:${status}`,
+      });
+    }
 
     return { status: "success" };
   },
@@ -152,12 +184,32 @@ export const setStatusMany = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { ids, status }) => {
+    let changedCount = 0;
+
     for (const id of ids) {
-      await ctx.db.patch(id, { status });
       const superadmin = await ctx.db.get("superadmins", id);
       if (!superadmin) throw new Error(`Superadmin ${id} not found`);
+
+      if (superadmin.status === status) continue;
+
+      await ctx.db.patch(id, { status });
+      changedCount += 1;
+
+      if (status !== "PENDING") {
+        await ctx.scheduler.runAfter(0, internal.emails.send, {
+          type: status,
+          role: "superadmin",
+          tenant: superadmin.tenant,
+          user: {
+            firstname: superadmin.firstname,
+            lastname: superadmin.lastname,
+            email: superadmin.email,
+          },
+          idempotencyKey: `${id}:${status}`,
+        });
+      }
     }
 
-    return { status: "success" };
+    return { status: "success", changedCount };
   },
 });

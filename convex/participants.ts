@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import {
   countries,
   dietrestrictions,
@@ -91,6 +92,18 @@ export const add = mutation({
     const created = await ctx.db.get("participants", id);
     if (!created) throw new Error("Failed to create participant");
 
+    await ctx.scheduler.runAfter(0, internal.emails.send, {
+      type: "CONFIRMATION",
+      role: "participant",
+      tenant,
+      user: {
+        firstname: created.firstname,
+        lastname: created.lastname,
+        email: created.email,
+      },
+      idempotencyKey: `${id}:CONFIRMATION`,
+    });
+
     return { id, user: created };
   },
 });
@@ -148,9 +161,28 @@ export const setStatus = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { id, status }) => {
-    await ctx.db.patch(id, { status });
     const participant = await ctx.db.get("participants", id);
     if (!participant) throw new Error("Participant not found");
+
+    if (participant.status === status) {
+      return { status: "unchanged" };
+    }
+
+    await ctx.db.patch(id, { status });
+
+    if (status !== "PENDING") {
+      await ctx.scheduler.runAfter(0, internal.emails.send, {
+        type: status,
+        role: "participant",
+        tenant: participant.tenant,
+        user: {
+          firstname: participant.firstname,
+          lastname: participant.lastname,
+          email: participant.email,
+        },
+        idempotencyKey: `${id}:${status}`,
+      });
+    }
 
     return { status: "success" };
   },
@@ -162,12 +194,32 @@ export const setStatusMany = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { ids, status }) => {
+    let changedCount = 0;
+
     for (const id of ids) {
-      await ctx.db.patch(id, { status });
       const participant = await ctx.db.get("participants", id);
       if (!participant) throw new Error(`Participant ${id} not found`);
+
+      if (participant.status === status) continue;
+
+      await ctx.db.patch(id, { status });
+      changedCount += 1;
+
+      if (status !== "PENDING") {
+        await ctx.scheduler.runAfter(0, internal.emails.send, {
+          type: status,
+          role: "participant",
+          tenant: participant.tenant,
+          user: {
+            firstname: participant.firstname,
+            lastname: participant.lastname,
+            email: participant.email,
+          },
+          idempotencyKey: `${id}:${status}`,
+        });
+      }
     }
 
-    return { status: "success" };
+    return { status: "success", changedCount };
   },
 });

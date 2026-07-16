@@ -1,5 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { internal } from "./_generated/api";
 import { statuses } from "../data/status";
 import { affiliations, dietrestrictions, genders, shirts } from "./schema";
 
@@ -74,6 +75,18 @@ export const add = mutation({
     const created = await ctx.db.get("judges", id);
     if (!created) throw new Error("Failed to create judge");
 
+    await ctx.scheduler.runAfter(0, internal.emails.send, {
+      type: "CONFIRMATION",
+      role: "judge",
+      tenant,
+      user: {
+        firstname: created.firstname,
+        lastname: created.lastname,
+        email: created.email,
+      },
+      idempotencyKey: `${id}:CONFIRMATION`,
+    });
+
     return { id, user: created };
   },
 });
@@ -127,9 +140,28 @@ export const setStatus = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { id, status }) => {
-    await ctx.db.patch(id, { status });
     const judge = await ctx.db.get("judges", id);
     if (!judge) throw new Error("Judge not found");
+
+    if (judge.status === status) {
+      return { status: "unchanged" };
+    }
+
+    await ctx.db.patch(id, { status });
+
+    if (status !== "PENDING") {
+      await ctx.scheduler.runAfter(0, internal.emails.send, {
+        type: status,
+        role: "judge",
+        tenant: judge.tenant,
+        user: {
+          firstname: judge.firstname,
+          lastname: judge.lastname,
+          email: judge.email,
+        },
+        idempotencyKey: `${id}:${status}`,
+      });
+    }
 
     return { status: "success" };
   },
@@ -141,12 +173,32 @@ export const setStatusMany = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { ids, status }) => {
+    let changedCount = 0;
+
     for (const id of ids) {
-      await ctx.db.patch(id, { status });
       const judge = await ctx.db.get("judges", id);
       if (!judge) throw new Error(`Judge ${id} not found`);
+
+      if (judge.status === status) continue;
+
+      await ctx.db.patch(id, { status });
+      changedCount += 1;
+
+      if (status !== "PENDING") {
+        await ctx.scheduler.runAfter(0, internal.emails.send, {
+          type: status,
+          role: "judge",
+          tenant: judge.tenant,
+          user: {
+            firstname: judge.firstname,
+            lastname: judge.lastname,
+            email: judge.email,
+          },
+          idempotencyKey: `${id}:${status}`,
+        });
+      }
     }
 
-    return { status: "success" };
+    return { status: "success", changedCount };
   },
 });

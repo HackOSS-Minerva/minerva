@@ -9,6 +9,7 @@
  */
 
 import type * as checkins from "../checkins.js";
+import type * as emails from "../emails.js";
 import type * as feedback from "../feedback.js";
 import type * as ideas from "../ideas.js";
 import type * as judges from "../judges.js";
@@ -26,6 +27,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   checkins: typeof checkins;
+  emails: typeof emails;
   feedback: typeof feedback;
   ideas: typeof ideas;
   judges: typeof judges;
