@@ -1,11 +1,12 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useAction, useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useTenant } from "./use-tenant";
 import { makeFunctionReference, type FunctionReference } from "convex/server";
 import type { Id } from "@/convex/_generated/dataModel";
+import { useSubmissions } from "./use-submissions";
 import * as participants from "@/components/dashboards/dashboards/participants";
 import * as judges from "@/components/dashboards/dashboards/judges";
 import * as speakers from "@/components/dashboards/dashboards/speakers";
@@ -26,13 +27,7 @@ type slugs =
   | "submissions";
 
 type DashboardQueryArgs = { tenant: string; eventid?: string };
-type SubmissionId = Id<"submissions">;
 type DashboardRow = { _id?: string; email?: string } & Record<string, unknown>;
-export type VettingBatchResult = {
-  submissionId: string;
-  success: boolean;
-  error?: string;
-};
 
 type DashboardQuery = FunctionReference<
   "query",
@@ -63,23 +58,13 @@ const QUERIES: Record<slugs, DashboardQuery> = {
   submissions: api.submissions.get,
 };
 
-const queueSubmissionVettingMany = makeFunctionReference<
-  "mutation",
-  { ids: SubmissionId[] },
-  { success: boolean }
->("submissions:queueVettingMany");
-
-const runSubmissionVetting = makeFunctionReference<
-  "action",
-  { submissionId: SubmissionId },
-  { success: boolean; result?: "verified" | "needs_review"; error?: string }
->("vettingActions:runSubmissionVetting");
-
 export const useDashboard = (eventid?: string) => {
   const { dashboard } = useParams<{ dashboard: slugs }>();
   const { tenant } = useTenant();
   const slug = dashboard;
   const tenantName = tenant.name.toLocaleLowerCase();
+
+  const { runVettingMany } = useSubmissions();
 
   const data = useQuery(QUERIES[slug], {
     tenant: tenantName,
@@ -131,8 +116,6 @@ export const useDashboard = (eventid?: string) => {
     superadmins: useMutation(api.superadmins.setStatusMany),
     volunteers: useMutation(api.volunteers.setStatusMany),
   } as const;
-  const queueVettingMany = useMutation(queueSubmissionVettingMany);
-  const vetSubmission = useAction(runSubmissionVetting);
 
   const onDelete = allDeleteMutations[slug as keyof typeof allDeleteMutations];
   const onDeleteMany =
@@ -143,38 +126,6 @@ export const useDashboard = (eventid?: string) => {
   const setStatusMany =
     allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
-  const runVettingMany =
-    slug === "submissions"
-      ? async (ids: string[]) => {
-          const submissionIds = ids as SubmissionId[];
-          const results: VettingBatchResult[] = [];
-
-          await queueVettingMany({ ids: submissionIds });
-
-          for (const submissionId of submissionIds) {
-            try {
-              const result = await vetSubmission({ submissionId });
-              results.push({
-                submissionId,
-                success: result.success,
-                error: result.success ? undefined : result.error,
-              });
-            } catch (error) {
-              results.push({
-                submissionId,
-                success: false,
-                error:
-                  error instanceof Error
-                    ? error.message
-                    : "Project vetting failed",
-              });
-            }
-          }
-
-          return results;
-        }
-      : undefined;
-
   return {
     dashboard: DASHBOARDS[slug],
     data: (data ?? []) as DashboardRow[],
@@ -183,6 +134,6 @@ export const useDashboard = (eventid?: string) => {
     onUpdate,
     setStatus,
     setStatusMany,
-    runVettingMany,
+    runVettingMany: slug === "submissions" ? runVettingMany : undefined,
   } as const;
 };

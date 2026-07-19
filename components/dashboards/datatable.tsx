@@ -55,7 +55,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
-import type { VettingBatchResult } from "@/hooks/use-dashboard";
+import type { VettingBatchResult } from "@/hooks/use-submissions";
 import { TableToolbar } from "./toolbar";
 import { cn } from "@/lib/utils";
 
