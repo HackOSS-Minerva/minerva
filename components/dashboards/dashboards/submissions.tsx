@@ -168,7 +168,11 @@ function SubmissionDetailsContent({ item }: { item: SubmissionRecord }) {
         <div className="flex items-start justify-between">
           <DrawerHeader className="gap-1 p-0 w-full">
             <div className="flex items-center justify-between w-full">
-              <DrawerTitle>{item.teamName}</DrawerTitle>
+              <DrawerTitle>
+                 <p className="text-xs font-medium uppercase text-muted-foreground">
+                Team Name
+              </p>
+                {item.teamName}</DrawerTitle>
               <DrawerClose asChild>
                 <Button
                   variant="ghost"
@@ -191,7 +195,7 @@ function SubmissionDetailsContent({ item }: { item: SubmissionRecord }) {
 
             <div className="flex flex-col gap-1">
               <p className="text-xs font-medium uppercase text-muted-foreground">
-                Project details
+                Project Details
               </p>
               <h3 className="text-base font-semibold">{item.projectName}</h3>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">

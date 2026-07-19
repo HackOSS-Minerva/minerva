@@ -1,12 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useAction, useMutation, useQuery } from "convex/react";
+import { useMemo, useState, useEffect } from "react";
+import { useAction } from "convex/react";
 import { makeFunctionReference } from "convex/server";
-import type { Doc, Id } from "@/convex/_generated/dataModel";
+import type { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -28,15 +27,6 @@ import {
 
 type SubmissionId = Id<"submissions">;
 
-type VettingSummaryResult = {
-  submission: Doc<"submissions">;
-  latestRun: Doc<"repoVettingRuns"> | null;
-  repos: Doc<"repoVettingRepos">[];
-  contributors: Doc<"repoVettingContributors">[];
-  findings: Doc<"repoVettingFindings">[];
-};
-
-type IdentityType = "github_user_id" | "github_username" | "author_email";
 type FindingSeverity = "review_required" | "warning" | "info";
 type FindingCode =
   | "submitter_missing_github_oauth"
@@ -56,42 +46,65 @@ type FindingCode =
   | "author_committer_mismatch"
   | "github_rate_limited"
   | "github_api_error";
-type DisplayFinding = Pick<
-  Doc<"repoVettingFindings">,
-  "_id" | "repoUrl" | "severity" | "code" | "message"
-> & {
-  count: number;
+
+type ContributorRow = {
+  githubUserId?: string;
+  githubUsername?: string;
+  authorEmail?: string;
+  authorName?: string;
+  commitCount: number;
+  firstCommitAt: number;
+  lastCommitAt: number;
+  mappedEmail?: string;
+  mappingSource: "oauth" | "email" | "unmapped";
+  repoUrl: string;
 };
 
-const getVettingSummary = makeFunctionReference<
-  "query",
-  { submissionId: SubmissionId },
-  VettingSummaryResult | null
->("vetting:getSubmissionVettingSummary");
+type RepoSnapshot = {
+  repoUrl: string;
+  owner: string;
+  name: string;
+  visibility?: "public" | "private" | "internal";
+  isPrivate?: boolean;
+  isFork?: boolean;
+  isTemplate?: boolean;
+  createdAt?: number;
+  pushedAt?: number;
+  defaultBranch?: string;
+  accessible: boolean;
+  fetchedAt: number;
+};
 
-const createManualMapping = makeFunctionReference<
-  "mutation",
-  {
-    tenant: string;
-    submissionId: SubmissionId;
-    identityType: IdentityType;
-    identityValue: string;
-    mappedEmail: string;
-    note?: string;
-  },
-  { success: boolean; id: Id<"gitIdentityMappings">; created: boolean }
->("vetting:createManualMapping");
+type FindingRow = {
+  repoUrl?: string;
+  severity: FindingSeverity;
+  code: FindingCode;
+  message: string;
+  evidence: Record<string, unknown>;
+};
 
-const queueSubmissionVetting = makeFunctionReference<
-  "mutation",
-  { id: SubmissionId },
-  { success: boolean }
->("submissions:queueVetting");
+type VettingResult = {
+  success: boolean;
+  result?: "verified" | "needs_review";
+  error?: string;
+  findings: FindingRow[];
+  repos: RepoSnapshot[];
+  contributors: ContributorRow[];
+};
+
+type DisplayFinding = {
+  _id: string;
+  repoUrl?: string;
+  severity: FindingSeverity;
+  code: FindingCode;
+  message: string;
+  count: number;
+};
 
 const runSubmissionVetting = makeFunctionReference<
   "action",
   { submissionId: SubmissionId },
-  { success: boolean; result?: "verified" | "needs_review"; error?: string }
+  VettingResult
 >("vettingActions:runSubmissionVetting");
 
 function formatDate(timestamp?: number) {
@@ -104,40 +117,13 @@ function formatDate(timestamp?: number) {
   });
 }
 
-function contributorLabel(contributor: Doc<"repoVettingContributors">) {
+function contributorLabel(contributor: ContributorRow) {
   return (
     contributor.githubUsername ??
     contributor.authorEmail ??
     contributor.authorName ??
     "Unknown contributor"
   );
-}
-
-function contributorIdentity(
-  contributor: Doc<"repoVettingContributors">,
-): { identityType: IdentityType; identityValue: string } | null {
-  if (contributor.githubUserId) {
-    return {
-      identityType: "github_user_id",
-      identityValue: contributor.githubUserId,
-    };
-  }
-
-  if (contributor.githubUsername) {
-    return {
-      identityType: "github_username",
-      identityValue: contributor.githubUsername.toLowerCase(),
-    };
-  }
-
-  if (contributor.authorEmail) {
-    return {
-      identityType: "author_email",
-      identityValue: contributor.authorEmail.toLowerCase(),
-    };
-  }
-
-  return null;
 }
 
 const repoFindingCodes = new Set<FindingCode>([
@@ -251,9 +237,9 @@ function pluralize(count: number, singular: string, plural = `${singular}s`) {
 }
 
 function groupedFindingMessage(
-  finding: Doc<"repoVettingFindings">,
+  finding: FindingRow,
   count: number,
-) {
+): string {
   if (count === 1) return finding.message;
 
   switch (finding.code as FindingCode) {
@@ -270,12 +256,10 @@ function groupedFindingMessage(
   }
 }
 
-function aggregateFindings(
-  findings: Doc<"repoVettingFindings">[],
-): DisplayFinding[] {
+function aggregateFindings(findings: FindingRow[]): DisplayFinding[] {
   const groups = new Map<
     string,
-    { finding: Doc<"repoVettingFindings">; count: number }
+    { finding: FindingRow; count: number }
   >();
 
   for (const finding of findings) {
@@ -296,7 +280,7 @@ function aggregateFindings(
   }
 
   return Array.from(groups.values()).map(({ finding, count }) => ({
-    _id: finding._id,
+    _id: `${finding.code}:${finding.repoUrl ?? "global"}`,
     repoUrl: finding.repoUrl,
     severity: finding.severity,
     code: finding.code,
@@ -336,19 +320,32 @@ function IssueRow({ finding }: { finding: DisplayFinding }) {
 
 export function VettingSummary({ submissionId }: { submissionId: string }) {
   const id = submissionId as SubmissionId;
-  const summary = useQuery(getVettingSummary, { submissionId: id });
-  const mapIdentity = useMutation(createManualMapping);
-  const queueVetting = useMutation(queueSubmissionVetting);
   const runVetting = useAction(runSubmissionVetting);
-  const [mappingValues, setMappingValues] = useState<Record<string, string>>(
-    {},
-  );
-  const [mappingContributorId, setMappingContributorId] = useState<
-    string | null
-  >(null);
+  const [result, setResult] = useState<VettingResult | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
+  const [hasRun, setHasRun] = useState(false);
+
+  const runVettingAction = async () => {
+    setIsRunning(true);
+    try {
+      const vettingResult = await runVetting({ submissionId: id });
+      setResult(vettingResult);
+      setHasRun(true);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to run vetting",
+      );
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  useEffect(() => {
+    void runVettingAction();
+  }, [id]);
 
   const categorizedFindings = useMemo(() => {
-    const findings = summary?.findings ?? [];
+    const findings = result?.findings ?? [];
     const repoFindings = aggregateFindings(
       findings.filter((finding) =>
         repoFindingCodes.has(finding.code as FindingCode),
@@ -368,52 +365,17 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
     );
 
     return { repoFindings, peopleFindings, globalFindings };
-  }, [summary?.findings]);
+  }, [result?.findings]);
 
-  const handleMapContributor = async (
-    contributor: Doc<"repoVettingContributors">,
-  ) => {
-    if (!summary) return;
+  if (isRunning) {
+    return (
+      <div className="text-sm text-muted-foreground">
+        Running vetting...
+      </div>
+    );
+  }
 
-    const mappedEmail = mappingValues[contributor._id]?.trim().toLowerCase();
-    if (!mappedEmail) {
-      toast.error("Enter a registered email to map this contributor");
-      return;
-    }
-
-    const identity = contributorIdentity(contributor);
-    if (!identity) {
-      toast.error("Contributor has no GitHub identity or author email to map");
-      return;
-    }
-
-    setMappingContributorId(contributor._id);
-    try {
-      await mapIdentity({
-        tenant: summary.submission.tenant,
-        submissionId: id,
-        identityType: identity.identityType,
-        identityValue: identity.identityValue,
-        mappedEmail,
-        note: "Mapped during project vetting review",
-      });
-      await queueVetting({ id });
-      const result = await runVetting({ submissionId: id });
-      if (!result.success) {
-        throw new Error(result.error ?? "Project vetting failed");
-      }
-      setMappingValues((current) => ({ ...current, [contributor._id]: "" }));
-      toast.success("Mapped contributor and re-ran vetting");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to map contributor",
-      );
-    } finally {
-      setMappingContributorId(null);
-    }
-  };
-
-  if (summary === undefined) {
+  if (!hasRun || !result) {
     return (
       <div className="text-sm text-muted-foreground">
         Loading vetting evidence...
@@ -421,17 +383,9 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
     );
   }
 
-  if (!summary || !summary.latestRun) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        No vetting run has been recorded for this submission.
-      </div>
-    );
-  }
-
-  const { latestRun, repos, contributors } = summary;
-  const resultLabel = latestRun.result
-    ? latestRun.result === "verified"
+  const { repos, contributors } = result;
+  const resultLabel = result.result
+    ? result.result === "verified"
       ? "Verified"
       : "Needs Review"
     : "Not Started";
@@ -440,25 +394,21 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
     <section className="grid gap-4 rounded-lg border border-border/70 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          {latestRun.result === "verified" ? (
+          {result.result === "verified" ? (
             <CheckCircle2 className="h-4 w-4 text-emerald-500" />
           ) : (
             <ShieldAlert className="h-4 w-4 text-amber-500" />
           )}
           <div>
-            <h3 className="text-sm font-semibold">Project vetting</h3>
-            <p className="text-xs text-muted-foreground">
-              Last run{" "}
-              {formatDate(latestRun.completedAt ?? latestRun.startedAt)}
-            </p>
+            <h3 className="text-sm font-semibold">Project Vetting</h3>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          {latestRun.result ? (
+          {result.result ? (
             <Badge
               variant="outline"
               className={
-                latestRun.result === "verified"
+                result.result === "verified"
                   ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/20 dark:text-emerald-300"
                   : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300"
               }
@@ -466,6 +416,9 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
               {resultLabel}
             </Badge>
           ) : null}
+          {result.error && (
+            <span className="text-xs text-red-600">Error: {result.error}</span>
+          )}
         </div>
       </div>
 
@@ -486,7 +439,7 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
         </h4>
         {repos.length > 0 ? (
           <div className="grid gap-2">
-            {repos.map((repo) => {
+            {repos.map((repo, index) => {
               const repoFindings = categorizedFindings.repoFindings.filter(
                 (finding) => finding.repoUrl === repo.repoUrl,
               );
@@ -499,7 +452,7 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
 
               return (
                 <div
-                  key={repo._id}
+                  key={index}
                   className="grid gap-3 rounded-md border border-border/70 p-3"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
@@ -525,16 +478,13 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                   <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
                     <div
                       className={cn(
-                        "rounded-md border border-border/70 p-2",
+                        "rounded-md border border-border/70 p-2 flex items-center gap-1.5 font-medium",
                         createdBeforeEvent &&
                           "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-200",
                       )}
                     >
-                      <div className="flex items-center gap-1.5 font-medium">
                         <Clock3 className="h-3.5 w-3.5" />
-                        Created
-                      </div>
-                      <div>{formatDate(repo.createdAt)}</div>
+                        Created: {formatDate(repo.createdAt)}
                     </div>
                     <div
                       className={cn(
@@ -545,9 +495,8 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                     >
                       <div className="flex items-center gap-1.5 font-medium">
                         <Clock3 className="h-3.5 w-3.5" />
-                        Last push
+                        Last push: {formatDate(repo.pushedAt)}
                       </div>
-                      <div>{formatDate(repo.pushedAt)}</div>
                     </div>
                   </div>
                 </div>
@@ -582,13 +531,10 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
         )}
         {contributors.length > 0 ? (
           <div className="grid gap-2">
-            {contributors.map((contributor) => {
-              const isUnmapped = contributor.mappingSource === "unmapped";
-              const isMapping = mappingContributorId === contributor._id;
-
+            {contributors.map((contributor, index) => {
               return (
                 <div
-                  key={contributor._id}
+                  key={index}
                   className="grid gap-3 rounded-md border border-border/70 p-3"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
@@ -608,45 +554,16 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                       </div>
                     </div>
                     <Badge
-                      variant={isUnmapped ? "outline" : "secondary"}
+                      variant={contributor.mappingSource === "unmapped" ? "outline" : "secondary"}
                       className={cn(
                         "capitalize",
-                        isUnmapped &&
+                        contributor.mappingSource === "unmapped" &&
                           "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300",
                       )}
                     >
                       {contributor.mappingSource.replace("_", " ")}
                     </Badge>
                   </div>
-
-                  {isUnmapped ? (
-                    <form
-                      className="flex flex-col gap-2 sm:flex-row"
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        void handleMapContributor(contributor);
-                      }}
-                    >
-                      <Input
-                        value={mappingValues[contributor._id] ?? ""}
-                        onChange={(event) =>
-                          setMappingValues((current) => ({
-                            ...current,
-                            [contributor._id]: event.target.value,
-                          }))
-                        }
-                        placeholder="registered email"
-                        inputMode="email"
-                      />
-                      <Button
-                        type="submit"
-                        variant="outline"
-                        disabled={isMapping}
-                      >
-                        {isMapping ? "Mapping..." : "Map"}
-                      </Button>
-                    </form>
-                  ) : null}
                 </div>
               );
             })}

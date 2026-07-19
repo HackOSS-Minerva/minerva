@@ -208,8 +208,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     switch (columnId) {
       case "select":
         return "w-10";
-      case "timestamp":
-        return "w-[8.75rem]";
       case "teamName":
         return "w-[16.5rem]";
       case "projectName":

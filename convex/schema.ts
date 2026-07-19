@@ -37,45 +37,6 @@ export const ages = union(Ages);
 export const dietrestrictions = union(DietRestrictions);
 export const availabilities = union(Availabilities);
 
-const vettingStatuses = v.union(
-  v.literal("not_started"),
-  v.literal("queued"),
-  v.literal("running"),
-  v.literal("completed"),
-  v.literal("failed"),
-);
-
-const vettingResults = v.union(
-  v.literal("verified"),
-  v.literal("needs_review"),
-);
-
-const findingSeverity = v.union(
-  v.literal("info"),
-  v.literal("warning"),
-  v.literal("review_required"),
-);
-
-const findingCode = v.union(
-  v.literal("submitter_missing_github_oauth"),
-  v.literal("declared_team_size_exceeds_limit"),
-  v.literal("repo_invalid_url"),
-  v.literal("repo_private_or_inaccessible"),
-  v.literal("repo_created_before_event"),
-  v.literal("repo_fork_detected"),
-  v.literal("repo_template_detected"),
-  v.literal("repo_empty_or_no_event_commits"),
-  v.literal("commit_scan_truncated"),
-  v.literal("commit_before_event"),
-  v.literal("commit_after_deadline_grace"),
-  v.literal("git_contributor_count_exceeds_limit"),
-  v.literal("unregistered_git_contributor"),
-  v.literal("git_identity_used_on_multiple_submissions"),
-  v.literal("author_committer_mismatch"),
-  v.literal("github_rate_limited"),
-  v.literal("github_api_error"),
-);
-
 export default defineSchema({
   participants: defineTable({
     firstname: v.string(),
@@ -212,122 +173,15 @@ export default defineSchema({
       v.literal("needs_review"),
       v.literal("disqualified"),
     ),
-    vettingStatus: v.optional(vettingStatuses),
-    latestVettingRunId: v.optional(v.id("repoVettingRuns")),
-    lastVettedAt: v.optional(v.number()),
-    submittedByGithubUserId: v.optional(v.string()),
-    submittedByGithubUsername: v.optional(v.string()),
-  })
-    .index("by_tenant", ["tenant"])
-    .index("by_tenant_vetted", ["tenant", "vetted"])
-    .index("by_vetting_status", ["vettingStatus"]),
-
-  submissionGitIdentities: defineTable({
-    tenant: v.string(),
-    submissionId: v.id("submissions"),
-    email: v.optional(v.string()),
-    provider: v.literal("github"),
-    providerUserId: v.string(),
-    username: v.string(),
-    primaryEmail: v.optional(v.string()),
-    verifiedEmails: v.array(v.string()),
-    connectedAt: v.number(),
-    updatedAt: v.number(),
-  })
-    .index("by_submission", ["submissionId"])
-    .index("by_provider_user_id", ["providerUserId"])
-    .index("by_tenant_username", ["tenant", "username"]),
-
-  repoVettingRuns: defineTable({
-    tenant: v.string(),
-    submissionId: v.id("submissions"),
-    status: v.union(
-      v.literal("queued"),
+    vettingStatus: v.union(
+      v.literal("not_started"),
       v.literal("running"),
       v.literal("completed"),
       v.literal("failed"),
     ),
-    result: v.optional(vettingResults),
-    startedAt: v.number(),
-    completedAt: v.optional(v.number()),
-    errorMessage: v.optional(v.string()),
-    githubRateLimitRemaining: v.optional(v.number()),
+    lastVettedAt: v.optional(v.number()),
   })
-    .index("by_submission", ["submissionId"])
-    .index("by_tenant_status", ["tenant", "status"]),
-
-  repoVettingRepos: defineTable({
-    runId: v.id("repoVettingRuns"),
-    submissionId: v.id("submissions"),
-    repoUrl: v.string(),
-    owner: v.string(),
-    name: v.string(),
-    visibility: v.optional(
-      v.union(v.literal("public"), v.literal("private"), v.literal("internal")),
-    ),
-    isPrivate: v.optional(v.boolean()),
-    isFork: v.optional(v.boolean()),
-    isTemplate: v.optional(v.boolean()),
-    createdAt: v.optional(v.number()),
-    pushedAt: v.optional(v.number()),
-    defaultBranch: v.optional(v.string()),
-    accessible: v.boolean(),
-    fetchedAt: v.number(),
-  })
-    .index("by_submission", ["submissionId"])
-    .index("by_run", ["runId"]),
-
-  repoVettingContributors: defineTable({
-    runId: v.id("repoVettingRuns"),
-    submissionId: v.id("submissions"),
-    repoUrl: v.string(),
-    githubUserId: v.optional(v.string()),
-    githubUsername: v.optional(v.string()),
-    authorEmail: v.optional(v.string()),
-    authorName: v.optional(v.string()),
-    commitCount: v.number(),
-    firstCommitAt: v.number(),
-    lastCommitAt: v.number(),
-    mappedEmail: v.optional(v.string()),
-    mappingSource: v.union(
-      v.literal("oauth"),
-      v.literal("email"),
-      v.literal("manual"),
-      v.literal("unmapped"),
-    ),
-  })
-    .index("by_run", ["runId"])
-    .index("by_submission", ["submissionId"])
-    .index("by_github_user", ["githubUserId"])
-    .index("by_author_email", ["authorEmail"]),
-
-  gitIdentityMappings: defineTable({
-    tenant: v.string(),
-    identityType: v.union(
-      v.literal("github_user_id"),
-      v.literal("github_username"),
-      v.literal("author_email"),
-    ),
-    identityValue: v.string(),
-    mappedEmail: v.string(),
-    createdByOrganizerEmail: v.optional(v.string()),
-    createdAt: v.number(),
-    note: v.optional(v.string()),
-  })
-    .index("by_tenant_identity", ["tenant", "identityType", "identityValue"])
-    .index("by_mapped_email", ["mappedEmail"]),
-
-  repoVettingFindings: defineTable({
-    runId: v.id("repoVettingRuns"),
-    submissionId: v.id("submissions"),
-    repoUrl: v.optional(v.string()),
-    severity: findingSeverity,
-    code: findingCode,
-    message: v.string(),
-    evidenceJson: v.string(),
-    createdAt: v.number(),
-  })
-    .index("by_submission", ["submissionId"])
-    .index("by_run", ["runId"])
-    .index("by_code", ["code"]),
+    .index("by_tenant", ["tenant"])
+    .index("by_tenant_vetted", ["tenant", "vetted"])
+    .index("by_vetting_status", ["vettingStatus"]),
 });

@@ -125,27 +125,3 @@ export const updateVettedMany = mutation({
     return { success: true };
   },
 });
-
-export const queueVetting = mutation({
-  args: { id: v.id("submissions") },
-  handler: async (ctx, { id }) => {
-    const submission = await ctx.db.get(id);
-    if (!submission) throw new Error("Submission not found");
-
-    await ctx.db.patch(id, { vettingStatus: "queued" });
-    return { success: true };
-  },
-});
-
-export const queueVettingMany = mutation({
-  args: { ids: v.array(v.id("submissions")) },
-  handler: async (ctx, { ids }) => {
-    for (const id of ids) {
-      const submission = await ctx.db.get(id);
-      if (!submission) throw new Error(`Submission ${id} not found`);
-      await ctx.db.patch(id, { vettingStatus: "queued" });
-    }
-
-    return { success: true };
-  },
-});

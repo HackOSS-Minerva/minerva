@@ -125,11 +125,34 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
+      const errorMessages: string[] = [];
+
       for (const issue of result.error.issues) {
         const path = issue.path.join(".");
+        // Format the field name for better readability
+        const formattedField = path
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase())
+          .replace(/_/g, " ");
+
         fieldErrors[path] = issue.message;
+        errorMessages.push(`${formattedField}: ${issue.message}`);
       }
       setErrors(fieldErrors);
+
+      // Show toast with validation errors
+      toast.error("Please fix the following errors:", {
+        description:
+          errorMessages.length === 1 ? (
+            errorMessages[0]
+          ) : (
+            <ul className="ml-4 list-disc">
+              {errorMessages.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
+          ),
+      });
       return false;
     }
 
@@ -137,6 +160,9 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
     if (declaredTeamCount > 4) {
       setErrors({
         invites: "Teams can include at most 4 people including the submitter.",
+      });
+      toast.error("Team size exceeded", {
+        description: "Teams can include at most 4 people including the submitter.",
       });
       return false;
     }
@@ -147,6 +173,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!validate()) return;
 
     setSubmitting(true);

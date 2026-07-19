@@ -1,7 +1,7 @@
 import { makeFunctionReference } from "convex/server";
 import { action } from "./_generated/server";
 import { v } from "convex/values";
-import type { Doc, Id } from "./_generated/dataModel";
+import type { Id } from "./_generated/dataModel";
 import {
   parseGithubRateLimit,
   parseGithubRepoUrl,
@@ -41,101 +41,28 @@ type GithubRepoResponse = {
   default_branch?: string;
 };
 
-type ConvexArgs<T extends object> = T & Record<string, unknown>;
+type RepoSnapshot = GithubRepoSnapshot & { repoUrl: string; accessible: boolean; fetchedAt: number };
 
-type SaveRepoSnapshotArgs = ConvexArgs<
-  GithubRepoSnapshot & {
-    runId: Id<"repoVettingRuns">;
-    submissionId: Id<"submissions">;
-  }
->;
+type ContributorRow = ExtractedContributor & { repoUrl: string; mappedEmail?: string; mappingSource: "oauth" | "email" | "unmapped" };
 
-type SaveContributorsArgs = ConvexArgs<{
-  runId: Id<"repoVettingRuns">;
-  submissionId: Id<"submissions">;
-  contributors: Array<ExtractedContributor & { repoUrl: string }>;
-}>;
-
-type SaveFindingsArgs = ConvexArgs<{
-  runId: Id<"repoVettingRuns">;
-  submissionId: Id<"submissions">;
-  findings: Array<{
-    repoUrl?: string;
-    severity: "info" | "warning" | "review_required";
-    code: FindingCode;
-    message: string;
-    evidenceJson: string;
-  }>;
-}>;
+type FindingRow = VettingFindingInput & { repoUrl?: string };
 
 const getSubmissionById = makeFunctionReference<
   "query",
   { id: Id<"submissions"> },
-  Doc<"submissions"> | null
+  { _id: Id<"submissions">; tenant: string; github: string[]; invites: string[] } | null
 >("submissions:getById");
 
-const startRun = makeFunctionReference<
-  "mutation",
-  { submissionId: Id<"submissions">; tenant: string },
-  { id: Id<"repoVettingRuns"> }
->("vetting:startRun");
-
-const saveRepoSnapshot = makeFunctionReference<
-  "mutation",
-  SaveRepoSnapshotArgs,
-  { success: boolean; id: Id<"repoVettingRepos"> }
->("vetting:saveRepoSnapshot");
-
-const saveContributors = makeFunctionReference<
-  "mutation",
-  SaveContributorsArgs,
-  { success: boolean; ids: Id<"repoVettingContributors">[] }
->("vetting:saveContributors");
-
-const saveFindings = makeFunctionReference<
-  "mutation",
-  SaveFindingsArgs,
-  { success: boolean; ids: Id<"repoVettingFindings">[] }
->("vetting:saveFindings");
-
-const completeRun = makeFunctionReference<
+const updateSubmissionVettingStatus = makeFunctionReference<
   "mutation",
   {
-    runId: Id<"repoVettingRuns">;
-    submissionId: Id<"submissions">;
-    result: VettingResult;
-    githubRateLimitRemaining?: number;
+    id: Id<"submissions">;
+    vetted: "verified" | "needs_review" | "disqualified";
+    vettingStatus: "not_started" | "running" | "completed" | "failed";
+    lastVettedAt?: number;
   },
   { success: boolean }
->("vetting:completeRun");
-
-const failRun = makeFunctionReference<
-  "mutation",
-  {
-    runId: Id<"repoVettingRuns">;
-    submissionId: Id<"submissions">;
-    errorMessage: string;
-    githubRateLimitRemaining?: number;
-  },
-  { success: boolean }
->("vetting:failRun");
-
-const getMappingsForTenant = makeFunctionReference<
-  "query",
-  { tenant: string },
-  Doc<"gitIdentityMappings">[]
->("vetting:getMappingsForTenant");
-
-const findMatchingContributors = makeFunctionReference<
-  "query",
-  {
-    tenant: string;
-    submissionId: Id<"submissions">;
-    githubUserId?: string;
-    authorEmail?: string;
-  },
-  Doc<"repoVettingContributors">[]
->("vetting:findMatchingContributors");
+>("vetting:updateSubmissionVettingStatus");
 
 function githubHeaders(): HeadersInit {
   const token = process.env.GITHUB_TOKEN;
@@ -194,8 +121,7 @@ function normalizeRepoResponse(data: unknown): GithubRepoResponse {
     created_at:
       typeof data.created_at === "string" ? data.created_at : undefined,
     pushed_at: typeof data.pushed_at === "string" ? data.pushed_at : undefined,
-    default_branch:
-      typeof data.default_branch === "string" ? data.default_branch : undefined,
+    default_branch: typeof data.default_branch === "string" ? data.default_branch : undefined,
   };
 }
 
@@ -226,21 +152,16 @@ function normalizeCommitResponse(data: unknown): GithubCommitAuthor[] {
             ? githubAuthor.login
             : undefined,
         authorEmail:
-          typeof author.email === "string"
-            ? author.email.toLowerCase()
+          typeof author.email === "string" ? author.email.toLowerCase()
             : undefined,
         authorName: typeof author.name === "string" ? author.name : undefined,
         authorDate,
         committerEmail:
-          typeof committer.email === "string"
-            ? committer.email.toLowerCase()
+          typeof committer.email === "string" ? committer.email.toLowerCase()
             : undefined,
-        committerName:
-          typeof committer.name === "string" ? committer.name : undefined,
+        committerName: typeof committer.name === "string" ? committer.name : undefined,
         committerDate:
-          typeof committer.date === "string"
-            ? toTimestamp(committer.date)
-            : undefined,
+          typeof committer.date === "string" ? toTimestamp(committer.date) : undefined,
       };
     })
     .filter((commit): commit is GithubCommitAuthor => commit !== null);
@@ -262,55 +183,11 @@ function finding(input: {
   });
 }
 
-function serializeFindings(
-  findings: VettingFindingInput[],
-): SaveFindingsArgs["findings"] {
-  return findings.map((item) => ({
-    repoUrl: item.repoUrl,
-    severity: item.severity,
-    code: item.code,
-    message: item.message,
-    evidenceJson: JSON.stringify(item.evidence),
-  }));
-}
-
 function mapContributorToSubmittedIdentity(args: {
   contributor: ExtractedContributor;
-  mappings: Doc<"gitIdentityMappings">[];
   declaredEmails: string[];
-}): {
-  mappedEmail: string;
-  mappingSource: "manual" | "email";
-} | null {
-  const { contributor, mappings, declaredEmails } = args;
-  const identityCandidates = [
-    contributor.githubUserId
-      ? { type: "github_user_id", value: contributor.githubUserId }
-      : null,
-    contributor.githubUsername
-      ? {
-          type: "github_username",
-          value: contributor.githubUsername.toLowerCase(),
-        }
-      : null,
-    contributor.authorEmail
-      ? { type: "author_email", value: contributor.authorEmail.toLowerCase() }
-      : null,
-  ].filter(
-    (candidate): candidate is { type: string; value: string } =>
-      candidate !== null,
-  );
-
-  for (const candidate of identityCandidates) {
-    const manual = mappings.find(
-      (mapping) =>
-        mapping.identityType === candidate.type &&
-        mapping.identityValue === candidate.value,
-    );
-    if (manual) {
-      return { mappedEmail: manual.mappedEmail, mappingSource: "manual" };
-    }
-  }
+}): { mappedEmail: string; mappingSource: "email" } | null {
+  const { contributor, declaredEmails } = args;
 
   if (
     contributor.authorEmail &&
@@ -428,24 +305,25 @@ export const runSubmissionVetting = action({
     });
     if (!submission) throw new Error("Submission not found");
 
-    const run = await ctx.runMutation(startRun, {
-      submissionId,
-      tenant: submission.tenant,
-    });
-
-    const allFindings: VettingFindingInput[] = [];
+    const findings: FindingRow[] = [];
+    const repos: RepoSnapshot[] = [];
+    const contributors: ContributorRow[] = [];
     let githubRateLimitRemaining: number | undefined;
 
     try {
+      await ctx.runMutation(updateSubmissionVettingStatus, {
+        id: submissionId,
+        vetted: "needs_review",
+        vettingStatus: "running",
+        lastVettedAt: Date.now(),
+      });
+
       const event = getRuntimeVettingConfigForTenant(submission.tenant);
       const declaredEmails = uniqueNormalizedEmails(submission.invites);
       const declaredTeamCount = getDeclaredTeamCount(submission.invites);
-      const mappings = await ctx.runQuery(getMappingsForTenant, {
-        tenant: submission.tenant,
-      });
 
       if (declaredTeamCount > event.teamSizeLimit) {
-        allFindings.push(
+        findings.push(
           finding({
             code: "declared_team_size_exceeds_limit",
             message: "Declared team size exceeds the event limit.",
@@ -461,7 +339,7 @@ export const runSubmissionVetting = action({
       for (const repoUrl of submission.github) {
         const parsed = parseGithubRepoUrl(repoUrl);
         if (!parsed) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "repo_invalid_url",
               message: "Submitted GitHub URL is not a repository URL.",
@@ -479,7 +357,7 @@ export const runSubmissionVetting = action({
           repoResult.rateLimitRemaining ?? githubRateLimitRemaining;
 
         if (isRateLimited(repoResult)) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "github_rate_limited",
               message: "GitHub API rate limit was reached during vetting.",
@@ -490,22 +368,27 @@ export const runSubmissionVetting = action({
               },
             }),
           );
-          await ctx.runMutation(saveFindings, {
-            runId: run.id,
-            submissionId,
-            findings: serializeFindings(allFindings),
+
+          const result = resultFromFindings(findings);
+          await ctx.runMutation(updateSubmissionVettingStatus, {
+            id: submissionId,
+            vetted: result,
+            vettingStatus: "failed",
+            lastVettedAt: Date.now(),
           });
-          await ctx.runMutation(failRun, {
-            runId: run.id,
-            submissionId,
-            errorMessage: "GitHub API rate limit reached",
+          return {
+            success: false,
+            result,
+            error: "GitHub API rate limit reached",
+            findings,
+            repos,
+            contributors,
             githubRateLimitRemaining,
-          });
-          return { success: false };
+          };
         }
 
         if (!repoResult.ok) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "repo_private_or_inaccessible",
               message: "Repository is private, deleted, or inaccessible.",
@@ -513,9 +396,7 @@ export const runSubmissionVetting = action({
               evidence: { status: repoResult.status },
             }),
           );
-          await ctx.runMutation(saveRepoSnapshot, {
-            runId: run.id,
-            submissionId,
+          repos.push({
             repoUrl: parsed.canonicalUrl,
             owner: parsed.owner,
             name: parsed.name,
@@ -526,9 +407,7 @@ export const runSubmissionVetting = action({
         }
 
         const repo = normalizeRepoResponse(repoResult.data);
-        const snapshot: SaveRepoSnapshotArgs = {
-          runId: run.id,
-          submissionId,
+        const snapshot: RepoSnapshot = {
           repoUrl: parsed.canonicalUrl,
           owner: parsed.owner,
           name: parsed.name,
@@ -542,10 +421,10 @@ export const runSubmissionVetting = action({
           accessible: true,
           fetchedAt: Date.now(),
         };
-        await ctx.runMutation(saveRepoSnapshot, snapshot);
+        repos.push(snapshot);
 
         if (snapshot.isPrivate) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "repo_private_or_inaccessible",
               message: "Repository is private.",
@@ -557,7 +436,7 @@ export const runSubmissionVetting = action({
         }
 
         if (snapshot.createdAt && snapshot.createdAt < event.startsAt) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "repo_created_before_event",
               message: "Repository was created before the event start time.",
@@ -571,7 +450,7 @@ export const runSubmissionVetting = action({
         }
 
         if (snapshot.isFork) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "repo_fork_detected",
               message: "Repository is marked as a fork.",
@@ -582,7 +461,7 @@ export const runSubmissionVetting = action({
         }
 
         if (snapshot.isTemplate) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "repo_template_detected",
               message: "Repository is marked as a template.",
@@ -607,7 +486,7 @@ export const runSubmissionVetting = action({
           commitsResult.rateLimitRemaining ?? githubRateLimitRemaining;
 
         if (isRateLimited(commitsResult)) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "github_rate_limited",
               message: "GitHub API rate limit was reached during commit fetch.",
@@ -618,22 +497,27 @@ export const runSubmissionVetting = action({
               },
             }),
           );
-          await ctx.runMutation(saveFindings, {
-            runId: run.id,
-            submissionId,
-            findings: serializeFindings(allFindings),
+
+          const result = resultFromFindings(findings);
+          await ctx.runMutation(updateSubmissionVettingStatus, {
+            id: submissionId,
+            vetted: result,
+            vettingStatus: "failed",
+            lastVettedAt: Date.now(),
           });
-          await ctx.runMutation(failRun, {
-            runId: run.id,
-            submissionId,
-            errorMessage: "GitHub API rate limit reached",
+          return {
+            success: false,
+            result,
+            error: "GitHub API rate limit reached",
+            findings,
+            repos,
+            contributors,
             githubRateLimitRemaining,
-          });
-          return { success: false };
+          };
         }
 
         if (!commitsResult.ok) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "github_api_error",
               message: "GitHub commit fetch failed.",
@@ -645,7 +529,7 @@ export const runSubmissionVetting = action({
         }
 
         if (commitsResult.reachedPageLimit) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "commit_scan_truncated",
               message: "Commit scan reached the v1 page limit.",
@@ -668,7 +552,7 @@ export const runSubmissionVetting = action({
         if (preStartResult.ok) {
           const preStartCommits = normalizeCommitResponse(preStartResult.data);
           for (const commit of preStartCommits) {
-            allFindings.push(
+            findings.push(
               finding({
                 code: "commit_before_event",
                 message: "Repository contains commits before the event start.",
@@ -694,7 +578,7 @@ export const runSubmissionVetting = action({
             postGraceResult.data,
           );
           for (const commit of postGraceCommits) {
-            allFindings.push(
+            findings.push(
               finding({
                 code: "commit_after_deadline_grace",
                 message:
@@ -712,7 +596,7 @@ export const runSubmissionVetting = action({
 
         const commits = commitsResult.commits;
         if (commits.length === 0) {
-          allFindings.push(
+          findings.push(
             finding({
               code: "repo_empty_or_no_event_commits",
               message: "Repository has no commits in the event window.",
@@ -726,40 +610,39 @@ export const runSubmissionVetting = action({
           continue;
         }
 
-        const contributors = extractUniqueAuthors(commits);
-        const mappedContributors: SaveContributorsArgs["contributors"] = [];
+        const extractedContributors = extractUniqueAuthors(commits);
+        const mappedContributors: ContributorRow[] = [];
 
-        if (contributors.length > event.teamSizeLimit) {
-          allFindings.push(
+        if (extractedContributors.length > event.teamSizeLimit) {
+          findings.push(
             finding({
               code: "git_contributor_count_exceeds_limit",
               message:
                 "Git contributor count exceeds the event team size limit.",
               repoUrl: parsed.canonicalUrl,
               evidence: {
-                contributorCount: contributors.length,
+                contributorCount: extractedContributors.length,
                 limit: event.teamSizeLimit,
               },
             }),
           );
         }
 
-        for (const contributor of contributors) {
+        for (const contributor of extractedContributors) {
           const mapped = mapContributorToSubmittedIdentity({
             contributor,
-            mappings,
             declaredEmails,
           });
-          const mappedContributor = {
+          const mappedContributor: ContributorRow = {
             ...contributor,
             repoUrl: parsed.canonicalUrl,
             mappedEmail: mapped?.mappedEmail,
-            mappingSource: mapped?.mappingSource ?? contributor.mappingSource,
+            mappingSource: mapped?.mappingSource ?? "unmapped",
           };
           mappedContributors.push(mappedContributor);
 
           if (!mapped) {
-            allFindings.push(
+            findings.push(
               finding({
                 code: "unregistered_git_contributor",
                 message:
@@ -774,73 +657,44 @@ export const runSubmissionVetting = action({
             );
             continue;
           }
-
-          const duplicateMatches = await ctx.runQuery(
-            findMatchingContributors,
-            {
-              tenant: submission.tenant,
-              submissionId,
-              githubUserId: contributor.githubUserId,
-              authorEmail: contributor.authorEmail,
-            },
-          );
-          if (duplicateMatches.length > 0) {
-            allFindings.push(
-              finding({
-                code: "git_identity_used_on_multiple_submissions",
-                message:
-                  "Git identity appears on another submission for this event.",
-                repoUrl: parsed.canonicalUrl,
-                evidence: {
-                  mappedEmail: mapped.mappedEmail,
-                  otherSubmissionIds: duplicateMatches.map((match) =>
-                    String(match.submissionId),
-                  ),
-                },
-              }),
-            );
-          }
         }
 
-        await ctx.runMutation(saveContributors, {
-          runId: run.id,
-          submissionId,
-          contributors: mappedContributors,
-        });
+        contributors.push(...mappedContributors);
 
         for (const mismatch of findAuthorCommitterMismatches(commits)) {
-          allFindings.push({
+          findings.push({
             ...mismatch,
             repoUrl: parsed.canonicalUrl,
           });
         }
       }
 
-      await ctx.runMutation(saveFindings, {
-        runId: run.id,
-        submissionId,
-        findings: serializeFindings(allFindings),
+      const result = resultFromFindings(findings);
+      await ctx.runMutation(updateSubmissionVettingStatus, {
+        id: submissionId,
+        vetted: result,
+        vettingStatus: "completed",
+        lastVettedAt: Date.now(),
       });
 
-      const result = resultFromFindings(allFindings);
-      await ctx.runMutation(completeRun, {
-        runId: run.id,
-        submissionId,
+      return {
+        success: true,
         result,
+        findings,
+        repos,
+        contributors,
         githubRateLimitRemaining,
-      });
-
-      return { success: true, result };
+      };
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown vetting failure";
-      await ctx.runMutation(failRun, {
-        runId: run.id,
-        submissionId,
-        errorMessage: message,
-        githubRateLimitRemaining,
+      await ctx.runMutation(updateSubmissionVettingStatus, {
+        id: submissionId,
+        vetted: "needs_review",
+        vettingStatus: "failed",
+        lastVettedAt: Date.now(),
       });
-      return { success: false, error: message };
+      return { success: false, error: message, findings, repos, contributors };
     }
   },
 });
