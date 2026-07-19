@@ -27,7 +27,6 @@ import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  PanelRightOpen,
   Users,
   Link as LinkIcon,
   Github,
@@ -133,16 +132,8 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
       item={item}
       direction={isMobile ? "bottom" : "right"}
       trigger={
-        <Button
-          variant="ghost"
-          className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
-        >
-          <span className="min-w-0 truncate font-medium text-foreground">
-            {item.teamName}
-          </span>
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground group-hover:text-foreground">
-            <PanelRightOpen className="h-3.5 w-3.5" />
-          </span>
+        <Button variant="link" className="text-foreground w-fit px-0 text-left">
+          {item.teamName}
         </Button>
       }
     />
