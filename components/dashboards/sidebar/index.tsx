@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   IconCamera,
+  IconChartBar,
   IconClipboardList,
   IconDatabase,
   IconFileAi,
@@ -19,6 +20,7 @@ import { useTenant } from "@/hooks/use-tenant";
 import { NavMain } from "@/components/dashboards/sidebar/primary";
 import { NavSecondary } from "@/components/dashboards/sidebar/secondary";
 import { NavUser } from "@/components/dashboards/sidebar/user";
+import { dashboardNavigation } from "@/components/dashboards/sidebar/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -63,38 +65,18 @@ const data = {
       icon: IconUserCheck,
     },
   ],
-  navDashboards: [
-    {
-      title: "Attendance",
-      url: "/admin/dashboards/attendance",
-      icon: IconReport,
-    },
-    {
-      title: "Participants",
-      url: "/admin/dashboards/participants",
-      icon: IconListDetails,
-    },
-    {
-      title: "Speakers",
-      url: "/admin/dashboards/speakers",
-      icon: IconListDetails,
-    },
-    {
-      title: "Superadmins",
-      url: "/admin/dashboards/superadmins",
-      icon: IconListDetails,
-    },
-    {
-      title: "Volunteers",
-      url: "/admin/dashboards/volunteers",
-      icon: IconListDetails,
-    },
-    {
-      title: "Feedback",
-      url: "/admin/dashboards/feedback",
-      icon: IconReport,
-    },
-  ],
+  navDashboards: dashboardNavigation.map((item) => ({
+    ...item,
+    icon: {
+      Analytics: IconChartBar,
+      Attendance: IconReport,
+      Participants: IconListDetails,
+      Speakers: IconListDetails,
+      Superadmins: IconListDetails,
+      Volunteers: IconListDetails,
+      Feedback: IconReport,
+    }[item.title],
+  })),
   navClouds: [
     {
       title: "Capture",

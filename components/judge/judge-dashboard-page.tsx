@@ -4,6 +4,7 @@ import { useTenant } from "@/hooks/use-tenant";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
 import { CheckinSection } from "@/components/live/dashboard/checkin-section";
+import { JudgeAnalyticsSection } from "@/components/analytics/judge-analytics-section";
 import { Separator } from "@/components/ui/separator";
 
 interface JudgeDashboardPageProps {
@@ -32,6 +33,9 @@ export function JudgeDashboardPage({ tenant }: JudgeDashboardPageProps) {
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
       <Separator className="my-6" />
 
+      <JudgeAnalyticsSection tenant={tenant} />
+      <Separator className="my-6" />
+
       <CheckinSection tenant={tenant} />
       <Separator className="my-6" />
 
@@ -39,4 +43,3 @@ export function JudgeDashboardPage({ tenant }: JudgeDashboardPageProps) {
     </div>
   );
 }
-

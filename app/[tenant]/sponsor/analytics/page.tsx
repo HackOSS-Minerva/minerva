@@ -1,9 +1,9 @@
 import { AnalyticsPage } from "@/components/sponsor/analytics-page";
 
 interface AnalyticsRouteProps {
-  params: {
+  params: Promise<{
     tenant: string;
-  };
+  }>;
 }
 
 const AnalyticsRoute = async ({ params }: AnalyticsRouteProps) => {

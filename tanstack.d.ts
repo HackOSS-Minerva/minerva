@@ -4,6 +4,7 @@ declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
     onDelete: (id: number) => void;
+    onDeleteMany: (ids: string[]) => void;
     onUpdate: (obj: {
       id: number | undefined;
       updates: Record<string, string>;

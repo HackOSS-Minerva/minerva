@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/combobox";
 import { Badge } from "@/components/ui/badge";
 import { UserCheck } from "lucide-react";
+import { trackCheckinCompleted } from "@/lib/posthog";
 
 interface DecodedQR {
   id: string;
@@ -117,7 +118,7 @@ const CheckinContent = () => {
         setIsCheckingIn(true);
 
         try {
-          await doCheckin({
+          const checkin = await doCheckin({
             userid: parsed.id,
             eventid: selectedEventId,
             firstname: parsed.firstname,
@@ -125,6 +126,23 @@ const CheckinContent = () => {
             email: parsed.email,
             tenant,
           });
+
+          const checkedInRole = checkin.checkin.role.toLowerCase();
+          const analyticsRole = [
+            "participant",
+            "judge",
+            "speaker",
+            "volunteer",
+            "visitor",
+          ].includes(checkedInRole)
+            ? (checkedInRole as
+                | "participant"
+                | "judge"
+                | "speaker"
+                | "volunteer"
+                | "visitor")
+            : "visitor";
+          trackCheckinCompleted({ tenant, role: analyticsRole });
 
           toast.success(`Checked in: ${parsed.firstname} ${parsed.lastname}`, {
             description: parsed.email,

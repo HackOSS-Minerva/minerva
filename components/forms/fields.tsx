@@ -12,8 +12,8 @@ const Fields = () => {
   const {
     form: { fields, metadata, schema, defaultValues },
     onSubmit,
+    onFirstInteraction,
   } = useFields();
-
   const { isLocked } = useFormLock({ form: form ?? "participant" });
 
   const formInstance = useForm({
@@ -39,6 +39,7 @@ const Fields = () => {
           e.preventDefault();
           if (!isLocked) formInstance.handleSubmit();
         }}
+        onInput={onFirstInteraction}
       >
         <FieldGroup>
           <FieldGroup>

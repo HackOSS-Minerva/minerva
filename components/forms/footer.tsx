@@ -11,7 +11,6 @@ const Footer = () => {
   const {
     form: { metadata },
   } = useFields();
-
   const { isLocked } = useFormLock({ form: form ?? "participant" });
 
   return (
