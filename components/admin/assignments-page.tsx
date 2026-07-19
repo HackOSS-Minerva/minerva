@@ -211,13 +211,13 @@ export default function AssignmentsContent() {
 
       {hasAssignments ? (
         viewMode === "teams-by-judge" ? (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredJudges.map((judge) => {
               const teams = getTeamsForJudge(judge.id, assignments);
               return (
-                <Card key={judge.id} className="overflow-hidden">
-                  <CardHeader className="border-b bg-muted/30 pb-3">
-                    <div className="flex items-center gap-3">
+                <Card key={judge.id} className="p-3 gap-3">
+                  <CardHeader className="bg-muted/30 p-0">
+                    <div className="flex items-center gap-2">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                         <IconUser className="h-5 w-5 text-primary" />
                       </div>
@@ -229,7 +229,7 @@ export default function AssignmentsContent() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="pt-4">
+                  <CardContent className="px-0">
                     {teams.length === 0 ? (
                       <p className="text-sm text-muted-foreground italic">
                         No teams assigned
@@ -241,12 +241,9 @@ export default function AssignmentsContent() {
                             key={team.id}
                             className="flex flex-col gap-2 rounded-lg border p-3 text-sm"
                           >
-                            <Badge variant="secondary" className="text-xs w-fit">
-                              {team.project}
-                            </Badge>
                             <span className="flex items-center gap-2 font-medium">
                               <IconUsers className="h-4 w-4 text-muted-foreground" />
-                              {team.name}
+                              {team.project}
                             </span>
                           </li>
                         ))}
