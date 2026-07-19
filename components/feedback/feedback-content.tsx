@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { useTenant } from "@/hooks/use-tenant";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
+import { toast } from "sonner";
 
 interface FeedbackContentProps {
   tenant: string;
@@ -45,7 +46,12 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit) {
+      toast.error("Please complete all required fields", {
+        description: "All questions must be answered before submitting.",
+      });
+      return;
+    }
 
     setSubmitting(true);
 

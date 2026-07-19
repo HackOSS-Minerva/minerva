@@ -16,6 +16,8 @@ import type * as participants from "../participants.js";
 import type * as speakers from "../speakers.js";
 import type * as submissions from "../submissions.js";
 import type * as superadmins from "../superadmins.js";
+import type * as vetting from "../vetting.js";
+import type * as vettingActions from "../vettingActions.js";
 import type * as volunteers from "../volunteers.js";
 
 import type {
@@ -33,6 +35,8 @@ declare const fullApi: ApiFromModules<{
   speakers: typeof speakers;
   submissions: typeof submissions;
   superadmins: typeof superadmins;
+  vetting: typeof vetting;
+  vettingActions: typeof vettingActions;
   volunteers: typeof volunteers;
 }>;
 

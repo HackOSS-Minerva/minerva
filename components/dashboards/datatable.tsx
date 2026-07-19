@@ -52,24 +52,30 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { SuperUser } from "@/types/users";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
+import type { VettingBatchResult } from "@/hooks/use-submissions";
 import { TableToolbar } from "./toolbar";
-import { StatusActions } from "./status-actions";
+import { cn } from "@/lib/utils";
+
+type DashboardRow = {
+  _id?: string;
+  email?: string;
+} & Record<string, unknown>;
 
 interface DashboardProps {
-  data: any[];
+  data: DashboardRow[];
   dashboard: {
-    columns: ColumnDef<any>[];
+    columns: unknown[];
     csvFields: string[];
   };
-  onDelete?: (...args: any[]) => any;
-  onDeleteMany?: (...args: any[]) => any;
-  onUpdate?: (...args: any[]) => any;
-  setStatus?: (...args: any[]) => any;
-  setStatusMany?: (...args: any[]) => any;
+  onDelete?: unknown;
+  onDeleteMany?: unknown;
+  onUpdate?: unknown;
+  setStatus?: unknown;
+  setStatusMany?: unknown;
+  runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
 
 export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
@@ -77,6 +83,8 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [vetting, setVetting] = useState(false);
+  const [, setFailedVettingRuns] = useState<VettingBatchResult[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -85,6 +93,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
+  const isSubmissions = slug === "submissions";
 
   const {
     data,
@@ -94,11 +103,25 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     onUpdate,
     setStatus,
     setStatusMany,
+    runVettingMany,
   } = dashboard;
+  const tableColumns = columns as ColumnDef<DashboardRow>[];
+  const deleteOne = onDelete as ((args: { id: string }) => unknown) | undefined;
+  const deleteMany = onDeleteMany as
+    ((args: { ids: string[] }) => unknown) | undefined;
+  const updateOne = onUpdate as
+    | ((obj: {
+        id: string | number | undefined;
+        updates: Record<string, string>;
+      }) => unknown)
+    | undefined;
+  const setOneStatus = setStatus as ((status: string) => unknown) | undefined;
+  const setManyStatuses = setStatusMany as
+    ((ids: string[], status: string) => unknown) | undefined;
 
-  const table = useReactTable<any>({
+  const table = useReactTable<DashboardRow>({
     data,
-    columns,
+    columns: tableColumns,
     state: {
       sorting,
       columnVisibility,
@@ -107,7 +130,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       globalFilter,
       pagination,
     },
-    enableRowSelection: !!onDeleteMany,
+    enableRowSelection: !!deleteMany,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -121,22 +144,82 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     meta: {
-      onDelete: (id: any) => {
-        onDelete?.(id);
+      onDelete: (id: string | number) => {
+        deleteOne?.({ id: String(id) });
         setRowSelection({});
       },
-      onDeleteMany: (ids: any) => {
-        onDeleteMany?.(ids);
+      onDeleteMany: (ids: { ids: string[] }) => {
+        deleteMany?.(ids);
         setRowSelection({});
       },
-      onUpdate: onUpdate,
-      setStatus: setStatus,
-      setStatusMany: (ids: any, status: any) => {
-        setStatusMany?.(ids, status);
+      onUpdate: (obj) => {
+        updateOne?.(obj);
+      },
+      setStatus: (status: string) => {
+        setOneStatus?.(status);
+      },
+      setStatusMany: (ids: string[], status: string) => {
+        setManyStatuses?.(ids, status);
         setRowSelection({});
       },
     },
   });
+
+  const selectedIds = table
+    .getSelectedRowModel()
+    .rows.map((row) => row.original._id)
+    .filter((id): id is string => Boolean(id));
+
+  const handleRunVetting = async () => {
+    if (!runVettingMany || selectedIds.length === 0) return;
+
+    setVetting(true);
+    try {
+      const results = await runVettingMany(selectedIds);
+      const failed = results.filter((result) => !result.success);
+      const succeeded = results.length - failed.length;
+
+      setFailedVettingRuns(failed);
+      setRowSelection({});
+
+      if (failed.length === 0) {
+        toast.success(
+          `Vetted ${results.length} project${results.length === 1 ? "" : "s"}`,
+        );
+      } else if (succeeded === 0) {
+        toast.error(
+          `Failed to vet ${failed.length} project${failed.length === 1 ? "" : "s"}`,
+        );
+      } else {
+        toast.error(
+          `Vetted ${succeeded} project${succeeded === 1 ? "" : "s"}; ${failed.length} failed`,
+        );
+      }
+    } catch {
+      toast.error("Failed to queue project vetting");
+    } finally {
+      setVetting(false);
+    }
+  };
+
+  const submissionsColumnClass = (columnId: string) => {
+    if (!isSubmissions) return undefined;
+
+    switch (columnId) {
+      case "select":
+        return "w-10";
+      case "teamName":
+        return "w-[16.5rem]";
+      case "projectName":
+        return "w-[13.5rem]";
+      case "vetted":
+        return "w-[11rem]";
+      case "description":
+        return "w-auto min-w-0";
+      default:
+        return undefined;
+    }
+  };
 
   return (
     <Tabs defaultValue="outline">
@@ -162,13 +245,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  console.log("Vet Projects clicked");
-                }}
-                disabled={table.getSelectedRowModel().rows.length === 0}
+                onClick={handleRunVetting}
+                disabled={selectedIds.length === 0 || vetting}
               >
                 <IconSwords />
-                <span className="hidden lg:inline ml-1">Vet Projects</span>
+                <span className="hidden lg:inline ml-1">
+                  {vetting ? "Vetting..." : "Vet Projects"}
+                </span>
               </Button>
             ) : (
               <Button
@@ -176,7 +259,9 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
                 size="sm"
                 onClick={() => {
                   const rows = table.getFilteredRowModel().rows;
-                  const emails = rows.map((row) => row.original.email);
+                  const emails = rows
+                    .map((row) => row.original.email)
+                    .filter((email): email is string => Boolean(email));
                   const csv = emails.join(",");
                   navigator.clipboard.writeText(csv);
                   toast.success(`Copied ${emails.length} emails to clipboard`);
@@ -256,8 +341,9 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               onClick={() => {
                 const ids = table
                   .getSelectedRowModel()
-                  .rows.map((row) => row.original._id);
-                onDeleteMany?.({ ids });
+                  .rows.map((row) => row.original._id)
+                  .filter((id): id is string => Boolean(id));
+                deleteMany?.({ ids });
                 setRowSelection({});
               }}
               disabled={table.getSelectedRowModel().rows.length === 0}
@@ -274,13 +360,17 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg border">
-          <Table>
+          <Table className={isSubmissions ? "table-fixed" : undefined}>
             <TableHeader className="bg-muted sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} colSpan={header.colSpan}>
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={submissionsColumnClass(header.column.id)}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -302,7 +392,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
                     className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          submissionsColumnClass(cell.column.id),
+                          isSubmissions && "overflow-hidden",
+                        )}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -314,7 +410,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={tableColumns.length}
                     className="h-24 text-center"
                   >
                     No results.

@@ -2,10 +2,14 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,10 +29,7 @@ import {
   IconBrandFigma,
   IconLink,
   IconMail,
-  IconFileText,
-  IconArrowLeft,
 } from "@tabler/icons-react";
-import { useTenant } from "@/hooks/use-tenant";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -39,13 +40,18 @@ interface SubmissionFormPageProps {
   tenant: string;
 }
 
-export function SubmissionFormPage({
-  tenant,
-}: SubmissionFormPageProps) {
+function getUniqueInviteEmails(invites: string[]): string[] {
+  return Array.from(
+    new Set(
+      invites
+        .map((email) => email.trim().toLowerCase())
+        .filter((email) => email.length > 0),
+    ),
+  );
+}
+
+export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
   const router = useRouter();
-  const { headers, tenant: tenantConfig } = useTenant();
-  const logo = tenantConfig?.logo;
-  const SubmissionHeader = headers?.submission;
 
   // Form states
   const [teamName, setTeamName] = useState("");
@@ -65,26 +71,45 @@ export function SubmissionFormPage({
   const addSubmission = useMutation(api.submissions.add);
 
   const validate = () => {
-    const optionalUrl = z.union([z.literal(""), z.url("Please enter a valid URL.")]);
-    const submissionSchema = z.object({
-      teamName: z.string().min(1, "Team name is required."),
-      projectName: z.string().min(1, "Project name is required."),
-      description: z.string().min(1, "Project description is required."),
-      devpost: z.url("Please enter a valid URL (e.g., https://devpost.com/...)"),
-      github: z.array(optionalUrl),
-      figma: z.array(optionalUrl),
-      canva: z.array(optionalUrl),
-      presentation: z.union([z.literal(""), z.url("Please enter a valid presentation URL.")]),
-      invites: z.array(z.union([z.literal(""), z.email("Invalid email address format.")])),
-    }).refine((data) => {
-      const cleanGithub = data.github.filter((l) => l.trim() !== "");
-      const cleanFigma = data.figma.filter((l) => l.trim() !== "");
-      const cleanCanva = data.canva.filter((l) => l.trim() !== "");
-      return cleanGithub.length > 0 || cleanFigma.length > 0 || cleanCanva.length > 0;
-    }, {
-      message: "At least one GitHub, Figma, or Canva link is required.",
-      path: ["links"],
-    });
+    const optionalUrl = z.union([
+      z.literal(""),
+      z.url("Please enter a valid URL."),
+    ]);
+    const submissionSchema = z
+      .object({
+        teamName: z.string().min(1, "Team name is required."),
+        projectName: z.string().min(1, "Project name is required."),
+        description: z.string().min(1, "Project description is required."),
+        devpost: z.url(
+          "Please enter a valid URL (e.g., https://devpost.com/...)",
+        ),
+        github: z.array(optionalUrl),
+        figma: z.array(optionalUrl),
+        canva: z.array(optionalUrl),
+        presentation: z.union([
+          z.literal(""),
+          z.url("Please enter a valid presentation URL."),
+        ]),
+        invites: z.array(
+          z.union([z.literal(""), z.email("Invalid email address format.")]),
+        ),
+      })
+      .refine(
+        (data) => {
+          const cleanGithub = data.github.filter((l) => l.trim() !== "");
+          const cleanFigma = data.figma.filter((l) => l.trim() !== "");
+          const cleanCanva = data.canva.filter((l) => l.trim() !== "");
+          return (
+            cleanGithub.length > 0 ||
+            cleanFigma.length > 0 ||
+            cleanCanva.length > 0
+          );
+        },
+        {
+          message: "At least one GitHub, Figma, or Canva link is required.",
+          path: ["links"],
+        },
+      );
 
     const result = submissionSchema.safeParse({
       teamName,
@@ -100,11 +125,45 @@ export function SubmissionFormPage({
 
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
+      const errorMessages: string[] = [];
+
       for (const issue of result.error.issues) {
         const path = issue.path.join(".");
+        // Format the field name for better readability
+        const formattedField = path
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase())
+          .replace(/_/g, " ");
+
         fieldErrors[path] = issue.message;
+        errorMessages.push(`${formattedField}: ${issue.message}`);
       }
       setErrors(fieldErrors);
+
+      // Show toast with validation errors
+      toast.error("Please fix the following errors:", {
+        description:
+          errorMessages.length === 1 ? (
+            errorMessages[0]
+          ) : (
+            <ul className="ml-4 list-disc">
+              {errorMessages.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
+          ),
+      });
+      return false;
+    }
+
+    const declaredTeamCount = 1 + getUniqueInviteEmails(invites).length;
+    if (declaredTeamCount > 4) {
+      setErrors({
+        invites: "Teams can include at most 4 people including the submitter.",
+      });
+      toast.error("Team size exceeded", {
+        description: "Teams can include at most 4 people including the submitter.",
+      });
       return false;
     }
 
@@ -114,6 +173,7 @@ export function SubmissionFormPage({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!validate()) return;
 
     setSubmitting(true);
@@ -129,14 +189,18 @@ export function SubmissionFormPage({
         figma: figmaLinks.filter((l) => l.trim() !== ""),
         canva: canvaLinks.filter((l) => l.trim() !== ""),
         presentation: presentation || undefined,
-        invites: invites.filter((e) => e.trim() !== ""),
+        invites: getUniqueInviteEmails(invites),
       });
 
       toast.success("Project submitted successfully!");
       router.push(`/${tenant}/live/dashboard`);
     } catch (error) {
       console.error("Failed to submit project:", error);
-      toast.error("Failed to submit project. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to submit project. Please try again.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -190,7 +254,9 @@ export function SubmissionFormPage({
                 autoComplete="off"
               />
               {errors["teamName"] && (
-                <p className="text-destructive text-sm mt-1">{errors["teamName"]}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors["teamName"]}
+                </p>
               )}
             </Field>
 
@@ -206,7 +272,9 @@ export function SubmissionFormPage({
                 autoComplete="off"
               />
               {errors["projectName"] && (
-                <p className="text-destructive text-sm mt-1">{errors["projectName"]}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors["projectName"]}
+                </p>
               )}
             </Field>
 
@@ -214,7 +282,8 @@ export function SubmissionFormPage({
             <Field>
               <FieldLabel>Project Description</FieldLabel>
               <FieldDescription>
-                Briefly describe what your project does and what problem it solves.
+                Briefly describe what your project does and what problem it
+                solves.
               </FieldDescription>
               <Textarea
                 value={description}
@@ -226,7 +295,9 @@ export function SubmissionFormPage({
                 className="w-full"
               />
               {errors["description"] && (
-                <p className="text-destructive text-sm mt-1">{errors["description"]}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors["description"]}
+                </p>
               )}
             </Field>
 
@@ -242,7 +313,9 @@ export function SubmissionFormPage({
                 autoComplete="off"
               />
               {errors["devpost"] && (
-                <p className="text-destructive text-sm mt-1">{errors["devpost"]}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors["devpost"]}
+                </p>
               )}
             </Field>
 
@@ -300,7 +373,9 @@ export function SubmissionFormPage({
                 </div>
               ))}
               {errors["github"] && (
-                <p className="text-destructive text-sm mt-1">{errors["github"]}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors["github"]}
+                </p>
               )}
             </div>
 
@@ -358,7 +433,9 @@ export function SubmissionFormPage({
                 </div>
               ))}
               {errors["figma"] && (
-                <p className="text-destructive text-sm mt-1">{errors["figma"]}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors["figma"]}
+                </p>
               )}
             </div>
 
@@ -416,7 +493,9 @@ export function SubmissionFormPage({
                 </div>
               ))}
               {errors["canva"] && (
-                <p className="text-destructive text-sm mt-1">{errors["canva"]}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors["canva"]}
+                </p>
               )}
             </div>
 
@@ -436,10 +515,11 @@ export function SubmissionFormPage({
                 autoComplete="off"
               />
               {errors.presentation && (
-                <p className="text-destructive text-sm mt-1">{errors.presentation}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors.presentation}
+                </p>
               )}
             </Field>
-
 
             <Separator />
 
@@ -495,7 +575,9 @@ export function SubmissionFormPage({
                 </div>
               ))}
               {errors.invites && (
-                <p className="text-destructive text-sm mt-1">{errors.invites}</p>
+                <p className="text-destructive text-sm mt-1">
+                  {errors.invites}
+                </p>
               )}
             </div>
 
@@ -513,7 +595,6 @@ export function SubmissionFormPage({
                 {submitting ? "Submitting..." : "Submit Project"}
               </Button>
             </div>
-
           </form>
         </CardContent>
       </Card>

@@ -118,6 +118,7 @@ export default defineSchema({
     tenant: v.string(),
   })
     .index("by_user_event", ["userid", "eventid"])
+    .index("by_user_event_tenant", ["userid", "eventid", "tenant"])
     .index("by_event_tenant", ["eventid", "tenant"]),
 
   volunteers: defineTable({
@@ -170,7 +171,17 @@ export default defineSchema({
     vetted: v.union(
       v.literal("verified"),
       v.literal("needs_review"),
-      v.literal("disqualified")
+      v.literal("disqualified"),
     ),
-  }),
+    vettingStatus: v.union(
+      v.literal("not_started"),
+      v.literal("running"),
+      v.literal("completed"),
+      v.literal("failed"),
+    ),
+    lastVettedAt: v.optional(v.number()),
+  })
+    .index("by_tenant", ["tenant"])
+    .index("by_tenant_vetted", ["tenant", "vetted"])
+    .index("by_vetting_status", ["vettingStatus"]),
 });

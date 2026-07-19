@@ -4,7 +4,9 @@ import { useParams } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useTenant } from "./use-tenant";
-import type { FunctionReference } from "convex/server";
+import { makeFunctionReference, type FunctionReference } from "convex/server";
+import type { Id } from "@/convex/_generated/dataModel";
+import { useSubmissions } from "./use-submissions";
 import * as participants from "@/components/dashboards/dashboards/participants";
 import * as judges from "@/components/dashboards/dashboards/judges";
 import * as speakers from "@/components/dashboards/dashboards/speakers";
@@ -25,6 +27,7 @@ type slugs =
   | "submissions";
 
 type DashboardQueryArgs = { tenant: string; eventid?: string };
+type DashboardRow = { _id?: string; email?: string } & Record<string, unknown>;
 
 type DashboardQuery = FunctionReference<
   "query",
@@ -60,6 +63,8 @@ export const useDashboard = (eventid?: string) => {
   const { tenant } = useTenant();
   const slug = dashboard;
   const tenantName = tenant.name.toLocaleLowerCase();
+
+  const { runVettingMany } = useSubmissions();
 
   const data = useQuery(QUERIES[slug], {
     tenant: tenantName,
@@ -113,18 +118,22 @@ export const useDashboard = (eventid?: string) => {
   } as const;
 
   const onDelete = allDeleteMutations[slug as keyof typeof allDeleteMutations];
-  const onDeleteMany = allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
+  const onDeleteMany =
+    allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
   const onUpdate = allUpdateMutations[slug as keyof typeof allUpdateMutations];
-  const setStatus = allSetStatusMutations[slug as keyof typeof allSetStatusMutations];
-  const setStatusMany = allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
+  const setStatus =
+    allSetStatusMutations[slug as keyof typeof allSetStatusMutations];
+  const setStatusMany =
+    allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
   return {
     dashboard: DASHBOARDS[slug],
-    data: (data ?? []) as any,
+    data: (data ?? []) as DashboardRow[],
     onDelete,
     onDeleteMany,
     onUpdate,
     setStatus,
     setStatusMany,
+    runVettingMany: slug === "submissions" ? runVettingMany : undefined,
   } as const;
 };
