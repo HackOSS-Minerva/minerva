@@ -1,6 +1,5 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
 import { availabilities, dietrestrictions, genders, shirts } from "./schema";
 import { statuses } from "../data/status";
 
@@ -73,18 +72,6 @@ export const add = mutation({
     const created = await ctx.db.get("volunteers", id);
     if (!created) throw new Error("Failed to create volunteer");
 
-    await ctx.scheduler.runAfter(0, internal.emails.send, {
-      type: "CONFIRMATION",
-      role: "volunteer",
-      tenant,
-      user: {
-        firstname: created.firstname,
-        lastname: created.lastname,
-        email: created.email,
-      },
-      idempotencyKey: `${id}:CONFIRMATION`,
-    });
-
     return { id, user: created };
   },
 });
@@ -146,20 +133,6 @@ export const setStatus = mutation({
 
     await ctx.db.patch(id, { status });
 
-    if (status !== "PENDING") {
-      await ctx.scheduler.runAfter(0, internal.emails.send, {
-        type: status,
-        role: "volunteer",
-        tenant: volunteer.tenant,
-        user: {
-          firstname: volunteer.firstname,
-          lastname: volunteer.lastname,
-          email: volunteer.email,
-        },
-        idempotencyKey: `${id}:${status}`,
-      });
-    }
-
     return { status: "success" };
   },
 });
@@ -180,20 +153,6 @@ export const setStatusMany = mutation({
 
       await ctx.db.patch(id, { status });
       changedCount += 1;
-
-      if (status !== "PENDING") {
-        await ctx.scheduler.runAfter(0, internal.emails.send, {
-          type: status,
-          role: "volunteer",
-          tenant: volunteer.tenant,
-          user: {
-            firstname: volunteer.firstname,
-            lastname: volunteer.lastname,
-            email: volunteer.email,
-          },
-          idempotencyKey: `${id}:${status}`,
-        });
-      }
     }
 
     return { status: "success", changedCount };

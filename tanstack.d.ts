@@ -10,6 +10,6 @@ declare module "@tanstack/react-table" {
       updates: Record<string, string>;
     }) => void;
     setStatus: (status: string) => void;
-    setStatusMany: (ids: string[], status: string) => void;
+    setStatusMany: (ids: string[], status: string) => Promise<void>;
   }
 }

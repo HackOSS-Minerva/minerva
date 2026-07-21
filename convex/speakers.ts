@@ -1,6 +1,5 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
 import { statuses } from "../data/status";
 import { affiliations, dietrestrictions, genders, shirts } from "./schema";
 
@@ -75,18 +74,6 @@ export const add = mutation({
     const created = await ctx.db.get("speakers", id);
     if (!created) throw new Error("Failed to create speaker");
 
-    await ctx.scheduler.runAfter(0, internal.emails.send, {
-      type: "CONFIRMATION",
-      role: "speaker",
-      tenant,
-      user: {
-        firstname: created.firstname,
-        lastname: created.lastname,
-        email: created.email,
-      },
-      idempotencyKey: `${id}:CONFIRMATION`,
-    });
-
     return { id, user: created };
   },
 });
@@ -149,20 +136,6 @@ export const setStatus = mutation({
 
     await ctx.db.patch(id, { status });
 
-    if (status !== "PENDING") {
-      await ctx.scheduler.runAfter(0, internal.emails.send, {
-        type: status,
-        role: "speaker",
-        tenant: speaker.tenant,
-        user: {
-          firstname: speaker.firstname,
-          lastname: speaker.lastname,
-          email: speaker.email,
-        },
-        idempotencyKey: `${id}:${status}`,
-      });
-    }
-
     return { status: "success" };
   },
 });
@@ -183,20 +156,6 @@ export const setStatusMany = mutation({
 
       await ctx.db.patch(id, { status });
       changedCount += 1;
-
-      if (status !== "PENDING") {
-        await ctx.scheduler.runAfter(0, internal.emails.send, {
-          type: status,
-          role: "speaker",
-          tenant: speaker.tenant,
-          user: {
-            firstname: speaker.firstname,
-            lastname: speaker.lastname,
-            email: speaker.email,
-          },
-          idempotencyKey: `${id}:${status}`,
-        });
-      }
     }
 
     return { status: "success", changedCount };

@@ -25,18 +25,38 @@ const copy: Record<EmailType, { preview: string; subject: string }> = {
 };
 
 const Email = ({ type, role, name }: EmailProps) => {
-  const { preview } = copy[type];
   const position = role === "superadmin" ? "super admin" : role;
 
-  if (type === "CONFIRMATION") {
-    return <Confirmation name={name} position={position} preview={preview} />;
+  switch (type) {
+    case "CONFIRMATION":
+      return (
+        <Confirmation
+          name={name}
+          position={position}
+          preview={copy.CONFIRMATION.preview}
+        />
+      );
+    case "ACCEPTANCE":
+      return (
+        <Acceptance
+          name={name}
+          position={position}
+          preview={copy.ACCEPTANCE.preview}
+        />
+      );
+    case "REJECTION":
+      return (
+        <Rejection
+          name={name}
+          position={position}
+          preview={copy.REJECTION.preview}
+        />
+      );
+    default: {
+      const unsupportedType: never = type;
+      throw new Error(`Unsupported email type: ${unsupportedType}`);
+    }
   }
-
-  if (type === "ACCEPTANCE") {
-    return <Acceptance name={name} position={position} preview={preview} />;
-  }
-
-  return <Rejection name={name} position={position} preview={preview} />;
 };
 
 export const getEmailSubject = (type: EmailType) => copy[type].subject;

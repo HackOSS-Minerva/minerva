@@ -13,7 +13,7 @@ export type EmailRecipient = {
   email: string;
 };
 
-export type TransactionalEmailPayload = {
+export type SendEmailPayload = {
   type: EmailType;
   role: EmailRole;
   tenant: string;

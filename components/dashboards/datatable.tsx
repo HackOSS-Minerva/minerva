@@ -52,12 +52,20 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { SuperUser } from "@/types/users";
+import type { EmailRole } from "@/types/email";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
 import { StatusActions } from "./status-actions";
+
+const emailRolesByDashboard: Partial<Record<string, EmailRole>> = {
+  participants: "participant",
+  judges: "judge",
+  speakers: "speaker",
+  superadmins: "superadmin",
+  volunteers: "volunteer",
+};
 
 interface DashboardProps {
   data: any[];
@@ -85,6 +93,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
+  const emailRole = emailRolesByDashboard[slug];
 
   const {
     data,
@@ -131,8 +140,9 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       },
       onUpdate: onUpdate ?? (() => {}),
       setStatus: setStatus ?? (() => {}),
-      setStatusMany: (ids: any, status: any) => {
-        setStatusMany?.(ids, status);
+      setStatusMany: async (ids: any, status: any) => {
+        if (!setStatusMany) throw new Error("Status updates are unavailable");
+        await setStatusMany({ ids, status });
         setRowSelection({});
       },
     },
@@ -158,6 +168,14 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
             </SelectContent>
           </Select>
           <div className="flex items-center gap-2">
+            {emailRole && (
+              <StatusActions
+                table={table}
+                role={emailRole}
+                tenant={tenant.name.toLocaleLowerCase()}
+                onSuccess={() => setRowSelection({})}
+              />
+            )}
             {slug === "submissions" ? (
               <Button
                 variant="outline"

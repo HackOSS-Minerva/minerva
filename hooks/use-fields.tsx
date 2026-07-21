@@ -9,10 +9,11 @@ import * as speaker from "@/components/forms/fields/speaker";
 import * as superadmin from "@/components/forms/fields/superadmin";
 import * as volunteer from "@/components/forms/fields/volunteer";
 import * as Posthog from "@/lib/posthog";
-// import { useSendEmail } from "./use-send-email";
+import { useEmail } from "./use-email";
 import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
-import { useRef, useMemo } from "react";
+import { toast } from "sonner";
+import type { EmailRecipient, EmailRole } from "@/types/email";
 
 export type slugs =
   | "participant"
@@ -47,7 +48,44 @@ export const useFields = () => {
   } = useTenant();
 
   const add = useMutation(MUTATIONS[slug]);
-  // const sendEmail = useSendEmail();
+  const { sendEmail } = useEmail();
+
+  const sendConfirmationEmail = async (
+    role: EmailRole,
+    user: EmailRecipient,
+    id: string,
+    tenant: string,
+  ) => {
+    try {
+      await sendEmail({
+        role,
+        type: "CONFIRMATION",
+        user,
+        tenant,
+        idempotencyKey: `${id}:CONFIRMATION`,
+      });
+
+      Posthog.email(
+        user.email,
+        {
+          name: `${user.firstname} ${user.lastname}`,
+          position: role,
+          type: "CONFIRMATION",
+          preview: "Thank you for applying.",
+        },
+        tenant,
+      );
+    } catch (error) {
+      console.error("Failed to send registration confirmation", {
+        role,
+        tenant,
+        error,
+      });
+      toast.warning(
+        "Registration submitted, but the confirmation email could not be sent.",
+      );
+    }
+  };
 
   const onSubmit = async (value: Record<string, unknown>) => {
     const email = value.email as string;
@@ -75,21 +113,10 @@ export const useFields = () => {
 
         if (result.user) {
           Posthog.pending("volunteer", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "volunteer",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "volunteer",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
+          await sendConfirmationEmail(
+            "volunteer",
+            result.user,
+            String(result.id),
             tenant,
           );
         }
@@ -107,46 +134,33 @@ export const useFields = () => {
           );
         }
 
-        const result = await add(
-          {
-            tenant,
-            user: {
-              firstname: firstname,
-              lastname: lastname,
-              email: email,
-              telephone: value.telephone as string,
-              gender: value.gender as string,
-              shirt: value.shirt as string,
-              discord: value.discord as string,
-              major: value.major as string,
-              age: value.age as string,
-              country: value.country as string,
-              school: value.school as string,
-              grade: value.grade as string,
-              mlh_marketing: Boolean(value.mlh_marketing),
-              dietrestriction: value.dietrestriction as string,
-              resume: url || undefined,
-            },
+        const result = await add({
+          tenant,
+          user: {
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            telephone: value.telephone as string,
+            gender: value.gender as string,
+            shirt: value.shirt as string,
+            discord: value.discord as string,
+            major: value.major as string,
+            age: value.age as string,
+            country: value.country as string,
+            school: value.school as string,
+            grade: value.grade as string,
+            mlh_marketing: Boolean(value.mlh_marketing),
+            dietrestriction: value.dietrestriction as string,
+            resume: url || undefined,
           },
-        );
+        });
 
         if (result.user) {
           Posthog.pending("participant", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "participant",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "participant",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
+          await sendConfirmationEmail(
+            "participant",
+            result.user,
+            String(result.id),
             tenant,
           );
         }
@@ -174,21 +188,10 @@ export const useFields = () => {
 
         if (result.user) {
           Posthog.pending("judge", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "judge",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "judge",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
+          await sendConfirmationEmail(
+            "judge",
+            result.user,
+            String(result.id),
             tenant,
           );
         }
@@ -199,7 +202,10 @@ export const useFields = () => {
       case "speaker": {
         let url = "";
         const file = value.picture as File;
-        url = await uploadFile(`${tenant}/speakers/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`, file);
+        url = await uploadFile(
+          `${tenant}/speakers/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`,
+          file,
+        );
 
         const result = await add({
           tenant,
@@ -220,21 +226,10 @@ export const useFields = () => {
 
         if (result.user) {
           Posthog.pending("speaker", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "speaker",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "speaker",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
+          await sendConfirmationEmail(
+            "speaker",
+            result.user,
+            String(result.id),
             tenant,
           );
         }
@@ -263,21 +258,10 @@ export const useFields = () => {
 
         if (result.user) {
           Posthog.pending("superadmin", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "superadmin",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "superadmin",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
+          await sendConfirmationEmail(
+            "superadmin",
+            result.user,
+            String(result.id),
             tenant,
           );
         }
