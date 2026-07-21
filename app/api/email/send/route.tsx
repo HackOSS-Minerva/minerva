@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@react-email/render";
+import { render } from "@react-email/components";
 import { Resend } from "resend";
 import { z } from "zod";
 import Email, { getEmailSubject } from "@/components/email";
