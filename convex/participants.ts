@@ -148,9 +148,14 @@ export const setStatus = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { id, status }) => {
-    await ctx.db.patch(id, { status });
     const participant = await ctx.db.get("participants", id);
     if (!participant) throw new Error("Participant not found");
+
+    if (participant.status === status) {
+      return { status: "unchanged" };
+    }
+
+    await ctx.db.patch(id, { status });
 
     return { status: "success" };
   },
@@ -162,12 +167,18 @@ export const setStatusMany = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { ids, status }) => {
+    let changedCount = 0;
+
     for (const id of ids) {
-      await ctx.db.patch(id, { status });
       const participant = await ctx.db.get("participants", id);
       if (!participant) throw new Error(`Participant ${id} not found`);
+
+      if (participant.status === status) continue;
+
+      await ctx.db.patch(id, { status });
+      changedCount += 1;
     }
 
-    return { status: "success" };
+    return { status: "success", changedCount };
   },
 });

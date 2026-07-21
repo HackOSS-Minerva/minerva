@@ -1,35 +1,64 @@
-// import { type EmailPayload } from "@/types/email";
-// import Acceptance from "@/components/email/acceptance";
-// import Confirmation from "@/components/email/confirmation";
-// import Rejection from "@/components/email/rejection";
-// import Test from "./test";
+import Acceptance from "./acceptance";
+import Confirmation from "./confirmation";
+import Rejection from "./rejection";
+import type { EmailRole, EmailType } from "@/types/email";
 
-// export type EmailPayload = {
-//   name: string;
-//   position: string;
-//   preview: string;
-//   type: "CONFIRMATION" | "ACCEPTANCE" | "REJECTION";
-// };
-import * as React from "react";
+interface EmailProps {
+  type: EmailType;
+  role: EmailRole;
+  name: string;
+}
 
-export const Accept = () => {
-  return <div>hello world</div>;
+const copy: Record<EmailType, { preview: string; subject: string }> = {
+  CONFIRMATION: {
+    preview: "Thank you for applying.",
+    subject: "Thank you for applying",
+  },
+  ACCEPTANCE: {
+    preview: "You have been accepted!",
+    subject: "You have been accepted!",
+  },
+  REJECTION: {
+    preview: "Application update",
+    subject: "Application update",
+  },
 };
 
-// const Email = ({ type, name, position, preview }: EmailPayload) => {
-//   return <Test />;
+const Email = ({ type, role, name }: EmailProps) => {
+  const position = role === "superadmin" ? "super admin" : role;
 
-// if (type === "CONFIRMATION") {
-//   return <Confirmation name={name} position={position} preview={preview} />;
-// }
+  switch (type) {
+    case "CONFIRMATION":
+      return (
+        <Confirmation
+          name={name}
+          position={position}
+          preview={copy.CONFIRMATION.preview}
+        />
+      );
+    case "ACCEPTANCE":
+      return (
+        <Acceptance
+          name={name}
+          position={position}
+          preview={copy.ACCEPTANCE.preview}
+        />
+      );
+    case "REJECTION":
+      return (
+        <Rejection
+          name={name}
+          position={position}
+          preview={copy.REJECTION.preview}
+        />
+      );
+    default: {
+      const unsupportedType: never = type;
+      throw new Error(`Unsupported email type: ${unsupportedType}`);
+    }
+  }
+};
 
-// if (type === "ACCEPTANCE") {
-//   return <Acceptance name={name} position={position} preview={preview} />;
-// }
+export const getEmailSubject = (type: EmailType) => copy[type].subject;
 
-// if (type === "REJECTION") {
-//   return <Rejection name={name} position={position} preview={preview} />;
-// }
-// };
-
-// export default Email;
+export default Email;
