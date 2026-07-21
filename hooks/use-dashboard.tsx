@@ -88,22 +88,6 @@ export const useDashboard = (eventid?: string) => {
     submissions: useMutation(api.submissions.deleteMany),
   } as const;
 
-  const allUpdateMutations = {
-    participants: useMutation(api.participants.update),
-    judges: useMutation(api.judges.update),
-    speakers: useMutation(api.speakers.update),
-    superadmins: useMutation(api.superadmins.update),
-    volunteers: useMutation(api.volunteers.update),
-  } as const;
-
-  const allSetStatusMutations = {
-    participants: useMutation(api.participants.setStatus),
-    judges: useMutation(api.judges.setStatus),
-    speakers: useMutation(api.speakers.setStatus),
-    superadmins: useMutation(api.superadmins.setStatus),
-    volunteers: useMutation(api.volunteers.setStatus),
-  } as const;
-
   const allSetStatusManyMutations = {
     participants: useMutation(api.participants.setStatusMany),
     judges: useMutation(api.judges.setStatusMany),
@@ -114,8 +98,6 @@ export const useDashboard = (eventid?: string) => {
 
   const onDelete = allDeleteMutations[slug as keyof typeof allDeleteMutations];
   const onDeleteMany = allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
-  const onUpdate = allUpdateMutations[slug as keyof typeof allUpdateMutations];
-  const setStatus = allSetStatusMutations[slug as keyof typeof allSetStatusMutations];
   const setStatusMany = allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
   return {
@@ -123,8 +105,6 @@ export const useDashboard = (eventid?: string) => {
     data: (data ?? []) as any,
     onDelete,
     onDeleteMany,
-    onUpdate,
-    setStatus,
     setStatusMany,
   } as const;
 };
