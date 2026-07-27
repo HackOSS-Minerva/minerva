@@ -17,17 +17,57 @@ interface SponsorAnalyticsPageProps {
 }
 
 const dummyMetrics = [
-  { label: "Total Applicants", value: "847", icon: IconUsers, change: "+12% from last year" },
-  { label: "Accepted Participants", value: "320", icon: IconRosette, change: "38% acceptance rate" },
-  { label: "Projects Submitted", value: "89", icon: IconCode, change: "72 projects in review" },
-  { label: "Schools Represented", value: "42", icon: IconBuildingCommunity, change: "Across 3 countries" },
-  { label: "Avg. Team Size", value: "3.6", icon: IconDeviceLaptop, change: "~25 teams formed" },
-  { label: "Avg. Experience Rating", value: "4.2 / 5", icon: IconStar, change: "From participant feedback" },
+  {
+    label: "Total Applicants",
+    value: "847",
+    icon: IconUsers,
+    change: "+12% from last year",
+  },
+  {
+    label: "Accepted Participants",
+    value: "320",
+    icon: IconRosette,
+    change: "38% acceptance rate",
+  },
+  {
+    label: "Projects Submitted",
+    value: "89",
+    icon: IconCode,
+    change: "72 projects in review",
+  },
+  {
+    label: "Schools Represented",
+    value: "42",
+    icon: IconBuildingCommunity,
+    change: "Across 3 countries",
+  },
+  {
+    label: "Avg. Team Size",
+    value: "3.6",
+    icon: IconDeviceLaptop,
+    change: "~25 teams formed",
+  },
+  {
+    label: "Avg. Experience Rating",
+    value: "4.2 / 5",
+    icon: IconStar,
+    change: "From participant feedback",
+  },
 ];
 
 const dummyPrizes = [
-  { label: "Total Prize Pool", value: "$25,000", icon: IconChartBar, change: "Across 8 categories" },
-  { label: "Hacking Hours Logged", value: "2,160+", icon: IconClock, change: "24-hour hackathon" },
+  {
+    label: "Total Prize Pool",
+    value: "$25,000",
+    icon: IconChartBar,
+    change: "Across 8 categories",
+  },
+  {
+    label: "Hacking Hours Logged",
+    value: "2,160+",
+    icon: IconClock,
+    change: "24-hour hackathon",
+  },
 ];
 
 export function AnalyticsPage({ tenant }: SponsorAnalyticsPageProps) {

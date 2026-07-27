@@ -2,8 +2,19 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldLabel,
+  FieldDescription,
+  FieldError,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -33,9 +44,7 @@ interface SubmissionFormPageProps {
   tenant: string;
 }
 
-export function SubmissionFormPage({
-  tenant,
-}: SubmissionFormPageProps) {
+export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
   const router = useRouter();
   const { form, isLocked } = useSubmissions({ tenant });
 
@@ -81,7 +90,8 @@ export function SubmissionFormPage({
             {/* Team Name */}
             <form.Field name="teamName">
               {(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name} className="text-primary">
@@ -98,7 +108,9 @@ export function SubmissionFormPage({
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
@@ -107,7 +119,8 @@ export function SubmissionFormPage({
             {/* Project Name */}
             <form.Field name="projectName">
               {(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name} className="text-primary">
@@ -124,7 +137,9 @@ export function SubmissionFormPage({
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
@@ -133,14 +148,17 @@ export function SubmissionFormPage({
             {/* Description */}
             <form.Field name="description">
               {(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name} className="text-primary">
-                      Project Description<span className="text-destructive">*</span>
+                      Project Description
+                      <span className="text-destructive">*</span>
                     </FieldLabel>
                     <FieldDescription>
-                      Briefly describe what your project does and what problem it solves.
+                      Briefly describe what your project does and what problem
+                      it solves.
                     </FieldDescription>
                     <Textarea
                       id={field.name}
@@ -154,7 +172,9 @@ export function SubmissionFormPage({
                       className="w-full"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
@@ -163,7 +183,8 @@ export function SubmissionFormPage({
             {/* Devpost */}
             <form.Field name="devpost">
               {(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name} className="text-primary">
@@ -180,7 +201,9 @@ export function SubmissionFormPage({
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
@@ -192,7 +215,8 @@ export function SubmissionFormPage({
             <form.Field name="github">
               {(field) => {
                 const links = field.state.value;
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -239,7 +263,9 @@ export function SubmissionFormPage({
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(links.filter((_, i) => i !== idx));
+                              field.handleChange(
+                                links.filter((_, i) => i !== idx),
+                              );
                             }}
                             disabled={isLocked || form.state.isSubmitting}
                           >
@@ -248,7 +274,9 @@ export function SubmissionFormPage({
                         )}
                       </div>
                     ))}
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </div>
                 );
               }}
@@ -260,7 +288,8 @@ export function SubmissionFormPage({
             <form.Field name="figma">
               {(field) => {
                 const links = field.state.value;
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -270,7 +299,8 @@ export function SubmissionFormPage({
                           Figma Designs
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Include links to your Figma design files or prototypes.
+                          Include links to your Figma design files or
+                          prototypes.
                         </p>
                       </div>
                       <Button
@@ -307,7 +337,9 @@ export function SubmissionFormPage({
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(links.filter((_, i) => i !== idx));
+                              field.handleChange(
+                                links.filter((_, i) => i !== idx),
+                              );
                             }}
                             disabled={isLocked || form.state.isSubmitting}
                           >
@@ -316,7 +348,9 @@ export function SubmissionFormPage({
                         )}
                       </div>
                     ))}
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </div>
                 );
               }}
@@ -328,7 +362,8 @@ export function SubmissionFormPage({
             <form.Field name="canva">
               {(field) => {
                 const links = field.state.value;
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -375,7 +410,9 @@ export function SubmissionFormPage({
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(links.filter((_, i) => i !== idx));
+                              field.handleChange(
+                                links.filter((_, i) => i !== idx),
+                              );
                             }}
                             disabled={isLocked || form.state.isSubmitting}
                           >
@@ -384,7 +421,9 @@ export function SubmissionFormPage({
                         )}
                       </div>
                     ))}
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </div>
                 );
               }}
@@ -395,10 +434,14 @@ export function SubmissionFormPage({
             {/* Presentation */}
             <form.Field name="presentation">
               {(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name} className="text-primary flex items-center gap-1">
+                    <FieldLabel
+                      htmlFor={field.name}
+                      className="text-primary flex items-center gap-1"
+                    >
                       <IconLink className="h-4 w-4" />
                       Presentation / Demo Video
                     </FieldLabel>
@@ -417,7 +460,9 @@ export function SubmissionFormPage({
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 );
               }}
@@ -429,7 +474,8 @@ export function SubmissionFormPage({
             <form.Field name="invites">
               {(field) => {
                 const emails = field.state.value;
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -476,7 +522,9 @@ export function SubmissionFormPage({
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(emails.filter((_, i) => i !== idx));
+                              field.handleChange(
+                                emails.filter((_, i) => i !== idx),
+                              );
                             }}
                             disabled={isLocked || form.state.isSubmitting}
                           >
@@ -485,7 +533,9 @@ export function SubmissionFormPage({
                         )}
                       </div>
                     ))}
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </div>
                 );
               }}
@@ -501,11 +551,13 @@ export function SubmissionFormPage({
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isLocked || form.state.isSubmitting}>
+              <Button
+                type="submit"
+                disabled={isLocked || form.state.isSubmitting}
+              >
                 {form.state.isSubmitting ? "Submitting..." : "Submit Project"}
               </Button>
             </div>
-
           </form>
         </CardContent>
       </Card>

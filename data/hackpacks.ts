@@ -4,7 +4,13 @@ export interface Hackpack {
   sponsor: string;
   description: string;
   link: string;
-  category: ("Cloud Credits" | "AI APIs" | "Developer Tools" | "Design Tools" | "Domains")[];
+  category: (
+    | "Cloud Credits"
+    | "AI APIs"
+    | "Developer Tools"
+    | "Design Tools"
+    | "Domains"
+  )[];
   featured: boolean;
   instructions?: string;
 }
@@ -127,8 +133,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://www.canva.com/hackathons/",
     category: ["Design Tools"],
     featured: false,
-    instructions:
-      "Sign up for Canva and enter promo CANVAHACK30 at checkout.",
+    instructions: "Sign up for Canva and enter promo CANVAHACK30 at checkout.",
   },
   {
     id: "namecheap",

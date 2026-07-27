@@ -47,14 +47,13 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
       <div>
         <h1 className="text-2xl font-bold md:text-3xl">Check-in</h1>
         <p className="mt-1 text-muted-foreground">
-          Show your QR code at the event check-in desk to verify your attendance.
+          Show your QR code at the event check-in desk to verify your
+          attendance.
         </p>
       </div>
       <Card className="border-none">
         <CardHeader>
-          <CardTitle className="text-center text-primary">
-            Guest User
-          </CardTitle>
+          <CardTitle className="text-center text-primary">Guest User</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center">

@@ -24,7 +24,21 @@ export const add = mutation({
     presentation: v.optional(v.string()),
     invites: v.array(v.string()),
   },
-  handler: async (ctx, { tenant, teamName, projectName, description, devpost, github, figma, canva, presentation, invites }) => {
+  handler: async (
+    ctx,
+    {
+      tenant,
+      teamName,
+      projectName,
+      description,
+      devpost,
+      github,
+      figma,
+      canva,
+      presentation,
+      invites,
+    },
+  ) => {
     const id = await ctx.db.insert("submissions", {
       teamName,
       projectName,
@@ -62,7 +76,14 @@ export const deleteMany = mutation({
 });
 
 export const updateVetted = mutation({
-  args: { id: v.id("submissions"), vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")) },
+  args: {
+    id: v.id("submissions"),
+    vetted: v.union(
+      v.literal("verified"),
+      v.literal("needs_review"),
+      v.literal("disqualified"),
+    ),
+  },
   handler: async (ctx, { id, vetted }) => {
     await ctx.db.patch(id, { vetted });
     return { success: true };
@@ -70,7 +91,14 @@ export const updateVetted = mutation({
 });
 
 export const updateVettedMany = mutation({
-  args: { ids: v.array(v.id("submissions")), vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")) },
+  args: {
+    ids: v.array(v.id("submissions")),
+    vetted: v.union(
+      v.literal("verified"),
+      v.literal("needs_review"),
+      v.literal("disqualified"),
+    ),
+  },
   handler: async (ctx, { ids, vetted }) => {
     for (const id of ids) {
       await ctx.db.patch(id, { vetted });

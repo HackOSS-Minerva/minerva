@@ -20,7 +20,10 @@ export const add = mutation({
     anything_else: v.string(),
     tenant: v.string(),
   },
-  handler: async (ctx, { find, liked_to_see, not_beneficial, rating, anything_else, tenant }) => {
+  handler: async (
+    ctx,
+    { find, liked_to_see, not_beneficial, rating, anything_else, tenant },
+  ) => {
     const id = await ctx.db.insert("feedback", {
       find,
       liked_to_see,

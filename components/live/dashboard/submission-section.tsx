@@ -24,10 +24,9 @@ export function SubmissionSection({
   const now = Date.now();
   const isPastDeadline = now > submissionDeadline;
 
-  const submissions = useQuery(
-    api.submissions.get,
-    { tenant: tenant.toLowerCase() }
-  );
+  const submissions = useQuery(api.submissions.get, {
+    tenant: tenant.toLowerCase(),
+  });
 
   const hasSubmitted = false;
 
@@ -36,7 +35,10 @@ export function SubmissionSection({
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle>Submission</CardTitle>
         {hasSubmitted && (
-          <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 flex items-center gap-1 font-semibold">
+          <Badge
+            variant="secondary"
+            className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 flex items-center gap-1 font-semibold"
+          >
             <IconCheck className="h-3 w-3" />
             Submitted
           </Badge>
@@ -62,9 +64,7 @@ export function SubmissionSection({
               {timeLeft.hours}h {timeLeft.minutes}m remaining
             </Badge>
           )}
-          {isPastDeadline && (
-            <Badge variant="outline">Deadline Passed</Badge>
-          )}
+          {isPastDeadline && <Badge variant="outline">Deadline Passed</Badge>}
         </div>
 
         {requirements && (

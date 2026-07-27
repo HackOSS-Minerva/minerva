@@ -101,7 +101,9 @@ export default function AssignmentsContent() {
             variant="default"
             size="sm"
             onClick={handleAssign}
-            disabled={isSaving || judges.length === 0 || submissions.length === 0}
+            disabled={
+              isSaving || judges.length === 0 || submissions.length === 0
+            }
           >
             <IconArrowsShuffle className="mr-1 h-4 w-4" />
             {isSaving ? "Saving..." : "Assign"}
@@ -152,7 +154,9 @@ export default function AssignmentsContent() {
             size="icon"
             onClick={() => {
               setViewMode(
-                viewMode === "teams-by-judge" ? "judges-by-team" : "teams-by-judge",
+                viewMode === "teams-by-judge"
+                  ? "judges-by-team"
+                  : "teams-by-judge",
               );
             }}
           >
@@ -232,7 +236,8 @@ export default function AssignmentsContent() {
                             {getJudgeName(judge)}
                           </CardTitle>
                           <p className="text-xs text-muted-foreground">
-                            {teamIds.length} team{teamIds.length !== 1 ? "s" : ""}
+                            {teamIds.length} team
+                            {teamIds.length !== 1 ? "s" : ""}
                           </p>
                         </div>
                       </div>
@@ -287,7 +292,8 @@ export default function AssignmentsContent() {
                             {submission.teamName}
                           </CardTitle>
                           <p className="text-xs text-muted-foreground">
-                            {judgeIds.length} judge{judgeIds.length !== 1 ? "s" : ""} assigned
+                            {judgeIds.length} judge
+                            {judgeIds.length !== 1 ? "s" : ""} assigned
                           </p>
                         </div>
                       </div>

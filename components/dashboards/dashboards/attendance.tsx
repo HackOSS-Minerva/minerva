@@ -131,7 +131,9 @@ export const columns: ColumnDef<CheckinRecord>[] = [
           <DropdownMenuItem
             variant="destructive"
             onClick={() =>
-              table.options.meta?.onDelete(row.original._id as unknown as number)
+              table.options.meta?.onDelete(
+                row.original._id as unknown as number,
+              )
             }
           >
             Delete

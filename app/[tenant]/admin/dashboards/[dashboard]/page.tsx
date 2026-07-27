@@ -15,9 +15,9 @@ const DASHBOARD_TITLES: Record<string, string> = {
 };
 
 interface PageProps {
-  params: {
+  params: Promise<{
     dashboard: string;
-  };
+  }>;
 }
 
 const Page = async ({ params }: PageProps) => {

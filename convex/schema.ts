@@ -170,7 +170,7 @@ export default defineSchema({
     vetted: v.union(
       v.literal("verified"),
       v.literal("needs_review"),
-      v.literal("disqualified")
+      v.literal("disqualified"),
     ),
   }),
   assignments: defineTable({
@@ -183,12 +183,11 @@ export default defineSchema({
         v.literal("assigned"),
         v.literal("completed"),
         v.literal("no_show"),
-      )
+      ),
     ),
     assignedAt: v.number(),
   })
     .index("by_judge", ["judgeId"])
     .index("by_submission", ["submissionId"])
     .index("by_tenant", ["tenant"]),
-
 });

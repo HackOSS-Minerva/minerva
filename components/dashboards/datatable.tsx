@@ -67,8 +67,6 @@ interface DashboardProps {
   };
   onDelete?: (...args: any[]) => any;
   onDeleteMany?: (...args: any[]) => any;
-  onUpdate?: (...args: any[]) => any;
-  setStatus?: (...args: any[]) => any;
   setStatusMany?: (...args: any[]) => any;
 }
 
@@ -91,8 +89,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     dashboard: { columns, csvFields },
     onDelete,
     onDeleteMany,
-    onUpdate,
-    setStatus,
     setStatusMany,
   } = dashboard;
 
@@ -125,12 +121,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         onDelete?.(id);
         setRowSelection({});
       },
-      onDeleteMany: (ids: any) => {
-        onDeleteMany?.(ids);
-        setRowSelection({});
-      },
-      onUpdate: onUpdate,
-      setStatus: setStatus,
       setStatusMany: (ids: any, status: any) => {
         setStatusMany?.(ids, status);
         setRowSelection({});

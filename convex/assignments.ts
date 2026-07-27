@@ -44,9 +44,9 @@ export const setAssignments = mutation({
             v.literal("assigned"),
             v.literal("completed"),
             v.literal("no_show"),
-          )
+          ),
         ),
-      })
+      }),
     ),
   },
   handler: async (ctx, { tenant, assignments }) => {
@@ -85,7 +85,7 @@ export const updateAssignment = mutation({
         v.literal("assigned"),
         v.literal("completed"),
         v.literal("no_show"),
-      )
+      ),
     ),
   },
   handler: async (ctx, { id, room, status }) => {

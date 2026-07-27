@@ -111,11 +111,7 @@ export function TeamProjectsPage({ tenant }: TeamProjectsPageProps) {
         </p>
       </div>
 
-      <SponsorDataTable
-        data={dummyData}
-        columns={columns}
-        csvFields={[]}
-      />
+      <SponsorDataTable data={dummyData} columns={columns} csvFields={[]} />
     </div>
   );
 }

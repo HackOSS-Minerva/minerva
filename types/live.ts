@@ -13,7 +13,13 @@ export interface Hackpack {
   sponsor: string;
   description: string;
   link: string;
-  category: ("Cloud Credits" | "AI APIs" | "Developer Tools" | "Design Tools" | "Domains")[];
+  category: (
+    | "Cloud Credits"
+    | "AI APIs"
+    | "Developer Tools"
+    | "Design Tools"
+    | "Domains"
+  )[];
   featured: boolean;
   instructions?: string;
   tenant: string;
