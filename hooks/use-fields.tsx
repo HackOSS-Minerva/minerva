@@ -155,6 +155,13 @@ export const useFields = () => {
       }
 
       case "judge": {
+        let url = "";
+        const file = value.picture as File;
+        url = await uploadFile(
+          `${tenant}/judges/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`,
+          file,
+        );
+
         const result = await add({
           tenant,
           user: {
@@ -168,7 +175,7 @@ export const useFields = () => {
             title: value.title as string,
             organization: value.organization as string,
             dietrestriction: value.dietrestriction as string,
-            picture: value.picture as string,
+            picture: url,
           },
         });
 

@@ -173,4 +173,22 @@ export default defineSchema({
       v.literal("disqualified")
     ),
   }),
+  assignments: defineTable({
+    judgeId: v.id("judges"),
+    submissionId: v.id("submissions"),
+    tenant: v.string(),
+    room: v.optional(v.string()),
+    status: v.optional(
+      v.union(
+        v.literal("assigned"),
+        v.literal("completed"),
+        v.literal("no_show"),
+      )
+    ),
+    assignedAt: v.number(),
+  })
+    .index("by_judge", ["judgeId"])
+    .index("by_submission", ["submissionId"])
+    .index("by_tenant", ["tenant"]),
+
 });
