@@ -62,12 +62,22 @@ function parseDurationToMs(raw: string | undefined | null): number | undefined {
 }
 
 export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
-  const { live } = useTenant();
+  const { live, tenant } = useTenant();
 
   const endTime = live?.endTime ?? null;
   const rawOpenOffset = live?.openOffset ?? null;
 
   const lock = useMemo(() => {
+    // 1. Check for form-specific lock from tenant config
+    const formLock = tenant?.formLocks?.[form];
+    if (formLock?.opens && formLock?.closes) {
+      return {
+        opensAt: formLock.opens,
+        closesAt: formLock.closes,
+      };
+    }
+
+    // 2. Fall back to offset-based logic from live event
     const fallbackOpen = endTime
       ? new Date(new Date(endTime).getTime() - 24 * 60 * 60 * 1000).toISOString()
       : null;
@@ -83,7 +93,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
       opensAt,
       closesAt,
     };
-  }, [endTime, rawOpenOffset]);
+  }, [endTime, rawOpenOffset, tenant?.formLocks, form]);
 
   const now = useMemo(() => Date.now(), []);
 

@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as assignments from "../assignments.js";
 import type * as checkins from "../checkins.js";
 import type * as feedback from "../feedback.js";
 import type * as ideas from "../ideas.js";
@@ -25,6 +26,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  assignments: typeof assignments;
   checkins: typeof checkins;
   feedback: typeof feedback;
   ideas: typeof ideas;
