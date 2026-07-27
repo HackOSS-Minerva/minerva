@@ -76,7 +76,9 @@ export function ScheduleSection() {
 
   const uniqueDays = useMemo(() => {
     if (!data?.items) return [];
-    const days = [...new Set(data.items.map((e) => getEventDayLabel(e.start.dateTime)))];
+    const days = [
+      ...new Set(data.items.map((e) => getEventDayLabel(e.start.dateTime))),
+    ];
     return days;
   }, [data]);
 
@@ -86,10 +88,12 @@ export function ScheduleSection() {
       const matchesSearch =
         searchQuery.trim() === "" ||
         event.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+        (event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ??
+          false);
 
       const matchesDay =
-        selectedDay === "all" || getEventDayLabel(event.start.dateTime) === selectedDay;
+        selectedDay === "all" ||
+        getEventDayLabel(event.start.dateTime) === selectedDay;
 
       return matchesSearch && matchesDay;
     });
@@ -119,16 +123,15 @@ export function ScheduleSection() {
       <div>
         <h2 className="mb-4 text-lg font-semibold">Schedule</h2>
         <p className="text-sm text-destructive">
-          Failed to load schedule: {(error as Error)?.message ?? "Unknown error"}
+          Failed to load schedule:{" "}
+          {(error as Error)?.message ?? "Unknown error"}
         </p>
       </div>
     );
   }
 
   const otherEvents = filteredItems.filter(
-    (e) =>
-      e.id !== filteredCurrent?.id &&
-      e.id !== filteredNext?.id,
+    (e) => e.id !== filteredCurrent?.id && e.id !== filteredNext?.id,
   );
 
   const pastEvents = otherEvents.filter((event) => {
@@ -167,8 +170,9 @@ export function ScheduleSection() {
               {uniqueDays.map((day) => (
                 <TabsTrigger key={day} value={day} className="text-xs">
                   {formatDayButtonLabel(
-                    data?.items.find((e) => getEventDayLabel(e.start.dateTime) === day)
-                      ?.start.dateTime ?? day,
+                    data?.items.find(
+                      (e) => getEventDayLabel(e.start.dateTime) === day,
+                    )?.start.dateTime ?? day,
                   )}
                 </TabsTrigger>
               ))}
@@ -186,8 +190,15 @@ export function ScheduleSection() {
             </div>
             <h3 className="font-semibold">{filteredCurrent.summary}</h3>
             <p className="text-sm text-muted-foreground">
-              {formatTime(filteredCurrent.start.dateTime, filteredCurrent.start.timeZone)} –{" "}
-              {formatTime(filteredCurrent.end.dateTime, filteredCurrent.end.timeZone)}
+              {formatTime(
+                filteredCurrent.start.dateTime,
+                filteredCurrent.start.timeZone,
+              )}{" "}
+              –{" "}
+              {formatTime(
+                filteredCurrent.end.dateTime,
+                filteredCurrent.end.timeZone,
+              )}
             </p>
             {filteredCurrent.location && (
               <p className="mt-1 text-xs text-muted-foreground">
@@ -215,7 +226,11 @@ export function ScheduleSection() {
             </div>
             <h3 className="font-semibold">{filteredNext.summary}</h3>
             <p className="text-sm text-muted-foreground">
-              {formatTime(filteredNext.start.dateTime, filteredNext.start.timeZone)} –{" "}
+              {formatTime(
+                filteredNext.start.dateTime,
+                filteredNext.start.timeZone,
+              )}{" "}
+              –{" "}
               {formatTime(filteredNext.end.dateTime, filteredNext.end.timeZone)}
             </p>
             {filteredNext.location && (
@@ -227,21 +242,21 @@ export function ScheduleSection() {
         )}
 
         {!filteredCurrent && !filteredNext && upcomingEvents.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground">No upcoming events.</p>
+          <p className="text-center text-sm text-muted-foreground">
+            No upcoming events.
+          </p>
         )}
 
         {upcomingEvents.length > 0 && (
           <div className="mt-3 space-y-2">
             {upcomingEvents
-              .sort((a, b) =>
-                new Date(a.start.dateTime).getTime() -
-                new Date(b.start.dateTime).getTime(),
+              .sort(
+                (a, b) =>
+                  new Date(a.start.dateTime).getTime() -
+                  new Date(b.start.dateTime).getTime(),
               )
               .map((event) => (
-                <div
-                  key={event.id}
-                  className="rounded-lg border p-3"
-                >
+                <div key={event.id} className="rounded-lg border p-3">
                   <h4 className="text-sm font-medium">{event.summary}</h4>
                   <p className="text-xs text-muted-foreground">
                     {formatTime(event.start.dateTime, event.start.timeZone)} –{" "}
@@ -268,9 +283,10 @@ export function ScheduleSection() {
             {showPastEvents && (
               <div className="space-y-2">
                 {pastEvents
-                  .sort((a, b) =>
-                    new Date(a.start.dateTime).getTime() -
-                    new Date(b.start.dateTime).getTime(),
+                  .sort(
+                    (a, b) =>
+                      new Date(a.start.dateTime).getTime() -
+                      new Date(b.start.dateTime).getTime(),
                   )
                   .map((event) => (
                     <div
@@ -284,8 +300,8 @@ export function ScheduleSection() {
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {formatTime(event.start.dateTime, event.start.timeZone)} –{" "}
-                        {formatTime(event.end.dateTime, event.end.timeZone)}
+                        {formatTime(event.start.dateTime, event.start.timeZone)}{" "}
+                        – {formatTime(event.end.dateTime, event.end.timeZone)}
                         {event.location && ` · ${event.location}`}
                       </p>
                     </div>

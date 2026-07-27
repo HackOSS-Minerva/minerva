@@ -114,7 +114,18 @@ export function SubmissionsPage({ tenant }: SubmissionsPageProps) {
       <JudgeDataTable
         data={dummyData}
         columns={columns}
-        csvFields={["teamName", "projectName", "description", "devpost", "github", "figma", "canva", "presentation", "invites", "timestamp"]}
+        csvFields={[
+          "teamName",
+          "projectName",
+          "description",
+          "devpost",
+          "github",
+          "figma",
+          "canva",
+          "presentation",
+          "invites",
+          "timestamp",
+        ]}
       />
     </div>
   );

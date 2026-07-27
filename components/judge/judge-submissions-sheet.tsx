@@ -44,7 +44,10 @@ export function JudgeSubmissionsSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent side="right" className="flex flex-col gap-0 p-0 sm:max-w-sm">
+      <SheetContent
+        side="right"
+        className="flex flex-col gap-0 p-0 sm:max-w-sm"
+      >
         <div className="flex items-center justify-between border-b px-6 py-4">
           <SheetHeader className="p-0">
             <SheetTitle className="text-lg">{item.projectName}</SheetTitle>

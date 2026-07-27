@@ -17,9 +17,7 @@ export const submissionSchema = z.object({
   teamName: z.string().min(1, "Team name is required."),
   projectName: z.string().min(1, "Project name is required."),
   description: z.string().min(1, "Project description is required."),
-  devpost: z.url(
-    "Please enter a valid URL (e.g., https://devpost.com/...)",
-  ),
+  devpost: z.url("Please enter a valid URL (e.g., https://devpost.com/...)"),
   github: z.array(optionalUrl),
   figma: z.array(optionalUrl),
   canva: z.array(optionalUrl),
@@ -72,9 +70,7 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
           cleanCanva.length > 0
         )
       ) {
-        toast.error(
-          "At least one GitHub, Figma, or Canva link is required.",
-        );
+        toast.error("At least one GitHub, Figma, or Canva link is required.");
         return;
       }
 

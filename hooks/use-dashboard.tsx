@@ -97,8 +97,10 @@ export const useDashboard = (eventid?: string) => {
   } as const;
 
   const onDelete = allDeleteMutations[slug as keyof typeof allDeleteMutations];
-  const onDeleteMany = allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
-  const setStatusMany = allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
+  const onDeleteMany =
+    allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
+  const setStatusMany =
+    allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
   return {
     dashboard: DASHBOARDS[slug],

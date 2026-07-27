@@ -107,28 +107,26 @@ export const useFields = () => {
           );
         }
 
-        const result = await add(
-          {
-            tenant,
-            user: {
-              firstname: firstname,
-              lastname: lastname,
-              email: email,
-              telephone: value.telephone as string,
-              gender: value.gender as string,
-              shirt: value.shirt as string,
-              discord: value.discord as string,
-              major: value.major as string,
-              age: value.age as string,
-              country: value.country as string,
-              school: value.school as string,
-              grade: value.grade as string,
-              mlh_marketing: Boolean(value.mlh_marketing),
-              dietrestriction: value.dietrestriction as string,
-              resume: url || undefined,
-            },
+        const result = await add({
+          tenant,
+          user: {
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+            telephone: value.telephone as string,
+            gender: value.gender as string,
+            shirt: value.shirt as string,
+            discord: value.discord as string,
+            major: value.major as string,
+            age: value.age as string,
+            country: value.country as string,
+            school: value.school as string,
+            grade: value.grade as string,
+            mlh_marketing: Boolean(value.mlh_marketing),
+            dietrestriction: value.dietrestriction as string,
+            resume: url || undefined,
           },
-        );
+        });
 
         if (result.user) {
           Posthog.pending("participant", result.user, tenant);
@@ -206,7 +204,10 @@ export const useFields = () => {
       case "speaker": {
         let url = "";
         const file = value.picture as File;
-        url = await uploadFile(`${tenant}/speakers/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`, file);
+        url = await uploadFile(
+          `${tenant}/speakers/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`,
+          file,
+        );
 
         const result = await add({
           tenant,

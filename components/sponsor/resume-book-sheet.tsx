@@ -33,7 +33,10 @@ export function ResumeBookSheet({
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent side="right" className="flex flex-col gap-0 p-0 sm:max-w-sm">
+      <SheetContent
+        side="right"
+        className="flex flex-col gap-0 p-0 sm:max-w-sm"
+      >
         <div className="flex items-center justify-between border-b px-6 py-4">
           <SheetHeader className="p-0">
             <SheetTitle className="text-lg">
@@ -64,7 +67,11 @@ export function ResumeBookSheet({
               Demographics
             </p>
             <div className="grid gap-3">
-              <DetailRow icon={GraduationCap} label="School" value={item.school} />
+              <DetailRow
+                icon={GraduationCap}
+                label="School"
+                value={item.school}
+              />
               <DetailRow icon={Award} label="Grade" value={item.grade} />
               <DetailRow icon={BookOpen} label="Major" value={item.major} />
             </div>

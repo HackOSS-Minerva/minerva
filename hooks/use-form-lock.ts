@@ -79,12 +79,17 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
 
     // 2. Fall back to offset-based logic from live event
     const fallbackOpen = endTime
-      ? new Date(new Date(endTime).getTime() - 24 * 60 * 60 * 1000).toISOString()
+      ? new Date(
+          new Date(endTime).getTime() - 24 * 60 * 60 * 1000,
+        ).toISOString()
       : null;
 
     const opensAt =
       endTime && rawOpenOffset !== null && rawOpenOffset !== undefined
-        ? new Date(new Date(endTime).getTime() - parseDurationToMs(String(rawOpenOffset))!).toISOString()
+        ? new Date(
+            new Date(endTime).getTime() -
+              parseDurationToMs(String(rawOpenOffset))!,
+          ).toISOString()
         : fallbackOpen;
 
     const closesAt = endTime ?? null;
