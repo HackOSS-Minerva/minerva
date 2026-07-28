@@ -7,6 +7,7 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { useFormLock } from "./use-form-lock";
 import { z } from "zod";
+import { captureAnalyticsEvent } from "@/lib/posthog";
 
 const optionalUrl = z.union([
   z.literal(""),
@@ -75,7 +76,7 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
       }
 
       try {
-        await addSubmission({
+        const result = await addSubmission({
           tenant,
           teamName: value.teamName,
           projectName: value.projectName,
@@ -86,6 +87,11 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
           canva: cleanCanva,
           presentation: value.presentation || undefined,
           invites: value.invites.filter((e) => e.trim() !== ""),
+        });
+
+        captureAnalyticsEvent("submission_created", {
+          tenant,
+          entity_id: String(result.id),
         });
 
         toast.success("Project submitted successfully!");
