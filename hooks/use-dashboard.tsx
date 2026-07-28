@@ -116,9 +116,7 @@ export const useDashboard = (eventid?: string) => {
     allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
   const role =
-    applicationRoleByDashboard[
-      slug as keyof typeof applicationRoleByDashboard
-    ];
+    applicationRoleByDashboard[slug as keyof typeof applicationRoleByDashboard];
   const shouldCaptureDeletion =
     Boolean(role) || slug === "attendance" || slug === "submissions";
 

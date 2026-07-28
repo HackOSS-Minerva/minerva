@@ -17,7 +17,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAnalytics } from "@/hooks/use-analytics";
-import type { AnalyticsRole, ParticipantDemographicKey } from "@/lib/posthog";
+import type {
+  AnalyticsRole,
+  ParticipantDemographicBreakdown,
+  ParticipantDemographicKey,
+} from "@/lib/posthog";
 
 type AnalyticsPageProps = {
   tenant: string;
@@ -51,9 +55,15 @@ const participantDemographicLabels: Record<ParticipantDemographicKey, string> =
     grade: "Grade",
   };
 
-const participantDemographicKeys = Object.keys(
-  participantDemographicLabels,
-) as ParticipantDemographicKey[];
+const participantDemographicKeys: ParticipantDemographicKey[] = [
+  "gender",
+  "age",
+  "dietrestriction",
+  "shirt",
+  "school",
+  "major",
+  "grade",
+];
 
 function MetricCard({ label, value, description }: MetricCardProps) {
   return (
@@ -66,6 +76,55 @@ function MetricCard({ label, value, description }: MetricCardProps) {
         <div className="text-2xl font-bold tabular-nums">
           {value.toLocaleString()}
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+type ParticipantDemographicCardProps = {
+  label: string;
+  breakdown: ParticipantDemographicBreakdown[];
+};
+
+function ParticipantDemographicCard({
+  label,
+  breakdown,
+}: ParticipantDemographicCardProps) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">{label}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {breakdown.length > 0 ? (
+          <div className="space-y-4">
+            {breakdown.map((item) => {
+              const barWidth = Math.min(Math.max(item.percentage, 0), 100);
+
+              return (
+                <div key={item.value} className="space-y-2">
+                  <div className="flex items-start justify-between gap-4 text-sm">
+                    <span className="break-words">{item.value}</span>
+                    <span className="shrink-0 tabular-nums">
+                      {item.count.toLocaleString()} (
+                      {item.percentage.toLocaleString()}%)
+                    </span>
+                  </div>
+                  <div className="bg-muted h-2 overflow-hidden rounded-full">
+                    <div
+                      className="bg-primary h-full rounded-full"
+                      style={{ width: `${barWidth}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <span className="text-muted-foreground text-sm">
+            No PostHog data yet
+          </span>
+        )}
       </CardContent>
     </Card>
   );
@@ -160,7 +219,7 @@ export function AnalyticsPage({ tenant, audience }: AnalyticsPageProps) {
         <>
           <Card>
             <CardHeader>
-              <CardTitle>Applications by role</CardTitle>
+              <CardTitle>Applications by Role</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
@@ -202,51 +261,18 @@ export function AnalyticsPage({ tenant, audience }: AnalyticsPageProps) {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Participant demographics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Attribute</TableHead>
-                    <TableHead>Distribution</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {participantDemographicKeys.map((key) => {
-                    const breakdown =
-                      data.applications.participantDemographics[key];
-
-                    return (
-                      <TableRow key={key}>
-                        <TableCell className="font-medium">
-                          {participantDemographicLabels[key]}
-                        </TableCell>
-                        <TableCell>
-                          {breakdown.length > 0 ? (
-                            <div className="flex flex-wrap gap-x-4 gap-y-1">
-                              {breakdown.map((item) => (
-                                <span key={item.value}>
-                                  {item.value}: {item.count.toLocaleString()} (
-                                  {item.percentage.toLocaleString()}%)
-                                </span>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-muted-foreground">
-                              No PostHog data yet
-                            </span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold">Participant Demographics</h2>
+            <div className="grid gap-4 lg:grid-cols-2">
+              {participantDemographicKeys.map((key) => (
+                <ParticipantDemographicCard
+                  key={key}
+                  label={participantDemographicLabels[key]}
+                  breakdown={data.applications.participantDemographics[key]}
+                />
+              ))}
+            </div>
+          </section>
         </>
       ) : null}
     </div>
