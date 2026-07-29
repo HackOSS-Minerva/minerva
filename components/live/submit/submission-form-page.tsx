@@ -115,6 +115,38 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
               }}
             </form.Field>
 
+            <form.Field name="submitterEmail">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name} className="text-primary">
+                      Submitter Email
+                      <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="email"
+                      value={field.state.value}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      onBlur={field.handleBlur}
+                      placeholder="you@email.com"
+                      disabled={isLocked || form.state.isSubmitting}
+                      autoComplete="email"
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
             {/* Project Name */}
             <form.Field name="projectName">
               {(field) => {

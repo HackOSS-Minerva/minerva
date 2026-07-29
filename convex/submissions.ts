@@ -17,6 +17,14 @@ function uniqueNormalizedEmails(emails: string[]): string[] {
   );
 }
 
+function normalizeRequiredEmail(email: string): string {
+  const normalized = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
+    throw new Error("A valid submitter email is required.");
+  }
+  return normalized;
+}
+
 export const get = query({
   args: { tenant: v.string() },
   handler: async (ctx, { tenant }) => {
@@ -38,6 +46,7 @@ export const add = mutation({
   args: {
     tenant: v.string(),
     teamName: v.string(),
+    submitterEmail: v.string(),
     projectName: v.string(),
     description: v.string(),
     devpost: v.string(),
@@ -52,6 +61,7 @@ export const add = mutation({
     {
       tenant,
       teamName,
+      submitterEmail,
       projectName,
       description,
       devpost,
@@ -62,7 +72,10 @@ export const add = mutation({
       invites,
     },
   ) => {
-    const normalizedInvites = uniqueNormalizedEmails(invites);
+    const normalizedSubmitterEmail = normalizeRequiredEmail(submitterEmail);
+    const normalizedInvites = uniqueNormalizedEmails(invites).filter(
+      (email) => email !== normalizedSubmitterEmail,
+    );
     const declaredTeamCount = 1 + normalizedInvites.length;
 
     if (declaredTeamCount > 4) {
@@ -73,6 +86,7 @@ export const add = mutation({
 
     const id = await ctx.db.insert("submissions", {
       teamName,
+      submitterEmail: normalizedSubmitterEmail,
       projectName,
       description,
       devpost,

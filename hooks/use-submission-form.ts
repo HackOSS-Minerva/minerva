@@ -15,6 +15,7 @@ const optionalUrl = z.union([
 
 export const submissionSchema = z.object({
   teamName: z.string().min(1, "Team name is required."),
+  submitterEmail: z.email("Please enter a valid email address."),
   projectName: z.string().min(1, "Project name is required."),
   description: z.string().min(1, "Project description is required."),
   devpost: z.url("Please enter a valid URL (e.g., https://devpost.com/...)"),
@@ -34,6 +35,7 @@ export type SubmissionFormData = z.infer<typeof submissionSchema>;
 
 export const defaultValues: SubmissionFormData = {
   teamName: "",
+  submitterEmail: "",
   projectName: "",
   description: "",
   devpost: "",
@@ -80,7 +82,12 @@ export function useSubmissionForm({ tenant }: UseSubmissionFormOptions) {
         return;
       }
 
-      const normalizedInvites = uniqueNormalizedEmails(value.invites);
+      const normalizedSubmitterEmail = value.submitterEmail
+        .trim()
+        .toLowerCase();
+      const normalizedInvites = uniqueNormalizedEmails(value.invites).filter(
+        (email) => email !== normalizedSubmitterEmail,
+      );
       if (normalizedInvites.length + 1 > 4) {
         toast.error(
           "Teams can include at most 4 people including the submitter.",
@@ -92,6 +99,7 @@ export function useSubmissionForm({ tenant }: UseSubmissionFormOptions) {
         await addSubmission({
           tenant,
           teamName: value.teamName,
+          submitterEmail: normalizedSubmitterEmail,
           projectName: value.projectName,
           description: value.description,
           devpost: value.devpost,

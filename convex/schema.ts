@@ -158,6 +158,7 @@ export default defineSchema({
 
   submissions: defineTable({
     teamName: v.string(),
+    submitterEmail: v.optional(v.string()),
     projectName: v.string(),
     description: v.string(),
     devpost: v.string(),

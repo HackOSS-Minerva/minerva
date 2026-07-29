@@ -45,6 +45,7 @@ interface SubmissionRecord {
   _id: string;
   _creationTime: number;
   teamName: string;
+  submitterEmail?: string;
   projectName: string;
   description: string;
   devpost: string;
@@ -67,6 +68,7 @@ export const schema = undefined;
 
 export const csvFields = [
   "teamName",
+  "submitterEmail",
   "projectName",
   "description",
   "devpost",
@@ -288,13 +290,15 @@ function SubmissionDetailsContent({ item }: { item: SubmissionRecord }) {
                 icon={Users}
                 label="Team Members"
                 value={
-                  item.invites && item.invites.length > 0
-                    ? item.invites.map((email, i) => (
-                        <span key={i} className="block text-sm">
-                          {email}
-                        </span>
-                      ))
-                    : "No invites"
+                  item.submitterEmail || item.invites.length > 0
+                    ? [item.submitterEmail, ...item.invites]
+                        .filter((email): email is string => Boolean(email))
+                        .map((email, i) => (
+                          <span key={i} className="block text-sm">
+                            {email}
+                          </span>
+                        ))
+                    : "No team emails"
                 }
               />
             </div>
