@@ -1,9 +1,9 @@
 import { AnalyticsPage as SharedAnalyticsPage } from "@/components/analytics/analytics-page";
 
-interface SponsorAnalyticsPageProps {
+interface JudgeAnalyticsPageProps {
   tenant: string;
 }
 
-export function AnalyticsPage({ tenant }: SponsorAnalyticsPageProps) {
+export function AnalyticsPage({ tenant }: JudgeAnalyticsPageProps) {
   return <SharedAnalyticsPage tenant={tenant} scope="shared" />;
 }

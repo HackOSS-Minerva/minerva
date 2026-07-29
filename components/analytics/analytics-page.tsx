@@ -25,7 +25,7 @@ import type {
 
 type AnalyticsPageProps = {
   tenant: string;
-  audience: "admin" | "sponsor";
+  scope: "shared" | "admin";
 };
 
 type MetricCardProps = {
@@ -130,7 +130,7 @@ function ParticipantDemographicCard({
   );
 }
 
-export function AnalyticsPage({ tenant, audience }: AnalyticsPageProps) {
+export function AnalyticsPage({ tenant, scope }: AnalyticsPageProps) {
   const { data, isLoading, isError, refetch, isFetching } =
     useAnalytics(tenant);
 
@@ -154,30 +154,7 @@ export function AnalyticsPage({ tenant, audience }: AnalyticsPageProps) {
     );
   }
 
-  const sponsorMetrics: MetricCardProps[] = [
-    {
-      label: "Total applications",
-      value: data.applications.total,
-      description: "Across all application roles",
-    },
-    {
-      label: "Accepted participants",
-      value: data.applications.byRole.participant.accepted,
-      description: "Current accepted participant applications",
-    },
-    {
-      label: "Active participants",
-      value: data.checkins.activeParticipants,
-      description: "Unique participants with a successful check-in",
-    },
-    {
-      label: "Projects submitted",
-      value: data.submissions.total,
-      description: "Current project submissions",
-    },
-  ];
-
-  const adminMetrics: MetricCardProps[] = [
+  const sharedMetrics: MetricCardProps[] = [
     {
       label: "Accepted applications",
       value: data.applications.accepted,
@@ -195,27 +172,21 @@ export function AnalyticsPage({ tenant, audience }: AnalyticsPageProps) {
     },
   ];
 
-  const metrics = audience === "admin" ? adminMetrics : sponsorMetrics;
-
   return (
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">
-          {audience === "admin" ? "Event analytics" : "Hackathon analytics"}
+          {scope === "admin" ? "Event analytics" : "Hackathon analytics"}
         </h1>
       </div>
 
-      <div
-        className={`grid gap-4 sm:grid-cols-2 ${
-          audience === "admin" ? "lg:grid-cols-3" : "lg:grid-cols-4"
-        }`}
-      >
-        {metrics.map((metric) => (
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {sharedMetrics.map((metric) => (
           <MetricCard key={metric.label} {...metric} />
         ))}
       </div>
 
-      {audience === "admin" ? (
+      {scope === "admin" ? (
         <>
           <Card>
             <CardHeader>
