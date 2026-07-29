@@ -13,6 +13,11 @@ import * as volunteers from "@/components/dashboards/dashboards/volunteers";
 import * as attendance from "@/components/dashboards/dashboards/attendance";
 import * as feedback from "@/components/dashboards/dashboards/feedback";
 import * as submissions from "@/components/dashboards/dashboards/submissions";
+import {
+  captureAnalyticsEvent,
+  type AnalyticsRole,
+  type ApplicationStatus,
+} from "@/lib/posthog";
 
 type slugs =
   | "participants"
@@ -43,6 +48,14 @@ const DASHBOARDS = {
   feedback,
   submissions,
 } as const;
+
+const applicationRoleByDashboard = {
+  participants: "participant",
+  judges: "judge",
+  speakers: "speaker",
+  superadmins: "superadmin",
+  volunteers: "volunteer",
+} as const satisfies Partial<Record<slugs, AnalyticsRole>>;
 
 const QUERIES: Record<slugs, DashboardQuery> = {
   participants: api.participants.get,
@@ -102,11 +115,80 @@ export const useDashboard = (eventid?: string) => {
   const setStatusMany =
     allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
+  const role =
+    applicationRoleByDashboard[slug as keyof typeof applicationRoleByDashboard];
+  const shouldCaptureDeletion =
+    Boolean(role) || slug === "attendance" || slug === "submissions";
+
+  const captureDeletion = (id: string) => {
+    if (role) {
+      captureAnalyticsEvent("application_deleted", {
+        tenant: tenantName,
+        entity_id: id,
+        role,
+      });
+    } else if (slug === "attendance") {
+      captureAnalyticsEvent("checkin_deleted", {
+        tenant: tenantName,
+        entity_id: id,
+      });
+    } else if (slug === "submissions") {
+      captureAnalyticsEvent("submission_deleted", {
+        tenant: tenantName,
+        entity_id: id,
+      });
+    }
+  };
+
+  const onDeleteWithAnalytics = async (id: string) => {
+    const mutation = onDelete as unknown as (args: {
+      id: string;
+    }) => Promise<unknown>;
+    const result = await mutation({ id });
+    captureDeletion(id);
+    return result;
+  };
+
+  const onDeleteManyWithAnalytics = async ({ ids }: { ids: string[] }) => {
+    const mutation = onDeleteMany as unknown as (args: {
+      ids: string[];
+    }) => Promise<unknown>;
+    const result = await mutation({ ids });
+    ids.forEach(captureDeletion);
+    return result;
+  };
+
+  const setStatusManyWithAnalytics = async (
+    ids: string[],
+    status: ApplicationStatus,
+  ) => {
+    const mutation = setStatusMany as unknown as (args: {
+      ids: string[];
+      status: ApplicationStatus;
+    }) => Promise<unknown>;
+    const result = await mutation({ ids, status });
+
+    if (role) {
+      for (const id of ids) {
+        captureAnalyticsEvent("application_status_changed", {
+          tenant: tenantName,
+          entity_id: id,
+          role,
+          status,
+        });
+      }
+    }
+
+    return result;
+  };
+
   return {
     dashboard: DASHBOARDS[slug],
-    data: (data ?? []) as any,
-    onDelete,
-    onDeleteMany,
-    setStatusMany,
+    data: (data ?? []) as unknown[],
+    onDelete: shouldCaptureDeletion ? onDeleteWithAnalytics : onDelete,
+    onDeleteMany: shouldCaptureDeletion
+      ? onDeleteManyWithAnalytics
+      : onDeleteMany,
+    setStatusMany: role ? setStatusManyWithAnalytics : setStatusMany,
   } as const;
 };

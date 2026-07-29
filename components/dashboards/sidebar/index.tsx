@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   IconCamera,
+  IconChartBar,
   IconClipboardList,
   IconDatabase,
   IconFileAi,
@@ -30,6 +31,11 @@ import Link from "next/link";
 
 const data = {
   navUtilities: [
+    {
+      title: "Analytics",
+      url: "/admin/analytics",
+      icon: IconChartBar,
+    },
     {
       title: "QR Code Generator",
       url: "/admin/utilities/qr-code",

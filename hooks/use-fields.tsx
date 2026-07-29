@@ -8,11 +8,10 @@ import * as judge from "@/components/forms/fields/judge";
 import * as speaker from "@/components/forms/fields/speaker";
 import * as superadmin from "@/components/forms/fields/superadmin";
 import * as volunteer from "@/components/forms/fields/volunteer";
-import * as Posthog from "@/lib/posthog";
+import { captureAnalyticsEvent } from "@/lib/posthog";
 // import { useSendEmail } from "./use-send-email";
 import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
-import { useRef, useMemo } from "react";
 
 export type slugs =
   | "participant"
@@ -73,26 +72,12 @@ export const useFields = () => {
           },
         });
 
-        if (result.user) {
-          Posthog.pending("volunteer", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "volunteer",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "volunteer",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
-            tenant,
-          );
-        }
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "volunteer",
+          status: "PENDING",
+        });
 
         return result;
       }
@@ -128,26 +113,19 @@ export const useFields = () => {
           },
         });
 
-        if (result.user) {
-          Posthog.pending("participant", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "participant",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "participant",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
-            tenant,
-          );
-        }
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "participant",
+          status: "PENDING",
+          gender: value.gender as string,
+          dietrestriction: value.dietrestriction as string,
+          shirt: value.shirt as string,
+          school: value.school as string,
+          major: value.major as string,
+          age: value.age as string,
+          grade: value.grade as string,
+        });
 
         return result;
       }
@@ -177,26 +155,12 @@ export const useFields = () => {
           },
         });
 
-        if (result.user) {
-          Posthog.pending("judge", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "judge",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "judge",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
-            tenant,
-          );
-        }
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "judge",
+          status: "PENDING",
+        });
 
         return result;
       }
@@ -226,26 +190,12 @@ export const useFields = () => {
           },
         });
 
-        if (result.user) {
-          Posthog.pending("speaker", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "speaker",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "speaker",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
-            tenant,
-          );
-        }
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "speaker",
+          status: "PENDING",
+        });
 
         return result;
       }
@@ -269,26 +219,12 @@ export const useFields = () => {
           },
         });
 
-        if (result.user) {
-          Posthog.pending("superadmin", result.user, tenant);
-          // await sendEmail.mutateAsync({
-          //   role: "superadmin",
-          //   type: "CONFIRMATION",
-          //   user: result.user,
-          //   tenant,
-          // });
-
-          Posthog.email(
-            result.user.email,
-            {
-              name: result.user.firstname + result.user.lastname,
-              position: "superadmin",
-              type: "CONFIRMATION",
-              preview: "Thank you for applying.",
-            },
-            tenant,
-          );
-        }
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "superadmin",
+          status: "PENDING",
+        });
 
         return result;
       }
