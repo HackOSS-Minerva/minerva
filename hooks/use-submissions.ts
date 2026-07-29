@@ -1,104 +1,85 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
-import { useMutation } from "convex/react";
-import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { toast } from "sonner";
-import { useFormLock } from "./use-form-lock";
-import { z } from "zod";
+import type { Id } from "@/convex/_generated/dataModel";
+import type {
+  SubmissionVettingResult,
+  VettingBatchResult,
+  VettingEventConfig,
+} from "@/lib/vetting/types";
+import { useTenant } from "./use-tenant";
 
-const optionalUrl = z.union([
-  z.literal(""),
-  z.url("Please enter a valid URL."),
-]);
+const DEFAULT_GRACE_WINDOW_MINUTES = 15;
 
-export const submissionSchema = z.object({
-  teamName: z.string().min(1, "Team name is required."),
-  projectName: z.string().min(1, "Project name is required."),
-  description: z.string().min(1, "Project description is required."),
-  devpost: z.url("Please enter a valid URL (e.g., https://devpost.com/...)"),
-  github: z.array(optionalUrl),
-  figma: z.array(optionalUrl),
-  canva: z.array(optionalUrl),
-  presentation: z.union([
-    z.literal(""),
-    z.url("Please enter a valid presentation URL."),
-  ]),
-  invites: z.array(
-    z.union([z.literal(""), z.email("Invalid email address format.")]),
-  ),
-});
+export type { VettingBatchResult } from "@/lib/vetting/types";
 
-export type SubmissionFormData = z.infer<typeof submissionSchema>;
+type SubmissionId = Id<"submissions">;
 
-export const defaultValues: SubmissionFormData = {
-  teamName: "",
-  projectName: "",
-  description: "",
-  devpost: "",
-  github: [""],
-  figma: [""],
-  canva: [""],
-  presentation: "",
-  invites: [""],
-};
+export function useSubmissions() {
+  const { live } = useTenant();
+  const vetSubmission = useAction(api.vetting.runSubmissionVetting);
+  const vetSubmissions = useAction(api.vetting.runSubmissionVettingMany);
 
-interface UseSubmissionsOptions {
-  tenant: string;
-}
+  const getEventConfig = useCallback((): VettingEventConfig => {
+    if (!live) {
+      throw new Error("Event configuration is unavailable");
+    }
 
-export function useSubmissions({ tenant }: UseSubmissionsOptions) {
-  const router = useRouter();
-  const addSubmission = useMutation(api.submissions.add);
-  const { isLocked } = useFormLock({ form: "submission" });
+    const startsAt = new Date(live.startTime).getTime();
+    const submissionDeadlineAt = new Date(live.submission.deadline).getTime();
+    const gitCommitGraceWindowMinutes =
+      live.submission.gitCommitGraceWindowMinutes ??
+      DEFAULT_GRACE_WINDOW_MINUTES;
 
-  const form = useForm({
-    defaultValues,
-    validators: {
-      onSubmit: submissionSchema,
+    if (!Number.isFinite(startsAt)) {
+      throw new Error("Event vetting timeline is invalid");
+    }
+
+    if (
+      !Number.isFinite(submissionDeadlineAt) ||
+      submissionDeadlineAt < startsAt
+    ) {
+      throw new Error("Submission deadline is invalid");
+    }
+
+    if (
+      !Number.isInteger(gitCommitGraceWindowMinutes) ||
+      gitCommitGraceWindowMinutes < 0 ||
+      gitCommitGraceWindowMinutes > 1440
+    ) {
+      throw new Error("Git commit grace window is invalid");
+    }
+
+    return {
+      startsAt,
+      submissionDeadlineAt,
+      gitCommitGraceWindowMinutes,
+    };
+  }, [live]);
+
+  const runVetting = useCallback(
+    async (id: string): Promise<SubmissionVettingResult> => {
+      return await vetSubmission({
+        submissionId: id as SubmissionId,
+        event: getEventConfig(),
+      });
     },
-    onSubmit: async ({ value }) => {
-      // Cross-field validation: at least one link across github/figma/canva
-      const cleanGithub = value.github.filter((l) => l.trim() !== "");
-      const cleanFigma = value.figma.filter((l) => l.trim() !== "");
-      const cleanCanva = value.canva.filter((l) => l.trim() !== "");
-      if (
-        !(
-          cleanGithub.length > 0 ||
-          cleanFigma.length > 0 ||
-          cleanCanva.length > 0
-        )
-      ) {
-        toast.error("At least one GitHub, Figma, or Canva link is required.");
-        return;
-      }
+    [getEventConfig, vetSubmission],
+  );
 
-      try {
-        await addSubmission({
-          tenant,
-          teamName: value.teamName,
-          projectName: value.projectName,
-          description: value.description,
-          devpost: value.devpost,
-          github: cleanGithub,
-          figma: cleanFigma,
-          canva: cleanCanva,
-          presentation: value.presentation || undefined,
-          invites: value.invites.filter((e) => e.trim() !== ""),
-        });
-
-        toast.success("Project submitted successfully!");
-        router.push(`/${tenant}/live/dashboard`);
-      } catch (error) {
-        console.error("Failed to submit project:", error);
-        toast.error("Failed to submit project. Please try again.");
-      }
+  const runVettingMany = useCallback(
+    async (ids: string[]): Promise<VettingBatchResult[]> => {
+      const submissionIds = ids as SubmissionId[];
+      const event = getEventConfig();
+      return await vetSubmissions({ submissionIds, event });
     },
-  });
+    [getEventConfig, vetSubmissions],
+  );
 
   return {
-    form,
-    isLocked,
+    runVetting,
+    runVettingMany,
   };
 }

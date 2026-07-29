@@ -118,6 +118,7 @@ export default defineSchema({
     tenant: v.string(),
   })
     .index("by_user_event", ["userid", "eventid"])
+    .index("by_user_event_tenant", ["userid", "eventid", "tenant"])
     .index("by_event_tenant", ["eventid", "tenant"]),
 
   volunteers: defineTable({
@@ -157,6 +158,7 @@ export default defineSchema({
 
   submissions: defineTable({
     teamName: v.string(),
+    submitterEmail: v.optional(v.string()),
     projectName: v.string(),
     description: v.string(),
     devpost: v.string(),
@@ -172,7 +174,16 @@ export default defineSchema({
       v.literal("needs_review"),
       v.literal("disqualified"),
     ),
-  }),
+    vettingStatus: v.optional(
+      v.union(
+        v.literal("not_started"),
+        v.literal("queued"),
+        v.literal("running"),
+        v.literal("completed"),
+        v.literal("failed"),
+      ),
+    ),
+  }).index("by_tenant", ["tenant"]),
   assignments: defineTable({
     judgeId: v.id("judges"),
     submissionId: v.id("submissions"),

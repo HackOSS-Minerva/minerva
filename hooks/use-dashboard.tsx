@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useTenant } from "./use-tenant";
 import type { FunctionReference } from "convex/server";
+import { useSubmissions } from "./use-submissions";
 import * as participants from "@/components/dashboards/dashboards/participants";
 import * as judges from "@/components/dashboards/dashboards/judges";
 import * as speakers from "@/components/dashboards/dashboards/speakers";
@@ -25,6 +26,7 @@ type slugs =
   | "submissions";
 
 type DashboardQueryArgs = { tenant: string; eventid?: string };
+type DashboardRow = { _id?: string; email?: string } & Record<string, unknown>;
 
 type DashboardQuery = FunctionReference<
   "query",
@@ -60,6 +62,8 @@ export const useDashboard = (eventid?: string) => {
   const { tenant } = useTenant();
   const slug = dashboard;
   const tenantName = tenant.name.toLocaleLowerCase();
+
+  const { runVettingMany } = useSubmissions();
 
   const data = useQuery(QUERIES[slug], {
     tenant: tenantName,
@@ -104,9 +108,10 @@ export const useDashboard = (eventid?: string) => {
 
   return {
     dashboard: DASHBOARDS[slug],
-    data: (data ?? []) as any,
+    data: (data ?? []) as DashboardRow[],
     onDelete,
     onDeleteMany,
     setStatusMany,
+    runVettingMany: slug === "submissions" ? runVettingMany : undefined,
   } as const;
 };

@@ -35,10 +35,9 @@ import {
   IconMail,
   IconFileText,
 } from "@tabler/icons-react";
-import { useTenant } from "@/hooks/use-tenant";
 import { Separator } from "@/components/ui/separator";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
-import { useSubmissions } from "@/hooks/use-submissions";
+import { useSubmissionForm } from "@/hooks/use-submission-form";
 
 interface SubmissionFormPageProps {
   tenant: string;
@@ -46,7 +45,7 @@ interface SubmissionFormPageProps {
 
 export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
   const router = useRouter();
-  const { form, isLocked } = useSubmissions({ tenant });
+  const { form, isLocked } = useSubmissionForm({ tenant });
 
   return (
     <div className="space-y-8">
@@ -106,6 +105,38 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       placeholder="Enter your team name"
                       disabled={isLocked || form.state.isSubmitting}
                       autoComplete="off"
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            </form.Field>
+
+            <form.Field name="submitterEmail">
+              {(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name} className="text-primary">
+                      Submitter Email
+                      <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="email"
+                      value={field.state.value}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
+                      onBlur={field.handleBlur}
+                      placeholder="you@email.com"
+                      disabled={isLocked || form.state.isSubmitting}
+                      autoComplete="email"
                       aria-invalid={isInvalid}
                     />
                     {isInvalid && (

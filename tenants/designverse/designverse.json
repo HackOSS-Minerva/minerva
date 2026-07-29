@@ -16,6 +16,7 @@
     "submission": {
       "url": "https://designverse-2026.devpost.com",
       "deadline": "2026-10-31T23:59:59.000Z",
+      "gitCommitGraceWindowMinutes": 15,
       "requirements": "Submit a link to your project repository, demo video (max 3 minutes), and a text description of your project."
     }
   },
