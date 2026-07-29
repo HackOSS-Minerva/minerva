@@ -19,8 +19,8 @@ type SubmissionId = Id<"submissions">;
 
 export function useSubmissions() {
   const { live } = useTenant();
-  const vetSubmission = useAction(api.vettingActions.runSubmissionVetting);
-  const vetSubmissions = useAction(api.vettingActions.runSubmissionVettingMany);
+  const vetSubmission = useAction(api.vetting.runSubmissionVetting);
+  const vetSubmissions = useAction(api.vetting.runSubmissionVettingMany);
 
   const getEventConfig = useCallback((): VettingEventConfig => {
     if (!live) {
