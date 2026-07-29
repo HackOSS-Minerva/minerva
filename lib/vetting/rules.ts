@@ -15,10 +15,6 @@ export function uniqueNormalizedEmails(emails: string[]): string[] {
   );
 }
 
-export function getDeclaredTeamCount(invites: string[]): number {
-  return 1 + uniqueNormalizedEmails(invites).length;
-}
-
 export function createFinding(input: VettingFinding): VettingFinding {
   return input;
 }

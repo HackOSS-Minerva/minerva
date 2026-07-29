@@ -1,7 +1,6 @@
 import {
   createFinding,
   extractUniqueAuthors,
-  getDeclaredTeamCount,
   resultFromFindings,
   uniqueNormalizedEmails,
 } from "./rules";
@@ -350,8 +349,9 @@ export async function runSubmissionVetting(
   const findings: VettingFinding[] = [];
   const repos: GithubRepoSnapshot[] = [];
   const contributors: VettingContributor[] = [];
+  const projectCommits: GithubCommitAuthor[] = [];
   const declaredEmails = uniqueNormalizedEmails(input.declaredEmails);
-  const declaredTeamCount = getDeclaredTeamCount(input.declaredEmails);
+  const declaredTeamCount = input.declaredTeamCount;
   const graceUntil =
     input.event.submissionDeadlineAt +
     input.event.gitCommitGraceWindowMinutes * 60_000;
@@ -569,22 +569,48 @@ export async function runSubmissionVetting(
         until: new Date(input.event.startsAt - 1).toISOString(),
         perPage: TIMELINE_EVIDENCE_LIMIT,
       });
+      githubRateLimitRemaining =
+        preStartResult.rateLimitRemaining ?? githubRateLimitRemaining;
 
-      if (preStartResult.ok) {
-        for (const commit of normalizeCommitResponse(preStartResult.data)) {
-          findings.push(
-            finding({
-              code: "commit_before_event",
-              message: "Repository contains commits before the event start.",
-              repoUrl: parsed.canonicalUrl,
-              evidence: {
-                sha: commit.sha,
-                authorDate: commit.authorDate,
-                eventStartsAt: input.event.startsAt,
-              },
-            }),
-          );
-        }
+      if (!preStartResult.ok) {
+        const rateLimited = isRateLimited(preStartResult);
+        findings.push(
+          finding({
+            code: rateLimited ? "github_rate_limited" : "github_api_error",
+            message: rateLimited
+              ? "GitHub API rate limit was reached during timeline checks."
+              : "GitHub pre-event commit check failed.",
+            repoUrl: parsed.canonicalUrl,
+            evidence: {
+              status: preStartResult.status,
+              resetAt: preStartResult.rateLimitResetAt,
+            },
+          }),
+        );
+        return failedResult({
+          error: rateLimited
+            ? "GitHub API rate limit reached"
+            : "GitHub pre-event commit check failed",
+          findings,
+          repos,
+          contributors,
+          githubRateLimitRemaining,
+        });
+      }
+
+      for (const commit of normalizeCommitResponse(preStartResult.data)) {
+        findings.push(
+          finding({
+            code: "commit_before_event",
+            message: "Repository contains commits before the event start.",
+            repoUrl: parsed.canonicalUrl,
+            evidence: {
+              sha: commit.sha,
+              authorDate: commit.authorDate,
+              eventStartsAt: input.event.startsAt,
+            },
+          }),
+        );
       }
 
       const postGraceResult = await fetchCommits({
@@ -593,23 +619,49 @@ export async function runSubmissionVetting(
         since: new Date(graceUntil + 1).toISOString(),
         perPage: TIMELINE_EVIDENCE_LIMIT,
       });
+      githubRateLimitRemaining =
+        postGraceResult.rateLimitRemaining ?? githubRateLimitRemaining;
 
-      if (postGraceResult.ok) {
-        for (const commit of normalizeCommitResponse(postGraceResult.data)) {
-          findings.push(
-            finding({
-              code: "commit_after_deadline_grace",
-              message:
-                "Repository contains commits after the deadline grace window.",
-              repoUrl: parsed.canonicalUrl,
-              evidence: {
-                sha: commit.sha,
-                authorDate: commit.authorDate,
-                graceUntil,
-              },
-            }),
-          );
-        }
+      if (!postGraceResult.ok) {
+        const rateLimited = isRateLimited(postGraceResult);
+        findings.push(
+          finding({
+            code: rateLimited ? "github_rate_limited" : "github_api_error",
+            message: rateLimited
+              ? "GitHub API rate limit was reached during timeline checks."
+              : "GitHub post-deadline commit check failed.",
+            repoUrl: parsed.canonicalUrl,
+            evidence: {
+              status: postGraceResult.status,
+              resetAt: postGraceResult.rateLimitResetAt,
+            },
+          }),
+        );
+        return failedResult({
+          error: rateLimited
+            ? "GitHub API rate limit reached"
+            : "GitHub post-deadline commit check failed",
+          findings,
+          repos,
+          contributors,
+          githubRateLimitRemaining,
+        });
+      }
+
+      for (const commit of normalizeCommitResponse(postGraceResult.data)) {
+        findings.push(
+          finding({
+            code: "commit_after_deadline_grace",
+            message:
+              "Repository contains commits after the deadline grace window.",
+            repoUrl: parsed.canonicalUrl,
+            evidence: {
+              sha: commit.sha,
+              authorDate: commit.authorDate,
+              graceUntil,
+            },
+          }),
+        );
       }
 
       const commits = commitsResult.commits;
@@ -628,51 +680,50 @@ export async function runSubmissionVetting(
         continue;
       }
 
-      const extractedContributors = extractUniqueAuthors(commits);
-      if (extractedContributors.length > TEAM_SIZE_LIMIT) {
-        findings.push(
-          finding({
-            code: "git_contributor_count_exceeds_limit",
-            message: "Git contributor count exceeds the event team size limit.",
-            repoUrl: parsed.canonicalUrl,
-            evidence: {
-              contributorCount: extractedContributors.length,
-              limit: TEAM_SIZE_LIMIT,
-            },
-          }),
-        );
-      }
-
-      for (const contributor of extractedContributors) {
-        const mapped = mapContributor(contributor, declaredEmails);
-        contributors.push({
-          ...contributor,
-          repoUrl: parsed.canonicalUrl,
-          mappedEmail: mapped?.mappedEmail,
-          mappingSource: mapped?.mappingSource ?? "unmapped",
-        });
-
-        if (!mapped) {
-          findings.push(
-            finding({
-              code: "unregistered_git_contributor",
-              message: "Git contributor could not be mapped to the submission.",
-              repoUrl: parsed.canonicalUrl,
-              evidence: {
-                githubUsername: contributor.githubUsername,
-                authorEmail: contributor.authorEmail,
-                commitCount: contributor.commitCount,
-              },
-            }),
-          );
-        }
-      }
+      projectCommits.push(...commits);
 
       for (const mismatch of findAuthorCommitterMismatches(commits)) {
         findings.push({
           ...mismatch,
           repoUrl: parsed.canonicalUrl,
         });
+      }
+    }
+
+    const extractedContributors = extractUniqueAuthors(projectCommits);
+    if (extractedContributors.length > TEAM_SIZE_LIMIT) {
+      findings.push(
+        finding({
+          code: "git_contributor_count_exceeds_limit",
+          message: "Git contributor count exceeds the event team size limit.",
+          evidence: {
+            contributorCount: extractedContributors.length,
+            limit: TEAM_SIZE_LIMIT,
+          },
+        }),
+      );
+    }
+
+    for (const contributor of extractedContributors) {
+      const mapped = mapContributor(contributor, declaredEmails);
+      contributors.push({
+        ...contributor,
+        mappedEmail: mapped?.mappedEmail,
+        mappingSource: mapped?.mappingSource ?? "unmapped",
+      });
+
+      if (!mapped) {
+        findings.push(
+          finding({
+            code: "unregistered_git_contributor",
+            message: "Git contributor could not be mapped to the submission.",
+            evidence: {
+              githubUsername: contributor.githubUsername,
+              authorEmail: contributor.authorEmail,
+              commitCount: contributor.commitCount,
+            },
+          }),
+        );
       }
     }
 

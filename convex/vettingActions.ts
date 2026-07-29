@@ -1,11 +1,13 @@
-import { action } from "./_generated/server";
+import { action, type ActionCtx } from "./_generated/server";
 import { api, internal } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { runSubmissionVetting as runGithubSubmissionVetting } from "../lib/vetting/github";
 import type {
   GithubSubmissionVettingResult,
   SubmissionReviewStatus,
   SubmissionVettingResult,
+  VettingBatchResult,
   VettingEventConfig,
 } from "../lib/vetting/types";
 
@@ -36,15 +38,19 @@ function validateEventConfig(event: VettingEventConfig) {
   }
 }
 
-export const runSubmissionVetting = action({
-  args: {
-    submissionId: v.id("submissions"),
-    event: eventConfigValidator,
+async function executeSubmissionVetting(
+  ctx: ActionCtx,
+  {
+    submissionId,
+    event,
+  }: {
+    submissionId: Id<"submissions">;
+    event: VettingEventConfig;
   },
-  handler: async (
-    ctx,
-    { submissionId, event },
-  ): Promise<SubmissionVettingResult> => {
+): Promise<SubmissionVettingResult> {
+  let githubResult: GithubSubmissionVettingResult | null = null;
+
+  try {
     const submission = await ctx.runQuery(api.submissions.getById, {
       id: submissionId,
     });
@@ -59,56 +65,104 @@ export const runSubmissionVetting = action({
       vettingStatus: "running",
     });
 
-    let githubResult: GithubSubmissionVettingResult | null = null;
+    githubResult = await runGithubSubmissionVetting({
+      repositoryUrls: submission.github,
+      declaredEmails: [
+        ...(submission.submitterEmail ? [submission.submitterEmail] : []),
+        ...submission.invites,
+      ],
+      declaredTeamCount: 1 + submission.invites.length,
+      event,
+    });
 
-    try {
-      githubResult = await runGithubSubmissionVetting({
-        repositoryUrls: submission.github,
-        declaredEmails: submission.invites,
-        event,
-      });
+    const statusUpdate: {
+      success: boolean;
+      vetted: SubmissionReviewStatus;
+    } = await ctx.runMutation(internal.vetting.updateSubmissionVettingStatus, {
+      id: submissionId,
+      vetted: githubResult.result,
+      vettingStatus: githubResult.success ? "completed" : "failed",
+    });
 
-      const statusUpdate: {
-        success: boolean;
-        vetted: SubmissionReviewStatus;
-      } = await ctx.runMutation(
-        internal.vetting.updateSubmissionVettingStatus,
-        {
+    return {
+      ...githubResult,
+      storedVetted: statusUpdate.vetted,
+    };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown vetting failure";
+    const statusUpdate: {
+      success: boolean;
+      vetted: SubmissionReviewStatus;
+    } = await ctx.runMutation(internal.vetting.updateSubmissionVettingStatus, {
+      id: submissionId,
+      vetted: "needs_review",
+      vettingStatus: "failed",
+    });
+
+    return {
+      success: false,
+      result: "needs_review" as const,
+      storedVetted: statusUpdate.vetted,
+      error: message,
+      findings: githubResult?.findings ?? [],
+      repos: githubResult?.repos ?? [],
+      contributors: githubResult?.contributors ?? [],
+      githubRateLimitRemaining: githubResult?.githubRateLimitRemaining,
+    };
+  }
+}
+
+export const runSubmissionVetting = action({
+  args: {
+    submissionId: v.id("submissions"),
+    event: eventConfigValidator,
+  },
+  handler: async (ctx, args): Promise<SubmissionVettingResult> => {
+    return await executeSubmissionVetting(ctx, args);
+  },
+});
+
+export const runSubmissionVettingMany = action({
+  args: {
+    submissionIds: v.array(v.id("submissions")),
+    event: eventConfigValidator,
+  },
+  handler: async (
+    ctx,
+    { submissionIds, event },
+  ): Promise<VettingBatchResult[]> => {
+    await ctx.runMutation(internal.vetting.queueSubmissionVettingMany, {
+      ids: submissionIds,
+    });
+
+    const results: VettingBatchResult[] = [];
+
+    for (const submissionId of submissionIds) {
+      try {
+        const result = await executeSubmissionVetting(ctx, {
+          submissionId,
+          event,
+        });
+        results.push({
+          submissionId,
+          success: result.success,
+          result: result.storedVetted,
+          error: result.success ? undefined : result.error,
+        });
+      } catch (error) {
+        await ctx.runMutation(internal.vetting.failSubmissionVetting, {
           id: submissionId,
-          vetted: githubResult.result,
-          vettingStatus: githubResult.success ? "completed" : "failed",
-        },
-      );
-
-      return {
-        ...githubResult,
-        storedVetted: statusUpdate.vetted,
-      };
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unknown vetting failure";
-      const statusUpdate: {
-        success: boolean;
-        vetted: SubmissionReviewStatus;
-      } = await ctx.runMutation(
-        internal.vetting.updateSubmissionVettingStatus,
-        {
-          id: submissionId,
-          vetted: "needs_review",
-          vettingStatus: "failed",
-        },
-      );
-
-      return {
-        success: false,
-        result: "needs_review" as const,
-        storedVetted: statusUpdate.vetted,
-        error: message,
-        findings: githubResult?.findings ?? [],
-        repos: githubResult?.repos ?? [],
-        contributors: githubResult?.contributors ?? [],
-        githubRateLimitRemaining: githubResult?.githubRateLimitRemaining,
-      };
+        });
+        results.push({
+          submissionId,
+          success: false,
+          error:
+            error instanceof Error ? error.message : "Project vetting failed",
+        });
+      }
     }
+
+    return results;
   },
 });

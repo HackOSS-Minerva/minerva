@@ -1,4 +1,4 @@
-import { internalMutation, mutation } from "./_generated/server";
+import { internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import type { SubmissionReviewStatus } from "../lib/vetting/types";
 
@@ -44,7 +44,7 @@ export const updateSubmissionVettingStatus = internalMutation({
   },
 });
 
-export const queueSubmissionVettingMany = mutation({
+export const queueSubmissionVettingMany = internalMutation({
   args: {
     ids: v.array(v.id("submissions")),
   },
@@ -55,6 +55,26 @@ export const queueSubmissionVettingMany = mutation({
         await ctx.db.patch(id, { vettingStatus: "queued" });
       }
     }
+
+    return { success: true };
+  },
+});
+
+export const failSubmissionVetting = internalMutation({
+  args: {
+    id: v.id("submissions"),
+  },
+  handler: async (ctx, { id }) => {
+    const submission = await ctx.db.get(id);
+    if (!submission) {
+      return { success: false };
+    }
+
+    await ctx.db.patch(id, {
+      vetted:
+        submission.vetted === "disqualified" ? "disqualified" : "needs_review",
+      vettingStatus: "failed",
+    });
 
     return { success: true };
   },

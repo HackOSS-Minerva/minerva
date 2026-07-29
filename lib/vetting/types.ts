@@ -78,7 +78,7 @@ export interface ExtractedContributor {
 }
 
 export interface VettingContributor extends ExtractedContributor {
-  repoUrl: string;
+  repoUrl?: string;
   mappedEmail?: string;
   mappingSource: "email" | "unmapped";
 }
@@ -92,6 +92,7 @@ export interface VettingEventConfig {
 export interface GithubSubmissionVettingInput {
   repositoryUrls: string[];
   declaredEmails: string[];
+  declaredTeamCount: number;
   event: VettingEventConfig;
 }
 
@@ -107,4 +108,11 @@ export interface GithubSubmissionVettingResult {
 
 export interface SubmissionVettingResult extends GithubSubmissionVettingResult {
   storedVetted: SubmissionReviewStatus;
+}
+
+export interface VettingBatchResult {
+  submissionId: string;
+  success: boolean;
+  error?: string;
+  result?: SubmissionReviewStatus;
 }

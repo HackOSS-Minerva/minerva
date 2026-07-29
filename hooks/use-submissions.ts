@@ -1,31 +1,26 @@
 "use client";
 
 import { useCallback } from "react";
-import { useAction, useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import type {
-  SubmissionReviewStatus,
   SubmissionVettingResult,
+  VettingBatchResult,
   VettingEventConfig,
 } from "@/lib/vetting/types";
 import { useTenant } from "./use-tenant";
 
 const DEFAULT_GRACE_WINDOW_MINUTES = 15;
 
-export type VettingBatchResult = {
-  submissionId: string;
-  success: boolean;
-  error?: string;
-  result?: SubmissionReviewStatus;
-};
+export type { VettingBatchResult } from "@/lib/vetting/types";
 
 type SubmissionId = Id<"submissions">;
 
 export function useSubmissions() {
   const { live } = useTenant();
   const vetSubmission = useAction(api.vettingActions.runSubmissionVetting);
-  const queueVettingMany = useMutation(api.vetting.queueSubmissionVettingMany);
+  const vetSubmissions = useAction(api.vettingActions.runSubmissionVettingMany);
 
   const getEventConfig = useCallback((): VettingEventConfig => {
     if (!live) {
@@ -78,35 +73,9 @@ export function useSubmissions() {
     async (ids: string[]): Promise<VettingBatchResult[]> => {
       const submissionIds = ids as SubmissionId[];
       const event = getEventConfig();
-      const results: VettingBatchResult[] = [];
-
-      await queueVettingMany({ ids: submissionIds });
-
-      for (const submissionId of submissionIds) {
-        try {
-          const result = await vetSubmission({
-            submissionId,
-            event,
-          });
-          results.push({
-            submissionId,
-            success: result.success,
-            result: result.storedVetted,
-            error: result.success ? undefined : result.error,
-          });
-        } catch (error) {
-          results.push({
-            submissionId,
-            success: false,
-            error:
-              error instanceof Error ? error.message : "Project vetting failed",
-          });
-        }
-      }
-
-      return results;
+      return await vetSubmissions({ submissionIds, event });
     },
-    [getEventConfig, queueVettingMany, vetSubmission],
+    [getEventConfig, vetSubmissions],
   );
 
   return {
