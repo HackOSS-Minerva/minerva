@@ -12,8 +12,7 @@ export function useCountdown(targetDate: string | Date | number | null) {
 
   // Normalize to a stable primitive so object references (e.g. `new Date()`)
   // passed on every render don't retrigger the effect infinitely.
-  const targetTime =
-    targetDate == null ? null : new Date(targetDate).getTime();
+  const targetTime = targetDate == null ? null : new Date(targetDate).getTime();
 
   useEffect(() => {
     if (targetTime == null) return;

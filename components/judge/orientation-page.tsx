@@ -9,7 +9,6 @@ interface OrientationPageProps {
 export function OrientationPage({ tenant }: OrientationPageProps) {
   return (
     <div className="space-y-6">
-
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Judge Orientation</h1>
         <p className="text-sm text-muted-foreground">

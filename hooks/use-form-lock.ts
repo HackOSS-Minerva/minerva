@@ -64,14 +64,12 @@ function parseDurationToMs(raw: string | undefined | null): number | undefined {
 export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
   const { live, tenant } = useTenant();
 
-  // Get form-specific lock from formLocks config
-  const formLock = tenant?.formLocks?.[form];
-
   const endTime = live?.endTime ?? null;
   const rawOpenOffset = live?.openOffset ?? null;
 
   const lock = useMemo(() => {
-    // If formLocks has specific dates for this form, use them
+    // 1. Check for form-specific lock from tenant config
+    const formLock = tenant?.formLocks?.[form];
     if (formLock?.opens && formLock?.closes) {
       return {
         opensAt: formLock.opens,
@@ -79,13 +77,19 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
       };
     }
 
+    // 2. Fall back to offset-based logic from live event
     const fallbackOpen = endTime
-      ? new Date(new Date(endTime).getTime() - 24 * 60 * 60 * 1000).toISOString()
+      ? new Date(
+          new Date(endTime).getTime() - 24 * 60 * 60 * 1000,
+        ).toISOString()
       : null;
 
     const opensAt =
       endTime && rawOpenOffset !== null && rawOpenOffset !== undefined
-        ? new Date(new Date(endTime).getTime() - parseDurationToMs(String(rawOpenOffset))!).toISOString()
+        ? new Date(
+            new Date(endTime).getTime() -
+              parseDurationToMs(String(rawOpenOffset))!,
+          ).toISOString()
         : fallbackOpen;
 
     const closesAt = endTime ?? null;
@@ -94,7 +98,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
       opensAt,
       closesAt,
     };
-  }, [endTime, rawOpenOffset, formLock]);
+  }, [endTime, rawOpenOffset, tenant?.formLocks, form]);
 
   const now = useMemo(() => Date.now(), []);
 

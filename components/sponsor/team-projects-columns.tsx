@@ -17,7 +17,10 @@ export interface TeamProjectsRow {
   timestamp: number;
 }
 
-function truncateDescription(description: string, maxLength: number = 75): string {
+function truncateDescription(
+  description: string,
+  maxLength: number = 75,
+): string {
   if (description.length <= maxLength) {
     return description;
   }

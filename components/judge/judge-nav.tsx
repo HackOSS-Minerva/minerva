@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -40,8 +40,7 @@ const participateItems = [
   {
     href: "/judge/orientation",
     label: "Orientation",
-    description:
-      "Review judging criteria, rubrics, and event guidelines.",
+    description: "Review judging criteria, rubrics, and event guidelines.",
   },
   {
     href: "/judge/certificate",
@@ -58,10 +57,7 @@ export function JudgeNav({ tenant }: { tenant: string }) {
   return (
     <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
       {logo && (
-        <Link
-          href={`/${tenant}/judge/dashboard`}
-          className="flex items-center"
-        >
+        <Link href={`/${tenant}/judge/dashboard`} className="flex items-center">
           <Image
             src={logo}
             alt="Logo"
@@ -98,12 +94,12 @@ export function JudgeNav({ tenant }: { tenant: string }) {
               size="sm"
               className={cn(
                 "gap-1 transition-all",
-                (pathname.includes("/live/checkin") ||
+                pathname.includes("/live/checkin") ||
                   pathname.includes("/forms/judge") ||
                   pathname.includes("/judge/assignments") ||
                   pathname.includes("/judge/submissions") ||
                   pathname.includes("/judge/orientation") ||
-                  pathname.includes("/judge/certificate"))
+                  pathname.includes("/judge/certificate")
                   ? "bg-background shadow-sm"
                   : "",
                 "text-foreground",

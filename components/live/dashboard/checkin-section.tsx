@@ -27,7 +27,10 @@ export function CheckinSection({ tenant }: CheckinSectionProps) {
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle>Check-in</CardTitle>
         {hasCheckedIn && (
-          <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 flex items-center gap-1 font-semibold">
+          <Badge
+            variant="secondary"
+            className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 flex items-center gap-1 font-semibold"
+          >
             <IconCheck className="h-3 w-3" />
             Checked in
           </Badge>
@@ -35,7 +38,8 @@ export function CheckinSection({ tenant }: CheckinSectionProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Show this QR code at the event check-in desk to verify your attendance.
+          Show this QR code at the event check-in desk to verify your
+          attendance.
         </p>
 
         <div className="flex justify-center">

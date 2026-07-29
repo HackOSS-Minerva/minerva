@@ -112,9 +112,7 @@ export function JudgeDataTable({
             size="sm"
             onClick={() => {
               const rows = table.getFilteredRowModel().rows;
-              const projectNames = rows.map(
-                (row) => row.original.projectName,
-              );
+              const projectNames = rows.map((row) => row.original.projectName);
               const csv = projectNames.join("\n");
               navigator.clipboard.writeText(csv);
               toast.success(
@@ -131,10 +129,7 @@ export function JudgeDataTable({
               variant="outline"
               size="sm"
               onClick={() => {
-                const csvData = convertToCSV(
-                  data,
-                  csvFields,
-                );
+                const csvData = convertToCSV(data, csvFields);
                 const blob = new Blob([csvData], {
                   type: "text/csv",
                 });

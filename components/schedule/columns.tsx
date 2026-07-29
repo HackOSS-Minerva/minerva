@@ -102,7 +102,9 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     },
     cell: ({ row }) => {
       const { dateTime, timeZone } = row.original.start;
-      return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
+      return (
+        <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
+      );
     },
     sortingFn: (rowA, rowB) => {
       const a = new Date(rowA.original.start.dateTime).getTime();
@@ -125,7 +127,9 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     },
     cell: ({ row }) => {
       const { dateTime, timeZone } = row.original.end;
-      return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
+      return (
+        <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
+      );
     },
     sortingFn: (rowA, rowB) => {
       const a = new Date(rowA.original.end.dateTime).getTime();

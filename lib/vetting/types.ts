@@ -1,12 +1,19 @@
 export type FindingSeverity = "info" | "warning" | "review_required";
 
-export type VettingResult = "verified" | "needs_review";
+export type AutomatedVettingResult = "verified" | "needs_review";
 
-export type MappingSource = "oauth" | "email" | "manual" | "unmapped";
+export type SubmissionReviewStatus = AutomatedVettingResult | "disqualified";
+
+export type VettingStatus =
+  | "not_started"
+  | "queued"
+  | "running"
+  | "completed"
+  | "failed";
 
 export type FindingCode =
-  | "submitter_missing_github_oauth"
   | "declared_team_size_exceeds_limit"
+  | "repo_missing"
   | "repo_invalid_url"
   | "repo_private_or_inaccessible"
   | "repo_created_before_event"
@@ -18,12 +25,11 @@ export type FindingCode =
   | "commit_after_deadline_grace"
   | "git_contributor_count_exceeds_limit"
   | "unregistered_git_contributor"
-  | "git_identity_used_on_multiple_submissions"
   | "author_committer_mismatch"
   | "github_rate_limited"
   | "github_api_error";
 
-export interface VettingFindingInput {
+export interface VettingFinding {
   severity: FindingSeverity;
   code: FindingCode;
   message: string;
@@ -41,15 +47,12 @@ export interface GithubRepoSnapshot {
   repoUrl: string;
   owner: string;
   name: string;
-  visibility?: "public" | "private" | "internal";
   isPrivate?: boolean;
   isFork?: boolean;
   isTemplate?: boolean;
   createdAt?: number;
   pushedAt?: number;
-  defaultBranch?: string;
   accessible: boolean;
-  fetchedAt: number;
 }
 
 export interface GithubCommitAuthor {
@@ -72,16 +75,36 @@ export interface ExtractedContributor {
   commitCount: number;
   firstCommitAt: number;
   lastCommitAt: number;
+}
+
+export interface VettingContributor extends ExtractedContributor {
+  repoUrl: string;
   mappedEmail?: string;
-  mappingSource: MappingSource;
+  mappingSource: "email" | "unmapped";
 }
 
 export interface VettingEventConfig {
-  tenant: string;
-  name: string;
   startsAt: number;
   submissionDeadlineAt: number;
-  teamSizeLimit: number;
   gitCommitGraceWindowMinutes: number;
-  githubVettingEnabled: boolean;
+}
+
+export interface GithubSubmissionVettingInput {
+  repositoryUrls: string[];
+  declaredEmails: string[];
+  event: VettingEventConfig;
+}
+
+export interface GithubSubmissionVettingResult {
+  success: boolean;
+  result: AutomatedVettingResult;
+  error?: string;
+  findings: VettingFinding[];
+  repos: GithubRepoSnapshot[];
+  contributors: VettingContributor[];
+  githubRateLimitRemaining?: number;
+}
+
+export interface SubmissionVettingResult extends GithubSubmissionVettingResult {
+  storedVetted: SubmissionReviewStatus;
 }

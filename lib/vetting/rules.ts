@@ -1,8 +1,8 @@
 import type {
   ExtractedContributor,
   GithubCommitAuthor,
-  VettingFindingInput,
-  VettingResult,
+  VettingFinding,
+  AutomatedVettingResult,
 } from "./types";
 
 export function uniqueNormalizedEmails(emails: string[]): string[] {
@@ -19,13 +19,13 @@ export function getDeclaredTeamCount(invites: string[]): number {
   return 1 + uniqueNormalizedEmails(invites).length;
 }
 
-export function createFinding(input: VettingFindingInput): VettingFindingInput {
+export function createFinding(input: VettingFinding): VettingFinding {
   return input;
 }
 
 export function resultFromFindings(
-  findings: VettingFindingInput[],
-): VettingResult {
+  findings: VettingFinding[],
+): AutomatedVettingResult {
   return findings.some((finding) => finding.severity === "review_required")
     ? "needs_review"
     : "verified";
@@ -59,7 +59,6 @@ export function extractUniqueAuthors(
         commitCount: 1,
         firstCommitAt: commit.authorDate,
         lastCommitAt: commit.authorDate,
-        mappingSource: "unmapped",
       });
       continue;
     }

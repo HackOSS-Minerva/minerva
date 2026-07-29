@@ -72,8 +72,6 @@ interface DashboardProps {
   };
   onDelete?: unknown;
   onDeleteMany?: unknown;
-  onUpdate?: unknown;
-  setStatus?: unknown;
   setStatusMany?: unknown;
   runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
@@ -84,7 +82,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [vetting, setVetting] = useState(false);
-  const [, setFailedVettingRuns] = useState<VettingBatchResult[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -100,24 +97,17 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     dashboard: { columns, csvFields },
     onDelete,
     onDeleteMany,
-    onUpdate,
-    setStatus,
     setStatusMany,
     runVettingMany,
   } = dashboard;
   const tableColumns = columns as ColumnDef<DashboardRow>[];
   const deleteOne = onDelete as ((args: { id: string }) => unknown) | undefined;
   const deleteMany = onDeleteMany as
-    ((args: { ids: string[] }) => unknown) | undefined;
-  const updateOne = onUpdate as
-    | ((obj: {
-        id: string | number | undefined;
-        updates: Record<string, string>;
-      }) => unknown)
+    | ((args: { ids: string[] }) => unknown)
     | undefined;
-  const setOneStatus = setStatus as ((status: string) => unknown) | undefined;
   const setManyStatuses = setStatusMany as
-    ((ids: string[], status: string) => unknown) | undefined;
+    | ((ids: string[], status: string) => unknown)
+    | undefined;
 
   const table = useReactTable<DashboardRow>({
     data,
@@ -152,12 +142,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         deleteMany?.(ids);
         setRowSelection({});
       },
-      onUpdate: (obj) => {
-        updateOne?.(obj);
-      },
-      setStatus: (status: string) => {
-        setOneStatus?.(status);
-      },
       setStatusMany: (ids: string[], status: string) => {
         setManyStatuses?.(ids, status);
         setRowSelection({});
@@ -179,7 +163,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       const failed = results.filter((result) => !result.success);
       const succeeded = results.length - failed.length;
 
-      setFailedVettingRuns(failed);
       setRowSelection({});
 
       if (failed.length === 0) {

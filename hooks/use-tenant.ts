@@ -22,6 +22,7 @@ export interface LiveInfo {
     url: string;
     deadline: string;
     requirements: string;
+    gitCommitGraceWindowMinutes?: number;
   };
 }
 

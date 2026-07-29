@@ -31,10 +31,15 @@ import {
   Link as LinkIcon,
   Github,
   Figma,
+  PanelRightOpen,
   Presentation,
 } from "lucide-react";
 import DetailRow from "../row";
 import { VettingSummary } from "../vetting-summary";
+import type {
+  SubmissionReviewStatus,
+  VettingStatus,
+} from "@/lib/vetting/types";
 
 interface SubmissionRecord {
   _id: string;
@@ -49,10 +54,8 @@ interface SubmissionRecord {
   presentation?: string;
   invites: string[];
   tenant: string;
-  vetted: "verified" | "needs_review" | "disqualified";
-  vettingStatus?: "not_started" | "queued" | "running" | "completed" | "failed";
-  latestVettingRunId?: string;
-  lastVettedAt?: number;
+  vetted: SubmissionReviewStatus;
+  vettingStatus?: VettingStatus;
   timestamp: number;
 }
 
@@ -132,8 +135,14 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
       item={item}
       direction={isMobile ? "bottom" : "right"}
       trigger={
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.teamName}
+        <Button
+          variant="ghost"
+          className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
+        >
+          <span className="min-w-0 truncate font-medium text-foreground">
+            {item.teamName}
+          </span>
+          <PanelRightOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
         </Button>
       }
     />
@@ -167,12 +176,15 @@ function SubmissionDetailsContent({ item }: { item: SubmissionRecord }) {
       <div className="flex h-full flex-col gap-5 px-4 py-5">
         <div className="flex items-start justify-between">
           <DrawerHeader className="gap-1 p-0 w-full">
-            <div className="flex items-center justify-between w-full">
-              <DrawerTitle>
-                 <p className="text-xs font-medium uppercase text-muted-foreground">
-                Team Name
-              </p>
-                {item.teamName}</DrawerTitle>
+            <div className="flex w-full items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-medium uppercase text-muted-foreground">
+                  Team Name
+                </p>
+                <DrawerTitle className="break-words">
+                  {item.teamName}
+                </DrawerTitle>
+              </div>
               <DrawerClose asChild>
                 <Button
                   variant="ghost"
@@ -191,7 +203,11 @@ function SubmissionDetailsContent({ item }: { item: SubmissionRecord }) {
 
         <div className="flex-1 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:theme(colors.border)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border">
           <div className="grid gap-5">
-            <VettingSummary submissionId={item._id} />
+            <VettingSummary
+              submissionId={item._id}
+              currentStatus={item.vetted}
+              vettingStatus={item.vettingStatus ?? "not_started"}
+            />
 
             <div className="flex flex-col gap-1">
               <p className="text-xs font-medium uppercase text-muted-foreground">
@@ -381,9 +397,6 @@ function ReviewCell({ item }: { item: SubmissionRecord }) {
         <TooltipContent side="top">
           <p>
             {vettedStatus.label} / {runStatus.label}
-            {item.lastVettedAt
-              ? ` at ${formatTimestamp(item.lastVettedAt)}`
-              : ""}
           </p>
         </TooltipContent>
       </Tooltip>

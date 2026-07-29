@@ -1,29 +1,9 @@
 import { AppSidebar } from "@/components/dashboards/sidebar";
 import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import Dashboard from "@/components/dashboards/dashboard";
+import QRCodeGenerator from "@/components/admin/qr-code-generator";
 
-const DASHBOARD_TITLES: Record<string, string> = {
-  participants: "Participants",
-  judges: "Judges",
-  speakers: "Speakers",
-  superadmins: "Superadmins",
-  volunteers: "Volunteers",
-  attendance: "Attendance",
-  feedback: "Feedback",
-  submissions: "Submissions",
-};
-
-interface PageProps {
-  params: Promise<{
-    dashboard: string;
-  }>;
-}
-
-const Page = async ({ params }: PageProps) => {
-  const { dashboard } = await params;
-  const title = DASHBOARD_TITLES[dashboard] ?? "Dashboard";
-
+export default function QRCodePage() {
   return (
     <SidebarProvider
       style={
@@ -35,17 +15,15 @@ const Page = async ({ params }: PageProps) => {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader>{title}</SiteHeader>
+        <SiteHeader>QR Code Generator</SiteHeader>
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <Dashboard />
+              <QRCodeGenerator />
             </div>
           </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
   );
-};
-
-export default Page;
+}

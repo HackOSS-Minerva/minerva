@@ -20,7 +20,13 @@ import { IconDotsVertical, IconX } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Star, Calendar, MessageSquare, ThumbsDown, HelpCircle } from "lucide-react";
+import {
+  Star,
+  Calendar,
+  MessageSquare,
+  ThumbsDown,
+  HelpCircle,
+} from "lucide-react";
 import DetailRow from "../row";
 
 interface FeedbackRecord {
@@ -257,7 +263,9 @@ export const columns: ColumnDef<FeedbackRecord>[] = [
           <DropdownMenuItem
             variant="destructive"
             onClick={() =>
-              table.options.meta?.onDelete(row.original._id as unknown as number)
+              table.options.meta?.onDelete(
+                row.original._id as unknown as number,
+              )
             }
           >
             Delete

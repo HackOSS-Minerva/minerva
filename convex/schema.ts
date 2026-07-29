@@ -173,15 +173,31 @@ export default defineSchema({
       v.literal("needs_review"),
       v.literal("disqualified"),
     ),
-    vettingStatus: v.union(
-      v.literal("not_started"),
-      v.literal("running"),
-      v.literal("completed"),
-      v.literal("failed"),
+    vettingStatus: v.optional(
+      v.union(
+        v.literal("not_started"),
+        v.literal("queued"),
+        v.literal("running"),
+        v.literal("completed"),
+        v.literal("failed"),
+      ),
     ),
-    lastVettedAt: v.optional(v.number()),
+  }).index("by_tenant", ["tenant"]),
+  assignments: defineTable({
+    judgeId: v.id("judges"),
+    submissionId: v.id("submissions"),
+    tenant: v.string(),
+    room: v.optional(v.string()),
+    status: v.optional(
+      v.union(
+        v.literal("assigned"),
+        v.literal("completed"),
+        v.literal("no_show"),
+      ),
+    ),
+    assignedAt: v.number(),
   })
-    .index("by_tenant", ["tenant"])
-    .index("by_tenant_vetted", ["tenant", "vetted"])
-    .index("by_vetting_status", ["vettingStatus"]),
+    .index("by_judge", ["judgeId"])
+    .index("by_submission", ["submissionId"])
+    .index("by_tenant", ["tenant"]),
 });

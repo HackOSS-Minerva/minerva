@@ -1,13 +1,20 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
-import { useAction } from "convex/react";
-import { makeFunctionReference } from "convex/server";
-import type { Id } from "@/convex/_generated/dataModel";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { useSubmissions } from "@/hooks/use-submissions";
+import type {
+  FindingCode,
+  FindingSeverity,
+  SubmissionReviewStatus,
+  SubmissionVettingResult,
+  VettingContributor,
+  VettingFinding,
+  VettingStatus,
+} from "@/lib/vetting/types";
 import { toast } from "sonner";
 import {
   AlertTriangle,
@@ -19,78 +26,12 @@ import {
   GitCommit,
   GitFork,
   Link2,
+  RefreshCw,
   ShieldAlert,
   UserRound,
   UsersRound,
   XCircle,
 } from "lucide-react";
-
-type SubmissionId = Id<"submissions">;
-
-type FindingSeverity = "review_required" | "warning" | "info";
-type FindingCode =
-  | "submitter_missing_github_oauth"
-  | "declared_team_size_exceeds_limit"
-  | "repo_invalid_url"
-  | "repo_private_or_inaccessible"
-  | "repo_created_before_event"
-  | "repo_fork_detected"
-  | "repo_template_detected"
-  | "repo_empty_or_no_event_commits"
-  | "commit_scan_truncated"
-  | "commit_before_event"
-  | "commit_after_deadline_grace"
-  | "git_contributor_count_exceeds_limit"
-  | "unregistered_git_contributor"
-  | "git_identity_used_on_multiple_submissions"
-  | "author_committer_mismatch"
-  | "github_rate_limited"
-  | "github_api_error";
-
-type ContributorRow = {
-  githubUserId?: string;
-  githubUsername?: string;
-  authorEmail?: string;
-  authorName?: string;
-  commitCount: number;
-  firstCommitAt: number;
-  lastCommitAt: number;
-  mappedEmail?: string;
-  mappingSource: "oauth" | "email" | "unmapped";
-  repoUrl: string;
-};
-
-type RepoSnapshot = {
-  repoUrl: string;
-  owner: string;
-  name: string;
-  visibility?: "public" | "private" | "internal";
-  isPrivate?: boolean;
-  isFork?: boolean;
-  isTemplate?: boolean;
-  createdAt?: number;
-  pushedAt?: number;
-  defaultBranch?: string;
-  accessible: boolean;
-  fetchedAt: number;
-};
-
-type FindingRow = {
-  repoUrl?: string;
-  severity: FindingSeverity;
-  code: FindingCode;
-  message: string;
-  evidence: Record<string, unknown>;
-};
-
-type VettingResult = {
-  success: boolean;
-  result?: "verified" | "needs_review";
-  error?: string;
-  findings: FindingRow[];
-  repos: RepoSnapshot[];
-  contributors: ContributorRow[];
-};
 
 type DisplayFinding = {
   _id: string;
@@ -100,12 +41,6 @@ type DisplayFinding = {
   message: string;
   count: number;
 };
-
-const runSubmissionVetting = makeFunctionReference<
-  "action",
-  { submissionId: SubmissionId },
-  VettingResult
->("vettingActions:runSubmissionVetting");
 
 function formatDate(timestamp?: number) {
   if (!timestamp) return "Unknown";
@@ -117,7 +52,7 @@ function formatDate(timestamp?: number) {
   });
 }
 
-function contributorLabel(contributor: ContributorRow) {
+function contributorLabel(contributor: VettingContributor) {
   return (
     contributor.githubUsername ??
     contributor.authorEmail ??
@@ -127,6 +62,7 @@ function contributorLabel(contributor: ContributorRow) {
 }
 
 const repoFindingCodes = new Set<FindingCode>([
+  "repo_missing",
   "repo_invalid_url",
   "repo_private_or_inaccessible",
   "repo_created_before_event",
@@ -141,11 +77,9 @@ const repoFindingCodes = new Set<FindingCode>([
 ]);
 
 const peopleFindingCodes = new Set<FindingCode>([
-  "submitter_missing_github_oauth",
   "declared_team_size_exceeds_limit",
   "git_contributor_count_exceeds_limit",
   "unregistered_git_contributor",
-  "git_identity_used_on_multiple_submissions",
   "author_committer_mismatch",
 ]);
 
@@ -153,14 +87,11 @@ const findingMeta: Record<
   FindingCode,
   { label: string; icon: React.ElementType }
 > = {
-  submitter_missing_github_oauth: {
-    label: "Submission identity not recorded",
-    icon: UserRound,
-  },
   declared_team_size_exceeds_limit: {
     label: "Declared team size exceeds limit",
     icon: UsersRound,
   },
+  repo_missing: { label: "GitHub repository missing", icon: Link2 },
   repo_invalid_url: { label: "Invalid GitHub URL", icon: Link2 },
   repo_private_or_inaccessible: {
     label: "Private or inaccessible repository",
@@ -192,10 +123,6 @@ const findingMeta: Record<
   unregistered_git_contributor: {
     label: "Unregistered Git contributor",
     icon: UserRound,
-  },
-  git_identity_used_on_multiple_submissions: {
-    label: "Git identity used on multiple submissions",
-    icon: ShieldAlert,
   },
   author_committer_mismatch: {
     label: "Author and committer mismatch",
@@ -236,10 +163,7 @@ function pluralize(count: number, singular: string, plural = `${singular}s`) {
   return count === 1 ? singular : plural;
 }
 
-function groupedFindingMessage(
-  finding: FindingRow,
-  count: number,
-): string {
+function groupedFindingMessage(finding: VettingFinding, count: number): string {
   if (count === 1) return finding.message;
 
   switch (finding.code as FindingCode) {
@@ -256,11 +180,8 @@ function groupedFindingMessage(
   }
 }
 
-function aggregateFindings(findings: FindingRow[]): DisplayFinding[] {
-  const groups = new Map<
-    string,
-    { finding: FindingRow; count: number }
-  >();
+function aggregateFindings(findings: VettingFinding[]): DisplayFinding[] {
+  const groups = new Map<string, { finding: VettingFinding; count: number }>();
 
   for (const finding of findings) {
     const key = `${finding.repoUrl ?? "global"}:${finding.code}`;
@@ -318,19 +239,110 @@ function IssueRow({ finding }: { finding: DisplayFinding }) {
   );
 }
 
-export function VettingSummary({ submissionId }: { submissionId: string }) {
-  const id = submissionId as SubmissionId;
-  const runVetting = useAction(runSubmissionVetting);
-  const [result, setResult] = useState<VettingResult | null>(null);
+function reviewStatusLabel(status: SubmissionReviewStatus) {
+  switch (status) {
+    case "verified":
+      return "Verified";
+    case "disqualified":
+      return "Disqualified";
+    default:
+      return "Needs Review";
+  }
+}
+
+function reviewStatusClasses(status: SubmissionReviewStatus) {
+  if (status === "verified") {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/20 dark:text-emerald-300";
+  }
+
+  if (status === "disqualified") {
+    return "border-red-200 bg-red-50 text-red-700 dark:border-red-900/70 dark:bg-red-950/20 dark:text-red-300";
+  }
+
+  return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300";
+}
+
+function VettingHeader({
+  status,
+  vettingStatus,
+  isBusy,
+  hasEvidence,
+  error,
+  onRun,
+}: {
+  status: SubmissionReviewStatus;
+  vettingStatus: VettingStatus;
+  isBusy: boolean;
+  hasEvidence: boolean;
+  error?: string;
+  onRun: () => void;
+}) {
+  const StatusIcon =
+    status === "verified"
+      ? CheckCircle2
+      : status === "disqualified"
+        ? XCircle
+        : ShieldAlert;
+
+  return (
+    <div className="grid gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <StatusIcon
+            className={cn(
+              "h-4 w-4",
+              status === "verified"
+                ? "text-emerald-500"
+                : status === "disqualified"
+                  ? "text-red-500"
+                  : "text-amber-500",
+            )}
+          />
+          <h3 className="text-sm font-semibold">Project Vetting</h3>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className={reviewStatusClasses(status)}>
+            {reviewStatusLabel(status)}
+          </Badge>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onRun}
+            disabled={isBusy}
+          >
+            <RefreshCw className={cn("h-4 w-4", isBusy && "animate-spin")} />
+            {isBusy
+              ? "Vetting..."
+              : hasEvidence || vettingStatus === "completed"
+                ? "Refresh"
+                : "Run vetting"}
+          </Button>
+        </div>
+      </div>
+      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+    </div>
+  );
+}
+
+export function VettingSummary({
+  submissionId,
+  currentStatus,
+  vettingStatus,
+}: {
+  submissionId: string;
+  currentStatus: SubmissionReviewStatus;
+  vettingStatus: VettingStatus;
+}) {
+  const { runVetting } = useSubmissions();
+  const [result, setResult] = useState<SubmissionVettingResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
-  const [hasRun, setHasRun] = useState(false);
 
   const runVettingAction = async () => {
     setIsRunning(true);
     try {
-      const vettingResult = await runVetting({ submissionId: id });
+      const vettingResult = await runVetting(submissionId);
       setResult(vettingResult);
-      setHasRun(true);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to run vetting",
@@ -339,10 +351,6 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
       setIsRunning(false);
     }
   };
-
-  useEffect(() => {
-    void runVettingAction();
-  }, [id]);
 
   const categorizedFindings = useMemo(() => {
     const findings = result?.findings ?? [];
@@ -367,60 +375,43 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
     return { repoFindings, peopleFindings, globalFindings };
   }, [result?.findings]);
 
-  if (isRunning) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        Running vetting...
-      </div>
-    );
-  }
+  const isBusy =
+    isRunning || vettingStatus === "queued" || vettingStatus === "running";
+  const reviewStatus = result?.storedVetted ?? currentStatus;
 
-  if (!hasRun || !result) {
+  if (!result) {
     return (
-      <div className="text-sm text-muted-foreground">
-        Loading vetting evidence...
-      </div>
+      <section className="grid gap-4 rounded-lg border border-border/70 p-4">
+        <VettingHeader
+          status={reviewStatus}
+          vettingStatus={vettingStatus}
+          isBusy={isBusy}
+          hasEvidence={false}
+          onRun={() => void runVettingAction()}
+        />
+        <p className="text-sm text-muted-foreground">
+          {isBusy
+            ? "Project vetting is in progress."
+            : vettingStatus === "completed"
+              ? "Refresh vetting to load current repository and contributor evidence."
+              : "Run vetting to load repository and contributor evidence."}
+        </p>
+      </section>
     );
   }
 
   const { repos, contributors } = result;
-  const resultLabel = result.result
-    ? result.result === "verified"
-      ? "Verified"
-      : "Needs Review"
-    : "Not Started";
 
   return (
     <section className="grid gap-4 rounded-lg border border-border/70 p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          {result.result === "verified" ? (
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-          ) : (
-            <ShieldAlert className="h-4 w-4 text-amber-500" />
-          )}
-          <div>
-            <h3 className="text-sm font-semibold">Project Vetting</h3>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {result.result ? (
-            <Badge
-              variant="outline"
-              className={
-                result.result === "verified"
-                  ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/20 dark:text-emerald-300"
-                  : "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300"
-              }
-            >
-              {resultLabel}
-            </Badge>
-          ) : null}
-          {result.error && (
-            <span className="text-xs text-red-600">Error: {result.error}</span>
-          )}
-        </div>
-      </div>
+      <VettingHeader
+        status={reviewStatus}
+        vettingStatus={vettingStatus}
+        isBusy={isBusy}
+        hasEvidence
+        error={result.error}
+        onRun={() => void runVettingAction()}
+      />
 
       {categorizedFindings.globalFindings.length > 0 ? (
         <div className="grid gap-2">
@@ -478,13 +469,13 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                   <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
                     <div
                       className={cn(
-                        "rounded-md border border-border/70 p-2 flex items-center gap-1.5 font-medium",
+                        "flex items-center gap-1.5 rounded-md border border-border/70 p-2 font-medium",
                         createdBeforeEvent &&
                           "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-200",
                       )}
                     >
-                        <Clock3 className="h-3.5 w-3.5" />
-                        Created: {formatDate(repo.createdAt)}
+                      <Clock3 className="h-3.5 w-3.5" />
+                      Created: {formatDate(repo.createdAt)}
                     </div>
                     <div
                       className={cn(
@@ -554,7 +545,11 @@ export function VettingSummary({ submissionId }: { submissionId: string }) {
                       </div>
                     </div>
                     <Badge
-                      variant={contributor.mappingSource === "unmapped" ? "outline" : "secondary"}
+                      variant={
+                        contributor.mappingSource === "unmapped"
+                          ? "outline"
+                          : "secondary"
+                      }
                       className={cn(
                         "capitalize",
                         contributor.mappingSource === "unmapped" &&
