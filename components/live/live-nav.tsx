@@ -14,7 +14,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navItems = [{ href: "/dashboard", label: "Dashboard" }];
+const liveNavItems = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/photos", label: "Photos" },
+];
 
 const resourceItems = [
   {
@@ -91,7 +94,7 @@ export function LiveNav({ tenant }: { tenant: string }) {
         </Link>
       )}
       <div className="flex items-center gap-1">
-        {navItems.map((item) => {
+        {liveNavItems.map((item) => {
           const isActive = pathname.includes(item.href);
 
           return (

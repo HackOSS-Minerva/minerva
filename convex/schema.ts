@@ -190,4 +190,36 @@ export default defineSchema({
     .index("by_judge", ["judgeId"])
     .index("by_submission", ["submissionId"])
     .index("by_tenant", ["tenant"]),
+
+  photoAlbums: defineTable({
+    tenant: v.string(),
+    eventId: v.string(),
+    eventName: v.string(),
+    quotaBytes: v.number(),
+    usedBytes: v.number(),
+    createdAt: v.number(),
+  }).index("by_tenant_event", ["tenant", "eventId"]),
+
+  photos: defineTable({
+    albumId: v.id("photoAlbums"),
+    tenant: v.string(),
+    eventId: v.string(),
+    uploadId: v.string(),
+    storagePath: v.string(),
+    downloadUrl: v.string(),
+    filename: v.string(),
+    mimeType: v.union(
+      v.literal("image/jpeg"),
+      v.literal("image/png"),
+      v.literal("image/webp"),
+    ),
+    byteSize: v.number(),
+    width: v.number(),
+    height: v.number(),
+    status: v.union(v.literal("active"), v.literal("deleting")),
+    createdAt: v.number(),
+  })
+    .index("by_album_createdAt", ["albumId", "createdAt"])
+    .index("by_album_upload", ["albumId", "uploadId"])
+    .index("by_storage_path", ["storagePath"]),
 });

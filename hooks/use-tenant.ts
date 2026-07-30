@@ -13,6 +13,7 @@ import SubmissionHeader from "@/tenants/designverse/descriptions/submission.mdx"
 type tenants = "designverse";
 
 export interface LiveInfo {
+  id: string;
   name: string;
   status: string;
   startTime: string;
