@@ -35,7 +35,6 @@ import {
   IconMail,
   IconFileText,
 } from "@tabler/icons-react";
-import { useTenant } from "@/hooks/use-tenant";
 import { Separator } from "@/components/ui/separator";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { useSubmissions } from "@/hooks/use-submissions";

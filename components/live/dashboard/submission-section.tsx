@@ -6,8 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { useCountdown } from "@/hooks/use-countdown";
 import { IconExternalLink, IconCheck } from "@tabler/icons-react";
 import Link from "next/link";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 interface SubmissionSectionProps {
   tenant: string;
@@ -24,9 +22,6 @@ export function SubmissionSection({
   const now = Date.now();
   const isPastDeadline = now > submissionDeadline;
 
-  const submissions = useQuery(api.submissions.get, {
-    tenant: tenant.toLowerCase(),
-  });
 
   const hasSubmitted = false;
 

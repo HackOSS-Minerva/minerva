@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Wrapper from "./wrapper";
 import { slugs } from "@/hooks/use-fields";
 

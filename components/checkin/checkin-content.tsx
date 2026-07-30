@@ -39,8 +39,8 @@ const CheckinContent = () => {
   const [lastScan, setLastScan] = useState<DecodedQR | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
   const [inputValue, setInputValue] = React.useState("");
-  const [isCheckingIn, setIsCheckingIn] = useState(false);
   const isSelecting = React.useRef(false);
+  const setIsCheckingIn = useState(false)[1];
 
   const { data: schedule, isLoading, isError, error } = useSchedule();
   const doCheckin = useMutation(api.checkins.checkin);

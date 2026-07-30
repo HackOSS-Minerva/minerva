@@ -50,7 +50,6 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
-import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "@/components/dashboards/toolbar";
 
 interface JudgeDataTableProps {
@@ -64,7 +63,7 @@ export function JudgeDataTable({
   columns,
   csvFields,
 }: JudgeDataTableProps) {
-  const [rowSelection, setRowSelection] = useState({});
+  const [, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -74,7 +73,6 @@ export function JudgeDataTable({
     pageSize: 10,
   });
 
-  const { tenant } = useTenant();
 
   const table = useReactTable<any>({
     data,

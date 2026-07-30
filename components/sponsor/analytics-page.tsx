@@ -70,7 +70,7 @@ const dummyPrizes = [
   },
 ];
 
-export function AnalyticsPage({ tenant }: SponsorAnalyticsPageProps) {
+export function AnalyticsPage({}: SponsorAnalyticsPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">

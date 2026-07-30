@@ -17,7 +17,7 @@ interface CertificatePageProps {
   tenant: string;
 }
 
-export function CertificatePage({ tenant }: CertificatePageProps) {
+export function CertificatePage({}: CertificatePageProps) {
   const { tenant: tenantConfig } = useTenant();
 
   const judgeName = "Alex J. Morgan";
@@ -40,7 +40,6 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
   const handleDownload = () => {
     const tenantName = tenantConfig?.name || "DesignVerse 2026";
     const organization = "DesignVerse Organizing Committee";
-    const role = "Judge";
 
     const htmlContent =
       "<!DOCTYPE html>" +

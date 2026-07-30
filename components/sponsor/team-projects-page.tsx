@@ -101,7 +101,7 @@ const dummyData: TeamProjectsRow[] = [
   },
 ];
 
-export function TeamProjectsPage({ tenant }: TeamProjectsPageProps) {
+export function TeamProjectsPage({}: TeamProjectsPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">

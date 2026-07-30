@@ -52,12 +52,10 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { SuperUser } from "@/types/users";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
-import { StatusActions } from "./status-actions";
 
 interface DashboardProps {
   data: any[];

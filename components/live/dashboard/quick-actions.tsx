@@ -11,8 +11,7 @@ import {
 } from "@tabler/icons-react";
 
 export function QuickActions() {
-  const { tenant, name } = useTenant();
-  const submissionUrl = tenant.event?.submission.url;
+  const { name } = useTenant();
 
   const actions = [
     {

@@ -1,6 +1,5 @@
 "use client";
 
-import { useTenant } from "@/hooks/use-tenant";
 import {
   Card,
   CardContent,
@@ -14,9 +13,7 @@ interface RegisterPageProps {
   tenant: string;
 }
 
-export function RegisterPage({ tenant }: RegisterPageProps) {
-  const { tenant: tenantConfig } = useTenant();
-  const JudgeHeader = tenantConfig ? null : null;
+export function RegisterPage({}: RegisterPageProps) {
 
   return (
     <div className="space-y-6">

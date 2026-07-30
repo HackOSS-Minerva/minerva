@@ -101,7 +101,7 @@ interface SubmissionsPageProps {
   tenant: string;
 }
 
-export function SubmissionsPage({ tenant }: SubmissionsPageProps) {
+export function SubmissionsPage({}: SubmissionsPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">

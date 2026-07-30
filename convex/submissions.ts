@@ -1,5 +1,5 @@
 import { query, mutation } from "./_generated/server";
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
 
 export const get = query({
   args: { tenant: v.string() },

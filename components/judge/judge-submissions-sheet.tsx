@@ -3,13 +3,11 @@
 import { useState } from "react";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { IconX, IconCopy } from "@tabler/icons-react";
 import {
   Users,
   FolderOpen,

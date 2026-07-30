@@ -12,7 +12,6 @@ import * as Posthog from "@/lib/posthog";
 // import { useSendEmail } from "./use-send-email";
 import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
-import { useRef, useMemo } from "react";
 
 export type slugs =
   | "participant"

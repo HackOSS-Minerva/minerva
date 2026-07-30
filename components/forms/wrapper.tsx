@@ -1,12 +1,9 @@
 "use client";
 
-import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
 import { Card } from "@/components/ui/card";
 import Footer from "@/components/forms/footer";
 import Header from "@/components/forms/header";
 import Fields from "./fields";
-import Status from "@/components/forms/status";
 import { FormLockModal } from "./form-lock-modal";
 import Image from "next/image";
 import { slugs } from "@/hooks/use-fields";
@@ -17,7 +14,7 @@ interface WrapperProps {
   tenant: string;
 }
 
-const Wrapper = ({ form, tenant }: WrapperProps) => {
+const Wrapper = ({ form }: WrapperProps) => {
   const {
     tenant: { logo },
   } = useTenant();

@@ -245,7 +245,7 @@ const dummyData = [
   },
 ];
 
-export function ResumeBookPage({ tenant }: SponsorResumeBookPageProps) {
+export function ResumeBookPage({}: SponsorResumeBookPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">
