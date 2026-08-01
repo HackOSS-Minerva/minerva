@@ -89,3 +89,42 @@ export const getAdminAccess = query({
   },
 });
 
+/**
+ * Returns the access state for the judge section of a tenant.
+ *
+ * - `authenticated` is true when the request carries a valid Better Auth
+ *   session (i.e. the user is signed in with Google).
+ * - `authorized` is true when the signed-in user's email matches a judge
+ *   record in the given tenant whose status is "ACCEPTANCE" (approved).
+ * - `status` is the judge's approval status ("ACCEPTANCE", "PENDING",
+ *   "REJECTION", or `null` if the user has not applied yet).
+ *
+ * This is the secure authorization check used by the judge layout. The proxy
+ * only does an optimistic cookie-existence check; this query is what actually
+ * gates access to judge-only features.
+ */
+export const getJudgeAccess = query({
+  args: { tenant: v.string() },
+  handler: async (ctx, { tenant }) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) {
+      return { authenticated: false, authorized: false, status: null } as const;
+    }
+
+    const judge = await ctx.db
+      .query("judges")
+      .withIndex("by_tenant_user", (q) =>
+        q.eq("tenant", tenant).eq("userId", user._id),
+      )
+      .first();
+
+    const authorized = judge?.status === "ACCEPTANCE";
+
+    return {
+      authenticated: true,
+      authorized,
+      status: judge?.status ?? null,
+    } as const;
+  },
+});
+

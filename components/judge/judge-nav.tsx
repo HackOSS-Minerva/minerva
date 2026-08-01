@@ -23,11 +23,6 @@ const participateItems = [
     description: "Show your QR code to check in at the event.",
   },
   {
-    href: "/forms/judge",
-    label: "Register",
-    description: "Register as a judge for the event.",
-  },
-  {
     href: "/judge/assignments",
     label: "View Assignments",
     description: "See your assigned teams and judging slots.",
@@ -49,10 +44,16 @@ const participateItems = [
   },
 ];
 
-export function JudgeNav({ tenant }: { tenant: string }) {
+interface JudgeNavProps {
+  tenant: string;
+  judgeStatus: "ACCEPTANCE" | "PENDING" | "REJECTION" | null;
+}
+
+export function JudgeNav({ tenant, judgeStatus }: JudgeNavProps) {
   const pathname = usePathname();
   const { tenant: tenantConfig } = useTenant();
   const logo = tenantConfig?.logo;
+  const isAccepted = judgeStatus === "ACCEPTANCE";
 
   return (
     <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
@@ -87,44 +88,45 @@ export function JudgeNav({ tenant }: { tenant: string }) {
           );
         })}
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "gap-1 transition-all",
-                pathname.includes("/live/checkin") ||
-                  pathname.includes("/forms/judge") ||
-                  pathname.includes("/judge/assignments") ||
-                  pathname.includes("/judge/submissions") ||
-                  pathname.includes("/judge/orientation") ||
-                  pathname.includes("/judge/certificate")
-                  ? "bg-background shadow-sm"
-                  : "",
-                "text-foreground",
-              )}
-            >
-              Participate
-              <ChevronDownIcon className="size-3 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="center">
-            {participateItems.map((item) => (
-              <DropdownMenuItem key={item.href} asChild>
-                <Link
-                  href={`/${tenant}${item.href}`}
-                  className="flex flex-col items-start gap-0.5"
-                >
-                  <span className="text-sm font-medium">{item.label}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {item.description}
-                  </span>
-                </Link>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {isAccepted && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "gap-1 transition-all",
+                  pathname.includes("/live/checkin") ||
+                    pathname.includes("/judge/assignments") ||
+                    pathname.includes("/judge/submissions") ||
+                    pathname.includes("/judge/orientation") ||
+                    pathname.includes("/judge/certificate")
+                    ? "bg-background shadow-sm"
+                    : "",
+                  "text-foreground",
+                )}
+              >
+                Participate
+                <ChevronDownIcon className="size-3 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center">
+              {participateItems.map((item) => (
+                <DropdownMenuItem key={item.href} asChild>
+                  <Link
+                    href={`/${tenant}${item.href}`}
+                    className="flex flex-col items-start gap-0.5"
+                  >
+                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </nav>
   );

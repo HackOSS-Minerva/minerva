@@ -13,6 +13,7 @@ export async function proxy(request: NextRequest) {
 
   // Routes that require a signed-in user:
   //   - /:tenant/admin/*            (admin section — also checks superadmin role)
+  //   - /:tenant/judge/*            (judge section — also checks judge role)
   //   - /:tenant/forms/:form        (all registration forms — login only)
   //   - /:tenant/live/submit        (project submission form — login only)
   //
@@ -20,9 +21,10 @@ export async function proxy(request: NextRequest) {
   // public, so it is excluded from both this proxy check and the secure
   // server-side checks in the route components.
   const isAdmin = /^\/[^/]+\/admin(?:\/|$)/.test(pathname);
+  const isJudge = /^\/[^/]+\/judge(?:\/|$)/.test(pathname);
   const isForm = /^\/[^/]+\/forms\/[^/]+$/.test(pathname);
   const isSubmission = /^\/[^/]+\/live\/submit$/.test(pathname);
-  if (!isAdmin && !isForm && !isSubmission) {
+  if (!isAdmin && !isJudge && !isForm && !isSubmission) {
     return NextResponse.next();
   }
 
@@ -40,6 +42,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/:tenant/admin/:path*",
+    "/:tenant/judge/:path*",
     "/:tenant/forms/:form",
     "/:tenant/live/submit",
   ],
