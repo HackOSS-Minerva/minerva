@@ -42,9 +42,7 @@ export function AvatarProfile() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col gap-1">
           <p className="font-semibold text-primary">{name}</p>
-          <p className="text-xs font-normal text-muted-foreground">
-            {email}
-          </p>
+          <p className="text-xs font-normal text-muted-foreground">{email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 

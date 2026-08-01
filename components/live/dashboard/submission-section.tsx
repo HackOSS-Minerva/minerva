@@ -22,7 +22,6 @@ export function SubmissionSection({
   const now = Date.now();
   const isPastDeadline = now > submissionDeadline;
 
-
   const hasSubmitted = false;
 
   return (

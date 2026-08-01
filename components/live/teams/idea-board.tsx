@@ -54,7 +54,6 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
     setNewIdeaOpen(false);
   };
 
-
   const handleConfirmDelete = async () => {
     if (!selectedIdeaId) return;
     await removeIdea({ id: selectedIdeaId as any });

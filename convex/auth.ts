@@ -127,4 +127,3 @@ export const getJudgeAccess = query({
     } as const;
   },
 });
-

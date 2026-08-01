@@ -14,7 +14,6 @@ interface RegisterPageProps {
 }
 
 export function RegisterPage({}: RegisterPageProps) {
-
   return (
     <div className="space-y-6">
       <FormLockModal form="judge" />

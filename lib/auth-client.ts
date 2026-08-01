@@ -22,7 +22,3 @@ export const authClient = createAuthClient({
 // inferred client; the type mismatch is a known inference/contravariance quirk
 // in the component's generic `AuthClient` type.
 export const asAuthClient = authClient as unknown as AuthClient;
-
-
-
-

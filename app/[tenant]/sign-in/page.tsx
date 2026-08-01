@@ -24,8 +24,7 @@ const SignInContent = ({ tenant }: { tenant: string }) => {
   const { data: session, isPending } = authClient.useSession();
   const [signingIn, setSigningIn] = useState(false);
 
-  const redirectTarget =
-    searchParams.get("redirect") ?? `/${tenant}/admin`;
+  const redirectTarget = searchParams.get("redirect") ?? `/${tenant}/admin`;
 
   // If already signed in, send them to their redirect target.
   useEffect(() => {
@@ -65,7 +64,8 @@ const SignInContent = ({ tenant }: { tenant: string }) => {
         {session?.session ? (
           <div className="space-y-3">
             <p className="text-muted-foreground text-center text-sm">
-              Signed in as <span className="font-medium">{session.user.email}</span>.
+              Signed in as{" "}
+              <span className="font-medium">{session.user.email}</span>.
             </p>
             <Button
               className="w-full"
@@ -117,4 +117,3 @@ const SignInPage = ({ params }: SignInPageProps) => {
 };
 
 export default SignInPage;
-

@@ -23,8 +23,7 @@ const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
 
   // Map database status to EmailType for the Status component.
   // Database uses "PENDING", Status component expects "CONFIRMATION".
-  const statusForUI =
-    userStatus === "PENDING" ? "CONFIRMATION" : userStatus;
+  const statusForUI = userStatus === "PENDING" ? "CONFIRMATION" : userStatus;
 
   return (
     <>

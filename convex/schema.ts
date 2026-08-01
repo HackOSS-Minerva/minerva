@@ -57,8 +57,7 @@ export default defineSchema({
     status: statuses,
     tenant: v.string(),
     userId: v.string(),
-  })
-    .index("by_tenant_user", ["tenant", "userId"]),
+  }).index("by_tenant_user", ["tenant", "userId"]),
 
   judges: defineTable({
     firstname: v.string(),
@@ -75,8 +74,7 @@ export default defineSchema({
     status: statuses,
     tenant: v.string(),
     userId: v.string(),
-  })
-    .index("by_tenant_user", ["tenant", "userId"]),
+  }).index("by_tenant_user", ["tenant", "userId"]),
 
   speakers: defineTable({
     firstname: v.string(),
@@ -93,8 +91,7 @@ export default defineSchema({
     status: statuses,
     tenant: v.string(),
     userId: v.string(),
-  })
-    .index("by_tenant_user", ["tenant", "userId"]),
+  }).index("by_tenant_user", ["tenant", "userId"]),
 
   superadmins: defineTable({
     firstname: v.string(),
@@ -112,8 +109,7 @@ export default defineSchema({
     dietrestriction: dietrestrictions,
     tenant: v.string(),
     userId: v.string(),
-  })
-    .index("by_tenant_user", ["tenant", "userId"]),
+  }).index("by_tenant_user", ["tenant", "userId"]),
 
   checkins: defineTable({
     userid: v.string(),
@@ -142,8 +138,7 @@ export default defineSchema({
     status: statuses,
     tenant: v.string(),
     userId: v.string(),
-  })
-    .index("by_tenant_user", ["tenant", "userId"]),
+  }).index("by_tenant_user", ["tenant", "userId"]),
 
   feedback: defineTable({
     find: v.string(),

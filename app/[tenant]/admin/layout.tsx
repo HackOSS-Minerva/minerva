@@ -48,4 +48,3 @@ const Layout = async ({ children, params }: AdminLayoutProps) => {
 };
 
 export default Layout;
-

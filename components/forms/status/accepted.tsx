@@ -21,27 +21,25 @@ const Accepted = ({ form, tenant }: AcceptedProps) => {
   const roleLabel = form.charAt(0).toUpperCase() + form.slice(1);
 
   return (
-      <div className="flex flex-col items-center justify-center gap-4 p-8">
-        <div className="rounded-full p-2">
-          <Check className="h-12 w-12 text-primary" />
-        </div>
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-primary">
-            Congratulations!
-          </h2>
-          <p className="text-primary">
-            Your {roleLabel} application has been accepted. We&apos;re excited
-            to have you join us!
-          </p>
-          {dashboardHref && (
-            <Button asChild className="mt-4">
-              <Link href={`/${tenant}${dashboardHref}`}>
-                Go to {roleLabel} Dashboard
-              </Link>
-            </Button>
-          )}
-        </div>
+    <div className="flex flex-col items-center justify-center gap-4 p-8">
+      <div className="rounded-full p-2">
+        <Check className="h-12 w-12 text-primary" />
       </div>
+      <div className="text-center space-y-2">
+        <h2 className="text-2xl font-bold text-primary">Congratulations!</h2>
+        <p className="text-primary">
+          Your {roleLabel} application has been accepted. We&apos;re excited to
+          have you join us!
+        </p>
+        {dashboardHref && (
+          <Button asChild className="mt-4">
+            <Link href={`/${tenant}${dashboardHref}`}>
+              Go to {roleLabel} Dashboard
+            </Link>
+          </Button>
+        )}
+      </div>
+    </div>
   );
 };
 

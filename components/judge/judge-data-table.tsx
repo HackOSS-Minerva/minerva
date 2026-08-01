@@ -73,7 +73,6 @@ export function JudgeDataTable({
     pageSize: 10,
   });
 
-
   const table = useReactTable<any>({
     data,
     columns,

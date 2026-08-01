@@ -274,7 +274,6 @@ const vettedConfig: Record<
   },
 };
 
-
 export const columns: ColumnDef<SubmissionRecord>[] = [
   {
     id: "select",

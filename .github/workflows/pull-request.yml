@@ -69,3 +69,4 @@ jobs:
 
     env:
       NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
+      CONVEX_SITE_URL: ${{ vars.CONVEX_SITE_URL }}
