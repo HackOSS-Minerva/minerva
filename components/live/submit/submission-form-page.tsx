@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -56,6 +55,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
               Dashboard
             </BreadcrumbLink>
           </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>Participate</BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>Submit Project</BreadcrumbPage>

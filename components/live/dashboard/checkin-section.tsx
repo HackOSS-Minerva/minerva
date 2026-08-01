@@ -47,15 +47,6 @@ export function CheckinSection({ tenant }: CheckinSectionProps) {
             <QRCodeSVG value={guestQR} size={180} />
           </div>
         </div>
-
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="outline">
-            <Link href={`/${tenant}/live/checkin`}>
-              View Full QR Code
-              <IconExternalLink className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );

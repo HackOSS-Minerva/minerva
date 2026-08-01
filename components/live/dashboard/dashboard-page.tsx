@@ -36,13 +36,10 @@ export function DashboardPage({ tenant }: DashboardPageProps) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <CheckinSection tenant={tenant} />
 
-        {live.submission && (
-          <SubmissionSection
-            tenant={tenant}
-            submissionDeadline={new Date(live.submission.deadline).getTime()}
-            requirements={live.submission.requirements}
-          />
-        )}
+        <SubmissionSection
+          tenant={tenant}
+          submissionDeadline={new Date(live.deadline).getTime()}
+        />
       </div>
 
       <Separator className="my-6" />

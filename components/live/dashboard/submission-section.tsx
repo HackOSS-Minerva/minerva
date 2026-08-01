@@ -10,13 +10,11 @@ import Link from "next/link";
 interface SubmissionSectionProps {
   tenant: string;
   submissionDeadline: number;
-  requirements: string;
 }
 
 export function SubmissionSection({
   tenant,
   submissionDeadline,
-  requirements,
 }: SubmissionSectionProps) {
   const timeLeft = useCountdown(submissionDeadline);
   const now = Date.now();
@@ -60,13 +58,6 @@ export function SubmissionSection({
           )}
           {isPastDeadline && <Badge variant="outline">Deadline Passed</Badge>}
         </div>
-
-        {requirements && (
-          <div>
-            <p className="mb-1 text-sm font-medium">Requirements</p>
-            <p className="text-sm text-muted-foreground">{requirements}</p>
-          </div>
-        )}
 
         {!isPastDeadline && (
           <div className="flex flex-wrap gap-3">

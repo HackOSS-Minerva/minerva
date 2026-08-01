@@ -3,6 +3,7 @@
 import { SponsorDataTable } from "@/components/sponsor/sponsor-data-table";
 import { csvFields } from "@/components/dashboards/dashboards/participants";
 import { columns } from "./resume-book-columns";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface SponsorResumeBookPageProps {
   tenant: string;
@@ -247,19 +248,22 @@ const dummyData = [
 
 export function ResumeBookPage({}: SponsorResumeBookPageProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Resume Book</h1>
-        <p className="text-sm text-muted-foreground">
-          Browse participant profiles, resumes, and contact information.
-        </p>
-      </div>
+    <>
+      <FormLockModal form="sponsor-resume-book" />
+      <div className="space-y-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">Resume Book</h1>
+          <p className="text-sm text-muted-foreground">
+            Browse participant profiles, resumes, and contact information.
+          </p>
+        </div>
 
-      <SponsorDataTable
-        data={dummyData}
-        columns={columns}
-        csvFields={csvFields}
-      />
-    </div>
+        <SponsorDataTable
+          data={dummyData}
+          columns={columns}
+          csvFields={csvFields}
+        />
+      </div>
+    </>
   );
 }

@@ -11,6 +11,7 @@ import {
   IconChartBar,
   IconClock,
 } from "@tabler/icons-react";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface SponsorAnalyticsPageProps {
   tenant: string;
@@ -72,57 +73,60 @@ const dummyPrizes = [
 
 export function AnalyticsPage({}: SponsorAnalyticsPageProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Hackathon Analytics</h1>
-        <p className="text-sm text-muted-foreground">
-          High-level event statistics and insights.
-        </p>
-      </div>
+    <>
+      <FormLockModal form="sponsor-analytics" />
+      <div className="space-y-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">Hackathon Analytics</h1>
+          <p className="text-sm text-muted-foreground">
+            High-level event statistics and insights.
+          </p>
+        </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {dummyMetrics.map((metric) => {
-          const Icon = metric.icon;
-          return (
-            <Card key={metric.label}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {metric.label}
-                </CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{metric.value}</div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {metric.change}
-                </p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {dummyMetrics.map((metric) => {
+            const Icon = metric.icon;
+            return (
+              <Card key={metric.label}>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {metric.label}
+                  </CardTitle>
+                  <Icon className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{metric.value}</div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {metric.change}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {dummyPrizes.map((metric) => {
-          const Icon = metric.icon;
-          return (
-            <Card key={metric.label}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {metric.label}
-                </CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{metric.value}</div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {metric.change}
-                </p>
-              </CardContent>
-            </Card>
-          );
-        })}
+        <div className="grid gap-4 sm:grid-cols-2">
+          {dummyPrizes.map((metric) => {
+            const Icon = metric.icon;
+            return (
+              <Card key={metric.label}>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {metric.label}
+                  </CardTitle>
+                  <Icon className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{metric.value}</div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {metric.change}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

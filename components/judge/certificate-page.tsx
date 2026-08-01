@@ -12,6 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Mail, Download } from "lucide-react";
 import { toast } from "sonner";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface CertificatePageProps {
   tenant: string;
@@ -124,74 +125,81 @@ export function CertificatePage({}: CertificatePageProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Judge Certificate</h1>
-        <p className="text-sm text-muted-foreground">
-          Download your certificate of service as a judge.
-        </p>
+    <>
+      <FormLockModal form="judge-certificate" />
+      <div className="space-y-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">Judge Certificate</h1>
+          <p className="text-sm text-muted-foreground">
+            Download your certificate of service as a judge.
+          </p>
+        </div>
+
+        <Separator className="my-6" />
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Certificate Preview</CardTitle>
+              <CardDescription>
+                This is a preview of your certificate. Use the download button
+                to save it.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="border border-dashed rounded-lg p-6 text-center bg-gradient-to-br from-blue-50 to-indigo-50">
+                <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
+                  Certificate of Service
+                </div>
+                <div className="text-xl font-serif italic text-indigo-900 mb-4">
+                  Certificate
+                </div>
+                <div className="text-sm text-slate-600 mb-2">
+                  This certificate is proudly presented to
+                </div>
+                <div className="text-2xl font-bold text-slate-900 border-b-2 border-slate-300 inline-block px-8 py-1 mb-4">
+                  {judgeName}
+                </div>
+                <div className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+                  In recognition of your valuable service and dedication as a
+                  Judge at{" "}
+                  <strong>{tenantConfig?.name || "DesignVerse 2026"}</strong>.
+                </div>
+                <div className="mt-6 text-xs text-slate-500">
+                  Certificate ID: {certificateId}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Actions</CardTitle>
+              <CardDescription>
+                Download or print your certificate.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Your certificate is ready for download. You can save it as an
+                HTML file and open it in any browser to print or save as PDF.
+              </p>
+              <Button onClick={handleDownload} className="w-full">
+                <Download className="mr-2 h-4 w-4" />
+                Download Certificate
+              </Button>
+              <Button
+                onClick={handleEmail}
+                variant="outline"
+                className="w-full"
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Email Certificate
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-
-      <Separator className="my-6" />
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Certificate Preview</CardTitle>
-            <CardDescription>
-              This is a preview of your certificate. Use the download button to
-              save it.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="border border-dashed rounded-lg p-6 text-center bg-gradient-to-br from-blue-50 to-indigo-50">
-              <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
-                Certificate of Service
-              </div>
-              <div className="text-xl font-serif italic text-indigo-900 mb-4">
-                Certificate
-              </div>
-              <div className="text-sm text-slate-600 mb-2">
-                This certificate is proudly presented to
-              </div>
-              <div className="text-2xl font-bold text-slate-900 border-b-2 border-slate-300 inline-block px-8 py-1 mb-4">
-                {judgeName}
-              </div>
-              <div className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
-                In recognition of your valuable service and dedication as a
-                Judge at{" "}
-                <strong>{tenantConfig?.name || "DesignVerse 2026"}</strong>.
-              </div>
-              <div className="mt-6 text-xs text-slate-500">
-                Certificate ID: {certificateId}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Actions</CardTitle>
-            <CardDescription>
-              Download or print your certificate.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Your certificate is ready for download. You can save it as an HTML
-              file and open it in any browser to print or save as PDF.
-            </p>
-            <Button onClick={handleDownload} className="w-full">
-              <Download className="mr-2 h-4 w-4" />
-              Download Certificate
-            </Button>
-            <Button onClick={handleEmail} variant="outline" className="w-full">
-              <Mail className="mr-2 h-4 w-4" />
-              Email Certificate
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    </>
   );
 }

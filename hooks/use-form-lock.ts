@@ -41,76 +41,53 @@ export interface UseFormLockResult {
   closesLabel: string | null;
 }
 
-const SERIES_TO_MS: Record<string, number> = {
-  ms: 1,
-  s: 1000,
-  m: 60_000,
-  h: 3_600_000,
-  d: 86_400_000,
-} as const;
-
-function parseDurationToMs(raw: string | undefined | null): number | undefined {
-  if (!raw) return undefined;
-  const trimmed = raw.trim();
-  const match = /^(\d+)(ms|s|m|h|d)$/i.exec(trimmed);
-  if (!match) return undefined;
-  const value = Number(match[1]);
-  const unit = match[2].toLowerCase();
-  const multiplier = SERIES_TO_MS[unit];
-  if (!multiplier || value <= 0) return undefined;
-  return value * multiplier;
-}
-
 export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
-  const { live, tenant } = useTenant();
-
-  const endTime = live?.endTime ?? null;
-  const rawOpenOffset = live?.openOffset ?? null;
+  const { tenant } = useTenant();
 
   const lock = useMemo(() => {
-    // 1. Check for form-specific lock from tenant config
-    const formLock = tenant?.formLocks?.[form];
-    if (formLock?.opens && formLock?.closes) {
+    if (!tenant?.locks) {
+      return { opensAt: null, closesAt: null };
+    }
+
+    // Resolve the lock entry from the nested locks structure
+    let lockEntry: string[] | undefined;
+
+    // Forms are stored in locks.forms (participant, judge, speaker, superadmin, volunteer, submission, feedback)
+    const formsCategory = tenant.locks.forms;
+    if (
+      formsCategory &&
+      typeof formsCategory === "object" &&
+      !Array.isArray(formsCategory)
+    ) {
+      lockEntry = (formsCategory as Record<string, string[]>)[form];
+    }
+
+    // Other categories are stored at the top level (judge, sponsor, live)
+    if (!lockEntry) {
+      lockEntry = tenant.locks[form] as string[] | undefined;
+    }
+
+    if (lockEntry && Array.isArray(lockEntry) && lockEntry.length >= 2) {
       return {
-        opensAt: formLock.opens,
-        closesAt: formLock.closes,
+        opensAt: lockEntry[0],
+        closesAt: lockEntry[1],
       };
     }
 
-    // 2. Fall back to offset-based logic from live event
-    const fallbackOpen = endTime
-      ? new Date(
-          new Date(endTime).getTime() - 24 * 60 * 60 * 1000,
-        ).toISOString()
-      : null;
-
-    const opensAt =
-      endTime && rawOpenOffset !== null && rawOpenOffset !== undefined
-        ? new Date(
-            new Date(endTime).getTime() -
-              parseDurationToMs(String(rawOpenOffset))!,
-          ).toISOString()
-        : fallbackOpen;
-
-    const closesAt = endTime ?? null;
-
-    return {
-      opensAt,
-      closesAt,
-    };
-  }, [endTime, rawOpenOffset, tenant?.formLocks, form]);
+    return { opensAt: null, closesAt: null };
+  }, [tenant?.locks, form]);
 
   const now = useMemo(() => Date.now(), []);
 
   const opensIn = useMemo(() => {
     if (!lock.opensAt) return null;
     return Math.max(0, new Date(lock.opensAt).getTime() - now);
-  }, [lock.opensAt]);
+  }, [lock.opensAt, now]);
 
   const closesIn = useMemo(() => {
     if (!lock.closesAt) return null;
     return Math.max(0, new Date(lock.closesAt).getTime() - now);
-  }, [lock.closesAt]);
+  }, [lock.closesAt, now]);
 
   const isLocked = useMemo(() => {
     if (!lock.opensAt || !lock.closesAt) return false;

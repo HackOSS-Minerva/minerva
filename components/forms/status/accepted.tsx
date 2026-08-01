@@ -22,7 +22,7 @@ const Accepted = ({ form, tenant }: AcceptedProps) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
-        <Check className="h-12 w-12 text-primary" />
+      <Check className="h-12 w-12 text-primary" />
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-primary">Congratulations!</h2>
         <p className="text-primary">
