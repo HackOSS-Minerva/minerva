@@ -49,6 +49,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useParams } from "next/navigation";
@@ -78,6 +88,14 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    type: "single";
+    id: any;
+  } | {
+    type: "many";
+    ids: any[];
+  } | null>(null);
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
@@ -116,8 +134,8 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     meta: {
       onDelete: (id: any) => {
-        onDelete?.(id);
-        setRowSelection({});
+        setDeleteTarget({ type: "single", id });
+        setDeleteDialogOpen(true);
       },
       setStatusMany: (ids: any, status: any) => {
         setStatusMany?.(ids, status);
@@ -245,8 +263,8 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
                 const ids = table
                   .getSelectedRowModel()
                   .rows.map((row) => row.original._id);
-                onDeleteMany?.({ ids });
-                setRowSelection({});
+                setDeleteTarget({ type: "many", ids });
+                setDeleteDialogOpen(true);
               }}
               disabled={table.getSelectedRowModel().rows.length === 0}
               className="hover:bg-red-500 hover:text-white"
@@ -399,6 +417,42 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       <TabsContent value="rejected" className="flex flex-col px-4 lg:px-6">
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {deleteTarget?.type === "many"
+                ? `Delete ${deleteTarget.ids.length} users`
+                : "Delete user"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget?.type === "many"
+                ? "Are you sure you want to delete the selected users? This action cannot be undone."
+                : "Are you sure you want to delete this user? This action cannot be undone."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                if (!deleteTarget) return;
+                if (deleteTarget.type === "single") {
+                  onDelete?.(deleteTarget.id);
+                } else if (deleteTarget.type === "many") {
+                  onDeleteMany?.({ ids: deleteTarget.ids });
+                }
+                setDeleteTarget(null);
+                setDeleteDialogOpen(false);
+                setRowSelection({});
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Tabs>
   );
 };
