@@ -7,10 +7,16 @@ import { ThemeProvider } from "@/lib/theme-provider";
 
 const client = new QueryClient();
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({
+  children,
+  initialToken,
+}: {
+  children: ReactNode;
+  initialToken?: string | null;
+}) {
   return (
     <ThemeProvider>
-      <ConvexClientProvider>
+      <ConvexClientProvider initialToken={initialToken}>
         <QueryClientProvider client={client}>{children}</QueryClientProvider>
       </ConvexClientProvider>
     </ThemeProvider>

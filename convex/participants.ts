@@ -11,6 +11,7 @@ import {
   ages,
 } from "./schema";
 import { statuses } from "../data/status";
+import { authComponent } from "./auth";
 
 export const getbyid = query({
   args: { id: v.id("participants") },
@@ -32,12 +33,12 @@ export const get = query({
 });
 
 export const getstatus = query({
-  args: { tenant: v.string(), email: v.string() },
-  handler: async (ctx, { tenant, email }) => {
+  args: { tenant: v.string(), userId: v.string() },
+  handler: async (ctx, { tenant, userId }) => {
     const participant = await ctx.db
       .query("participants")
-      .filter((q) =>
-        q.and(q.eq(q.field("tenant"), tenant), q.eq(q.field("email"), email)),
+      .withIndex("by_tenant_user", (q) =>
+        q.eq("tenant", tenant).eq("userId", userId),
       )
       .first();
 
@@ -68,6 +69,11 @@ export const add = mutation({
     }),
   },
   handler: async (ctx, { tenant, user }) => {
+    const authUser = await authComponent.safeGetAuthUser(ctx);
+    if (!authUser) {
+      throw new Error("Unauthenticated");
+    }
+
     const id = await ctx.db.insert("participants", {
       firstname: user.firstname,
       lastname: user.lastname,
@@ -86,6 +92,7 @@ export const add = mutation({
       resume: user.resume,
       status: "PENDING",
       tenant: tenant,
+      userId: authUser._id,
     });
 
     const created = await ctx.db.get("participants", id);

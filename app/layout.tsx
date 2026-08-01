@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/lib/providers";
+import { getToken } from "@/lib/auth-server";
 import { LayoutProps } from "@/types/layouts";
 import "./globals.css";
 
@@ -20,13 +21,16 @@ export const metadata: Metadata = {
   description: "Minerva",
 };
 
-export default function RootLayout({ children }: LayoutProps) {
+export default async function RootLayout({ children }: LayoutProps) {
+  // Read the Better Auth session token server-side so authenticated Convex
+  // queries can be preloaded during SSR.
+  const initialToken = await getToken();
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
+        <Providers initialToken={initialToken}>
           {children}
           <Toaster />
         </Providers>

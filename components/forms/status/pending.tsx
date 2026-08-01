@@ -3,7 +3,6 @@ import { Clock } from "lucide-react";
 
 const Pending = () => {
   return (
-    <Card className="w-full sm:max-w-md border-none">
       <div className="flex flex-col items-center justify-center gap-4 p-8">
         <div className="rounded-full p-2">
           <Clock className="h-12 w-12 text-primary" />
@@ -18,7 +17,6 @@ const Pending = () => {
           </p>
         </div>
       </div>
-    </Card>
   );
 };
 

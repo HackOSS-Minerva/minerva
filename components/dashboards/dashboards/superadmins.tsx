@@ -240,15 +240,6 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "major",
-    header: () => <div>Major</div>,
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.major}
-      </Label>
-    ),
-  },
-  {
     accessorKey: "team",
     header: () => <div>Team</div>,
     cell: ({ row }) => (
@@ -263,15 +254,6 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => (
       <Label className="text-muted-foreground px-1.5">
         {formatShirtSize(row.original.shirt)}
-      </Label>
-    ),
-  },
-  {
-    accessorKey: "dietrestriction",
-    header: () => <div>Diet Restriction</div>,
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.dietrestriction}
       </Label>
     ),
   },

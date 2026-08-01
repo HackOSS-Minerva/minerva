@@ -56,7 +56,9 @@ export default defineSchema({
     resume: v.optional(v.string()),
     status: statuses,
     tenant: v.string(),
-  }),
+    userId: v.string(),
+  })
+    .index("by_tenant_user", ["tenant", "userId"]),
 
   judges: defineTable({
     firstname: v.string(),
@@ -72,7 +74,9 @@ export default defineSchema({
     picture: v.string(),
     status: statuses,
     tenant: v.string(),
-  }),
+    userId: v.string(),
+  })
+    .index("by_tenant_user", ["tenant", "userId"]),
 
   speakers: defineTable({
     firstname: v.string(),
@@ -88,7 +92,9 @@ export default defineSchema({
     picture: v.string(),
     status: statuses,
     tenant: v.string(),
-  }),
+    userId: v.string(),
+  })
+    .index("by_tenant_user", ["tenant", "userId"]),
 
   superadmins: defineTable({
     firstname: v.string(),
@@ -105,7 +111,9 @@ export default defineSchema({
     status: statuses,
     dietrestriction: dietrestrictions,
     tenant: v.string(),
-  }),
+    userId: v.string(),
+  })
+    .index("by_tenant_user", ["tenant", "userId"]),
 
   checkins: defineTable({
     userid: v.string(),
@@ -133,7 +141,9 @@ export default defineSchema({
     availabilities: v.array(availabilities),
     status: statuses,
     tenant: v.string(),
-  }),
+    userId: v.string(),
+  })
+    .index("by_tenant_user", ["tenant", "userId"]),
 
   feedback: defineTable({
     find: v.string(),
@@ -172,6 +182,10 @@ export default defineSchema({
       v.literal("needs_review"),
       v.literal("disqualified"),
     ),
+    // Pre-existing documents in the dev deployment carry this field; it's
+    // not written by the app (the app uses `vetted`), but it must be declared
+    // optional here so schema validation passes against that legacy data.
+    vettingStatus: v.optional(v.string()),
   }),
   assignments: defineTable({
     judgeId: v.id("judges"),
