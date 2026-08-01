@@ -14,7 +14,6 @@ type tenants = "designverse";
 
 export interface LiveInfo {
   name: string;
-  status: string;
   startTime: string;
   endTime: string;
   deadline: string;
