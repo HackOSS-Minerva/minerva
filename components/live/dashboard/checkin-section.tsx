@@ -1,15 +1,9 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { QRCodeSVG } from "qrcode.react";
-import { IconExternalLink, IconCheck } from "@tabler/icons-react";
-import Link from "next/link";
+import { IconCheck } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
-
-interface CheckinSectionProps {
-  tenant: string;
-}
 
 // Hardcoded guest QR payload matching the /checkin page
 const guestQR = JSON.stringify({
@@ -19,7 +13,13 @@ const guestQR = JSON.stringify({
   email: "guest@example.com",
 });
 
+interface CheckinSectionProps {
+  tenant: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function CheckinSection({ tenant }: CheckinSectionProps) {
+  // tenant is passed from parent but not yet used in this component
   const hasCheckedIn = false; // TODO: wire up real check-in status
 
   return (

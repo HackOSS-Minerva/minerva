@@ -12,23 +12,19 @@ import RulesMarkdown from "@/tenants/designverse/descriptions/rules.mdx";
 
 interface RulesPageProps {
   tenant: string;
+  baseHref?: string;
 }
 
-export function RulesPage({ tenant }: RulesPageProps) {
+export function RulesPage({
+  tenant,
+  baseHref = `/${tenant}/live/dashboard`,
+}: RulesPageProps) {
   return (
     <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/hackpacks`}>
-              Resources
-            </BreadcrumbLink>
+            <BreadcrumbLink href={baseHref}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

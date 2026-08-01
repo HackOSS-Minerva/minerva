@@ -8,6 +8,7 @@ import { useFormLock } from "@/hooks/use-form-lock";
 import { toast } from "sonner";
 import { useEffect, useMemo, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
+import { triggerConfetti } from "@/hooks/use-confetti";
 
 /**
  * Derives per-field identity values from the Better Auth session user.
@@ -72,6 +73,7 @@ const Fields = () => {
         // `Thank you for applying. You will receive a confirmation email shortly at ${value.email}`,
         `Thank you for applying. We will send you an application update shortly!`,
       );
+      triggerConfetti();
       onSubmit(value);
     },
   });

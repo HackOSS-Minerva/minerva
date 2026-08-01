@@ -37,7 +37,7 @@ export function SubmissionSection({
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div>
           <div>
             <p className="text-sm text-muted-foreground">Submission Deadline</p>
             <p className="font-medium">
@@ -50,13 +50,15 @@ export function SubmissionSection({
               })}
             </p>
           </div>
-          {timeLeft && !isPastDeadline && (
-            <Badge variant="secondary" className="shrink-0">
-              {timeLeft.days > 0 ? `${timeLeft.days}d ` : ""}
-              {timeLeft.hours}h {timeLeft.minutes}m remaining
-            </Badge>
-          )}
-          {isPastDeadline && <Badge variant="outline">Deadline Passed</Badge>}
+          <div>
+            {timeLeft && !isPastDeadline && (
+              <Badge variant="secondary" className="shrink-0">
+                {timeLeft.days > 0 ? `${timeLeft.days}d ` : ""}
+                {timeLeft.hours}h {timeLeft.minutes}m remaining
+              </Badge>
+            )}
+            {isPastDeadline && <Badge variant="outline">Deadline Passed</Badge>}
+          </div>
         </div>
 
         {!isPastDeadline && (

@@ -16,6 +16,29 @@ import {
 
 const navItems = [{ href: "/judge/dashboard", label: "Dashboard" }];
 
+const resourceItems = [
+  {
+    href: "/judge/venue",
+    label: "Venue",
+    description: "Find location and event details.",
+  },
+  {
+    href: "/judge/packing-list",
+    label: "Packing List",
+    description: "Check what to bring to the event.",
+  },
+  {
+    href: "/judge/rules",
+    label: "Rules",
+    description: "Review the hackathon rules and guidelines.",
+  },
+  {
+    href: "/judge/code-of-conduct",
+    label: "Code of Conduct",
+    description: "Understand our community standards.",
+  },
+];
+
 const participateItems = [
   {
     href: "/live/checkin",
@@ -87,6 +110,43 @@ export function JudgeNav({ tenant, judgeStatus }: JudgeNavProps) {
             </Link>
           );
         })}
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "gap-1 transition-all",
+                pathname.includes("/judge/venue") ||
+                  pathname.includes("/judge/packing-list") ||
+                  pathname.includes("/judge/rules") ||
+                  pathname.includes("/judge/code-of-conduct")
+                  ? "bg-background shadow-sm"
+                  : "",
+                "text-foreground",
+              )}
+            >
+              Resources
+              <ChevronDownIcon className="size-3 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="center">
+            {resourceItems.map((item) => (
+              <DropdownMenuItem key={item.href} asChild>
+                <Link
+                  href={`/${tenant}${item.href}`}
+                  className="flex flex-col items-start gap-0.5"
+                >
+                  <span className="text-sm font-medium">{item.label}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {item.description}
+                  </span>
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {isAccepted && (
           <DropdownMenu>

@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import { Clock } from "lucide-react";
 
 const Pending = () => {
