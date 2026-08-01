@@ -251,9 +251,7 @@ export function TableToolbar({
   }, [filteredOptions]);
 
   return (
-    <div className="flex flex-col gap-3 px-4 lg:px-6">
-      {/* Grouped filter combobox */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full">
         <Combobox
           multiple
           autoHighlight
@@ -298,6 +296,5 @@ export function TableToolbar({
           </ComboboxContent>
         </Combobox>
       </div>
-    </div>
   );
 }

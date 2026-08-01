@@ -128,7 +128,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   return (
     <Tabs defaultValue="outline">
-      <div className="flex items-start px-4 lg:px-6">
+      <div className="flex items-start px-4 lg:px-6 gap-2">
         <TableToolbar table={table} slug={slug} />
         <div className="ml-auto flex items-center gap-2">
           <Select defaultValue="accepted">
