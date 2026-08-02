@@ -27,7 +27,10 @@ export function convertToCSV(
   const rows = data.map((row) =>
     fields
       .map((field) => {
-        if (field === "privacy_policy_consent" || field === "code_of_conduct_consent") {
+        if (
+          field === "privacy_policy_consent" ||
+          field === "code_of_conduct_consent"
+        ) {
           return "TRUE";
         }
         return escapeValue(row[field]);

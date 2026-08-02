@@ -198,9 +198,7 @@ export function TableToolbar({
 
   // Only include filter options whose column actually exists in the table
   const filterOptions = React.useMemo(() => {
-    const columnIds = new Set(
-      table.getAllColumns().map((col) => col.id),
-    );
+    const columnIds = new Set(table.getAllColumns().map((col) => col.id));
     return allFilterOptions.filter((opt) => columnIds.has(opt.columnId));
   }, [allFilterOptions, table]);
 
@@ -253,53 +251,50 @@ export function TableToolbar({
   }, [filteredOptions]);
 
   return (
-    <div className="flex flex-col gap-3 px-4 lg:px-6">
-      {/* Grouped filter combobox */}
-      <div className="flex items-center gap-2">
-        <Combobox
-          multiple
-          autoHighlight
-          value={selectedValues}
-          onValueChange={handleValueChange}
-          onInputValueChange={setInputValue}
-          filteredItems={filteredOptions}
-        >
-          <ComboboxChips ref={anchor} className="w-full min-w-0">
-            <ComboboxValue>
-              {(values: string[]) => (
-                <>
-                  {values.map((value: string) => {
-                    const option = filterOptions.find((o) => o.value === value);
-                    const label = option?.label ?? value;
-                    const group = option?.group ?? "";
-                    return (
-                      <ComboboxChip key={value}>
-                        {group ? `${group}: ${label}` : label}
-                      </ComboboxChip>
-                    );
-                  })}
-                </>
-              )}
-            </ComboboxValue>
-            <ComboboxChipsInput placeholder="Filter by..." />
-          </ComboboxChips>
-          <ComboboxContent anchor={anchor}>
-            <ComboboxEmpty>No items found.</ComboboxEmpty>
-            <ComboboxList>
-              {groupedFiltered.map(([groupLabel, options]) => (
-                <ComboboxGroup key={groupLabel}>
-                  <ComboboxLabel>{groupLabel}</ComboboxLabel>
-                  {options.map((opt) => (
-                    <ComboboxItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </ComboboxItem>
-                  ))}
-                </ComboboxGroup>
-              ))}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
-      </div>
+    <div className="flex items-center gap-2 w-full">
+      <Combobox
+        multiple
+        autoHighlight
+        value={selectedValues}
+        onValueChange={handleValueChange}
+        onInputValueChange={setInputValue}
+        filteredItems={filteredOptions}
+      >
+        <ComboboxChips ref={anchor} className="w-full min-w-0">
+          <ComboboxValue>
+            {(values: string[]) => (
+              <>
+                {values.map((value: string) => {
+                  const option = filterOptions.find((o) => o.value === value);
+                  const label = option?.label ?? value;
+                  const group = option?.group ?? "";
+                  return (
+                    <ComboboxChip key={value}>
+                      {group ? `${group}: ${label}` : label}
+                    </ComboboxChip>
+                  );
+                })}
+              </>
+            )}
+          </ComboboxValue>
+          <ComboboxChipsInput placeholder="Filter by..." />
+        </ComboboxChips>
+        <ComboboxContent anchor={anchor}>
+          <ComboboxEmpty>No items found.</ComboboxEmpty>
+          <ComboboxList>
+            {groupedFiltered.map(([groupLabel, options]) => (
+              <ComboboxGroup key={groupLabel}>
+                <ComboboxLabel>{groupLabel}</ComboboxLabel>
+                {options.map((opt) => (
+                  <ComboboxItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </ComboboxItem>
+                ))}
+              </ComboboxGroup>
+            ))}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
     </div>
   );
 }

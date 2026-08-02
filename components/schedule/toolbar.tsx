@@ -85,9 +85,7 @@ export function ScheduleToolbar({
 
   // Only include filter options whose column actually exists in the table
   const filterOptions = React.useMemo(() => {
-    const columnIds = new Set(
-      table.getAllColumns().map((col) => col.id),
-    );
+    const columnIds = new Set(table.getAllColumns().map((col) => col.id));
     return allFilterOptions.filter((opt) => columnIds.has(opt.columnId));
   }, [allFilterOptions, table]);
 

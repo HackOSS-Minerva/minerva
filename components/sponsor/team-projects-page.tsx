@@ -3,6 +3,7 @@
 import { SponsorDataTable } from "@/components/sponsor/sponsor-data-table";
 import { columns } from "./team-projects-columns";
 import type { TeamProjectsRow } from "./team-projects-columns";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface TeamProjectsPageProps {
   tenant: string;
@@ -101,21 +102,20 @@ const dummyData: TeamProjectsRow[] = [
   },
 ];
 
-export function TeamProjectsPage({ tenant }: TeamProjectsPageProps) {
+export function TeamProjectsPage({}: TeamProjectsPageProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Team Projects</h1>
-        <p className="text-sm text-muted-foreground">
-          Browse submitted team projects, demo links, and resources.
-        </p>
-      </div>
+    <>
+      <FormLockModal form="sponsor-team-projects" />
+      <div className="space-y-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">Team Projects</h1>
+          <p className="text-sm text-muted-foreground">
+            Browse submitted team projects, demo links, and resources.
+          </p>
+        </div>
 
-      <SponsorDataTable
-        data={dummyData}
-        columns={columns}
-        csvFields={[]}
-      />
-    </div>
+        <SponsorDataTable data={dummyData} columns={columns} csvFields={[]} />
+      </div>
+    </>
   );
 }

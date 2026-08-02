@@ -6,7 +6,9 @@ interface SponsorDashboardRouteProps {
   };
 }
 
-const SponsorDashboardRoute = async ({ params }: SponsorDashboardRouteProps) => {
+const SponsorDashboardRoute = async ({
+  params,
+}: SponsorDashboardRouteProps) => {
   const { tenant } = await params;
 
   return <SponsorDashboardPage tenant={tenant} />;

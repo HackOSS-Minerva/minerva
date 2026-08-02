@@ -14,20 +14,9 @@ type tenants = "designverse";
 
 export interface LiveInfo {
   name: string;
-  status: string;
   startTime: string;
   endTime: string;
-  openOffset?: string;
-  submission: {
-    url: string;
-    deadline: string;
-    requirements: string;
-  };
-}
-
-export interface FormLock {
-  opens: string;
-  closes: string;
+  deadline: string;
 }
 
 export interface TenantConfig {
@@ -37,11 +26,12 @@ export interface TenantConfig {
   email: string;
   instagram: string;
   linkedin: string;
+  devpost: string;
   heart: string;
   logo: string;
   calendarid: string;
-  event?: LiveInfo;
-  formLocks?: Record<string, FormLock>;
+  event: LiveInfo;
+  locks: Record<string, string[] | Record<string, string[]>>;
 }
 
 export const useTenant = () => {

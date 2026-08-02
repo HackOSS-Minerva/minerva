@@ -9,7 +9,7 @@ interface SponsorDashboardPageProps {
   tenant: string;
 }
 
-export function SponsorDashboardPage({ tenant }: SponsorDashboardPageProps) {
+export function SponsorDashboardPage({}: SponsorDashboardPageProps) {
   const { live } = useTenant();
 
   if (!live) {

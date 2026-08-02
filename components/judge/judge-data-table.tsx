@@ -50,7 +50,6 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
-import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "@/components/dashboards/toolbar";
 
 interface JudgeDataTableProps {
@@ -64,7 +63,7 @@ export function JudgeDataTable({
   columns,
   csvFields,
 }: JudgeDataTableProps) {
-  const [rowSelection, setRowSelection] = useState({});
+  const [, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -73,8 +72,6 @@ export function JudgeDataTable({
     pageIndex: 0,
     pageSize: 10,
   });
-
-  const { tenant } = useTenant();
 
   const table = useReactTable<any>({
     data,
@@ -112,9 +109,7 @@ export function JudgeDataTable({
             size="sm"
             onClick={() => {
               const rows = table.getFilteredRowModel().rows;
-              const projectNames = rows.map(
-                (row) => row.original.projectName,
-              );
+              const projectNames = rows.map((row) => row.original.projectName);
               const csv = projectNames.join("\n");
               navigator.clipboard.writeText(csv);
               toast.success(
@@ -131,10 +126,7 @@ export function JudgeDataTable({
               variant="outline"
               size="sm"
               onClick={() => {
-                const csvData = convertToCSV(
-                  data,
-                  csvFields,
-                );
+                const csvData = convertToCSV(data, csvFields);
                 const blob = new Blob([csvData], {
                   type: "text/csv",
                 });

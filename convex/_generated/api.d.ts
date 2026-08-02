@@ -8,8 +8,11 @@
  * @module
  */
 
+import type * as assignments from "../assignments.js";
+import type * as auth from "../auth.js";
 import type * as checkins from "../checkins.js";
 import type * as feedback from "../feedback.js";
+import type * as http from "../http.js";
 import type * as ideas from "../ideas.js";
 import type * as judges from "../judges.js";
 import type * as participants from "../participants.js";
@@ -25,8 +28,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  assignments: typeof assignments;
+  auth: typeof auth;
   checkins: typeof checkins;
   feedback: typeof feedback;
+  http: typeof http;
   ideas: typeof ideas;
   judges: typeof judges;
   participants: typeof participants;
@@ -62,4 +68,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  betterAuth: import("@convex-dev/better-auth/_generated/component.js").ComponentApi<"betterAuth">;
+};

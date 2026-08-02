@@ -31,6 +31,11 @@ import Link from "next/link";
 const data = {
   navUtilities: [
     {
+      title: "QR Code Generator",
+      url: "/admin/utilities/qr-code",
+      icon: IconQrcode,
+    },
+    {
       title: "Check-in",
       url: "/admin/checkin",
       icon: IconQrcode,

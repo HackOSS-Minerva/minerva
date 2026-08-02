@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QRCodeSVG } from "qrcode.react";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface CheckinPageProps {
   tenant: string;
@@ -24,46 +25,50 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
   });
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/checkin`}>
-              Participate
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Check-in</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div>
-        <h1 className="text-2xl font-bold md:text-3xl">Check-in</h1>
-        <p className="mt-1 text-muted-foreground">
-          Show your QR code at the event check-in desk to verify your attendance.
-        </p>
-      </div>
-      <Card className="border-none">
-        <CardHeader>
-          <CardTitle className="text-center text-primary">
-            Guest User
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-center">
-            <div className="rounded-lg bg-white p-4 shadow-sm">
-              {qrcode ? <QRCodeSVG value={qrcode} /> : <div>Loading...</div>}
+    <>
+      <FormLockModal form="live-checkin" />
+      <div className="space-y-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${tenant}/live/checkin`}>
+                Participate
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Check-in</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div>
+          <h1 className="text-2xl font-bold md:text-3xl">Check-in</h1>
+          <p className="mt-1 text-muted-foreground">
+            Show your QR code at the event check-in desk to verify your
+            attendance.
+          </p>
+        </div>
+        <Card className="border-none">
+          <CardHeader>
+            <CardTitle className="text-center text-primary">
+              Guest User
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center">
+              <div className="rounded-lg bg-white p-4 shadow-sm">
+                {qrcode ? <QRCodeSVG value={qrcode} /> : <div>Loading...</div>}
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }

@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { useTenant } from "@/hooks/use-tenant";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
+import { triggerConfetti } from "@/hooks/use-confetti";
+import { toast } from "sonner";
 
 interface FeedbackContentProps {
   tenant: string;
@@ -59,6 +61,8 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
         tenant: tenant.toLowerCase(),
       });
       setSubmitted(true);
+      toast.success("Feedback submitted successfully!");
+      triggerConfetti();
     } catch (error) {
       console.error("Failed to submit feedback:", error);
     } finally {

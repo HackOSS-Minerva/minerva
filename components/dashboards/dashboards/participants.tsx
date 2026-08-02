@@ -33,7 +33,6 @@ import {
   UserRound,
   MessagesSquare,
   FileText,
-  MapPin,
   Utensils,
 } from "lucide-react";
 import { variants } from "@/data/status";

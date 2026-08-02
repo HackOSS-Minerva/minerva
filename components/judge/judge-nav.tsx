@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTenant } from "@/hooks/use-tenant";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -16,16 +16,34 @@ import {
 
 const navItems = [{ href: "/judge/dashboard", label: "Dashboard" }];
 
+const resourceItems = [
+  {
+    href: "/judge/venue",
+    label: "Venue",
+    description: "Find location and event details.",
+  },
+  {
+    href: "/judge/packing-list",
+    label: "Packing List",
+    description: "Check what to bring to the event.",
+  },
+  {
+    href: "/judge/rules",
+    label: "Rules",
+    description: "Review the hackathon rules and guidelines.",
+  },
+  {
+    href: "/judge/code-of-conduct",
+    label: "Code of Conduct",
+    description: "Understand our community standards.",
+  },
+];
+
 const participateItems = [
   {
     href: "/live/checkin",
     label: "Check-in",
     description: "Show your QR code to check in at the event.",
-  },
-  {
-    href: "/forms/judge",
-    label: "Register",
-    description: "Register as a judge for the event.",
   },
   {
     href: "/judge/assignments",
@@ -40,8 +58,7 @@ const participateItems = [
   {
     href: "/judge/orientation",
     label: "Orientation",
-    description:
-      "Review judging criteria, rubrics, and event guidelines.",
+    description: "Review judging criteria, rubrics, and event guidelines.",
   },
   {
     href: "/judge/certificate",
@@ -50,7 +67,12 @@ const participateItems = [
   },
 ];
 
-export function JudgeNav({ tenant }: { tenant: string }) {
+interface JudgeNavProps {
+  tenant: string;
+  isAuthorized: boolean;
+}
+
+export function JudgeNav({ tenant, isAuthorized }: JudgeNavProps) {
   const pathname = usePathname();
   const { tenant: tenantConfig } = useTenant();
   const logo = tenantConfig?.logo;
@@ -58,10 +80,7 @@ export function JudgeNav({ tenant }: { tenant: string }) {
   return (
     <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
       {logo && (
-        <Link
-          href={`/${tenant}/judge/dashboard`}
-          className="flex items-center"
-        >
+        <Link href={`/${tenant}/judge/dashboard`} className="flex items-center">
           <Image
             src={logo}
             alt="Logo"
@@ -98,23 +117,21 @@ export function JudgeNav({ tenant }: { tenant: string }) {
               size="sm"
               className={cn(
                 "gap-1 transition-all",
-                (pathname.includes("/live/checkin") ||
-                  pathname.includes("/forms/judge") ||
-                  pathname.includes("/judge/assignments") ||
-                  pathname.includes("/judge/submissions") ||
-                  pathname.includes("/judge/orientation") ||
-                  pathname.includes("/judge/certificate"))
+                pathname.includes("/judge/venue") ||
+                  pathname.includes("/judge/packing-list") ||
+                  pathname.includes("/judge/rules") ||
+                  pathname.includes("/judge/code-of-conduct")
                   ? "bg-background shadow-sm"
                   : "",
                 "text-foreground",
               )}
             >
-              Participate
+              Resources
               <ChevronDownIcon className="size-3 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center">
-            {participateItems.map((item) => (
+            {resourceItems.map((item) => (
               <DropdownMenuItem key={item.href} asChild>
                 <Link
                   href={`/${tenant}${item.href}`}
@@ -127,6 +144,72 @@ export function JudgeNav({ tenant }: { tenant: string }) {
                 </Link>
               </DropdownMenuItem>
             ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-disabled={!isAuthorized}
+              className={cn(
+                "gap-1 transition-all",
+                isAuthorized &&
+                  (pathname.includes("/live/checkin") ||
+                    pathname.includes("/judge/assignments") ||
+                    pathname.includes("/judge/submissions") ||
+                    pathname.includes("/judge/orientation") ||
+                    pathname.includes("/judge/certificate"))
+                  ? "bg-background shadow-sm"
+                  : "",
+                isAuthorized ? "text-foreground" : "text-muted-foreground",
+                !isAuthorized && "opacity-60",
+              )}
+            >
+              {!isAuthorized && <Lock className="size-3.5" />}
+              Participate
+              <ChevronDownIcon className="size-3 opacity-60" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="center">
+            {isAuthorized ? (
+              participateItems.map((item) => (
+                <DropdownMenuItem key={item.href} asChild>
+                  <Link
+                    href={`/${tenant}${item.href}`}
+                    className="flex flex-col items-start gap-0.5"
+                  >
+                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <div className="min-w-[220px]">
+                {participateItems.map((item) => (
+                  <div
+                    key={item.href}
+                    className="flex flex-col items-start gap-0.5 px-2 py-1.5 opacity-50"
+                  >
+                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </div>
+                ))}
+                <div className="flex items-center justify-between gap-2 border-t px-2 py-2">
+                  <span className="text-xs text-muted-foreground">
+                    Register to get access
+                  </span>
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={`/${tenant}/forms/judge`}>Register</Link>
+                  </Button>
+                </div>
+              </div>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

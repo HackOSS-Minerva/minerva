@@ -51,7 +51,9 @@ function DialogContent({
   children,
   showClose = true,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & { showClose?: boolean }) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+  showClose?: boolean;
+}) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />

@@ -3,6 +3,7 @@
 import { JudgeDataTable } from "@/components/judge/judge-data-table";
 import { columns } from "@/components/judge/judge-submissions-columns";
 import type { JudgeSubmissionRow } from "@/components/judge/judge-submissions-columns";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 const dummyData: JudgeSubmissionRow[] = [
   {
@@ -101,21 +102,35 @@ interface SubmissionsPageProps {
   tenant: string;
 }
 
-export function SubmissionsPage({ tenant }: SubmissionsPageProps) {
+export function SubmissionsPage({}: SubmissionsPageProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Project Submissions</h1>
-        <p className="text-sm text-muted-foreground">
-          Browse all submitted team projects, demo links, and resources.
-        </p>
-      </div>
+    <>
+      <FormLockModal form="judge-submissions" />
+      <div className="space-y-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">Project Submissions</h1>
+          <p className="text-sm text-muted-foreground">
+            Browse all submitted team projects, demo links, and resources.
+          </p>
+        </div>
 
-      <JudgeDataTable
-        data={dummyData}
-        columns={columns}
-        csvFields={["teamName", "projectName", "description", "devpost", "github", "figma", "canva", "presentation", "invites", "timestamp"]}
-      />
-    </div>
+        <JudgeDataTable
+          data={dummyData}
+          columns={columns}
+          csvFields={[
+            "teamName",
+            "projectName",
+            "description",
+            "devpost",
+            "github",
+            "figma",
+            "canva",
+            "presentation",
+            "invites",
+            "timestamp",
+          ]}
+        />
+      </div>
+    </>
   );
 }

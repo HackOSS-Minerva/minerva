@@ -32,18 +32,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import {
-  Calendar,
   Users,
-  FolderOpen,
   Link as LinkIcon,
   Github,
   Figma,
   Presentation,
-  Mail,
-  FileText,
 } from "lucide-react";
 import DetailRow from "../row";
 
@@ -249,23 +243,35 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
   );
 }
 
-function truncateDescription(description: string, maxLength: number = 75): string {
+function truncateDescription(
+  description: string,
+  maxLength: number = 75,
+): string {
   if (description.length <= maxLength) {
     return description;
   }
   return description.substring(0, maxLength).trim() + "...";
 }
 
-const vettedConfig: Record<string, { icon: React.ElementType; color: string; label: string }> = {
-  verified: { icon: IconCircleCheck, color: "text-emerald-500", label: "Verified" },
-  needs_review: { icon: IconAlertTriangle, color: "text-amber-500", label: "Needs Review" },
-  disqualified: { icon: IconCircleX, color: "text-red-500", label: "Disqualified" },
-};
-
-const vettedCycle: Record<string, string> = {
-  needs_review: "verified",
-  verified: "disqualified",
-  disqualified: "needs_review",
+const vettedConfig: Record<
+  string,
+  { icon: React.ElementType; color: string; label: string }
+> = {
+  verified: {
+    icon: IconCircleCheck,
+    color: "text-emerald-500",
+    label: "Verified",
+  },
+  needs_review: {
+    icon: IconAlertTriangle,
+    color: "text-amber-500",
+    label: "Needs Review",
+  },
+  disqualified: {
+    icon: IconCircleX,
+    color: "text-red-500",
+    label: "Disqualified",
+  },
 };
 
 export const columns: ColumnDef<SubmissionRecord>[] = [
@@ -350,7 +356,8 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     cell: ({ row }) => {
       const vetted = row.original.vetted ?? "needs_review";
       const config = vettedConfig[vetted];
-      if (!config) return <span className="text-muted-foreground px-1.5">—</span>;
+      if (!config)
+        return <span className="text-muted-foreground px-1.5">—</span>;
       const Icon = config.icon;
       return (
         <TooltipProvider delayDuration={200}>
@@ -386,7 +393,9 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
           <DropdownMenuItem
             variant="destructive"
             onClick={() =>
-              table.options.meta?.onDelete(row.original._id as unknown as number)
+              table.options.meta?.onDelete(
+                row.original._id as unknown as number,
+              )
             }
           >
             Delete

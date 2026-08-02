@@ -12,23 +12,19 @@ import CodeOfConductMarkdown from "@/tenants/designverse/descriptions/code-of-co
 
 interface CodeOfConductPageProps {
   tenant: string;
+  baseHref?: string;
 }
 
-export function CodeOfConductPage({ tenant }: CodeOfConductPageProps) {
+export function CodeOfConductPage({
+  tenant,
+  baseHref = `/${tenant}/live/dashboard`,
+}: CodeOfConductPageProps) {
   return (
     <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/hackpacks`}>
-              Resources
-            </BreadcrumbLink>
+            <BreadcrumbLink href={baseHref}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
