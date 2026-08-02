@@ -127,3 +127,41 @@ export const getJudgeAccess = query({
     } as const;
   },
 });
+
+/**
+ * Returns the access state for the participant (live) section of a tenant.
+ *
+ * - `authenticated` is true when the request carries a valid Better Auth
+ *   session (i.e. the user is signed in with Google).
+ * - `authorized` is true when the signed-in user's email matches a participant
+ *   record in the given tenant whose status is "ACCEPTANCE" (approved).
+ * - `status` is the participant's approval status ("ACCEPTANCE", "PENDING",
+ *   "REJECTION", or `null` if the user has not applied yet).
+ *
+ * This is the authorization check that determines whether a user may unlock the
+ * live "Participate" section in the nav.
+ */
+export const getParticipantAccess = query({
+  args: { tenant: v.string() },
+  handler: async (ctx, { tenant }) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) {
+      return { authenticated: false, authorized: false, status: null } as const;
+    }
+
+    const participant = await ctx.db
+      .query("participants")
+      .withIndex("by_tenant_user", (q) =>
+        q.eq("tenant", tenant).eq("userId", user._id),
+      )
+      .first();
+
+    const authorized = participant?.status === "ACCEPTANCE";
+
+    return {
+      authenticated: true,
+      authorized,
+      status: participant?.status ?? null,
+    } as const;
+  },
+});

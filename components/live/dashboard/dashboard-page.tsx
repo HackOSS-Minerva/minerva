@@ -6,20 +6,31 @@ import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
 import { SubmissionSection } from "@/components/live/dashboard/submission-section";
 import { CheckinSection } from "@/components/live/dashboard/checkin-section";
 import { Separator } from "@/components/ui/separator";
+import { ApplicationStatusBadge } from "@/components/live/dashboard/application-status-badge";
+import type { ApplicationStatus } from "@/components/live/dashboard/application-status-badge";
 
 interface DashboardPageProps {
   tenant: string;
+  participantStatus?: ApplicationStatus;
 }
 
-export function DashboardPage({ tenant }: DashboardPageProps) {
+export function DashboardPage({
+  tenant,
+  participantStatus,
+}: DashboardPageProps) {
   const { live } = useTenant();
 
   if (!live) {
     return (
       <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
-        <p className="mt-2 text-muted-foreground">
+        <div className="w-full max-w-2xl text-left">
+          <ApplicationStatusBadge
+            status={participantStatus ?? null}
+            applyHref={`/${tenant}/forms/participant`}
+            applyLabel="Apply to be a Participant"
+          />
+        </div>
+        <p className="mt-4 text-muted-foreground">
           Live event information is not available yet.
         </p>
       </div>
@@ -28,7 +39,11 @@ export function DashboardPage({ tenant }: DashboardPageProps) {
 
   return (
     <div className="space-y-6">
-      <p className="text-center text-2xl font-bold">👋 Hello, Guest User</p>
+      <ApplicationStatusBadge
+        status={participantStatus ?? null}
+        applyHref={`/${tenant}/forms/participant`}
+        applyLabel="Apply to be a Participant"
+      />
 
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
       <Separator className="my-6" />

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDownIcon, ExternalLink } from "lucide-react";
+import { ChevronDownIcon, ExternalLink, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTenant } from "@/hooks/use-tenant";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -72,7 +72,12 @@ const participateItems: {
   },
 ];
 
-export function LiveNav({ tenant }: { tenant: string }) {
+interface LiveNavProps {
+  tenant: string;
+  isAuthorized: boolean;
+}
+
+export function LiveNav({ tenant, isAuthorized }: LiveNavProps) {
   const pathname = usePathname();
   const { tenant: tenantConfig } = useTenant();
   const logo = tenantConfig?.logo;
@@ -139,46 +144,74 @@ export function LiveNav({ tenant }: { tenant: string }) {
             <Button
               variant="ghost"
               size="sm"
+              aria-disabled={!isAuthorized}
               className={cn(
                 "gap-1 transition-all",
-                pathname.includes("/forms/judge") ||
-                  pathname.includes("/live/checkin")
+                isAuthorized &&
+                  (pathname.includes("/forms/judge") ||
+                    pathname.includes("/live/checkin"))
                   ? "bg-background shadow-sm"
                   : "",
-                "text-foreground",
+                isAuthorized ? "text-foreground" : "text-muted-foreground",
+                !isAuthorized && "opacity-60",
               )}
             >
+              {!isAuthorized && <Lock className="size-3.5" />}
               Participate
               <ChevronDownIcon className="size-3 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center">
-            {participateItems.map((item) => (
-              <DropdownMenuItem key={item.label} asChild>
-                <Link
-                  href={
-                    item.external
-                      ? item.href
-                      : item.href.startsWith("/forms")
-                        ? `/${tenant}${item.href}`
-                        : `/${tenant}/live${item.href}`
-                  }
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  className="flex flex-col items-start gap-0.5"
-                >
-                  <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
-                    {item.label}
-                    {item.external && (
-                      <ExternalLink className="text-muted-foreground" />
-                    )}
-                  </span>
+            {isAuthorized ? (
+              participateItems.map((item) => (
+                <DropdownMenuItem key={item.label} asChild>
+                  <Link
+                    href={
+                      item.external
+                        ? item.href
+                        : item.href.startsWith("/forms")
+                          ? `/${tenant}${item.href}`
+                          : `/${tenant}/live${item.href}`
+                    }
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                    className="flex flex-col items-start gap-0.5"
+                  >
+                    <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
+                      {item.label}
+                      {item.external && (
+                        <ExternalLink className="text-muted-foreground" />
+                      )}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <div className="min-w-[220px]">
+                {participateItems.map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex flex-col items-start gap-0.5 px-2 py-1.5 opacity-50"
+                  >
+                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </div>
+                ))}
+                <div className="flex items-center justify-between gap-2 border-t px-2 py-2">
                   <span className="text-xs text-muted-foreground">
-                    {item.description}
+                    Register to get access
                   </span>
-                </Link>
-              </DropdownMenuItem>
-            ))}
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={`/${tenant}/forms/participant`}>Register</Link>
+                  </Button>
+                </div>
+              </div>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
