@@ -5,43 +5,49 @@
   "email": "designverseucr@gmail.com",
   "instagram": "https://www.instagram.com/designverseucr",
   "linkedin": "https://www.linkedin.com/company/designverseucr/",
-  "devpost": "https://designverse-2026.devpost.com",
-  "heart": "\u2764\ufe0f",
+  "heart": "❤️",
   "logo": "https://tqfjy845ra.ufs.sh/f/4aAN1y5vwqTS3nlK7oMtN4EzlI87PeDSGbBR1y3Jdiokmhvc",
   "calendarid": "6082adc591688d15b42ff0466b92f158c1f566ee5071b712352ff046ac755e99@group.calendar.google.com",
   "event": {
     "name": "DesignVerse 2026",
+    "status": "live",
     "startTime": "2026-10-28T00:00:00.000Z",
-    "endTime": "2026-06-30T23:59:59.000Z",
-    "deadline": "2026-10-31T23:59:59.000Z"
+    "endTime": "2026-10-31T23:59:59.000Z",
+    "openOffset": "365d",
+    "submission": {
+      "url": "https://designverse-2026.devpost.com",
+      "deadline": "2026-10-31T23:59:59.000Z",
+      "requirements": "Submit a link to your project repository, demo video (max 3 minutes), and a text description of your project."
+    }
   },
-  "locks": {
-    "forms": {
-      "participant": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "judge": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "speaker": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "superadmin": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "volunteer": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "submission": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "feedback": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"]
+  "formLocks": {
+    "participant": {
+      "opens": "2026-07-16T00:00:00-07:00",
+      "closes": "2026-10-31T23:59:59-07:00"
     },
     "judge": {
-      "assignments": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "submissions": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "orientation": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "certificate": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"]
+      "opens": "2026-07-16T00:00:00-07:00",
+      "closes": "2026-10-31T23:59:59-07:00"
     },
-    "sponsor": {
-      "resume-book": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "team-projects": [
-        "2026-06-29T23:59:59-08:00",
-        "2027-06-30T23:59:59-08:00"
-      ],
-      "analytics": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"]
+    "speaker": {
+      "opens": "2026-07-16T00:00:00-07:00",
+      "closes": "2026-10-31T23:59:59-07:00"
     },
-    "live": {
-      "checkin": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
-      "teams": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"]
+    "superadmin": {
+      "opens": "2026-07-16T00:00:00-07:00",
+      "closes": "2026-10-31T23:59:59-07:00"
+    },
+    "volunteer": {
+      "opens": "2026-07-16T00:00:00-07:00",
+      "closes": "2026-10-31T23:59:59-07:00"
+    },
+    "submission": {
+      "opens": "2026-07-16T00:00:00-07:00",
+      "closes": "2026-10-31T23:59:59-07:00"
+    },
+    "feedback": {
+      "opens": "2026-07-16T00:00:00-07:00",
+      "closes": "2026-10-31T23:59:59-07:00"
     }
   }
 }
