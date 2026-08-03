@@ -3,11 +3,12 @@ import { render } from "@react-email/components";
 import { Resend } from "resend";
 import { z } from "zod";
 import Email, { getEmailSubject } from "@/components/email";
+import { getTenantConfig, tenantSlugs } from "@/lib/tenant-config";
 
 const payloadSchema = z.object({
   type: z.enum(["CONFIRMATION", "ACCEPTANCE", "REJECTION"]),
   role: z.enum(["judge", "participant", "speaker", "superadmin", "volunteer"]),
-  tenant: z.literal("designverse"),
+  tenant: z.enum(tenantSlugs),
   user: z.object({
     firstname: z.string().trim().min(1).max(100),
     lastname: z.string().trim().min(1).max(100),
@@ -39,14 +40,21 @@ export async function POST(request: Request) {
   }
 
   const { type, role, tenant, user, idempotencyKey } = parsed.data;
+  const tenantConfig = getTenantConfig(tenant);
+  if (!tenantConfig) {
+    return Response.json({ error: "Unknown tenant" }, { status: 400 });
+  }
+
   const name = `${user.firstname} ${user.lastname}`.trim();
 
   try {
-    const html = await render(React.createElement(Email, { type, role, name }));
+    const html = await render(
+      React.createElement(Email, { type, role, name, tenant: tenantConfig }),
+    );
     const resend = new Resend(apiKey);
     const { data, error } = await resend.emails.send(
       {
-        from: process.env.EMAIL_FROM ?? "DesignVerse <onboarding@resend.dev>",
+        from: `${tenantConfig.name} <${tenantConfig.email}>`,
         to: [user.email],
         subject: getEmailSubject(type),
         html,

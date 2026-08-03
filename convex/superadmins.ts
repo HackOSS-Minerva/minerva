@@ -164,8 +164,6 @@ export const setStatusMany = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { ids, status }) => {
-    let changedCount = 0;
-
     for (const id of ids) {
       const superadmin = await ctx.db.get("superadmins", id);
       if (!superadmin) throw new Error(`Superadmin ${id} not found`);
@@ -173,9 +171,8 @@ export const setStatusMany = mutation({
       if (superadmin.status === status) continue;
 
       await ctx.db.patch(id, { status });
-      changedCount += 1;
     }
 
-    return { status: "success", changedCount };
+    return { status: "success" };
   },
 });

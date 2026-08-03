@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import type { SendEmailPayload } from "@/types/email";
+import { useTenant } from "./use-tenant";
 
 const sendEmailRequest = async (payload: SendEmailPayload) => {
   const response = await fetch("/api/email/send", {
@@ -21,9 +22,11 @@ const sendEmailRequest = async (payload: SendEmailPayload) => {
 
 export const useEmail = () => {
   const mutation = useMutation({ mutationFn: sendEmailRequest });
+  const { name: tenant } = useTenant();
 
   return {
     ...mutation,
-    sendEmail: mutation.mutateAsync,
+    sendEmail: (payload: SendEmailPayload) =>
+      mutation.mutateAsync({ ...payload, tenant }),
   };
 };

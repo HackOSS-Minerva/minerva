@@ -67,6 +67,7 @@ import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
+import { StatusActions } from "./status-actions";
 
 const emailRolesByDashboard: Partial<Record<string, EmailRole>> = {
   participants: "participant",
@@ -84,6 +85,8 @@ interface DashboardProps {
   };
   onDelete?: (...args: any[]) => any;
   onDeleteMany?: (...args: any[]) => any;
+  onUpdate?: (...args: any[]) => any;
+  setStatus?: (...args: any[]) => any;
   setStatusMany?: (...args: any[]) => any;
 }
 
@@ -98,13 +101,17 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     pageSize: 10,
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{
-    type: "single";
-    id: any;
-  } | {
-    type: "many";
-    ids: any[];
-  } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<
+    | {
+        type: "single";
+        id: any;
+      }
+    | {
+        type: "many";
+        ids: any[];
+      }
+    | null
+  >(null);
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();

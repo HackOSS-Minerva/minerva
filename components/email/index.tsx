@@ -2,11 +2,13 @@ import Acceptance from "./acceptance";
 import Confirmation from "./confirmation";
 import Rejection from "./rejection";
 import type { EmailRole, EmailType } from "@/types/email";
+import type { TenantConfig } from "@/lib/tenant-config";
 
 interface EmailProps {
   type: EmailType;
   role: EmailRole;
   name: string;
+  tenant: TenantConfig;
 }
 
 const copy: Record<EmailType, { preview: string; subject: string }> = {
@@ -24,7 +26,7 @@ const copy: Record<EmailType, { preview: string; subject: string }> = {
   },
 };
 
-const Email = ({ type, role, name }: EmailProps) => {
+const Email = ({ type, role, name, tenant }: EmailProps) => {
   const position = role === "superadmin" ? "super admin" : role;
 
   switch (type) {
@@ -34,6 +36,7 @@ const Email = ({ type, role, name }: EmailProps) => {
           name={name}
           position={position}
           preview={copy.CONFIRMATION.preview}
+          tenant={tenant}
         />
       );
     case "ACCEPTANCE":
@@ -42,6 +45,7 @@ const Email = ({ type, role, name }: EmailProps) => {
           name={name}
           position={position}
           preview={copy.ACCEPTANCE.preview}
+          tenant={tenant}
         />
       );
     case "REJECTION":
@@ -50,6 +54,7 @@ const Email = ({ type, role, name }: EmailProps) => {
           name={name}
           position={position}
           preview={copy.REJECTION.preview}
+          tenant={tenant}
         />
       );
     default: {
