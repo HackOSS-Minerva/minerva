@@ -439,7 +439,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               onClick={() => {
                 if (!deleteTarget) return;
                 if (deleteTarget.type === "single") {
-                  onDelete?.(deleteTarget.id);
+                  onDelete?.({ id: deleteTarget.id });
                 } else if (deleteTarget.type === "many") {
                   onDeleteMany?.({ ids: deleteTarget.ids });
                 }
