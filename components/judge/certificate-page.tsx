@@ -10,196 +10,252 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Mail, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { toast } from "sonner";
-import { FormLockModal } from "@/components/forms/form-lock-modal";
+import { useEffect, useState } from "react";
+import { JudgeBreadcrumb } from "@/components/judge/judge-breadcrumb";
 
 interface CertificatePageProps {
   tenant: string;
 }
 
 export function CertificatePage({}: CertificatePageProps) {
-  const { tenant: tenantConfig } = useTenant();
+  const { tenant: tenantConfig, live } = useTenant();
 
   const judgeName = "Alex J. Morgan";
 
-  const certificateId =
-    "CERT-" + Math.random().toString(36).substring(2, 10).toUpperCase();
-
-  const handleEmail = () => {
-    const tenantName = tenantConfig?.name || "DesignVerse 2026";
-    const subject = encodeURIComponent(
-      `Judge Certificate - ${judgeName} - ${tenantName}`,
+  const [certificateId, setCertificateId] = useState("");
+  useEffect(() => {
+    setCertificateId(
+      "CERT-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
     );
-    const body = encodeURIComponent(
-      `Hello,\n\nPlease find attached my Judge Certificate of Service for ${tenantName}.\n\nName: ${judgeName}\nRole: Judge\n\nBest regards,\n${judgeName}`,
-    );
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    toast.success("Email client opened.");
-  };
+  }, []);
 
-  const handleDownload = () => {
-    const tenantName = tenantConfig?.name || "DesignVerse 2026";
-    const organization = "DesignVerse Organizing Committee";
+  const eventDate = live?.endTime
+    ? new Date(live.endTime).toLocaleDateString("en-US")
+    : new Date().toLocaleDateString("en-US");
 
-    const htmlContent =
-      "<!DOCTYPE html>" +
-      '<html lang="en">' +
-      "<head>" +
-      '  <meta charset="UTF-8" />' +
-      '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
-      "  <title>Certificate of Service</title>" +
-      "  <style>" +
-      "    * { margin: 0; padding: 0; box-sizing: border-box; }" +
-      "    body { font-family: Georgia, serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }" +
-      "    .certificate { background: #fff; padding: 3rem; max-width: 800px; width: 100%; text-align: center; border: 8px double #1a365d; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }" +
-      "    .header { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.2em; color: #64748b; margin-bottom: 1rem; }" +
-      "    h1 { font-size: 3rem; color: #1e3a8a; margin-bottom: 1.5rem; font-family: Georgia, serif; font-style: italic; }" +
-      "    .subtitle { font-size: 1.25rem; color: #374151; margin-bottom: 2rem; }" +
-      "    .recipient { font-size: 2.5rem; font-weight: bold; color: #0f172a; margin: 1rem 0; border-bottom: 2px solid #d1d5db; display: inline-block; padding: 0.5rem 3rem; }" +
-      "    .body_text { font-size: 1.1rem; color: #374151; line-height: 1.8; margin: 2rem 0; max-width: 600px; margin-left: auto; margin-right: auto; }" +
-      "    .details { display: flex; justify-content: space-around; margin: 2rem 0; text-align: center; }" +
-      "    .detail_item { display: flex; flex-direction: column; }" +
-      "    .detail_label { font-size: 0.8rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.1em; margin-bottom: 0.25rem; }" +
-      "    .detail_value { font-size: 1rem; color: #0f172a; font-weight: 600; }" +
-      "    .signature { display: flex; justify-content: space-around; margin-top: 3rem; text-align: center; }" +
-      "    .signature_block { text-align: center; }" +
-      "    .signature_line { width: 200px; border-bottom: 1px solid #374151; margin-bottom: 0.5rem; padding-bottom: 0.5rem; }" +
-      "    .signature_role { font-size: 0.85rem; color: #64748b; }" +
-      "    .seal { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); display: flex; align-items: center; justify-content: center; margin: 2rem auto 0; font-size: 3rem; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }" +
-      "  </style>" +
-      "</head>" +
-      "<body>" +
-      '  <div class="certificate">' +
-      '    <div class="header">Certificate of Service</div>' +
-      "    <h1>Certificate</h1>" +
-      '    <div class="subtitle">Proudly presented to</div>' +
-      '    <div class="recipient">' +
-      judgeName +
-      "</div>" +
-      '    <div class="body_text">In recognition of your valuable service and dedication as a Judge at <strong>' +
-      tenantName +
-      "</strong>.</div>" +
-      '    <div class="details">' +
-      '      <div class="detail_item">' +
-      '        <div class="detail_label">Certificate ID</div>' +
-      '        <div class="detail_value">' +
-      certificateId +
-      "</div>" +
-      "      </div>" +
-      '      <div class="detail_item">' +
-      '        <div class="detail_label">Date Issued</div>' +
-      '        <div class="detail_value">' +
-      new Date().toLocaleDateString() +
-      "</div>" +
-      "      </div>" +
-      "    </div>" +
-      '    <div class="signature">' +
-      '      <div class="signature_block">' +
-      '        <div class="signature_line"></div>' +
-      '        <div class="signature_role">Event Director</div>' +
-      "      </div>" +
-      '      <div class="signature_block">' +
-      '        <div class="signature_line"></div>' +
-      '        <div class="signature_role">' +
-      organization +
-      "</div>" +
-      "      </div>" +
-      "    </div>" +
-      '    <div class="seal">★</div>' +
-      "  </div>" +
-      "</body>" +
-      "</html>";
+  const tenantName = tenantConfig?.name || "DesignVerse 2026";
+  const organization = "DesignVerse Organizing Committee";
 
-    const blob = new Blob([htmlContent], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download =
-      "certificate-" + judgeName.toLowerCase().replace(/\s+/g, "-") + ".html";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success("Certificate downloaded successfully!");
+  const handleDownload = async () => {
+    const html2pdf = (await import("html2pdf.js")).default;
+
+    const sealSvg =
+      "<svg width='120' height='125' viewBox='0 0 180 188' fill='none' xmlns='http://www.w3.org/2000/svg'>" +
+      "<path d='M42.136 87.0348L89.9927 114.665L47.8568 187.646L39.4833 146.89L9.84669e-05 160.016L42.136 87.0348Z' fill='url(#p0)'/>" +
+      "<path d='M137.857 87.0348L90.0002 114.665L132.136 187.646L140.51 146.89L179.993 160.016L137.857 87.0348Z' fill='url(#p1)'/>" +
+      "<circle cx='88.7979' cy='69.0752' r='69.0752' fill='url(#p2)'/>" +
+      "<circle cx='89.4888' cy='69.7659' r='58.2139' fill='url(#p3)' stroke='#818181'/>" +
+      "<g filter='url(#fi)'><path d='M87.5418 80.1744L69.7392 93.0318L76.7566 72.1209L58.907 59.2164H80.7599L87.5418 38.3054L94.3237 59.2164H116.177L98.327 72.1209L105.344 93.0318L87.5418 80.1744Z' fill='white'/></g>" +
+      "<defs>" +
+      "<filter id='fi' x='58.907' y='38.3054' width='57.2695' height='58.7264' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'>" +
+      "<feFlood flood-opacity='0' result='bg'/><feBlend in='SourceGraphic' in2='bg' result='shape'/>" +
+      "<feColorMatrix in='SourceAlpha' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0' result='ha'/>" +
+      "<feOffset dy='4'/><feGaussianBlur stdDeviation='2'/><feComposite in2='ha' operator='arithmetic' k2='-1' k3='1'/>" +
+      "<feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0'/>" +
+      "<feBlend in2='shape' result='effect1_innerShadow'/></filter>" +
+      "<linearGradient id='p0' x1='66.0643' y1='100.85' x2='23.9285' y2='173.831' gradientUnits='userSpaceOnUse'>" +
+      "<stop stop-color='#E0A63E'/><stop offset='0.5' stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></linearGradient>" +
+      "<linearGradient id='p1' x1='113.929' y1='100.85' x2='156.064' y2='173.831' gradientUnits='userSpaceOnUse'>" +
+      "<stop stop-color='#E0A63E'/><stop offset='0.5' stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></linearGradient>" +
+      "<radialGradient id='p2' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(112.283 41.4451) rotate(103.65) scale(99.5163)'>" +
+      "<stop stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></radialGradient>" +
+      "<radialGradient id='p3' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(109.452 46.2804) rotate(103.65) scale(84.5888)'>" +
+      "<stop stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></radialGradient>" +
+      "</defs></svg>";
+
+    const certHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+      <style>* { margin:0; padding:0; box-sizing:border-box; } body { font-family:Georgia,serif; background:#fff; }</style>
+      </head><body>
+      <div id="cert" style="background:#faf8f2;border:3px solid #c9a84c;padding:8px;font-family:Georgia,serif;">
+        <div style="border:1px solid #c9a84c;padding:3.5rem 4rem;text-align:center;">
+          <div style="font-size:2.2rem;font-weight:bold;letter-spacing:0.08em;color:#1a1a1a;margin-bottom:1.25rem;text-transform:uppercase;">Certificate of Service</div>
+          <div style="font-size:1rem;color:#555;margin-bottom:0.75rem;">Proudly presented to</div>
+          <div style="font-size:2.8rem;font-style:italic;color:#1a1a1a;margin:0.25rem 0 0;display:block;">${judgeName}</div>
+          <hr style="width:70%;border:none;border-top:1px solid #aaa;margin:0.75rem auto 1.75rem;"/>
+          <div style="font-size:1rem;color:#333;line-height:1.9;margin:0 auto 2rem;max-width:580px;">In recognition of your valuable service and dedication as a Judge at <strong>${tenantName}</strong>.</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:0 auto 2rem;max-width:640px;">
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:0.8rem;color:#888;margin-bottom:0.4rem;">Certificate ID</div>
+              <div style="font-size:1rem;font-weight:bold;color:#1a1a1a;">${certificateId}</div>
+            </div>
+            <div style="flex:0 0 auto;display:flex;justify-content:center;padding:0 1rem;">${sealSvg}</div>
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:0.8rem;color:#888;margin-bottom:0.4rem;">Date Issued</div>
+              <div style="font-size:1rem;font-weight:bold;color:#1a1a1a;">${eventDate}</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-around;">
+            <div style="text-align:center;min-width:180px;">
+              <div style="border-top:1px solid #999;padding-top:0.5rem;"></div>
+              <div style="font-size:0.85rem;color:#666;">Event Director</div>
+            </div>
+            <div style="text-align:center;min-width:180px;">
+              <div style="border-top:1px solid #999;padding-top:0.5rem;"></div>
+              <div style="font-size:0.85rem;color:#666;">${organization}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </body></html>`;
+
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText =
+      "position:absolute;left:-9999px;top:0;width:297mm;height:210mm;border:0;";
+    document.body.appendChild(iframe);
+
+    await new Promise<void>((resolve) => {
+      iframe.onload = () => resolve();
+      iframe.srcdoc = certHTML;
+    });
+
+    const certElement = iframe.contentDocument!.getElementById(
+      "cert",
+    ) as HTMLElement;
+
+    // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
+    // getComputedStyle and replace any unsupported color values with a safe fallback
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const origGetComputedStyle = window.getComputedStyle;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).getComputedStyle = function (...args: any[]) {
+      const styles = origGetComputedStyle.apply(
+        window,
+        args as [Element, string?],
+      );
+      return new Proxy(styles, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        get(target, prop) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const val = (target as any)[prop];
+          if (
+            typeof val === "string" &&
+            (val.includes("lab(") || val.includes("oklch("))
+          ) {
+            return "rgba(0,0,0,0)";
+          }
+          if (typeof val === "function") return val.bind(target);
+          return val;
+        },
+      });
+    };
+
+    try {
+      await html2pdf()
+        .set({
+          margin: 10,
+          filename: `certificate-${judgeName.toLowerCase().replace(/\s+/g, "-")}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+        })
+        .from(certElement)
+        .save();
+    } finally {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).getComputedStyle = origGetComputedStyle;
+    }
+
+    document.body.removeChild(iframe);
+    toast.success("Certificate downloaded as PDF!");
   };
 
   return (
-    <>
-      <FormLockModal form="judge-certificate" />
-      <div className="space-y-6">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold">Judge Certificate</h1>
-          <p className="text-sm text-muted-foreground">
-            Download your certificate of service as a judge.
-          </p>
-        </div>
+    <div className="space-y-6">
+      <JudgeBreadcrumb />
 
-        <Separator className="my-6" />
-
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Certificate Preview</CardTitle>
-              <CardDescription>
-                This is a preview of your certificate. Use the download button
-                to save it.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="border border-dashed rounded-lg p-6 text-center bg-gradient-to-br from-blue-50 to-indigo-50">
-                <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
+      <div className="grid gap-6 md:grid-cols-1">
+        <Card>
+          <CardHeader>
+            <CardTitle>Certificate Preview</CardTitle>
+            <CardDescription>
+              This is a preview of your certificate. Use the download button to
+              save it.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* preview certificate styling */}
+            <div className="rounded-lg p-2 flex items-center justify-center">
+              <div className="bg-[#faf8f2] w-5/8 text-center border-2 border-[#c9a84c] relative p-6 shadow font-serif">
+                <div className="absolute inset-2 border border-[#c9a84c] pointer-events-none" />
+                {/* Title */}
+                <div className="text-sm font-bold uppercase tracking-widest text-slate-900 mb-2">
                   Certificate of Service
                 </div>
-                <div className="text-xl font-serif italic text-indigo-900 mb-4">
-                  Certificate
+                {/* Subtitle */}
+                <div className="text-xs text-slate-500 mb-1">
+                  Proudly presented to
                 </div>
-                <div className="text-sm text-slate-600 mb-2">
-                  This certificate is proudly presented to
-                </div>
-                <div className="text-2xl font-bold text-slate-900 border-b-2 border-slate-300 inline-block px-8 py-1 mb-4">
+                {/* Recipient */}
+                <div className="text-2xl italic text-slate-900 mb-0.5">
                   {judgeName}
                 </div>
-                <div className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+                <hr className="w-2/3 mx-auto border-slate-300 mb-3" />
+                {/* Body */}
+                <div className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto mb-4">
                   In recognition of your valuable service and dedication as a
-                  Judge at{" "}
-                  <strong>{tenantConfig?.name || "DesignVerse 2026"}</strong>.
+                  Judge at <strong>{tenantName}</strong>.
                 </div>
-                <div className="mt-6 text-xs text-slate-500">
-                  Certificate ID: {certificateId}
+                {/* Details row: ID — Seal — Date */}
+                <div className="flex justify-between items-center max-w-xs mx-auto mb-4">
+                  <div className="flex flex-col items-center gap-0.5 flex-1">
+                    <span className="text-[0.55rem] text-slate-400">
+                      Certificate ID
+                    </span>
+                    <span className="text-xs font-bold text-slate-900">
+                      {certificateId}
+                    </span>
+                  </div>
+                  <img
+                    src="/newSeal.svg"
+                    className="w-14 flex-shrink-0"
+                    alt="seal"
+                  />
+                  <div className="flex flex-col items-center gap-0.5 flex-1">
+                    <span className="text-[0.55rem] text-slate-400">
+                      Date Issued
+                    </span>
+                    <span className="text-xs font-bold text-slate-900">
+                      {eventDate}
+                    </span>
+                  </div>
+                </div>
+                {/* Signatures */}
+                <div className="flex justify-around">
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="w-24 border-t border-slate-400 pt-1" />
+                    <span className="text-[0.6rem] text-slate-500">
+                      Event Director
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="w-24 border-t border-slate-400 pt-1" />
+                    <span className="text-[0.6rem] text-slate-500 text-center max-w-[80px]">
+                      {organization}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-              <CardDescription>
-                Download or print your certificate.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Your certificate is ready for download. You can save it as an
-                HTML file and open it in any browser to print or save as PDF.
-              </p>
-              <Button onClick={handleDownload} className="w-full">
-                <Download className="mr-2 h-4 w-4" />
-                Download Certificate
-              </Button>
-              <Button
-                onClick={handleEmail}
-                variant="outline"
-                className="w-full"
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                Email Certificate
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+          <CardHeader>
+            <CardTitle>Actions</CardTitle>
+            <CardDescription>
+              Download or print your certificate.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Your certificate is ready for download as a PDF.
+            </p>
+            <Button onClick={handleDownload} className="w-full">
+              <Download className="mr-2 h-4 w-4" />
+              Download Certificate
+            </Button>
+          </CardContent>
+        </Card>
       </div>
-    </>
+    </div>
   );
 }
