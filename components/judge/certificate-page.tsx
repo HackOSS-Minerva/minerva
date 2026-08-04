@@ -9,7 +9,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -116,7 +115,6 @@ export function CertificatePage({}: CertificatePageProps) {
 
     // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
     // getComputedStyle and replace any unsupported color values with a safe fallback
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const origGetComputedStyle = window.getComputedStyle;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).getComputedStyle = function (...args: any[]) {
@@ -125,7 +123,6 @@ export function CertificatePage({}: CertificatePageProps) {
         args as [Element, string?],
       );
       return new Proxy(styles, {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         get(target, prop) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const val = (target as any)[prop];

@@ -1,0 +1,12 @@
+# Build output
+.next/
+out/
+dist/
+
+# Package manager
+node_modules/
+bun.lock
+package-lock.json
+
+# Static assets that Prettier can't parse
+public/*.svg
