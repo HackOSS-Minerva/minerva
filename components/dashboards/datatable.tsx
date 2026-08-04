@@ -62,10 +62,20 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import type { EmailRole } from "@/types/email";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
+import { StatusActions } from "./status-actions";
+
+const emailRolesByDashboard: Partial<Record<string, EmailRole>> = {
+  participants: "participant",
+  judges: "judge",
+  speakers: "speaker",
+  superadmins: "superadmin",
+  volunteers: "volunteer",
+};
 
 interface DashboardProps {
   data: any[];
@@ -75,6 +85,8 @@ interface DashboardProps {
   };
   onDelete?: (...args: any[]) => any;
   onDeleteMany?: (...args: any[]) => any;
+  onUpdate?: (...args: any[]) => any;
+  setStatus?: (...args: any[]) => any;
   setStatusMany?: (...args: any[]) => any;
 }
 
@@ -89,22 +101,29 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     pageSize: 10,
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{
-    type: "single";
-    id: any;
-  } | {
-    type: "many";
-    ids: any[];
-  } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<
+    | {
+        type: "single";
+        id: any;
+      }
+    | {
+        type: "many";
+        ids: any[];
+      }
+    | null
+  >(null);
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
+  const emailRole = emailRolesByDashboard[slug];
 
   const {
     data,
     dashboard: { columns, csvFields },
     onDelete,
     onDeleteMany,
+    onUpdate,
+    setStatus,
     setStatusMany,
   } = dashboard;
 
@@ -137,8 +156,15 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         setDeleteTarget({ type: "single", id });
         setDeleteDialogOpen(true);
       },
-      setStatusMany: (ids: any, status: any) => {
-        setStatusMany?.(ids, status);
+      onDeleteMany: (ids: any) => {
+        onDeleteMany?.(ids);
+        setRowSelection({});
+      },
+      onUpdate: onUpdate ?? (() => {}),
+      setStatus: setStatus ?? (() => {}),
+      setStatusMany: async (ids: any, status: any) => {
+        if (!setStatusMany) throw new Error("Status updates are unavailable");
+        await setStatusMany({ ids, status });
         setRowSelection({});
       },
     },
@@ -164,6 +190,14 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
             </SelectContent>
           </Select>
           <div className="flex items-center gap-2">
+            {emailRole && (
+              <StatusActions
+                table={table}
+                role={emailRole}
+                tenant={tenant.name.toLocaleLowerCase()}
+                onSuccess={() => setRowSelection({})}
+              />
+            )}
             {slug === "submissions" ? (
               <Button
                 variant="outline"

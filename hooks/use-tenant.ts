@@ -1,6 +1,5 @@
 "use client";
 
-import designverse from "@/tenants/designverse/designverse.json";
 import { useParams } from "next/navigation";
 import ParticiantHeader from "@/tenants/designverse/descriptions/participants.mdx";
 import JudgeHeader from "@/tenants/designverse/descriptions/judges.mdx";
@@ -9,38 +8,11 @@ import SuperadminHeader from "@/tenants/designverse/descriptions/superadmins.mdx
 import VolunteerHeader from "@/tenants/designverse/descriptions/volunteers.mdx";
 import FeedbackHeader from "@/tenants/designverse/descriptions/feedback.mdx";
 import SubmissionHeader from "@/tenants/designverse/descriptions/submission.mdx";
-
-type tenants = "designverse";
-
-export interface LiveInfo {
-  name: string;
-  startTime: string;
-  endTime: string;
-  deadline: string;
-}
-
-export interface TenantConfig {
-  name: string;
-  domain: string;
-  discord: string;
-  email: string;
-  instagram: string;
-  linkedin: string;
-  devpost: string;
-  heart: string;
-  logo: string;
-  calendarid: string;
-  event: LiveInfo;
-  locks: Record<string, string[] | Record<string, string[]>>;
-}
+import { getTenantConfig, type TenantSlug } from "@/lib/tenant-config";
 
 export const useTenant = () => {
-  const { tenant } = useParams<{ tenant: tenants }>();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
   const slug = tenant;
-
-  const tenants: Record<string, TenantConfig> = {
-    designverse: designverse as TenantConfig,
-  };
 
   const headers = {
     designverse: {
@@ -54,7 +26,7 @@ export const useTenant = () => {
     },
   };
 
-  const config = tenants[slug];
+  const config = getTenantConfig(slug);
 
   return {
     headers: headers[slug],

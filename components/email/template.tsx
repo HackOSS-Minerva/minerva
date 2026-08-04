@@ -12,15 +12,16 @@ import {
   Tailwind,
   Link,
 } from "@react-email/components";
-import config from "@/tenants/designverse/designverse.json";
+import type { TenantConfig } from "@/lib/tenant-config";
 
 interface TemplateProps {
   children: React.ReactNode;
   name: string;
   preview: string;
+  tenant: TenantConfig;
 }
 
-const Template = ({ children, name, preview }: TemplateProps) => {
+const Template = ({ children, name, preview, tenant }: TemplateProps) => {
   return (
     <Html>
       <Head />
@@ -30,10 +31,10 @@ const Template = ({ children, name, preview }: TemplateProps) => {
           <Container className="mx-auto my-4 max-w-116.25 rounded border border-solid border-[#eaeaea] p-5">
             <Section className="">
               <Img
-                src={config.logo}
+                src={tenant.logo}
                 width={194}
                 height={79}
-                alt={config.name}
+                alt={tenant.name}
                 className="mx-auto my-0"
               />
             </Section>
@@ -45,20 +46,20 @@ const Template = ({ children, name, preview }: TemplateProps) => {
             </Text>
             {children}
             <Text>
-              - {config.name} Team {config.heart}
+              - {tenant.name} Team {tenant.heart}
             </Text>
             <Hr className="mx-0 my-6.5 w-full border border-solid border-[#eaeaea]" />
             <Text>
               Visit{" "}
-              <Link href={config.domain} className="text-blue-600">
-                {config.domain.replace("https://www.", "")}
+              <Link href={tenant.domain} className="text-blue-600">
+                {tenant.domain.replace("https://www.", "")}
               </Link>{" "}
-              for more information about {config.name} and follow us on{" "}
-              <Link href={config.instagram} className="text-blue-600">
+              for more information about {tenant.name} and follow us on{" "}
+              <Link href={tenant.instagram} className="text-blue-600">
                 Instagram
               </Link>{" "}
               and{" "}
-              <Link href={config.linkedin} className="text-blue-600">
+              <Link href={tenant.linkedin} className="text-blue-600">
                 LinkedIn
               </Link>{" "}
               for up to date information and announcements.
@@ -68,8 +69,8 @@ const Template = ({ children, name, preview }: TemplateProps) => {
               <span className="text-black">{name ?? "Insert Name"}</span>. If
               you were not expecting this email, you can ignore this email. If
               you are concerned about your account&apos;s safety, please contact{" "}
-              <Link href={`mailto:${config.email}`} className="text-blue-600">
-                {config.email}
+              <Link href={`mailto:${tenant.email}`} className="text-blue-600">
+                {tenant.email}
               </Link>{" "}
               to get in touch with us.
             </Text>
