@@ -38,11 +38,17 @@ export function usePhotoUpload({
   const pendingProgressRef = useRef(new Map<string, number>());
 
   useEffect(() => {
+    mountedRef.current = true;
+
     return () => {
       mountedRef.current = false;
+
       if (frameRef.current !== null) {
         cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
       }
+
+      pendingProgressRef.current.clear();
     };
   }, []);
 
@@ -61,6 +67,8 @@ export function usePhotoUpload({
 
   const updateItem = useCallback(
     (uploadId: string, update: PhotoUploadUpdate) => {
+      if (!mountedRef.current) return;
+
       if (
         Object.keys(update).length === 1 &&
         typeof update.progress === "number"
