@@ -89,13 +89,17 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     pageSize: 10,
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{
-    type: "single";
-    id: any;
-  } | {
-    type: "many";
-    ids: any[];
-  } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<
+    | {
+        type: "single";
+        id: any;
+      }
+    | {
+        type: "many";
+        ids: any[];
+      }
+    | null
+  >(null);
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();

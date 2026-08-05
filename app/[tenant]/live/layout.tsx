@@ -14,7 +14,9 @@ const Layout = async ({ children, params }: LayoutProps) => {
   // accepted participant. Signed-out / non-accepted users still see it in the
   // menu bar, but grayed out with a lock icon and a "Register to get access"
   // prompt.
-  const access = await fetchAuthQuery(api.auth.getParticipantAccess, { tenant });
+  const access = await fetchAuthQuery(api.auth.getParticipantAccess, {
+    tenant,
+  });
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
