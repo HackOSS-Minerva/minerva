@@ -59,6 +59,7 @@ export default defineSchema({
   }),
 
   judges: defineTable({
+    userId: v.optional(v.string()),
     firstname: v.string(),
     lastname: v.string(),
     email: v.string(),
@@ -91,6 +92,7 @@ export default defineSchema({
   }),
 
   superadmins: defineTable({
+    userId: v.optional(v.string()),
     firstname: v.string(),
     lastname: v.string(),
     email: v.string(),
@@ -171,6 +173,15 @@ export default defineSchema({
       v.literal("verified"),
       v.literal("needs_review"),
       v.literal("disqualified"),
+    ),
+    vettingStatus: v.optional(
+      v.union(
+        v.literal("not_started"),
+        v.literal("queued"),
+        v.literal("running"),
+        v.literal("completed"),
+        v.literal("failed"),
+      ),
     ),
   }),
   assignments: defineTable({
