@@ -4,6 +4,12 @@ import createMDX from "@next/mdx";
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 
+  // ESLint runs as a dedicated CI job — skip it during `next build` to avoid
+  // failing the build on pre-existing lint issues in the codebase.
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   images: {
     remotePatterns: [
       {
