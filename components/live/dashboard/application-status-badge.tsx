@@ -28,8 +28,7 @@ const STATUS_CONFIG: Record<
   },
   REJECTION: {
     label: "Rejected",
-    className:
-      "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/30",
+    className: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/30",
   },
 };
 
