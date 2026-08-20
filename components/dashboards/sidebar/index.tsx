@@ -9,6 +9,7 @@ import {
   IconFileDescription,
   IconFileWord,
   IconListDetails,
+  IconPhoto,
   IconQrcode,
   IconReport,
   IconUserCheck,
@@ -44,6 +45,11 @@ const data = {
       title: "Schedule",
       url: "/admin/schedule",
       icon: IconListDetails,
+    },
+    {
+      title: "Photos",
+      url: "/admin/photos",
+      icon: IconPhoto,
     },
   ],
   navJudging: [
