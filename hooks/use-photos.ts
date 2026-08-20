@@ -2,9 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { compressPhoto, type ClientPhotoItem } from "@/lib/photos/photo-client";
+import { compress } from "@/lib/compress";
+import type { ClientPhotoItem } from "@/lib/photos/photo-client";
 
 const POLL_INTERVAL_MS = 12_000;
+const PHOTO_COMPRESSION_OPTIONS = {
+  maxWidth: 1920,
+  maxHeight: 1920,
+  quality: 0.82,
+  mimeType: "image/jpeg",
+  acceptedTypes: ["image/jpeg", "image/png", "image/webp"],
+  maxFileSize: 8_000_000,
+} as const;
 
 interface UsePhotosResult {
   photos: ClientPhotoItem[];
@@ -242,7 +251,7 @@ export function usePhotos(tenant: string): UsePhotosResult {
 
       try {
         const result = await uploadPhotoBatch(files, async (file) => {
-          const compressed = await compressPhoto(file);
+          const compressed = await compress(file, PHOTO_COMPRESSION_OPTIONS);
           const formData = new FormData();
           formData.set("tenant", tenant);
           formData.set("photo", compressed);
