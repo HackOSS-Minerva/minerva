@@ -85,8 +85,6 @@ interface DashboardProps {
   };
   onDelete?: (...args: any[]) => any;
   onDeleteMany?: (...args: any[]) => any;
-  onUpdate?: (...args: any[]) => any;
-  setStatus?: (...args: any[]) => any;
   setStatusMany?: (...args: any[]) => any;
 }
 
@@ -122,8 +120,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     dashboard: { columns, csvFields },
     onDelete,
     onDeleteMany,
-    onUpdate,
-    setStatus,
     setStatusMany,
   } = dashboard;
 
@@ -160,8 +156,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         onDeleteMany?.(ids);
         setRowSelection({});
       },
-      onUpdate: onUpdate ?? (() => {}),
-      setStatus: setStatus ?? (() => {}),
       setStatusMany: async (ids: any, status: any) => {
         if (!setStatusMany) throw new Error("Status updates are unavailable");
         await setStatusMany({ ids, status });

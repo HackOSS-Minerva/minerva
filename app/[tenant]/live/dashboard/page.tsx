@@ -13,11 +13,11 @@ const DashboardRoute = async ({ params }: DashboardRouteProps) => {
 
   // Fetch the participant's application status so the dashboard can show their
   // registration state (not registered / pending / accepted / rejected).
-  const access = await fetchAuthQuery(api.auth.getParticipantAccess, { tenant });
+  const access = await fetchAuthQuery(api.auth.getParticipantAccess, {
+    tenant,
+  });
 
-  return (
-    <DashboardPage tenant={tenant} participantStatus={access.status} />
-  );
+  return <DashboardPage tenant={tenant} participantStatus={access.status} />;
 };
 
 export default DashboardRoute;

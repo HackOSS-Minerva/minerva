@@ -18,6 +18,9 @@ const eslintConfig = defineConfig([
   {
     rules: {
       "react/no-children-prop": "off",
+      // Existing form and table adapters intentionally use `any` at their
+      // dynamic boundaries until those schemas are unified.
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 ]);

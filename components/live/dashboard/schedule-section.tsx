@@ -16,7 +16,7 @@ export function ScheduleSection() {
   const [selectedDay, setSelectedDay] = useState<string>("all");
   const [showPastEvents, setShowPastEvents] = useState(false);
 
-  const now = Date.now();
+  const [now] = useState(Date.now);
 
   const getCurrentAndNextEvents = () => {
     if (!data?.items) return { current: null, next: null };

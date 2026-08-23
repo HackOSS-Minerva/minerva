@@ -54,8 +54,9 @@ export async function POST(request: Request) {
     const resend = new Resend(apiKey);
     const { data, error } = await resend.emails.send(
       {
-        from: `${tenantConfig.name} <${tenantConfig.email}>`,
+        from: "Minerva <onboarding@resend.dev>",
         to: [user.email],
+        replyTo: tenantConfig.email,
         subject: getEmailSubject(type),
         html,
       },

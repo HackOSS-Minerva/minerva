@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Mail, Download } from "lucide-react";
 import { toast } from "sonner";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
+import { useState } from "react";
 
 interface CertificatePageProps {
   tenant: string;
@@ -23,8 +24,9 @@ export function CertificatePage({}: CertificatePageProps) {
 
   const judgeName = "Alex J. Morgan";
 
-  const certificateId =
-    "CERT-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+  const [certificateId] = useState(
+    () => "CERT-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
+  );
 
   const handleEmail = () => {
     const tenantName = tenantConfig?.name || "DesignVerse 2026";
