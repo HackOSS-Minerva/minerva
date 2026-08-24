@@ -1,16 +1,22 @@
-import Template from "./template";
+import Template, { type EmailConfig } from "./template";
 import { Text } from "@react-email/components";
-import config from "@/tenants/designverse/designverse.json";
+import designverseConfig from "@/tenants/designverse/designverse.json";
 
 interface ConfirmationProps {
   name: string;
   position: string;
   preview: string;
+  config?: EmailConfig;
 }
 
-const Confirmation = ({ name, position, preview }: ConfirmationProps) => {
+const Confirmation = ({
+  name,
+  position,
+  preview,
+  config = designverseConfig,
+}: ConfirmationProps) => {
   return (
-    <Template name={name} preview={preview}>
+    <Template name={name} preview={preview} config={config}>
       <Text>
         Thank you for applying as a{" "}
         <strong>{position ?? "Insert Position"}</strong>!

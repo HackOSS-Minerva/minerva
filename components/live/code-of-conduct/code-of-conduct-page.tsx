@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import CodeOfConductMarkdown from "@/tenants/designverse/descriptions/code-of-conduct.mdx";
+import { useTenant } from "@/hooks/use-tenant";
 
 interface CodeOfConductPageProps {
   tenant: string;
@@ -19,6 +19,8 @@ export function CodeOfConductPage({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
 }: CodeOfConductPageProps) {
+  const { markdown } = useTenant();
+  const Markdown = markdown.codeOfConduct;
   return (
     <div className="space-y-6">
       <Breadcrumb>
@@ -38,7 +40,7 @@ export function CodeOfConductPage({
           Understand our community standards.
         </p>
       </div>
-      <CodeOfConductMarkdown />
+      <Markdown />
     </div>
   );
 }

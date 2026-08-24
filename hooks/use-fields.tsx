@@ -42,7 +42,7 @@ export const useFields = () => {
 
   const {
     headers,
-    tenant: { name },
+    tenant: { slug: tenantSlug },
   } = useTenant();
 
   const add = useMutation(MUTATIONS[slug]);
@@ -52,7 +52,7 @@ export const useFields = () => {
     const email = value.email as string;
     const firstname = value.firstname as string;
     const lastname = value.lastname as string;
-    const tenant = name.toLocaleLowerCase();
+    const tenant = tenantSlug.toLocaleLowerCase();
 
     switch (slug) {
       case "volunteer": {

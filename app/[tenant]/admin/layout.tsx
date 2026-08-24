@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
+import { SignOutButton } from "@/components/profile/sign-out-button";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -33,12 +33,7 @@ const Layout = async ({ children, params }: AdminLayoutProps) => {
               <> Your superadmin registration is still pending approval.</>
             ) : null}
           </p>
-          <Link
-            href={`/${tenant}/sign-in?redirect=/${tenant}/admin`}
-            className="mt-2 inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-          >
-            Use a different account
-          </Link>
+          <SignOutButton redirectTo={`/${tenant}/sign-in`} />
         </div>
       </div>
     );

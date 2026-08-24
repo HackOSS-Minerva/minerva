@@ -12,15 +12,41 @@ import {
   Tailwind,
   Link,
 } from "@react-email/components";
-import config from "@/tenants/designverse/designverse.json";
+import designverseConfig from "@/tenants/designverse/designverse.json";
+
+export interface EmailConfig {
+  name: string;
+  domain: string;
+  discord: string;
+  email: string;
+  instagram: string;
+  linkedin: string;
+  devpost: string;
+  heart: string;
+  logo: string;
+  calendarid: string;
+  event: {
+    name: string;
+    startTime: string;
+    endTime: string;
+    deadline: string;
+  };
+  locks: Record<string, string[] | Record<string, string[]>>;
+}
 
 interface TemplateProps {
   children: React.ReactNode;
   name: string;
   preview: string;
+  config?: EmailConfig;
 }
 
-const Template = ({ children, name, preview }: TemplateProps) => {
+const Template = ({
+  children,
+  name,
+  preview,
+  config = designverseConfig,
+}: TemplateProps) => {
   return (
     <Html>
       <Head />

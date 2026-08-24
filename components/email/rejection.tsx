@@ -1,16 +1,22 @@
-import Template from "./template";
+import Template, { type EmailConfig } from "./template";
 import { Text } from "@react-email/components";
-import config from "@/tenants/designverse/designverse.json";
+import designverseConfig from "@/tenants/designverse/designverse.json";
 
 interface RejectionProps {
   name: string;
   position: string;
   preview: string;
+  config?: EmailConfig;
 }
 
-const Rejection = ({ name, position, preview }: RejectionProps) => {
+const Rejection = ({
+  name,
+  position,
+  preview,
+  config = designverseConfig,
+}: RejectionProps) => {
   return (
-    <Template name={name} preview={preview}>
+    <Template name={name} preview={preview} config={config}>
       <Text>
         Thank you for applying to {config.name} as a{" "}
         {position ?? "Insert Position"}. Unfortunately, due to particular
