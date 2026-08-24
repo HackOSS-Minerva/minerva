@@ -68,5 +68,5 @@ jobs:
         run: bun run build
 
     env:
-      NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
-      CONVEX_SITE_URL: ${{ vars.CONVEX_SITE_URL }}
+      NEXT_PUBLIC_CONVEX_URL: ${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
+      CONVEX_SITE_URL: ${{ vsecretsars.CONVEX_SITE_URL }}
