@@ -1,0 +1,45 @@
+{
+  "slug": "cutiehack",
+  "name": "Cutie Hack",
+  "domain": "https://www.cutiehack.com",
+  "discord": "https://discord.gg/33JTAhGHuu",
+  "email": "cutiehack@gmail.com",
+  "instagram": "https://www.instagram.com/cutiehack_ucr",
+  "linkedin": "https://www.linkedin.com/company/cutiehack-ucr",
+  "devpost": "https://cutie-hack-2026.devpost.com",
+  "heart": "",
+  "logo": "https://firebasestorage.googleapis.com/v0/b/minerva-615e2.firebasestorage.app/o/cutiehack%2Flogo.png?alt=media&token=01d530f1-afe5-4c98-9c4f-0bd5e196b8bf",
+  "calendarid": "94a5716a956c38210be1d09cbd12d1f609850c0e3180435c64a1f215186398fd@group.calendar.google.com",
+  "event": {
+    "name": "Cutie Hack 2026",
+    "startTime": "2026-11-21T16:00:00.000Z",
+    "endTime": "2026-11-22T04:00:00.000Z",
+    "deadline": "2026-11-22T04:00:00.000Z"
+  },
+  "locks": {
+    "forms": {
+      "participant": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "judge": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "speaker": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "superadmin": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "volunteer": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "submission": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "feedback": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"]
+    },
+    "judge": {
+      "assignments": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "submissions": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "orientation": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "certificate": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"]
+    },
+    "sponsor": {
+      "resume-book": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "team-projects": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "analytics": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"]
+    },
+    "live": {
+      "checkin": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
+      "teams": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"]
+    }
+  }
+}

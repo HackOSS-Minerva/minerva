@@ -59,7 +59,7 @@ export const useDashboard = (eventid?: string) => {
   const { dashboard } = useParams<{ dashboard: slugs }>();
   const { tenant } = useTenant();
   const slug = dashboard;
-  const tenantName = tenant.name.toLocaleLowerCase();
+  const tenantName = tenant.slug.toLocaleLowerCase();
 
   const data = useQuery(QUERIES[slug], {
     tenant: tenantName,
