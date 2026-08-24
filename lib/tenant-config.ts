@@ -1,9 +1,11 @@
 import designverse from "@/tenants/designverse/designverse.json";
+import cutiehack from "@/tenants/cutiehack/cutiehack.json";
 
-export const tenantSlugs = ["designverse"] as const;
+export const tenantSlugs = ["designverse", "cutiehack"] as const;
 export type TenantSlug = (typeof tenantSlugs)[number];
 
 export interface TenantConfig {
+  slug: string;
   name: string;
   domain: string;
   discord: string;
@@ -33,6 +35,9 @@ const tenantConfigs: Record<TenantSlug, TenantConfig> = {
       ...designverse.event,
       deadline: designverse.event.submission.deadline,
     },
+  },
+  cutiehack: {
+    ...cutiehack,
   },
 };
 

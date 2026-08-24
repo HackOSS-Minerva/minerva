@@ -1,6 +1,6 @@
 "use client";
 
-import JudgeOrientationMarkdown from "@/tenants/designverse/descriptions/judge-orientation.mdx";
+import { useTenant } from "@/hooks/use-tenant";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface OrientationPageProps {
@@ -8,6 +8,8 @@ interface OrientationPageProps {
 }
 
 export function OrientationPage({}: OrientationPageProps) {
+  const { markdown } = useTenant();
+  const Markdown = markdown.orientation;
   return (
     <>
       <FormLockModal form="judge-orientation" />
@@ -20,7 +22,7 @@ export function OrientationPage({}: OrientationPageProps) {
           </p>
         </div>
 
-        <JudgeOrientationMarkdown />
+        <Markdown />
       </div>
     </>
   );

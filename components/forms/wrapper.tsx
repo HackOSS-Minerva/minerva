@@ -27,7 +27,7 @@ const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
 
   return (
     <>
-      {logo && <Image src={logo} alt="logo" width={200} height={200} />}
+      {logo && <Image src={logo} alt="logo" width={100} height={100} />}
       <FormLockModal form={form} />
       <Card className="w-full sm:max-w-md border-none">
         {statusForUI && statusForUI !== null ? (
