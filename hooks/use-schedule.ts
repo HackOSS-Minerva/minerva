@@ -10,7 +10,7 @@ type tenantSlug = "designverse" | "cutiehack";
 
 export const useSchedule = () => {
   const { tenant } = useParams<{ tenant: tenantSlug }>();
-  const configs: Record<string, (typeof designverse | typeof cutiehack)> = {
+  const configs: Record<string, typeof designverse | typeof cutiehack> = {
     designverse,
     cutiehack,
   };
