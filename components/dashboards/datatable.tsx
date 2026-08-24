@@ -188,7 +188,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               <StatusActions
                 table={table}
                 role={emailRole}
-                tenant={tenant.name.toLocaleLowerCase()}
                 onSuccess={() => setRowSelection({})}
               />
             )}

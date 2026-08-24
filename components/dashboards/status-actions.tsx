@@ -20,16 +20,10 @@ interface ApplicantRow {
 interface StatusActionsProps {
   table: Table<ApplicantRow>;
   role: EmailRole;
-  tenant: string;
   onSuccess: () => void;
 }
 
-export function StatusActions({
-  table,
-  role,
-  tenant,
-  onSuccess,
-}: StatusActionsProps) {
+export function StatusActions({ table, role, onSuccess }: StatusActionsProps) {
   const [isUpdating, setIsUpdating] = useState(false);
   const { sendEmail } = useEmail();
   const selectedCount = table.getSelectedRowModel().rows.length;
@@ -69,7 +63,6 @@ export function StatusActions({
             sendEmail({
               type: status,
               role,
-              tenant,
               user: {
                 firstname: user.firstname,
                 lastname: user.lastname,
@@ -98,7 +91,6 @@ export function StatusActions({
     } catch (error) {
       console.error("Failed to update applicant statuses", {
         role,
-        tenant,
         status,
         error,
       });

@@ -1,3 +1,5 @@
+import type { TenantSlug } from "@/lib/tenant-config";
+
 export type EmailType = "CONFIRMATION" | "ACCEPTANCE" | "REJECTION";
 
 export type EmailRole =
@@ -16,7 +18,7 @@ export type EmailRecipient = {
 export type SendEmailPayload = {
   type: EmailType;
   role: EmailRole;
-  tenant: string;
+  tenant: TenantSlug;
   user: EmailRecipient;
   idempotencyKey: string;
 };

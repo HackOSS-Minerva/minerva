@@ -14,6 +14,7 @@ import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
 import { toast } from "sonner";
 import type { EmailRecipient, EmailRole } from "@/types/email";
+import type { TenantSlug } from "@/lib/tenant-config";
 
 export type slugs =
   | "participant"
@@ -54,14 +55,13 @@ export const useFields = () => {
     role: EmailRole,
     user: EmailRecipient,
     id: string,
-    tenant: string,
+    tenant: TenantSlug,
   ) => {
     try {
       await sendEmail({
         role,
         type: "CONFIRMATION",
         user,
-        tenant,
         idempotencyKey: `${id}:CONFIRMATION`,
       });
 
@@ -91,7 +91,7 @@ export const useFields = () => {
     const email = value.email as string;
     const firstname = value.firstname as string;
     const lastname = value.lastname as string;
-    const tenant = tenantSlug.toLocaleLowerCase();
+    const tenant = tenantSlug;
 
     switch (slug) {
       case "volunteer": {

@@ -45,6 +45,9 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
   const { tenant } = useTenant();
 
   const lock = useMemo(() => {
+    // DesignVerse currently has formLocks metadata for future scheduling, but
+    // development/testing intentionally remains unlocked because it has no
+    // legacy locks map. Only the active locks map is enforced here.
     if (!tenant?.locks) {
       return { opensAt: null, closesAt: null };
     }

@@ -4,6 +4,8 @@ import { Resend } from "resend";
 import { z } from "zod";
 import Email, { getEmailSubject } from "@/components/email";
 import { getTenantConfig, tenantSlugs } from "@/lib/tenant-config";
+import { fetchAuthQuery } from "@/lib/auth-server";
+import { api } from "@/convex/_generated/api";
 
 const payloadSchema = z.object({
   type: z.enum(["CONFIRMATION", "ACCEPTANCE", "REJECTION"]),
@@ -18,6 +20,11 @@ const payloadSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const { authenticated } = await fetchAuthQuery(api.auth.getAuthStatus, {});
+  if (!authenticated) {
+    return Response.json({ error: "Authentication required" }, { status: 401 });
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return Response.json(

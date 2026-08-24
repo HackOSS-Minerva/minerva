@@ -2,6 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import type { SendEmailPayload } from "@/types/email";
 import { useTenant } from "./use-tenant";
 
+type ClientSendEmailPayload = Omit<SendEmailPayload, "tenant">;
+
 const sendEmailRequest = async (payload: SendEmailPayload) => {
   const response = await fetch("/api/email/send", {
     method: "POST",
@@ -22,11 +24,20 @@ const sendEmailRequest = async (payload: SendEmailPayload) => {
 
 export const useEmail = () => {
   const mutation = useMutation({ mutationFn: sendEmailRequest });
-  const { name: tenant } = useTenant();
+  const { tenant } = useTenant();
+
+  if (!tenant) {
+    throw new Error("Unsupported tenant");
+  }
 
   return {
     ...mutation,
-    sendEmail: (payload: SendEmailPayload) =>
-      mutation.mutateAsync({ ...payload, tenant }),
+    sendEmail: (payload: ClientSendEmailPayload) => {
+      const requestPayload: SendEmailPayload = {
+        ...payload,
+        tenant: tenant.slug,
+      };
+      return mutation.mutateAsync(requestPayload);
+    },
   };
 };

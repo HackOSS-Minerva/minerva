@@ -5,7 +5,7 @@ export const tenantSlugs = ["designverse", "cutiehack"] as const;
 export type TenantSlug = (typeof tenantSlugs)[number];
 
 export interface TenantConfig {
-  slug: string;
+  slug: TenantSlug;
   name: string;
   domain: string;
   discord: string;
@@ -31,6 +31,7 @@ export interface TenantConfig {
 const tenantConfigs: Record<TenantSlug, TenantConfig> = {
   designverse: {
     ...designverse,
+    slug: "designverse",
     event: {
       ...designverse.event,
       deadline: designverse.event.submission.deadline,
@@ -38,6 +39,7 @@ const tenantConfigs: Record<TenantSlug, TenantConfig> = {
   },
   cutiehack: {
     ...cutiehack,
+    slug: "cutiehack",
   },
 };
 
