@@ -12,7 +12,7 @@ import {
   Tailwind,
   Link,
 } from "@react-email/components";
-import type { TenantConfig } from "@/lib/tenant-config";
+import type { TenantConfig } from "@/hooks/get-tenant";
 
 interface TemplateProps {
   children: React.ReactNode;

@@ -1,19 +1,17 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { getTenantConfig, type TenantSlug } from "@/lib/tenant-config";
-import { getTenantContent } from "@/lib/tenant-content";
+import { getTenant, type TenantSlug } from "./get-tenant";
 
 export const useTenant = () => {
   const { tenant: slug } = useParams<{ tenant: TenantSlug }>();
-  const config = getTenantConfig(slug);
-  const content = getTenantContent(slug);
+  const { config, headers, markdown } = getTenant(slug);
 
   return {
-    headers: content?.headers,
+    headers,
     tenant: config,
     name: slug,
     live: config?.event ?? null,
-    markdown: content?.markdown,
+    markdown,
   } as const;
 };

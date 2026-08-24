@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTenantConfig } from "@/lib/tenant-config";
+import { getTenant } from "@/hooks/get-tenant";
 
 interface TenantLayoutProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export default async function TenantLayout({
 }: TenantLayoutProps) {
   const { tenant } = (await params) as { tenant: string };
 
-  if (!getTenantConfig(tenant)) {
+  if (!getTenant(tenant).config) {
     notFound();
   }
 

@@ -1,6 +1,6 @@
 import Template from "./template";
 import { Button, Section, Text } from "@react-email/components";
-import type { TenantConfig } from "@/lib/tenant-config";
+import type { TenantConfig } from "@/hooks/get-tenant";
 
 interface AcceptanceProps {
   name: string;

@@ -1,13 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
 import type { CalendarResponse } from "@/types/calendar";
-import { getTenantConfig, type TenantSlug } from "@/lib/tenant-config";
+import { useTenant } from "./use-tenant";
 
 export const useSchedule = () => {
-  const { tenant } = useParams<{ tenant: TenantSlug }>();
-  const config = getTenantConfig(tenant);
+  const { name: tenant, tenant: config } = useTenant();
 
   const fetchEvents = async (): Promise<CalendarResponse> => {
     if (!config) {

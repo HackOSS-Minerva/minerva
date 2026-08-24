@@ -2,7 +2,7 @@ import Acceptance from "./acceptance";
 import Confirmation from "./confirmation";
 import Rejection from "./rejection";
 import type { EmailRole, EmailType } from "@/types/email";
-import type { TenantConfig } from "@/lib/tenant-config";
+import type { TenantConfig } from "@/hooks/get-tenant";
 
 interface EmailProps {
   type: EmailType;

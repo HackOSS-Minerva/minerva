@@ -3,7 +3,7 @@ import { render } from "@react-email/components";
 import { Resend } from "resend";
 import { z } from "zod";
 import Email, { getEmailSubject } from "@/components/email";
-import { getTenantConfig, tenantSlugs } from "@/lib/tenant-config";
+import { getTenant, tenantSlugs } from "@/hooks/get-tenant";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
   }
 
   const { type, role, tenant, user, idempotencyKey } = parsed.data;
-  const tenantConfig = getTenantConfig(tenant);
+  const { config: tenantConfig } = getTenant(tenant);
   if (!tenantConfig) {
     return Response.json({ error: "Unknown tenant" }, { status: 400 });
   }

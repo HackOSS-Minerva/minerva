@@ -1,6 +1,6 @@
 import Template from "./template";
 import { Text } from "@react-email/components";
-import type { TenantConfig } from "@/lib/tenant-config";
+import type { TenantConfig } from "@/hooks/get-tenant";
 
 interface ConfirmationProps {
   name: string;

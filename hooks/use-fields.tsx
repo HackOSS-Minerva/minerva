@@ -14,7 +14,7 @@ import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
 import { toast } from "sonner";
 import type { EmailRecipient, EmailRole } from "@/types/email";
-import type { TenantSlug } from "@/lib/tenant-config";
+import type { TenantSlug } from "./get-tenant";
 
 export type slugs =
   | "participant"

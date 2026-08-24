@@ -70,4 +70,3 @@ jobs:
     env:
       NEXT_PUBLIC_CONVEX_URL: ${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
       NEXT_PUBLIC_CONVEX_SITE_URL: ${{ secrets.CONVEX_SITE_URL }}
-      CONVEX_SITE_URL: ${{ secrets.CONVEX_SITE_URL }}

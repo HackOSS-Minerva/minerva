@@ -1,4 +1,4 @@
-import type { TenantSlug } from "@/lib/tenant-config";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 export type EmailType = "CONFIRMATION" | "ACCEPTANCE" | "REJECTION";
 
