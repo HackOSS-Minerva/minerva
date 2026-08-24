@@ -179,7 +179,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu className="flex items-center justify-center">
           <Link href={domain}>
-            <Image src={logo} alt="logo" width={150} height={150} />
+            <Image src={logo} alt="logo" width={100} height={100} />
           </Link>
         </SidebarMenu>
       </SidebarHeader>
