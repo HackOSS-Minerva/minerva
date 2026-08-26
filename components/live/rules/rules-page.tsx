@@ -8,27 +8,25 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import RulesMarkdown from "@/tenants/designverse/descriptions/rules.mdx";
+import { useTenant } from "@/hooks/use-tenant";
 
 interface RulesPageProps {
   tenant: string;
+  baseHref?: string;
 }
 
-export function RulesPage({ tenant }: RulesPageProps) {
+export function RulesPage({
+  tenant,
+  baseHref = `/${tenant}/live/dashboard`,
+}: RulesPageProps) {
+  const { markdown } = useTenant();
+  const Markdown = markdown.rules;
   return (
     <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/hackpacks`}>
-              Resources
-            </BreadcrumbLink>
+            <BreadcrumbLink href={baseHref}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -42,7 +40,7 @@ export function RulesPage({ tenant }: RulesPageProps) {
           Review the hackathon rules and guidelines.
         </p>
       </div>
-      <RulesMarkdown />
+      <Markdown />
     </div>
   );
 }

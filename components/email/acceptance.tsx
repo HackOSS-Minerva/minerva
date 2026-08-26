@@ -1,16 +1,22 @@
-import Template from "./template";
+import Template, { type EmailConfig } from "./template";
 import { Button, Section, Text } from "@react-email/components";
-import config from "@/tenants/designverse/designverse.json";
+import designverseConfig from "@/tenants/designverse/designverse.json";
 
 interface AcceptanceProps {
   name: string;
   position: string;
   preview: string;
+  config?: EmailConfig;
 }
 
-const Acceptance = ({ name, position, preview }: AcceptanceProps) => {
+const Acceptance = ({
+  name,
+  position,
+  preview,
+  config = designverseConfig,
+}: AcceptanceProps) => {
   return (
-    <Template name={name} preview={preview}>
+    <Template name={name} preview={preview} config={config}>
       <Text>
         🎉 Congratulations 🎉 You have been accepted into {config.name} as a{" "}
         <strong>{position ?? "Insert Position"}</strong>

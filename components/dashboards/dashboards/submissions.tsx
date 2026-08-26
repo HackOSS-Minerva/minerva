@@ -32,18 +32,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import {
-  Calendar,
   Users,
-  FolderOpen,
   Link as LinkIcon,
   Github,
   Figma,
   Presentation,
-  Mail,
-  FileText,
 } from "lucide-react";
 import DetailRow from "../row";
 
@@ -278,12 +272,6 @@ const vettedConfig: Record<
     color: "text-red-500",
     label: "Disqualified",
   },
-};
-
-const vettedCycle: Record<string, string> = {
-  needs_review: "verified",
-  verified: "disqualified",
-  disqualified: "needs_review",
 };
 
 export const columns: ColumnDef<SubmissionRecord>[] = [

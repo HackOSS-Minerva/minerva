@@ -18,7 +18,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import { roles } from "@/data/roles";
 
 interface IdeaBoardProps {
@@ -52,11 +52,6 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
     setDescription("");
     setSelectedRolesInput([]);
     setNewIdeaOpen(false);
-  };
-
-  const handleDeleteClick = (ideaId: string) => {
-    setSelectedIdeaId(ideaId);
-    setDeleteIdeaOpen(true);
   };
 
   const handleConfirmDelete = async () => {

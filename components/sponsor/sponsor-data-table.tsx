@@ -64,7 +64,7 @@ export function SponsorDataTable({
   columns,
   csvFields,
 }: SponsorDataTableProps) {
-  const [rowSelection, setRowSelection] = useState({});
+  const [, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");

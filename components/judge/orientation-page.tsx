@@ -1,23 +1,29 @@
 "use client";
 
-import JudgeOrientationMarkdown from "@/tenants/designverse/descriptions/judge-orientation.mdx";
+import { useTenant } from "@/hooks/use-tenant";
+import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface OrientationPageProps {
   tenant: string;
 }
 
-export function OrientationPage({ tenant }: OrientationPageProps) {
+export function OrientationPage({}: OrientationPageProps) {
+  const { markdown } = useTenant();
+  const Markdown = markdown.orientation;
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Judge Orientation</h1>
-        <p className="text-sm text-muted-foreground">
-          Guidelines, rubrics, and best practices for judging this year&apos;s
-          event.
-        </p>
-      </div>
+    <>
+      <FormLockModal form="judge-orientation" />
+      <div className="space-y-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold">Judge Orientation</h1>
+          <p className="text-sm text-muted-foreground">
+            Guidelines, rubrics, and best practices for judging this year&apos;s
+            event.
+          </p>
+        </div>
 
-      <JudgeOrientationMarkdown />
-    </div>
+        <Markdown />
+      </div>
+    </>
   );
 }

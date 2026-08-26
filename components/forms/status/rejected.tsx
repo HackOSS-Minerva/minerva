@@ -1,7 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { X } from "lucide-react";
 
-const Rejected = () => {
+interface RejectedProps {
+  tenantEmail: string;
+}
+
+const Rejected = ({ tenantEmail }: RejectedProps) => {
   return (
     <Card className="w-full sm:max-w-md border-none">
       <div className="flex flex-col items-center justify-center gap-4 p-8">
@@ -15,6 +19,10 @@ const Rejected = () => {
           <p className="text-primary">
             Thank you for your interest. Unfortunately, your application was not
             selected at this time.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            If you believe this is a mistake, please contact{" "}
+            <span className="font-medium">{tenantEmail}</span>.
           </p>
         </div>
       </div>

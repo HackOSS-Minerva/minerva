@@ -8,27 +8,25 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import VenueMarkdown from "@/tenants/designverse/descriptions/venue.mdx";
+import { useTenant } from "@/hooks/use-tenant";
 
 interface VenuePageProps {
   tenant: string;
+  baseHref?: string;
 }
 
-export function VenuePage({ tenant }: VenuePageProps) {
+export function VenuePage({
+  tenant,
+  baseHref = `/${tenant}/live/dashboard`,
+}: VenuePageProps) {
+  const { markdown } = useTenant();
+  const Markdown = markdown.venue;
   return (
     <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/hackpacks`}>
-              Resources
-            </BreadcrumbLink>
+            <BreadcrumbLink href={baseHref}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -42,7 +40,7 @@ export function VenuePage({ tenant }: VenuePageProps) {
           Find location and event details.
         </p>
       </div>
-      <VenueMarkdown />
+      <Markdown />
     </div>
   );
 }

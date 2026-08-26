@@ -5,14 +5,17 @@ import Pending from "./pending";
 
 interface StatusProps {
   status: EmailType;
+  form: string;
+  tenant: string;
+  tenantEmail: string;
 }
 
-const Status = ({ status }: StatusProps) => {
+const Status = ({ status, form, tenant, tenantEmail }: StatusProps) => {
   switch (status) {
     case "ACCEPTANCE":
-      return <Accepted />;
+      return <Accepted form={form} tenant={tenant} />;
     case "REJECTION":
-      return <Rejected />;
+      return <Rejected tenantEmail={tenantEmail} />;
     case "CONFIRMATION":
       return <Pending />;
     default:

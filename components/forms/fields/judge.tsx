@@ -5,7 +5,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { FieldApi } from "@tanstack/react-form";
 import * as z from "zod";
 import {
   affiliations,

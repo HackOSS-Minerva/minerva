@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useFormLock } from "./use-form-lock";
 import { z } from "zod";
 import { captureAnalyticsEvent } from "@/lib/posthog";
+import { triggerConfetti } from "./use-confetti";
 
 const optionalUrl = z.union([
   z.literal(""),
@@ -95,6 +96,7 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
         });
 
         toast.success("Project submitted successfully!");
+        triggerConfetti();
         router.push(`/${tenant}/live/dashboard`);
       } catch (error) {
         console.error("Failed to submit project:", error);

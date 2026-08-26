@@ -12,23 +12,19 @@ import { PackingChecklist } from "@/components/live/dashboard/packing-checklist"
 
 interface PackingListPageProps {
   tenant: string;
+  baseHref?: string;
 }
 
-export function PackingListPage({ tenant }: PackingListPageProps) {
+export function PackingListPage({
+  tenant,
+  baseHref = `/${tenant}/live/dashboard`,
+}: PackingListPageProps) {
   return (
     <div className="space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/hackpacks`}>
-              Resources
-            </BreadcrumbLink>
+            <BreadcrumbLink href={baseHref}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

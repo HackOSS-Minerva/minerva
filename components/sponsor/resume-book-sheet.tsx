@@ -3,14 +3,11 @@
 import { useState } from "react";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { IconX, IconCheck, IconCopy } from "@tabler/icons-react";
 import { Mail, GraduationCap, BookOpen, Award, FileText } from "lucide-react";
 import DetailRow from "@/components/dashboards/row";
 import type { ResumeBookRow } from "./resume-book-columns";

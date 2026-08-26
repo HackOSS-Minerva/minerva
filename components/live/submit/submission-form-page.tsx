@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -35,7 +34,6 @@ import {
   IconMail,
   IconFileText,
 } from "@tabler/icons-react";
-import { useTenant } from "@/hooks/use-tenant";
 import { Separator } from "@/components/ui/separator";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { useSubmissions } from "@/hooks/use-submissions";
@@ -57,6 +55,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
               Dashboard
             </BreadcrumbLink>
           </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>Participate</BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>Submit Project</BreadcrumbPage>
