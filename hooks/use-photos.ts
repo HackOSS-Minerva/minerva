@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { compress } from "@/lib/compress";
-import type { ClientPhotoItem } from "@/lib/photos/photo-client";
+import type { PhotoItem, PhotoPage } from "@/lib/photos/google-photos";
 
 const POLL_INTERVAL_MS = 12_000;
 const PHOTO_COMPRESSION_OPTIONS = {
@@ -16,7 +16,7 @@ const PHOTO_COMPRESSION_OPTIONS = {
 } as const;
 
 interface UsePhotosResult {
-  photos: ClientPhotoItem[];
+  photos: PhotoItem[];
   loading: boolean;
   loadingMore: boolean;
   removingPhotoId: string | null;
@@ -24,15 +24,10 @@ interface UsePhotosResult {
   hasMore: boolean;
   hasLoadedGallery: boolean;
   error: string | null;
-  upload(files: readonly File[]): Promise<UploadResult>;
-  loadMore(): Promise<void>;
-  removePhoto(mediaItemId: string): Promise<boolean>;
-  refresh(): Promise<void>;
-}
-
-interface PhotoPage {
-  photos: ClientPhotoItem[];
-  nextPageToken?: string;
+  upload: (files: readonly File[]) => Promise<UploadResult>;
+  loadMore: () => Promise<void>;
+  removePhoto: (mediaItemId: string) => Promise<boolean>;
+  refresh: () => Promise<void>;
 }
 
 export interface UploadResult {
@@ -40,7 +35,7 @@ export interface UploadResult {
   failedFiles: File[];
 }
 
-function isPhoto(value: unknown): value is ClientPhotoItem {
+const isPhoto = (value: unknown): value is PhotoItem => {
   if (!value || typeof value !== "object") return false;
   const photo = value as Record<string, unknown>;
   return (
@@ -49,23 +44,23 @@ function isPhoto(value: unknown): value is ClientPhotoItem {
     typeof photo.thumbnailUrl === "string" &&
     typeof photo.viewerUrl === "string"
   );
-}
+};
 
-function mergePhotos(
-  current: readonly ClientPhotoItem[],
-  incoming: readonly ClientPhotoItem[],
-): ClientPhotoItem[] {
+const mergePhotos = (
+  current: readonly PhotoItem[],
+  incoming: readonly PhotoItem[],
+): PhotoItem[] => {
   const photos = new Map(current.map((photo) => [photo.id, photo]));
   for (const photo of incoming) photos.set(photo.id, photo);
   return Array.from(photos.values());
-}
+};
 
-export async function refreshLatestPhotoPage(
+export const refreshLatestPhotoPage = async (
   fetchPage: (pageToken?: string) => Promise<PhotoPage>,
-  currentPhotos: readonly ClientPhotoItem[],
+  currentPhotos: readonly PhotoItem[],
   loadedPageCount: number,
   currentNextPageToken?: string,
-): Promise<PhotoPage> {
+): Promise<PhotoPage> => {
   const page = await fetchPage();
   if (loadedPageCount <= 1) return page;
 
@@ -77,12 +72,12 @@ export async function refreshLatestPhotoPage(
     ],
     ...(currentNextPageToken ? { nextPageToken: currentNextPageToken } : {}),
   };
-}
+};
 
-export async function uploadPhotoBatch(
+export const uploadPhotoBatch = async (
   files: readonly File[],
   uploadFile: (file: File) => Promise<void>,
-): Promise<UploadResult> {
+): Promise<UploadResult> => {
   const failedFiles: File[] = [];
   let uploadedCount = 0;
 
@@ -96,33 +91,33 @@ export async function uploadPhotoBatch(
   }
 
   return { uploadedCount, failedFiles };
-}
+};
 
-export function createPhotoListCoordinator() {
+export const createPhotoListCoordinator = () => {
   let activeOperations = 0;
   let currentOperation = 0;
 
   return {
-    begin({ skipIfBusy = false }: { skipIfBusy?: boolean } = {}) {
+    begin: ({ skipIfBusy = false }: { skipIfBusy?: boolean } = {}) => {
       if (skipIfBusy && activeOperations > 0) return null;
       activeOperations += 1;
       currentOperation += 1;
       return currentOperation;
     },
-    finish() {
+    finish: () => {
       activeOperations = Math.max(0, activeOperations - 1);
     },
-    isBusy() {
+    isBusy: () => {
       return activeOperations > 0;
     },
-    isCurrent(operation: number) {
+    isCurrent: (operation: number) => {
       return operation === currentOperation;
     },
   };
-}
+};
 
-export function usePhotos(tenant: string): UsePhotosResult {
-  const [photos, setPhotos] = useState<ClientPhotoItem[]>([]);
+export const usePhotos = (tenant: string): UsePhotosResult => {
+  const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [removingPhotoId, setRemovingPhotoId] = useState<string | null>(null);
@@ -130,7 +125,7 @@ export function usePhotos(tenant: string): UsePhotosResult {
   const [hasLoadedGallery, setHasLoadedGallery] = useState(false);
   const [nextPageToken, setNextPageToken] = useState<string>();
   const [error, setError] = useState<string | null>(null);
-  const photosRef = useRef<ClientPhotoItem[]>([]);
+  const photosRef = useRef<PhotoItem[]>([]);
   const nextPageTokenRef = useRef<string | undefined>(undefined);
   const loadedPageCountRef = useRef(1);
   const loadMoreInFlightRef = useRef(false);
@@ -328,4 +323,4 @@ export function usePhotos(tenant: string): UsePhotosResult {
     removePhoto,
     refresh,
   };
-}
+};

@@ -5,9 +5,11 @@ interface PhotosRouteProps {
   params: Promise<{ tenant: string }>;
 }
 
-export default async function PhotosRoute({ params }: PhotosRouteProps) {
+const PhotosRoute = async ({ params }: PhotosRouteProps) => {
   const { tenant } = await params;
   const event = getConfiguredPhotoEvent(tenant);
 
   return <PhotosPage event={event} />;
-}
+};
+
+export default PhotosRoute;

@@ -8,9 +8,7 @@ interface AdminPhotosRouteProps {
   params: Promise<{ tenant: string }>;
 }
 
-export default async function AdminPhotosRoute({
-  params,
-}: AdminPhotosRouteProps) {
+const AdminPhotosRoute = async ({ params }: AdminPhotosRouteProps) => {
   const { tenant } = await params;
   const event = getConfiguredPhotoEvent(tenant);
 
@@ -32,4 +30,6 @@ export default async function AdminPhotosRoute({
       </SidebarInset>
     </SidebarProvider>
   );
-}
+};
+
+export default AdminPhotosRoute;

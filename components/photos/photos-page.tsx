@@ -22,15 +22,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { usePhotos } from "@/hooks/use-photos";
-import type { PhotoEvent } from "@/lib/photos/google-photos";
-import type { ClientPhotoItem } from "@/lib/photos/photo-client";
+import type { PhotoEvent, PhotoItem } from "@/lib/photos/google-photos";
 
 interface PhotosPageProps {
   event: PhotoEvent;
   canManage?: boolean;
 }
 
-export function PhotosPage({ event, canManage = false }: PhotosPageProps) {
+export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
   const {
     photos,
     loading,
@@ -45,12 +44,8 @@ export function PhotosPage({ event, canManage = false }: PhotosPageProps) {
     removePhoto,
   } = usePhotos(event.tenant);
   const [files, setFiles] = useState<File[]>([]);
-  const [selectedPhoto, setSelectedPhoto] = useState<ClientPhotoItem | null>(
-    null,
-  );
-  const [photoToRemove, setPhotoToRemove] = useState<ClientPhotoItem | null>(
-    null,
-  );
+  const [selectedPhoto, setSelectedPhoto] = useState<PhotoItem | null>(null);
+  const [photoToRemove, setPhotoToRemove] = useState<PhotoItem | null>(null);
   const [removeError, setRemoveError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isLive = event.status === "live";
@@ -273,4 +268,4 @@ export function PhotosPage({ event, canManage = false }: PhotosPageProps) {
       </AlertDialog>
     </main>
   );
-}
+};

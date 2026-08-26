@@ -1,6 +1,8 @@
 import {
+  assertPhotoOrigin,
   getConfiguredPhotoEvent,
   listEventPhotos,
+  photoErrorResponse,
   removeEventPhoto,
 } from "@/lib/photos/google-photos";
 import { fetchAuthQuery } from "@/lib/auth-server";
@@ -9,39 +11,7 @@ import { api } from "@/convex/_generated/api";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const ERROR_STATUS: Record<string, number> = {
-  PHOTO_REQUEST_INVALID: 400,
-  PHOTO_ORIGIN_FORBIDDEN: 403,
-  PHOTO_ADMIN_FORBIDDEN: 403,
-  PHOTO_EVENT_NOT_FOUND: 404,
-  PHOTO_CONFIGURATION_INVALID: 500,
-  PHOTO_GOOGLE_UNAVAILABLE: 502,
-  PHOTO_LIST_FAILED: 502,
-  PHOTO_REMOVE_FAILED: 502,
-};
-
-function errorResponse(error: unknown): Response {
-  const code = error instanceof Error ? error.message : "";
-  const status = ERROR_STATUS[code];
-
-  return Response.json(
-    { error: status ? code : "PHOTO_REQUEST_FAILED" },
-    { status: status ?? 500 },
-  );
-}
-
-function configuredOrigin(): string {
-  const value = process.env.PHOTO_APP_ORIGIN;
-  if (!value) throw new Error("PHOTO_CONFIGURATION_INVALID");
-
-  try {
-    return new URL(value).origin;
-  } catch {
-    throw new Error("PHOTO_CONFIGURATION_INVALID");
-  }
-}
-
-export async function GET(request: Request): Promise<Response> {
+export const GET = async (request: Request): Promise<Response> => {
   const searchParams = new URL(request.url).searchParams;
   const tenants = searchParams.getAll("tenant");
   const pageTokens = searchParams.getAll("pageToken");
@@ -51,7 +21,7 @@ export async function GET(request: Request): Promise<Response> {
     pageTokens.length > 1 ||
     (pageTokens.length === 1 && !pageTokens[0])
   ) {
-    return errorResponse(new Error("PHOTO_REQUEST_INVALID"));
+    return photoErrorResponse(new Error("PHOTO_REQUEST_INVALID"));
   }
 
   try {
@@ -59,15 +29,13 @@ export async function GET(request: Request): Promise<Response> {
     const page = await listEventPhotos(event, pageTokens[0]);
     return Response.json(page);
   } catch (error) {
-    return errorResponse(error);
+    return photoErrorResponse(error);
   }
-}
+};
 
-export async function DELETE(request: Request): Promise<Response> {
+export const DELETE = async (request: Request): Promise<Response> => {
   try {
-    if (request.headers.get("origin") !== configuredOrigin()) {
-      throw new Error("PHOTO_ORIGIN_FORBIDDEN");
-    }
+    assertPhotoOrigin(request);
 
     let body: unknown;
     try {
@@ -100,6 +68,6 @@ export async function DELETE(request: Request): Promise<Response> {
     await removeEventPhoto(event, mediaItemId);
     return new Response(null, { status: 204 });
   } catch (error) {
-    return errorResponse(error);
+    return photoErrorResponse(error);
   }
-}
+};

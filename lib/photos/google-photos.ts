@@ -4,6 +4,19 @@ const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_PHOTOS_URL = "https://photoslibrary.googleapis.com/v1";
 const MAX_FILE_SIZE = 8_000_000;
 const TOKEN_EXPIRY_BUFFER_MS = 60_000;
+const PHOTO_ERROR_STATUS: Record<string, number> = {
+  PHOTO_REQUEST_INVALID: 400,
+  PHOTO_FILE_INVALID: 400,
+  PHOTO_ORIGIN_FORBIDDEN: 403,
+  PHOTO_ADMIN_FORBIDDEN: 403,
+  PHOTO_EVENT_NOT_LIVE: 403,
+  PHOTO_EVENT_NOT_FOUND: 404,
+  PHOTO_CONFIGURATION_INVALID: 500,
+  PHOTO_GOOGLE_UNAVAILABLE: 502,
+  PHOTO_LIST_FAILED: 502,
+  PHOTO_UPLOAD_FAILED: 502,
+  PHOTO_REMOVE_FAILED: 502,
+};
 
 export interface PhotoEvent {
   tenant: string;
@@ -44,19 +57,44 @@ interface GoogleMediaItem {
 
 let accessTokenCache: AccessTokenCache | null = null;
 
-function photoError(code: string): Error {
-  return new Error(code);
-}
+const photoError = (code: string): Error => new Error(code);
 
-async function readJson<T>(response: Response, code: string): Promise<T> {
+const readJson = async <T>(response: Response, code: string): Promise<T> => {
   try {
     return (await response.json()) as T;
   } catch {
     throw photoError(code);
   }
-}
+};
 
-function getCredentials(): GoogleCredentials {
+const configuredOrigin = (): string => {
+  const value = process.env.PHOTO_APP_ORIGIN;
+  if (!value) throw photoError("PHOTO_CONFIGURATION_INVALID");
+
+  try {
+    return new URL(value).origin;
+  } catch {
+    throw photoError("PHOTO_CONFIGURATION_INVALID");
+  }
+};
+
+export const assertPhotoOrigin = (request: Request): void => {
+  if (request.headers.get("origin") !== configuredOrigin()) {
+    throw photoError("PHOTO_ORIGIN_FORBIDDEN");
+  }
+};
+
+export const photoErrorResponse = (error: unknown): Response => {
+  const code = error instanceof Error ? error.message : "";
+  const status = PHOTO_ERROR_STATUS[code];
+
+  return Response.json(
+    { error: status ? code : "PHOTO_REQUEST_FAILED" },
+    { status: status ?? 500 },
+  );
+};
+
+const getCredentials = (): GoogleCredentials => {
   const clientId = process.env.GOOGLE_PHOTOS_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_PHOTOS_CLIENT_SECRET;
   const refreshToken = process.env.GOOGLE_PHOTOS_REFRESH_TOKEN;
@@ -71,9 +109,9 @@ function getCredentials(): GoogleCredentials {
     refreshToken,
     cacheKey: `${clientId}\u0000${clientSecret}\u0000${refreshToken}`,
   };
-}
+};
 
-async function getAccessToken(forceRefresh = false): Promise<string> {
+const getAccessToken = async (forceRefresh = false): Promise<string> => {
   const credentials = getCredentials();
   const now = Date.now();
 
@@ -122,13 +160,13 @@ async function getAccessToken(forceRefresh = false): Promise<string> {
   };
 
   return body.access_token;
-}
+};
 
-async function googleRequest(
+const googleRequest = async (
   path: string,
   init: RequestInit = {},
-): Promise<Response> {
-  async function request(forceRefresh: boolean): Promise<Response> {
+): Promise<Response> => {
+  const request = async (forceRefresh: boolean): Promise<Response> => {
     const token = await getAccessToken(forceRefresh);
 
     try {
@@ -142,7 +180,7 @@ async function googleRequest(
     } catch {
       throw photoError("PHOTO_GOOGLE_UNAVAILABLE");
     }
-  }
+  };
 
   let response = await request(false);
   if (response.status === 401) {
@@ -151,23 +189,26 @@ async function googleRequest(
   }
 
   return response;
-}
+};
 
-async function requireOk(response: Response, code: string): Promise<Response> {
+const requireOk = async (
+  response: Response,
+  code: string,
+): Promise<Response> => {
   if (!response.ok) throw photoError(code);
   return response;
-}
+};
 
-function getConfiguredAlbumId(event: PhotoEvent): string {
+const getConfiguredAlbumId = (event: PhotoEvent): string => {
   const albumId =
     event.tenant === "designverse"
       ? process.env.GOOGLE_PHOTOS_ALBUM_ID?.trim()
       : undefined;
   if (!albumId) throw photoError("PHOTO_CONFIGURATION_INVALID");
   return albumId;
-}
+};
 
-function toPhotoItem(item: GoogleMediaItem): PhotoItem | null {
+const toPhotoItem = (item: GoogleMediaItem): PhotoItem | null => {
   if (
     typeof item.id !== "string" ||
     typeof item.filename !== "string" ||
@@ -182,9 +223,9 @@ function toPhotoItem(item: GoogleMediaItem): PhotoItem | null {
     thumbnailUrl: `${item.baseUrl}=w640-h640-c`,
     viewerUrl: `${item.baseUrl}=w1920-h1920`,
   };
-}
+};
 
-export function getConfiguredPhotoEvent(tenant: string): PhotoEvent {
+export const getConfiguredPhotoEvent = (tenant: string): PhotoEvent => {
   if (tenant !== "designverse") throw photoError("PHOTO_EVENT_NOT_FOUND");
   const status = designverse.event.status;
   if (status !== "live" && status !== "scheduled" && status !== "ended") {
@@ -196,9 +237,9 @@ export function getConfiguredPhotoEvent(tenant: string): PhotoEvent {
     eventName: designverse.event.name,
     status,
   };
-}
+};
 
-export async function validateServerPhoto(file: File): Promise<void> {
+const validateServerPhoto = async (file: File): Promise<void> => {
   if (
     file.size === 0 ||
     file.size > MAX_FILE_SIZE ||
@@ -222,12 +263,12 @@ export async function validateServerPhoto(file: File): Promise<void> {
     (file.type === "image/jpeg" && isJpeg) ||
     (file.type === "image/webp" && isWebp);
   if (!signatureMatchesType) throw photoError("PHOTO_FILE_INVALID");
-}
+};
 
-export async function listEventPhotos(
+export const listEventPhotos = async (
   event: PhotoEvent,
   pageToken?: string,
-): Promise<PhotoPage> {
+): Promise<PhotoPage> => {
   const albumId = getConfiguredAlbumId(event);
 
   const response = await googleRequest("/mediaItems:search", {
@@ -265,12 +306,12 @@ export async function listEventPhotos(
       .filter((item): item is PhotoItem => item !== null),
     ...(data.nextPageToken ? { nextPageToken: data.nextPageToken } : {}),
   };
-}
+};
 
-export async function removeEventPhoto(
+export const removeEventPhoto = async (
   event: PhotoEvent,
   mediaItemId: string,
-): Promise<void> {
+): Promise<void> => {
   const albumId = getConfiguredAlbumId(event);
   const response = await googleRequest(
     `/albums/${encodeURIComponent(albumId)}:batchRemoveMediaItems`,
@@ -281,12 +322,12 @@ export async function removeEventPhoto(
     },
   );
   await requireOk(response, "PHOTO_REMOVE_FAILED");
-}
+};
 
-export async function uploadEventPhoto(
+export const uploadEventPhoto = async (
   event: PhotoEvent,
   file: File,
-): Promise<PhotoItem> {
+): Promise<PhotoItem> => {
   await validateServerPhoto(file);
   const albumId = getConfiguredAlbumId(event);
   const uploadResponse = await googleRequest("/uploads", {
@@ -327,4 +368,4 @@ export async function uploadEventPhoto(
 
   if (!result) throw photoError("PHOTO_UPLOAD_FAILED");
   return result;
-}
+};
