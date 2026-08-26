@@ -1,5 +1,7 @@
 import Compressor from "compressorjs";
 
+export const MAX_IMAGE_FILE_SIZE = 800_000;
+
 export interface CompressOptions {
   maxWidth?: number;
   maxHeight?: number;

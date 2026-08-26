@@ -1,8 +1,8 @@
+import { MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
 import designverse from "@/tenants/designverse/designverse.json";
 
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_PHOTOS_URL = "https://photoslibrary.googleapis.com/v1";
-const MAX_FILE_SIZE = 8_000_000;
 const TOKEN_EXPIRY_BUFFER_MS = 60_000;
 const PHOTO_ERROR_STATUS: Record<string, number> = {
   PHOTO_REQUEST_INVALID: 400,
@@ -242,7 +242,7 @@ export const getConfiguredPhotoEvent = (tenant: string): PhotoEvent => {
 const validateServerPhoto = async (file: File): Promise<void> => {
   if (
     file.size === 0 ||
-    file.size > MAX_FILE_SIZE ||
+    file.size > MAX_IMAGE_FILE_SIZE ||
     (file.type !== "image/jpeg" && file.type !== "image/webp")
   ) {
     throw photoError("PHOTO_FILE_INVALID");

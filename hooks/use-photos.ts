@@ -2,17 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { compress } from "@/lib/compress";
+import { compress, MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
 import type { PhotoItem, PhotoPage } from "@/lib/photos/google-photos";
 
-const POLL_INTERVAL_MS = 12_000;
 const PHOTO_COMPRESSION_OPTIONS = {
   maxWidth: 1920,
   maxHeight: 1920,
   quality: 0.82,
   mimeType: "image/jpeg",
   acceptedTypes: ["image/jpeg", "image/png", "image/webp"],
-  maxFileSize: 8_000_000,
+  maxFileSize: MAX_IMAGE_FILE_SIZE,
 } as const;
 
 interface UsePhotosResult {
@@ -27,7 +26,6 @@ interface UsePhotosResult {
   upload: (files: readonly File[]) => Promise<UploadResult>;
   loadMore: () => Promise<void>;
   removePhoto: (mediaItemId: string) => Promise<boolean>;
-  refresh: () => Promise<void>;
 }
 
 export interface UploadResult {
@@ -55,7 +53,7 @@ const mergePhotos = (
   return Array.from(photos.values());
 };
 
-export const refreshLatestPhotoPage = async (
+const refreshLatestPhotoPage = async (
   fetchPage: (pageToken?: string) => Promise<PhotoPage>,
   currentPhotos: readonly PhotoItem[],
   loadedPageCount: number,
@@ -74,7 +72,7 @@ export const refreshLatestPhotoPage = async (
   };
 };
 
-export const uploadPhotoBatch = async (
+const uploadPhotoBatch = async (
   files: readonly File[],
   uploadFile: (file: File) => Promise<void>,
 ): Promise<UploadResult> => {
@@ -93,7 +91,7 @@ export const uploadPhotoBatch = async (
   return { uploadedCount, failedFiles };
 };
 
-export const createPhotoListCoordinator = () => {
+const createPhotoListCoordinator = () => {
   let activeOperations = 0;
   let currentOperation = 0;
 
@@ -106,9 +104,6 @@ export const createPhotoListCoordinator = () => {
     },
     finish: () => {
       activeOperations = Math.max(0, activeOperations - 1);
-    },
-    isBusy: () => {
-      return activeOperations > 0;
     },
     isCurrent: (operation: number) => {
       return operation === currentOperation;
@@ -200,13 +195,9 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
     [fetchPage, updateNextPageToken],
   );
 
-  const refresh = useCallback(() => runRefresh(false), [runRefresh]);
-
   useEffect(() => {
-    void refresh();
-    const interval = window.setInterval(() => void refresh(), POLL_INTERVAL_MS);
-    return () => window.clearInterval(interval);
-  }, [refresh]);
+    void runRefresh();
+  }, [runRefresh]);
 
   const loadMore = useCallback(async (): Promise<void> => {
     const pageToken = nextPageTokenRef.current;
@@ -321,6 +312,5 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
     upload,
     loadMore,
     removePhoto,
-    refresh,
   };
 };
