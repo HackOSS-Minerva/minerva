@@ -6,16 +6,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { IconCopy, IconCheck } from "@tabler/icons-react";
 import { useState } from "react";
-import { statuses, variants } from "@/data/status";
+import { variants } from "@/data/status";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import {
@@ -201,18 +194,11 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             </div>
             <div className="flex flex-col gap-1">
               <Label className="text-muted-foreground">Status</Label>
-              <Select defaultValue={item.status || "PENDING"}>
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statuses.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div>
+                <Badge className={variants[item.status || "PENDING"]}>
+                  {item.status || "PENDING"}
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
