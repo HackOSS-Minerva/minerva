@@ -66,6 +66,15 @@ import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
+import { StatusActions } from "./status-actions";
+
+const PEOPLE_DASHBOARDS = [
+  "participants",
+  "judges",
+  "speakers",
+  "superadmins",
+  "volunteers",
+] as const;
 
 interface DashboardProps {
   data: any[];
@@ -141,8 +150,8 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         setDeleteTarget({ type: "single", id });
         setDeleteDialogOpen(true);
       },
-      setStatusMany: (ids: any, status: any) => {
-        setStatusMany?.(ids, status);
+      setStatusMany: ({ ids, status }: { ids: any; status: any }) => {
+        setStatusMany?.({ ids, status });
         setRowSelection({});
       },
     },
@@ -151,6 +160,18 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
   return (
     <Tabs defaultValue="outline">
       <div className="flex items-start px-4 lg:px-6 gap-2">
+        {PEOPLE_DASHBOARDS.includes(
+          slug as (typeof PEOPLE_DASHBOARDS)[number],
+        ) && (
+          <StatusActions
+            table={table}
+            onSuccess={(count) =>
+              toast.success(
+                `Updated status for ${count} user${count === 1 ? "" : "s"}`,
+              )
+            }
+          />
+        )}
         <TableToolbar table={table} slug={slug} />
         <div className="ml-auto flex items-center gap-2">
           <Select defaultValue="accepted">
