@@ -43,6 +43,21 @@
     "live": {
       "checkin": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"],
       "teams": ["2026-06-29T23:59:59-08:00", "2027-06-30T23:59:59-08:00"]
+    },
+    "admin": {
+      "analytics": false,
+      "qr-code": false,
+      "checkin": false,
+      "schedule": false,
+      "submissions": false,
+      "judges": false,
+      "assignments": false,
+      "attendance": false,
+      "participants": false,
+      "speakers": false,
+      "superadmins": false,
+      "volunteers": false,
+      "feedback": false
     }
   }
 }

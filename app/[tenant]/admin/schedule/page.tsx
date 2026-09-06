@@ -1,9 +1,17 @@
+import { AdminLockModal } from "@/components/admin/admin-lock-modal";
 import { AppSidebar } from "@/components/dashboards/sidebar";
 import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import ScheduleContent from "@/components/schedule/schedule-content";
+import { getAdminPageLock } from "@/lib/admin-locks";
 
-export default function SchedulePage() {
+export default async function SchedulePage({
+  params,
+}: {
+  params: Promise<{ tenant: string }>;
+}) {
+  const { tenant } = await params;
+
   return (
     <SidebarProvider
       style={
@@ -19,7 +27,11 @@ export default function SchedulePage() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <ScheduleContent />
+              {getAdminPageLock(tenant, "schedule") ? (
+                <AdminLockModal />
+              ) : (
+                <ScheduleContent />
+              )}
             </div>
           </div>
         </div>

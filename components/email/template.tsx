@@ -31,7 +31,10 @@ export interface EmailConfig {
     endTime: string;
     deadline: string;
   };
-  locks: Record<string, string[] | Record<string, string[]>>;
+  locks: Record<
+    string,
+    string[] | boolean | Record<string, string[] | boolean>
+  >;
 }
 
 interface TemplateProps {

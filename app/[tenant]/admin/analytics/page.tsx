@@ -1,8 +1,10 @@
 import type { CSSProperties } from "react";
 import { AnalyticsPage } from "@/components/analytics/analytics-page";
+import { AdminLockModal } from "@/components/admin/admin-lock-modal";
 import { AppSidebar } from "@/components/dashboards/sidebar";
 import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { getAdminPageLock } from "@/lib/admin-locks";
 
 export default async function AdminAnalyticsPage({
   params,
@@ -26,7 +28,11 @@ export default async function AdminAnalyticsPage({
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6">
-              <AnalyticsPage tenant={tenant} scope="admin" />
+              {getAdminPageLock(tenant, "analytics") ? (
+                <AdminLockModal />
+              ) : (
+                <AnalyticsPage tenant={tenant} scope="admin" />
+              )}
             </div>
           </div>
         </div>

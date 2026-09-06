@@ -48,7 +48,10 @@ export interface TenantConfig {
   logo: string;
   calendarid: string;
   event: LiveInfo;
-  locks: Record<string, string[] | Record<string, string[]>>;
+  locks: Record<
+    string,
+    string[] | boolean | Record<string, string[] | boolean>
+  >;
 }
 
 export const useTenant = () => {
