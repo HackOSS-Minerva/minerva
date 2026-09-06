@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
@@ -17,7 +11,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconDotsVertical } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { z } from "zod";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -265,32 +258,5 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
       const status = row.original.status;
       return <Badge className={variants[status]}>{status}</Badge>;
     },
-  },
-  {
-    id: "actions",
-    cell: ({ table, row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() =>
-              table.options.meta?.onDelete(row.original._id as number)
-            }
-          >
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
   },
 ];
