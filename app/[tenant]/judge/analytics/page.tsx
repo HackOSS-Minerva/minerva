@@ -1,4 +1,4 @@
-import { AnalyticsPage } from "@/components/sponsor/analytics-page";
+import { AnalyticsPage } from "@/components/judge/analytics-page";
 
 interface AnalyticsRouteProps {
   params: Promise<{
