@@ -11,11 +11,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  IconCopy,
-  IconCheck,
-  IconX,
-} from "@tabler/icons-react";
+import { IconCopy, IconCheck, IconX } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { z } from "zod";
 import { useState } from "react";

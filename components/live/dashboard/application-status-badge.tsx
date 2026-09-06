@@ -47,7 +47,7 @@ export function ApplicationStatusBadge({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <p className="text-xl font-bold md:text-2xl">👋 Hello, {name}</p>
-      
+
       <div className="flex flex-wrap items-center justify-end gap-2">
         {!status ? (
           applyHref && (

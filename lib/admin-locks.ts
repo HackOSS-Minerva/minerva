@@ -7,6 +7,8 @@ import cutiehack from "@/tenants/cutiehack/cutiehack.json";
  */
 export function getAdminPageLock(tenant: string, page: string): boolean {
   const configs: Record<string, unknown> = { designverse, cutiehack };
-  const config = configs[tenant] as { locks?: { admin?: Record<string, boolean> } } | undefined;
+  const config = configs[tenant] as
+    | { locks?: { admin?: Record<string, boolean> } }
+    | undefined;
   return config?.locks?.admin?.[page] === true;
 }

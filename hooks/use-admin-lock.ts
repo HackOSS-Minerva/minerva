@@ -19,7 +19,9 @@ export interface UseAdminLockResult {
   isLocked: boolean;
 }
 
-export function useAdminLock({ page }: UseAdminLockOptions): UseAdminLockResult {
+export function useAdminLock({
+  page,
+}: UseAdminLockOptions): UseAdminLockResult {
   const { tenant } = useTenant();
 
   const isLocked = useMemo(() => {
