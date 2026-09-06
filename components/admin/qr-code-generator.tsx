@@ -38,7 +38,7 @@ export default function QRCodeGenerator() {
   const isEmpty = value.trim().length === 0;
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
+    <div className="mx-auto w-full max-w-3xl space-y-6 px-4">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">QR Code Generator</h1>
         <p className="text-sm text-muted-foreground">
