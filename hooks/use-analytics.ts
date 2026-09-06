@@ -14,7 +14,5 @@ export function useAnalytics(tenant: string) {
       if (!response.ok) throw new Error("Failed to load analytics");
       return response.json();
     },
-    staleTime: 60_000,
-    retry: 1,
   });
 }

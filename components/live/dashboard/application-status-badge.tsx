@@ -1,6 +1,9 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
 
 export type ApplicationStatus = "ACCEPTANCE" | "PENDING" | "REJECTION" | null;
 
@@ -37,12 +40,14 @@ export function ApplicationStatusBadge({
   applyHref,
   applyLabel,
 }: ApplicationStatusBadgeProps) {
+  const { data: session } = authClient.useSession();
+  const name = session?.user?.name ?? "hacker";
   const config = status ? STATUS_CONFIG[status] : null;
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <p className="text-xl font-bold md:text-2xl">👋 Hello, Guest User</p>
-
+      <p className="text-xl font-bold md:text-2xl">👋 Hello, {name}</p>
+      
       <div className="flex flex-wrap items-center justify-end gap-2">
         {!status ? (
           applyHref && (

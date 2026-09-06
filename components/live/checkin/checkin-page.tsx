@@ -11,17 +11,25 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QRCodeSVG } from "qrcode.react";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
+import { authClient } from "@/lib/auth-client";
 
 interface CheckinPageProps {
   tenant: string;
 }
 
 export function CheckinPage({ tenant }: CheckinPageProps) {
+  const { data: session } = authClient.useSession();
+
+  const name = session?.user?.name ?? "hacker";
+  const nameParts = name.split(" ");
+  const firstname = nameParts[0] ?? "";
+  const lastname = nameParts.slice(1).join(" ");
+
   const qrcode = JSON.stringify({
-    id: "visitor",
-    firstname: "Guest",
-    lastname: "User",
-    email: "guest@example.com",
+    id: session?.user?.id ?? "visitor",
+    firstname,
+    lastname,
+    email: session?.user?.email ?? "guest@example.com",
   });
 
   return (
@@ -56,9 +64,7 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
         </div>
         <Card className="border-none">
           <CardHeader>
-            <CardTitle className="text-center text-primary">
-              Guest User
-            </CardTitle>
+            <CardTitle className="text-center text-primary">{name}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex justify-center">

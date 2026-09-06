@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Loader2Icon } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -131,26 +131,22 @@ function ParticipantDemographicCard({
 }
 
 export function AnalyticsPage({ tenant, scope }: AnalyticsPageProps) {
-  const { data, isLoading, isError, refetch, isFetching } =
-    useAnalytics(tenant);
+  const { data, isLoading, isError } = useAnalytics(tenant);
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 py-12 text-muted-foreground">
+        <Loader2Icon className="size-6 animate-spin" />
+        <span className="text-sm">Loading analytics...</span>
+      </div>
+    );
+  }
 
   if (isError || !data) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Analytics unavailable</CardTitle>
-          <CardDescription>
-            PostHog metrics could not be loaded for this event.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={() => refetch()} disabled={isFetching}>
-            {isFetching ? "Retrying..." : "Retry"}
-          </Button>
-        </CardContent>
-      </Card>
+      <p className="py-12 text-center text-sm text-muted-foreground">
+        No analytics found.
+      </p>
     );
   }
 
