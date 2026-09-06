@@ -12,20 +12,35 @@ import { triggerConfetti } from "./use-confetti";
 
 const optionalUrl = z.union([
   z.literal(""),
-  z.url("Please enter a valid URL."),
+  z
+    .url("Please enter a valid URL.")
+    .max(100, "URL must be 100 characters or less."),
 ]);
 
 export const submissionSchema = z.object({
-  teamName: z.string().min(1, "Team name is required."),
-  projectName: z.string().min(1, "Project name is required."),
-  description: z.string().min(1, "Project description is required."),
-  devpost: z.url("Please enter a valid URL (e.g., https://devpost.com/...)"),
+  teamName: z
+    .string()
+    .min(1, "Team name is required.")
+    .max(50, "Team name must be 50 characters or less."),
+  projectName: z
+    .string()
+    .min(1, "Project name is required.")
+    .max(50, "Project name must be 50 characters or less."),
+  description: z
+    .string()
+    .min(1, "Project description is required.")
+    .max(300, "Project description must be 300 characters or less."),
+  devpost: z
+    .url("Please enter a valid URL (e.g., https://devpost.com/...)")
+    .max(100, "URL must be 100 characters or less."),
   github: z.array(optionalUrl),
   figma: z.array(optionalUrl),
   canva: z.array(optionalUrl),
   presentation: z.union([
     z.literal(""),
-    z.url("Please enter a valid presentation URL."),
+    z
+      .url("Please enter a valid presentation URL.")
+      .max(100, "URL must be 100 characters or less."),
   ]),
   invites: z.array(
     z.union([z.literal(""), z.email("Invalid email address format.")]),

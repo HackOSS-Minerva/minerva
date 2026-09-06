@@ -30,12 +30,12 @@ export const schema = z.object({
   firstname: z
     .string()
     .min(2, "First name must be at least 2 characters.")
-    .max(32, "First name must be at most 32 characters."),
+    .max(30, "First name must be at most 30 characters."),
 
   lastname: z
     .string()
     .min(2, "Last name must be at least 2 characters.")
-    .max(32, "Last name must be at most 32 characters."),
+    .max(30, "Last name must be at most 30 characters."),
 
   email: z
     .email("Please enter a valid email address.")
@@ -80,9 +80,20 @@ export const fields = [
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
-          <FieldLabel htmlFor={field.name} className="text-primary">
-            First Name<span className="text-destructive">*</span>
-          </FieldLabel>
+          <div className="flex justify-between items-end gap-4">
+            <FieldLabel htmlFor={field.name} className="text-primary">
+              First Name<span className="text-destructive">*</span>
+            </FieldLabel>
+            <span
+              className={`text-xs shrink-0 ${
+                field.state.value.length >= 30
+                  ? "text-destructive font-medium"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {field.state.value.length}/30
+            </span>
+          </div>
           <Input
             className="text-primary"
             id={field.name}
@@ -94,6 +105,7 @@ export const fields = [
             placeholder="John"
             required
             autoComplete="off"
+            maxLength={30}
           />
           {isInvalid && <FieldError errors={field.state.meta.errors} />}
         </Field>
@@ -106,9 +118,20 @@ export const fields = [
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
-          <FieldLabel htmlFor={field.name} className="text-primary">
-            Last Name<span className="text-destructive">*</span>
-          </FieldLabel>
+          <div className="flex justify-between items-end gap-4">
+            <FieldLabel htmlFor={field.name} className="text-primary">
+              Last Name<span className="text-destructive">*</span>
+            </FieldLabel>
+            <span
+              className={`text-xs shrink-0 ${
+                field.state.value.length >= 30
+                  ? "text-destructive font-medium"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {field.state.value.length}/30
+            </span>
+          </div>
           <Input
             id={field.name}
             name={field.name}
@@ -119,6 +142,7 @@ export const fields = [
             placeholder="Doe"
             required
             autoComplete="off"
+            maxLength={30}
           />
           {isInvalid && <FieldError errors={field.state.meta.errors} />}
         </Field>

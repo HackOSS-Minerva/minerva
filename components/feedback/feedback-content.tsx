@@ -94,7 +94,9 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
       <FormLockModal form="feedback" />
       <Card className="w-full sm:max-w-md border-none">
         <CardHeader>
-          <Header />
+          <div className="px-4">
+            <Header />
+          </div>
         </CardHeader>
         <CardContent>
           <form
