@@ -33,6 +33,7 @@ export interface LiveInfo {
   startTime: string;
   endTime: string;
   deadline: string;
+  gitCommitGraceWindowMinutes?: number;
 }
 
 export interface TenantConfig {
