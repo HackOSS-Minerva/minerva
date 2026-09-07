@@ -196,7 +196,6 @@ export const runSubmissionVettingMany = action({
       results.push({
         submissionId: submission._id,
         success: result.success,
-        result: result.storedVetted,
         error: result.success ? undefined : result.error,
       });
     }

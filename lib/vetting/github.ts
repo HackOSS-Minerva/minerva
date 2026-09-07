@@ -63,7 +63,7 @@ export function parseGithubRepoUrl(rawUrl: string): ParsedGithubRepo | null {
   };
 }
 
-export function parseGithubRateLimit(headers: Headers): number | undefined {
+function parseGithubRateLimit(headers: Headers): number | undefined {
   const value = headers.get("x-ratelimit-remaining");
   if (value === null) return undefined;
 
@@ -159,8 +159,6 @@ function normalizeCommits(data: unknown): GithubCommitAuthor[] {
           typeof committer.email === "string"
             ? committer.email.toLowerCase()
             : undefined,
-        committerName:
-          typeof committer.name === "string" ? committer.name : undefined,
       };
     })
     .filter((commit): commit is GithubCommitAuthor => commit !== null);

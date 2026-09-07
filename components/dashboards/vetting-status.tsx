@@ -11,16 +11,19 @@ import type {
   VettingStatus,
 } from "@/lib/vetting/types";
 
-export type VettingStatusMeta = {
+type StatusMeta = {
   label: string;
   icon: LucideIcon;
   iconClass: string;
+};
+
+type ReviewStatusMeta = StatusMeta & {
   badgeClass: string;
 };
 
 export const reviewStatusMeta: Record<
   SubmissionReviewStatus,
-  VettingStatusMeta
+  ReviewStatusMeta
 > = {
   verified: {
     label: "Verified",
@@ -45,36 +48,31 @@ export const reviewStatusMeta: Record<
   },
 };
 
-export const vettingRunStatusMeta: Record<VettingStatus, VettingStatusMeta> = {
+const vettingRunStatusMeta: Record<VettingStatus, StatusMeta> = {
   not_started: {
     label: "Not Started",
     icon: CircleDashed,
     iconClass: "text-muted-foreground",
-    badgeClass: "text-muted-foreground",
   },
   queued: {
     label: "Queued",
     icon: CircleDashed,
     iconClass: "text-blue-500",
-    badgeClass: "text-blue-600",
   },
   running: {
     label: "Running",
     icon: LoaderCircle,
     iconClass: "animate-spin text-blue-500",
-    badgeClass: "text-blue-600",
   },
   completed: {
     label: "Completed",
     icon: CheckCircle2,
     iconClass: "text-emerald-500",
-    badgeClass: "text-emerald-600",
   },
   failed: {
     label: "Failed",
     icon: XCircle,
     iconClass: "text-red-500",
-    badgeClass: "text-red-600",
   },
 };
 
@@ -96,7 +94,7 @@ export function normalizeVettingStatus(value: unknown): VettingStatus {
 export function visibleVettingStatus(
   reviewStatus: SubmissionReviewStatus,
   runStatus: VettingStatus,
-): VettingStatusMeta {
+): StatusMeta {
   return runStatus === "completed"
     ? reviewStatusMeta[reviewStatus]
     : vettingRunStatusMeta[runStatus];

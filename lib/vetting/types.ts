@@ -53,7 +53,6 @@ export interface GithubCommitAuthor {
   authorName?: string;
   authorDate: number;
   committerEmail?: string;
-  committerName?: string;
   sha: string;
 }
 
@@ -101,5 +100,4 @@ export interface VettingBatchResult {
   submissionId: string;
   success: boolean;
   error?: string;
-  result?: SubmissionReviewStatus;
 }
