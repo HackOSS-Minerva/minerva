@@ -8,7 +8,7 @@ import * as judge from "@/components/forms/fields/judge";
 import * as speaker from "@/components/forms/fields/speaker";
 import * as superadmin from "@/components/forms/fields/superadmin";
 import * as volunteer from "@/components/forms/fields/volunteer";
-import * as Posthog from "@/lib/posthog";
+import { captureAnalyticsEvent } from "@/lib/posthog";
 import { useEmail } from "./use-email";
 import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
@@ -64,17 +64,6 @@ export const useFields = () => {
         user,
         idempotencyKey: `${id}:CONFIRMATION`,
       });
-
-      Posthog.email(
-        user.email,
-        {
-          name: `${user.firstname} ${user.lastname}`,
-          position: role,
-          type: "CONFIRMATION",
-          preview: "Thank you for applying.",
-        },
-        tenant,
-      );
     } catch (error) {
       console.error("Failed to send registration confirmation", {
         role,
@@ -111,8 +100,14 @@ export const useFields = () => {
           },
         });
 
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "volunteer",
+          status: "PENDING",
+        });
+
         if (result.user) {
-          Posthog.pending("volunteer", result.user, tenant);
           await sendConfirmationEmail(
             "volunteer",
             result.user,
@@ -155,8 +150,21 @@ export const useFields = () => {
           },
         });
 
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "participant",
+          status: "PENDING",
+          gender: value.gender as string,
+          dietrestriction: value.dietrestriction as string,
+          shirt: value.shirt as string,
+          school: value.school as string,
+          major: value.major as string,
+          age: value.age as string,
+          grade: value.grade as string,
+        });
+
         if (result.user) {
-          Posthog.pending("participant", result.user, tenant);
           await sendConfirmationEmail(
             "participant",
             result.user,
@@ -193,8 +201,14 @@ export const useFields = () => {
           },
         });
 
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "judge",
+          status: "PENDING",
+        });
+
         if (result.user) {
-          Posthog.pending("judge", result.user, tenant);
           await sendConfirmationEmail(
             "judge",
             result.user,
@@ -231,8 +245,14 @@ export const useFields = () => {
           },
         });
 
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "speaker",
+          status: "PENDING",
+        });
+
         if (result.user) {
-          Posthog.pending("speaker", result.user, tenant);
           await sendConfirmationEmail(
             "speaker",
             result.user,
@@ -263,8 +283,14 @@ export const useFields = () => {
           },
         });
 
+        captureAnalyticsEvent("application_created", {
+          tenant,
+          entity_id: String(result.id),
+          role: "superadmin",
+          status: "PENDING",
+        });
+
         if (result.user) {
-          Posthog.pending("superadmin", result.user, tenant);
           await sendConfirmationEmail(
             "superadmin",
             result.user,

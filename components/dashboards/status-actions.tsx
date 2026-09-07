@@ -48,10 +48,10 @@ export function StatusActions({ table, role, onSuccess }: StatusActionsProps) {
     setIsUpdating(true);
 
     try {
-      await setStatusMany(
-        selectedUsers.map((user) => user._id),
+      await setStatusMany({
+        ids: selectedUsers.map((user) => user._id),
         status,
-      );
+      });
 
       if (status === "PENDING") {
         toast.success(
@@ -101,30 +101,34 @@ export function StatusActions({ table, role, onSuccess }: StatusActionsProps) {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex shrink-0 items-center gap-2">
       <Button
         variant="outline"
         size="sm"
+        title="Mark selected users as accepted"
         onClick={() => void updateStatus("ACCEPTANCE")}
         disabled={selectedCount === 0 || isUpdating}
-        className="hover:bg-green-500 hover:text-white"
+        className="border-green-500 bg-green-500 text-white hover:bg-green-600 hover:text-white"
       >
         Accept
       </Button>
       <Button
         variant="outline"
         size="sm"
+        title="Move selected users to the waitlist"
         onClick={() => void updateStatus("PENDING")}
         disabled={selectedCount === 0 || isUpdating}
+        className="border-yellow-500 bg-yellow-500 text-white hover:bg-yellow-600 hover:text-white"
       >
-        Pending
+        Waitlist
       </Button>
       <Button
         variant="outline"
         size="sm"
+        title="Mark selected users as rejected"
         onClick={() => void updateStatus("REJECTION")}
         disabled={selectedCount === 0 || isUpdating}
-        className="hover:bg-red-500 hover:text-white"
+        className="border-red-500 bg-red-500 text-white hover:bg-red-600 hover:text-white"
       >
         Reject
       </Button>

@@ -152,11 +152,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         setDeleteTarget({ type: "single", id });
         setDeleteDialogOpen(true);
       },
-      onDeleteMany: (ids: any) => {
-        onDeleteMany?.(ids);
-        setRowSelection({});
-      },
-      setStatusMany: async (ids: any, status: any) => {
+      setStatusMany: async ({ ids, status }) => {
         if (!setStatusMany) throw new Error("Status updates are unavailable");
         await setStatusMany({ ids, status });
         setRowSelection({});
@@ -167,6 +163,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
   return (
     <Tabs defaultValue="outline">
       <div className="flex items-start px-4 lg:px-6 gap-2">
+        {emailRole && (
+          <StatusActions
+            table={table}
+            role={emailRole}
+            onSuccess={() => setRowSelection({})}
+          />
+        )}
         <TableToolbar table={table} slug={slug} />
         <div className="ml-auto flex items-center gap-2">
           <Select defaultValue="accepted">
@@ -184,13 +187,6 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
             </SelectContent>
           </Select>
           <div className="flex items-center gap-2">
-            {emailRole && (
-              <StatusActions
-                table={table}
-                role={emailRole}
-                onSuccess={() => setRowSelection({})}
-              />
-            )}
             {slug === "submissions" ? (
               <Button
                 variant="outline"

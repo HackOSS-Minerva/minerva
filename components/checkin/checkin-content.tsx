@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/combobox";
 import { Badge } from "@/components/ui/badge";
 import { UserCheck } from "lucide-react";
+import { captureAnalyticsEvent } from "@/lib/posthog";
 
 interface DecodedQR {
   id: string;
@@ -117,13 +118,20 @@ const CheckinContent = () => {
         setIsCheckingIn(true);
 
         try {
-          await doCheckin({
+          const checkin = await doCheckin({
             userid: parsed.id,
             eventid: selectedEventId,
             firstname: parsed.firstname,
             lastname: parsed.lastname,
             email: parsed.email,
             tenant,
+          });
+
+          captureAnalyticsEvent("checkin_created", {
+            tenant,
+            entity_id: String(checkin.id),
+            user_id: String(parsed.id),
+            event_id: selectedEventId,
           });
 
           toast.success(`Checked in: ${parsed.firstname} ${parsed.lastname}`, {

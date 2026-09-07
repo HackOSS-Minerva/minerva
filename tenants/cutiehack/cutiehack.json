@@ -43,6 +43,21 @@
     "live": {
       "checkin": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"],
       "teams": ["2026-08-23T00:00:00-08:00", "2026-11-22T04:00:00.000Z"]
+    },
+    "admin": {
+      "analytics": true,
+      "qr-code": false,
+      "checkin": false,
+      "schedule": false,
+      "submissions": false,
+      "judges": false,
+      "assignments": true,
+      "attendance": false,
+      "participants": false,
+      "speakers": false,
+      "superadmins": false,
+      "volunteers": false,
+      "feedback": false
     }
   }
 }

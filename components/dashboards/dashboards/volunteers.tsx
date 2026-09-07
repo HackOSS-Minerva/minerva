@@ -1,21 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { IconCopy, IconCheck } from "@tabler/icons-react";
 import { useState } from "react";
-import { statuses, variants } from "@/data/status";
+import { variants } from "@/data/status";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import {
@@ -28,7 +15,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconDotsVertical } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { z } from "zod";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -201,18 +187,11 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             </div>
             <div className="flex flex-col gap-1">
               <Label className="text-muted-foreground">Status</Label>
-              <Select defaultValue={item.status || "PENDING"}>
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statuses.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div>
+                <Badge className={variants[item.status || "PENDING"]}>
+                  {item.status || "PENDING"}
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
@@ -322,32 +301,5 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
       const status = row.original.status;
       return <Badge className={variants[status]}>{status}</Badge>;
     },
-  },
-  {
-    id: "actions",
-    cell: ({ table, row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() =>
-              table.options.meta?.onDelete(row.original._id as number)
-            }
-          >
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
   },
 ];

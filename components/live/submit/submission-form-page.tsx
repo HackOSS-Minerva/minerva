@@ -94,15 +94,29 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name} className="text-primary">
-                      Team Name<span className="text-destructive">*</span>
-                    </FieldLabel>
+                    <div className="flex justify-between items-center">
+                      <FieldLabel htmlFor={field.name} className="text-primary">
+                        Team Name<span className="text-destructive">*</span>
+                      </FieldLabel>
+                      <span
+                        className={`text-xs shrink-0 ${
+                          field.state.value.length >= 50
+                            ? "text-destructive font-medium"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {field.state.value.length}/50
+                      </span>
+                    </div>
                     <Input
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.value.slice(0, 50))
+                      }
                       onBlur={field.handleBlur}
+                      maxLength={50}
                       placeholder="Enter your team name"
                       disabled={isLocked || form.state.isSubmitting}
                       autoComplete="off"
@@ -123,15 +137,29 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name} className="text-primary">
-                      Project Name<span className="text-destructive">*</span>
-                    </FieldLabel>
+                    <div className="flex justify-between items-center">
+                      <FieldLabel htmlFor={field.name} className="text-primary">
+                        Project Name<span className="text-destructive">*</span>
+                      </FieldLabel>
+                      <span
+                        className={`text-xs shrink-0 ${
+                          field.state.value.length >= 50
+                            ? "text-destructive font-medium"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {field.state.value.length}/50
+                      </span>
+                    </div>
                     <Input
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.value.slice(0, 50))
+                      }
                       onBlur={field.handleBlur}
+                      maxLength={50}
                       placeholder="Enter your project name"
                       disabled={isLocked || form.state.isSubmitting}
                       autoComplete="off"
@@ -156,18 +184,32 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       Project Description
                       <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <FieldDescription>
-                      Briefly describe what your project does and what problem
-                      it solves.
-                    </FieldDescription>
+                    <div className="flex justify-between items-end gap-4">
+                      <FieldDescription>
+                        Briefly describe what your project does and what problem
+                        it solves.
+                      </FieldDescription>
+                      <span
+                        className={`text-xs shrink-0 ${
+                          field.state.value.length >= 300
+                            ? "text-destructive font-medium"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {field.state.value.length}/300
+                      </span>
+                    </div>
                     <Textarea
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.value.slice(0, 300))
+                      }
                       onBlur={field.handleBlur}
                       placeholder="Describe your project..."
                       rows={4}
+                      maxLength={300}
                       disabled={isLocked || form.state.isSubmitting}
                       className="w-full"
                       aria-invalid={isInvalid}
@@ -187,15 +229,29 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name} className="text-primary">
-                      Devpost URL<span className="text-destructive">*</span>
-                    </FieldLabel>
+                    <div className="flex justify-between items-center">
+                      <FieldLabel htmlFor={field.name} className="text-primary">
+                        Devpost URL<span className="text-destructive">*</span>
+                      </FieldLabel>
+                      <span
+                        className={`text-xs shrink-0 ${
+                          field.state.value.length >= 100
+                            ? "text-destructive font-medium"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {field.state.value.length}/100
+                      </span>
+                    </div>
                     <Input
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.value.slice(0, 100))
+                      }
                       onBlur={field.handleBlur}
+                      maxLength={100}
                       placeholder="https://devpost.com/..."
                       disabled={isLocked || form.state.isSubmitting}
                       autoComplete="off"
@@ -226,7 +282,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           GitHub Repositories
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Add at least one repository link.
+                          Add at least one repository link (max 100 characters
+                          each).
                         </p>
                       </div>
                       <Button
@@ -247,7 +304,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value;
+                            newLinks[idx] = e.target.value.slice(0, 100);
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -255,7 +312,17 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="text-primary text-sm"
                           disabled={isLocked || form.state.isSubmitting}
                           autoComplete="off"
+                          maxLength={100}
                         />
+                        <span
+                          className={`text-xs shrink-0 w-14 text-right ${
+                            link.length >= 100
+                              ? "text-destructive font-medium"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {link.length}/100
+                        </span>
                         {links.length > 1 && (
                           <Button
                             type="button"
@@ -299,8 +366,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           Figma Designs
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Include links to your Figma design files or
-                          prototypes.
+                          Include links to your Figma design files or prototypes
+                          (max 100 characters each).
                         </p>
                       </div>
                       <Button
@@ -321,7 +388,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value;
+                            newLinks[idx] = e.target.value.slice(0, 100);
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -329,7 +396,17 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="text-primary text-sm"
                           disabled={isLocked || form.state.isSubmitting}
                           autoComplete="off"
+                          maxLength={100}
                         />
+                        <span
+                          className={`text-xs shrink-0 w-14 text-right ${
+                            link.length >= 100
+                              ? "text-destructive font-medium"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {link.length}/100
+                        </span>
                         {links.length > 1 && (
                           <Button
                             type="button"
@@ -373,7 +450,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           Canva Designs
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Include links to your Canva presentations or designs.
+                          Include links to your Canva presentations or designs
+                          (max 100 characters each).
                         </p>
                       </div>
                       <Button
@@ -394,7 +472,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value;
+                            newLinks[idx] = e.target.value.slice(0, 100);
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -402,7 +480,17 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="text-primary text-sm"
                           disabled={isLocked || form.state.isSubmitting}
                           autoComplete="off"
+                          maxLength={100}
                         />
+                        <span
+                          className={`text-xs shrink-0 w-14 text-right ${
+                            link.length >= 100
+                              ? "text-destructive font-medium"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {link.length}/100
+                        </span>
                         {links.length > 1 && (
                           <Button
                             type="button"
@@ -438,22 +526,37 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel
-                      htmlFor={field.name}
-                      className="text-primary flex items-center gap-1"
-                    >
-                      <IconLink className="h-4 w-4" />
-                      Presentation / Demo Video
-                    </FieldLabel>
+                    <div className="flex justify-between items-center">
+                      <FieldLabel
+                        htmlFor={field.name}
+                        className="text-primary flex items-center gap-1"
+                      >
+                        <IconLink className="h-4 w-4" />
+                        Presentation / Demo Video
+                      </FieldLabel>
+                      <span
+                        className={`text-xs shrink-0 ${
+                          field.state.value.length >= 100
+                            ? "text-destructive font-medium"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {field.state.value.length}/100
+                      </span>
+                    </div>
                     <FieldDescription>
-                      Optional link to slides or demo video.
+                      Optional link to slides or demo video (max 100
+                      characters).
                     </FieldDescription>
                     <Input
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.value.slice(0, 100))
+                      }
                       onBlur={field.handleBlur}
+                      maxLength={100}
                       placeholder="https://slides.com/..."
                       className="text-primary mt-1"
                       disabled={isLocked || form.state.isSubmitting}

@@ -1,11 +1,12 @@
+import type { CSSProperties } from "react";
+import { AnalyticsPage } from "@/components/analytics/analytics-page";
 import { AdminLockModal } from "@/components/admin/admin-lock-modal";
 import { AppSidebar } from "@/components/dashboards/sidebar";
 import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import QRCodeGenerator from "@/components/admin/qr-code-generator";
 import { getAdminPageLock } from "@/lib/admin-locks";
 
-export default async function QRCodePage({
+export default async function AdminAnalyticsPage({
   params,
 }: {
   params: Promise<{ tenant: string }>;
@@ -18,19 +19,19 @@ export default async function QRCodePage({
         {
           "--sidebar-width": "calc(var(--spacing) * 72)",
           "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
+        } as CSSProperties
       }
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader>QR Code Generator</SiteHeader>
+        <SiteHeader>Analytics</SiteHeader>
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              {getAdminPageLock(tenant, "qr-code") ? (
+            <div className="flex flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6">
+              {getAdminPageLock(tenant, "analytics") ? (
                 <AdminLockModal />
               ) : (
-                <QRCodeGenerator />
+                <AnalyticsPage tenant={tenant} scope="admin" />
               )}
             </div>
           </div>

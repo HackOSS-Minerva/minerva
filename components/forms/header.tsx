@@ -9,7 +9,9 @@ const Header = () => {
 
   return (
     <CardHeader>
-      <Header />
+      <div className="px-4">
+        <Header />
+      </div>
     </CardHeader>
   );
 };

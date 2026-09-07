@@ -65,6 +65,11 @@ const participateItems = [
     label: "Certificate",
     description: "Download your certificate of service.",
   },
+  {
+    href: "/judge/analytics",
+    label: "Hackathon Analytics",
+    description: "View event statistics and insights.",
+  },
 ];
 
 interface JudgeNavProps {
@@ -160,7 +165,8 @@ export function JudgeNav({ tenant, isAuthorized }: JudgeNavProps) {
                     pathname.includes("/judge/assignments") ||
                     pathname.includes("/judge/submissions") ||
                     pathname.includes("/judge/orientation") ||
-                    pathname.includes("/judge/certificate"))
+                    pathname.includes("/judge/certificate") ||
+                    pathname.includes("/judge/analytics"))
                   ? "bg-background shadow-sm"
                   : "",
                 isAuthorized ? "text-foreground" : "text-muted-foreground",

@@ -7,24 +7,40 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { useFormLock } from "./use-form-lock";
 import { z } from "zod";
+import { captureAnalyticsEvent } from "@/lib/posthog";
 import { triggerConfetti } from "./use-confetti";
 
 const optionalUrl = z.union([
   z.literal(""),
-  z.url("Please enter a valid URL."),
+  z
+    .url("Please enter a valid URL.")
+    .max(100, "URL must be 100 characters or less."),
 ]);
 
 export const submissionSchema = z.object({
-  teamName: z.string().min(1, "Team name is required."),
-  projectName: z.string().min(1, "Project name is required."),
-  description: z.string().min(1, "Project description is required."),
-  devpost: z.url("Please enter a valid URL (e.g., https://devpost.com/...)"),
+  teamName: z
+    .string()
+    .min(1, "Team name is required.")
+    .max(50, "Team name must be 50 characters or less."),
+  projectName: z
+    .string()
+    .min(1, "Project name is required.")
+    .max(50, "Project name must be 50 characters or less."),
+  description: z
+    .string()
+    .min(1, "Project description is required.")
+    .max(300, "Project description must be 300 characters or less."),
+  devpost: z
+    .url("Please enter a valid URL (e.g., https://devpost.com/...)")
+    .max(100, "URL must be 100 characters or less."),
   github: z.array(optionalUrl),
   figma: z.array(optionalUrl),
   canva: z.array(optionalUrl),
   presentation: z.union([
     z.literal(""),
-    z.url("Please enter a valid presentation URL."),
+    z
+      .url("Please enter a valid presentation URL.")
+      .max(100, "URL must be 100 characters or less."),
   ]),
   invites: z.array(
     z.union([z.literal(""), z.email("Invalid email address format.")]),
@@ -76,7 +92,7 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
       }
 
       try {
-        await addSubmission({
+        const result = await addSubmission({
           tenant,
           teamName: value.teamName,
           projectName: value.projectName,
@@ -87,6 +103,11 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
           canva: cleanCanva,
           presentation: value.presentation || undefined,
           invites: value.invites.filter((e) => e.trim() !== ""),
+        });
+
+        captureAnalyticsEvent("submission_created", {
+          tenant,
+          entity_id: String(result.id),
         });
 
         toast.success("Project submitted successfully!");

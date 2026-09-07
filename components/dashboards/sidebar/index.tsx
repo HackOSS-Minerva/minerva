@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   IconCamera,
+  IconChartBar,
   IconClipboardList,
   IconDatabase,
   IconFileAi,
@@ -31,18 +32,27 @@ import Link from "next/link";
 const data = {
   navUtilities: [
     {
+      title: "Analytics",
+      url: "/admin/analytics",
+      slug: "analytics",
+      icon: IconChartBar,
+    },
+    {
       title: "QR Code Generator",
       url: "/admin/utilities/qr-code",
+      slug: "qr-code",
       icon: IconQrcode,
     },
     {
       title: "Check-in",
       url: "/admin/checkin",
+      slug: "checkin",
       icon: IconQrcode,
     },
     {
       title: "Schedule",
       url: "/admin/schedule",
+      slug: "schedule",
       icon: IconListDetails,
     },
   ],
@@ -50,16 +60,19 @@ const data = {
     {
       title: "Submissions",
       url: "/admin/dashboards/submissions",
+      slug: "submissions",
       icon: IconClipboardList,
     },
     {
       title: "Judges",
       url: "/admin/dashboards/judges",
+      slug: "judges",
       icon: IconListDetails,
     },
     {
       title: "Assignments",
       url: "/admin/assignments",
+      slug: "assignments",
       icon: IconUserCheck,
     },
   ],
@@ -67,31 +80,37 @@ const data = {
     {
       title: "Attendance",
       url: "/admin/dashboards/attendance",
+      slug: "attendance",
       icon: IconReport,
     },
     {
       title: "Participants",
       url: "/admin/dashboards/participants",
+      slug: "participants",
       icon: IconListDetails,
     },
     {
       title: "Speakers",
       url: "/admin/dashboards/speakers",
+      slug: "speakers",
       icon: IconListDetails,
     },
     {
       title: "Superadmins",
       url: "/admin/dashboards/superadmins",
+      slug: "superadmins",
       icon: IconListDetails,
     },
     {
       title: "Volunteers",
       url: "/admin/dashboards/volunteers",
+      slug: "volunteers",
       icon: IconListDetails,
     },
     {
       title: "Feedback",
       url: "/admin/dashboards/feedback",
+      slug: "feedback",
       icon: IconReport,
     },
   ],

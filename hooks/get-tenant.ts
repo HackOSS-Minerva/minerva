@@ -46,7 +46,10 @@ export interface TenantConfig {
     status?: string;
     openOffset?: string;
   };
-  locks?: Record<string, string[] | Record<string, string[]>>;
+  locks?: Record<
+    string,
+    string[] | boolean | Record<string, string[] | boolean>
+  >;
   formLocks?: Record<string, { opens: string; closes: string }>;
 }
 
@@ -54,10 +57,6 @@ const tenantConfigs: Record<TenantSlug, TenantConfig> = {
   designverse: {
     ...designverse,
     slug: "designverse",
-    event: {
-      ...designverse.event,
-      deadline: designverse.event.submission.deadline,
-    },
   },
   cutiehack: {
     ...cutiehack,

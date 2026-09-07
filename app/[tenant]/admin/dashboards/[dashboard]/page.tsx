@@ -1,7 +1,9 @@
+import { AdminLockModal } from "@/components/admin/admin-lock-modal";
 import { AppSidebar } from "@/components/dashboards/sidebar";
 import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import Dashboard from "@/components/dashboards/dashboard";
+import { getAdminPageLock } from "@/lib/admin-locks";
 
 const DASHBOARD_TITLES: Record<string, string> = {
   participants: "Participants",
@@ -16,12 +18,13 @@ const DASHBOARD_TITLES: Record<string, string> = {
 
 interface PageProps {
   params: Promise<{
+    tenant: string;
     dashboard: string;
   }>;
 }
 
 const Page = async ({ params }: PageProps) => {
-  const { dashboard } = await params;
+  const { tenant, dashboard } = await params;
   const title = DASHBOARD_TITLES[dashboard] ?? "Dashboard";
 
   return (
@@ -39,7 +42,11 @@ const Page = async ({ params }: PageProps) => {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <Dashboard />
+              {getAdminPageLock(tenant, dashboard) ? (
+                <AdminLockModal />
+              ) : (
+                <Dashboard />
+              )}
             </div>
           </div>
         </div>
