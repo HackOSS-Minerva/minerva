@@ -11,6 +11,7 @@ import { runSubmissionVetting as runGithubSubmissionVetting } from "../lib/vetti
 import {
   applyAutomatedReviewResult,
   getSubmissionTeam,
+  MAX_VETTING_BATCH_SIZE,
   validateVettingEventConfig,
 } from "../lib/vetting/rules";
 import type {
@@ -39,8 +40,6 @@ const eventConfigValidator = v.object({
   submissionDeadlineAt: v.number(),
   gitCommitGraceWindowMinutes: v.number(),
 });
-
-const MAX_VETTING_BATCH_SIZE = 10;
 
 export const getSubmissionForVetting = internalQuery({
   args: { id: v.id("submissions") },

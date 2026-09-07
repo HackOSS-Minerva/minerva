@@ -66,6 +66,7 @@ import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import type { VettingBatchResult } from "@/lib/vetting/types";
+import { MAX_VETTING_BATCH_SIZE } from "@/lib/vetting/rules";
 import { cn } from "@/lib/utils";
 import { TableToolbar } from "./toolbar";
 import { StatusActions } from "./status-actions";
@@ -170,6 +171,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   const handleRunVetting = async () => {
     if (!runVettingMany || selectedIds.length === 0) return;
+
+    if (selectedIds.length > MAX_VETTING_BATCH_SIZE) {
+      toast.error(
+        `At most ${MAX_VETTING_BATCH_SIZE} projects can be vetted at once.`,
+      );
+      return;
+    }
 
     setVetting(true);
     try {

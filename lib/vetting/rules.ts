@@ -8,6 +8,7 @@ import type {
 } from "./types";
 
 export const MAX_TEAM_SIZE = 4;
+export const MAX_VETTING_BATCH_SIZE = 10;
 export const DEFAULT_GIT_COMMIT_GRACE_WINDOW_MINUTES = 15;
 export const MAX_GIT_COMMIT_GRACE_WINDOW_MINUTES = 1440;
 export const TEAM_SIZE_ERROR =
