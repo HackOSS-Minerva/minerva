@@ -301,21 +301,35 @@ export async function runSubmissionVetting(
     );
   }
 
+  const uniqueRepositories: ParsedGithubRepo[] = [];
+  const seenRepositories = new Set<string>();
+  const seenInvalidUrls = new Set<string>();
+
+  for (const submittedUrl of input.repositoryUrls) {
+    const parsed = parseGithubRepoUrl(submittedUrl);
+
+    if (!parsed) {
+      const invalidUrl = submittedUrl.trim();
+      if (seenInvalidUrls.has(invalidUrl)) continue;
+      seenInvalidUrls.add(invalidUrl);
+      findings.push(
+        finding(
+          "repo_invalid_url",
+          "Submitted GitHub URL is not a repository URL.",
+          submittedUrl,
+        ),
+      );
+      continue;
+    }
+
+    const repositoryKey = `${parsed.owner}/${parsed.name}`.toLowerCase();
+    if (seenRepositories.has(repositoryKey)) continue;
+    seenRepositories.add(repositoryKey);
+    uniqueRepositories.push(parsed);
+  }
+
   try {
-    for (const submittedUrl of input.repositoryUrls) {
-      const parsed = parseGithubRepoUrl(submittedUrl);
-
-      if (!parsed) {
-        findings.push(
-          finding(
-            "repo_invalid_url",
-            "Submitted GitHub URL is not a repository URL.",
-            submittedUrl,
-          ),
-        );
-        continue;
-      }
-
+    for (const parsed of uniqueRepositories) {
       const repoResult = await githubJson(
         `https://api.github.com/repos/${parsed.owner}/${parsed.name}`,
       );

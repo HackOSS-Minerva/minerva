@@ -40,6 +40,8 @@ const eventConfigValidator = v.object({
   gitCommitGraceWindowMinutes: v.number(),
 });
 
+const MAX_VETTING_BATCH_SIZE = 10;
+
 export const getSubmissionForVetting = internalQuery({
   args: { id: v.id("submissions") },
   handler: async (ctx, { id }) => await ctx.db.get(id),
@@ -172,13 +174,20 @@ export const runSubmissionVettingMany = action({
   ): Promise<VettingBatchResult[]> => {
     validateVettingEventConfig(event);
 
+    const uniqueSubmissionIds = Array.from(new Set(submissionIds));
+    if (uniqueSubmissionIds.length > MAX_VETTING_BATCH_SIZE) {
+      throw new Error(
+        `Vetting batches can include at most ${MAX_VETTING_BATCH_SIZE} submissions.`,
+      );
+    }
+
     const submissions: Doc<"submissions">[] = [];
-    for (const submissionId of submissionIds) {
+    for (const submissionId of uniqueSubmissionIds) {
       submissions.push(await requireOrganizerAccess(ctx, submissionId));
     }
 
     await ctx.runMutation(internal.vetting.queueSubmissionVettingMany, {
-      ids: submissionIds,
+      ids: uniqueSubmissionIds,
     });
 
     const results: VettingBatchResult[] = [];

@@ -78,6 +78,21 @@ export const vettingRunStatusMeta: Record<VettingStatus, VettingStatusMeta> = {
   },
 };
 
+const VETTING_STATUSES = new Set<VettingStatus>([
+  "not_started",
+  "queued",
+  "running",
+  "completed",
+  "failed",
+]);
+
+export function normalizeVettingStatus(value: unknown): VettingStatus {
+  return typeof value === "string" &&
+    VETTING_STATUSES.has(value as VettingStatus)
+    ? (value as VettingStatus)
+    : "not_started";
+}
+
 export function visibleVettingStatus(
   reviewStatus: SubmissionReviewStatus,
   runStatus: VettingStatus,

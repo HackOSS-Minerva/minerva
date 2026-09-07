@@ -30,11 +30,12 @@ import {
 } from "lucide-react";
 import DetailRow from "../row";
 import { VettingSummary } from "../vetting-summary";
-import { reviewStatusMeta, visibleVettingStatus } from "../vetting-status";
-import type {
-  SubmissionReviewStatus,
-  VettingStatus,
-} from "@/lib/vetting/types";
+import {
+  normalizeVettingStatus,
+  reviewStatusMeta,
+  visibleVettingStatus,
+} from "../vetting-status";
+import type { SubmissionReviewStatus } from "@/lib/vetting/types";
 
 interface SubmissionRecord {
   _id: string;
@@ -51,7 +52,7 @@ interface SubmissionRecord {
   invites: string[];
   tenant: string;
   vetted: SubmissionReviewStatus;
-  vettingStatus?: VettingStatus;
+  vettingStatus?: string;
   timestamp: number;
 }
 
@@ -174,7 +175,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
               <VettingSummary
                 submissionId={item._id}
                 currentStatus={item.vetted}
-                vettingStatus={item.vettingStatus ?? "not_started"}
+                vettingStatus={normalizeVettingStatus(item.vettingStatus)}
               />
 
               <div className="flex flex-col gap-1">
@@ -288,7 +289,7 @@ function truncateDescription(
 
 function ReviewCell({ item }: { item: SubmissionRecord }) {
   const reviewStatus = item.vetted ?? "needs_review";
-  const runStatus = item.vettingStatus ?? "not_started";
+  const runStatus = normalizeVettingStatus(item.vettingStatus);
   const visibleStatus = visibleVettingStatus(reviewStatus, runStatus);
   const review = reviewStatusMeta[reviewStatus];
   const VisibleIcon = visibleStatus.icon;
