@@ -23,6 +23,7 @@ import type {
   SubmissionReviewStatus,
   SubmissionVettingResult,
   VettingContributor,
+  VettingFinding,
   VettingStatus,
 } from "@/lib/vetting/types";
 import { reviewStatusMeta } from "./vetting-status";
@@ -47,6 +48,30 @@ const peopleFindingMeta: Partial<
     icon: GitCommit,
   },
 };
+
+const unavailableRepositoryFindingCodes = new Set<FindingCode>([
+  "repo_missing",
+  "repo_invalid_url",
+  "repo_private_or_inaccessible",
+  "github_rate_limited",
+  "github_api_error",
+]);
+
+export function repositoryEvidenceExplanation(
+  findings: VettingFinding[],
+): string | null {
+  const messages = Array.from(
+    new Set(
+      findings
+        .filter(({ code }) => unavailableRepositoryFindingCodes.has(code))
+        .map(({ message }) => message),
+    ),
+  );
+
+  return messages.length > 0
+    ? `Repository evidence unavailable: ${messages.join(" ")}`
+    : null;
+}
 
 function formatDate(timestamp?: number) {
   if (!timestamp) return "Unknown";
@@ -100,6 +125,10 @@ export function VettingSummary({
       ),
     [result?.findings],
   );
+  const repositoryExplanation = useMemo(
+    () => repositoryEvidenceExplanation(result?.findings ?? []),
+    [result?.findings],
+  );
   const isBusy =
     isRunning || vettingStatus === "queued" || vettingStatus === "running";
   const reviewStatus = result?.storedVetted ?? currentStatus;
@@ -134,7 +163,11 @@ export function VettingSummary({
             </Button>
           </div>
         </div>
-        {result?.error ? (
+        {repositoryExplanation ? (
+          <p className="text-xs text-amber-700 dark:text-amber-300">
+            {repositoryExplanation}
+          </p>
+        ) : result?.error ? (
           <p className="text-xs text-red-600">{result.error}</p>
         ) : null}
       </div>

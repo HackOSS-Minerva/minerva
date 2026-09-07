@@ -118,6 +118,9 @@ async function executeSubmissionVetting(
       declaredTeamCount: team.memberCount,
       event,
     });
+    if (!submission.submitterEmail?.trim()) {
+      githubResult = { ...githubResult, result: "needs_review" };
+    }
 
     const storedVetted: SubmissionReviewStatus = await ctx.runMutation(
       internal.vetting.updateSubmissionVettingStatus,
@@ -151,6 +154,9 @@ async function executeSubmissionVetting(
   }
 }
 
+// v1 internal-tool trust boundary: the organizer-authorized UI supplies tenant
+// dates from useTenant; Convex validates shape but does not duplicate tenant
+// configuration server-side.
 export const runSubmissionVetting = action({
   args: {
     submissionId: v.id("submissions"),
