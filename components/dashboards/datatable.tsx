@@ -65,6 +65,8 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
+import type { VettingBatchResult } from "@/lib/vetting/types";
+import { cn } from "@/lib/utils";
 import { TableToolbar } from "./toolbar";
 import { StatusActions } from "./status-actions";
 
@@ -85,6 +87,7 @@ interface DashboardProps {
   onDelete?: (...args: any[]) => any;
   onDeleteMany?: (...args: any[]) => any;
   setStatusMany?: (...args: any[]) => any;
+  runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
 
 export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
@@ -92,6 +95,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [vetting, setVetting] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -112,6 +116,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
+  const isSubmissions = slug === "submissions";
 
   const {
     data,
@@ -119,6 +124,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     onDelete,
     onDeleteMany,
     setStatusMany,
+    runVettingMany,
   } = dashboard;
 
   const table = useReactTable<any>({
@@ -157,6 +163,64 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     },
   });
 
+  const selectedIds = table
+    .getSelectedRowModel()
+    .rows.map((row) => row.original._id)
+    .filter((id): id is string => typeof id === "string");
+
+  const handleRunVetting = async () => {
+    if (!runVettingMany || selectedIds.length === 0) return;
+
+    setVetting(true);
+    try {
+      const results = await runVettingMany(selectedIds);
+      const failed = results.filter((result) => !result.success).length;
+      const succeeded = results.length - failed;
+      setRowSelection({});
+
+      if (failed === 0) {
+        toast.success(
+          `Vetted ${results.length} project${results.length === 1 ? "" : "s"}`,
+        );
+      } else if (succeeded === 0) {
+        toast.error(
+          `Failed to vet ${failed} project${failed === 1 ? "" : "s"}`,
+        );
+      } else {
+        toast.error(`Vetted ${succeeded} projects; ${failed} failed`);
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to queue project vetting",
+      );
+    } finally {
+      setVetting(false);
+    }
+  };
+
+  const submissionsColumnClass = (columnId: string) => {
+    if (!isSubmissions) return undefined;
+
+    switch (columnId) {
+      case "select":
+        return "w-10";
+      case "timestamp":
+        return "w-[8.5rem] lg:w-[10rem]";
+      case "teamName":
+        return "w-[12rem] lg:w-[14rem]";
+      case "projectName":
+        return "w-[10rem] lg:w-[11.5rem]";
+      case "vetted":
+        return "w-[9rem] lg:w-[12rem]";
+      case "description":
+        return "hidden w-auto min-w-0 lg:table-cell";
+      default:
+        return undefined;
+    }
+  };
+
   return (
     <Tabs defaultValue="outline">
       <div className="flex items-start px-4 lg:px-6 gap-2">
@@ -193,13 +257,14 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  console.log("Vet Projects clicked");
-                }}
-                disabled={table.getSelectedRowModel().rows.length === 0}
+                aria-label="Vet Projects"
+                onClick={handleRunVetting}
+                disabled={selectedIds.length === 0 || vetting}
               >
                 <IconSwords />
-                <span className="hidden lg:inline ml-1">Vet Projects</span>
+                <span className="hidden lg:inline ml-1">
+                  {vetting ? "Vetting..." : "Vet Projects"}
+                </span>
               </Button>
             ) : (
               <Button
@@ -305,13 +370,20 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
       >
         <div className="overflow-hidden rounded-lg border">
-          <Table>
+          <Table className={isSubmissions ? "table-fixed" : undefined}>
             <TableHeader className="bg-muted sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} colSpan={header.colSpan}>
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={cn(
+                          submissionsColumnClass(header.column.id),
+                          isSubmissions && "overflow-hidden truncate",
+                        )}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -333,7 +405,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
                     className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          submissionsColumnClass(cell.column.id),
+                          isSubmissions && "overflow-hidden",
+                        )}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),

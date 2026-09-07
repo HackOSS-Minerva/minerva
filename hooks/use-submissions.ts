@@ -1,7 +1,8 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -9,6 +10,22 @@ import { useFormLock } from "./use-form-lock";
 import { z } from "zod";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { triggerConfetti } from "./use-confetti";
+import { useTenant } from "./use-tenant";
+import type { Id } from "@/convex/_generated/dataModel";
+import type {
+  SubmissionVettingResult,
+  VettingBatchResult,
+  VettingEventConfig,
+} from "@/lib/vetting/types";
+import {
+  DEFAULT_GIT_COMMIT_GRACE_WINDOW_MINUTES,
+  getSubmissionTeam,
+  MAX_TEAM_SIZE,
+  TEAM_SIZE_ERROR,
+  validateVettingEventConfig,
+} from "@/lib/vetting/rules";
+
+export type { VettingBatchResult } from "@/lib/vetting/types";
 
 const optionalUrl = z.union([
   z.literal(""),
@@ -91,6 +108,12 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
         return;
       }
 
+      const team = getSubmissionTeam(undefined, value.invites);
+      if (team.memberCount > MAX_TEAM_SIZE) {
+        toast.error(TEAM_SIZE_ERROR);
+        return;
+      }
+
       try {
         const result = await addSubmission({
           tenant,
@@ -102,7 +125,7 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
           figma: cleanFigma,
           canva: cleanCanva,
           presentation: value.presentation || undefined,
-          invites: value.invites.filter((e) => e.trim() !== ""),
+          invites: team.normalizedInvites,
         });
 
         captureAnalyticsEvent("submission_created", {
@@ -124,4 +147,53 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
     form,
     isLocked,
   };
+}
+
+type SubmissionId = Id<"submissions">;
+
+export function useSubmissionVetting() {
+  const { live } = useTenant();
+  const vetSubmission = useAction(api.vetting.runSubmissionVetting);
+  const vetSubmissions = useAction(api.vetting.runSubmissionVettingMany);
+
+  const getEventConfig = useCallback((): VettingEventConfig => {
+    if (!live) {
+      throw new Error("Event configuration is unavailable");
+    }
+
+    const startsAt = new Date(live.startTime).getTime();
+    const submissionDeadlineAt = new Date(live.deadline).getTime();
+    const gitCommitGraceWindowMinutes =
+      live.gitCommitGraceWindowMinutes ??
+      DEFAULT_GIT_COMMIT_GRACE_WINDOW_MINUTES;
+    const event = {
+      startsAt,
+      submissionDeadlineAt,
+      gitCommitGraceWindowMinutes,
+    };
+    validateVettingEventConfig(event);
+    return event;
+  }, [live]);
+
+  const runVetting = useCallback(
+    async (id: string): Promise<SubmissionVettingResult> => {
+      return await vetSubmission({
+        submissionId: id as SubmissionId,
+        event: getEventConfig(),
+      });
+    },
+    [getEventConfig, vetSubmission],
+  );
+
+  const runVettingMany = useCallback(
+    async (ids: string[]): Promise<VettingBatchResult[]> => {
+      return await vetSubmissions({
+        submissionIds: ids as SubmissionId[],
+        event: getEventConfig(),
+      });
+    },
+    [getEventConfig, vetSubmissions],
+  );
+
+  return { runVetting, runVettingMany };
 }
