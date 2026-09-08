@@ -1,30 +1,25 @@
-import Template, { type EmailConfig } from "./template";
+import Template from "./template";
 import { Text } from "@react-email/components";
-import designverseConfig from "@/tenants/designverse/designverse.json";
+import type { TenantConfig } from "@/hooks/get-tenant";
 
 interface RejectionProps {
   name: string;
   position: string;
   preview: string;
-  config?: EmailConfig;
+  tenant: TenantConfig;
 }
 
-const Rejection = ({
-  name,
-  position,
-  preview,
-  config = designverseConfig,
-}: RejectionProps) => {
+const Rejection = ({ name, position, preview, tenant }: RejectionProps) => {
   return (
-    <Template name={name} preview={preview} config={config}>
+    <Template name={name} preview={preview} tenant={tenant}>
       <Text>
-        Thank you for applying to {config.name} as a{" "}
+        Thank you for applying to {tenant.name} as a{" "}
         {position ?? "Insert Position"}. Unfortunately, due to particular
-        circumstances we are unable to provide you a spot at {config.name}.
+        circumstances we are unable to provide you a spot at {tenant.name}.
       </Text>
       <Text>
         However, we loved getting to know you and hope that you apply next year.
-        If you have any questions, please reach out at {config.email}
+        If you have any questions, please reach out at {tenant.email}
       </Text>
     </Template>
   );

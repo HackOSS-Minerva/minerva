@@ -142,7 +142,7 @@ export const useDashboard = (eventid?: string) => {
     }
   };
 
-  const onDeleteWithAnalytics = async (id: string) => {
+  const onDeleteWithAnalytics = async ({ id }: { id: string }) => {
     const mutation = onDelete as unknown as (args: {
       id: string;
     }) => Promise<unknown>;
@@ -160,10 +160,13 @@ export const useDashboard = (eventid?: string) => {
     return result;
   };
 
-  const setStatusManyWithAnalytics = async (
-    ids: string[],
-    status: ApplicationStatus,
-  ) => {
+  const setStatusManyWithAnalytics = async ({
+    ids,
+    status,
+  }: {
+    ids: string[];
+    status: ApplicationStatus;
+  }) => {
     const mutation = setStatusMany as unknown as (args: {
       ids: string[];
       status: ApplicationStatus;
