@@ -131,9 +131,14 @@ export const setStatus = mutation({
     status: v.union(...statuses.map((s) => v.literal(s))),
   },
   handler: async (ctx, { id, status }) => {
-    await ctx.db.patch(id, { status });
     const volunteer = await ctx.db.get("volunteers", id);
     if (!volunteer) throw new Error("Volunteer not found");
+
+    if (volunteer.status === status) {
+      return { status: "unchanged" };
+    }
+
+    await ctx.db.patch(id, { status });
 
     return { status: "success" };
   },
@@ -146,9 +151,12 @@ export const setStatusMany = mutation({
   },
   handler: async (ctx, { ids, status }) => {
     for (const id of ids) {
-      await ctx.db.patch(id, { status });
       const volunteer = await ctx.db.get("volunteers", id);
       if (!volunteer) throw new Error(`Volunteer ${id} not found`);
+
+      if (volunteer.status === status) continue;
+
+      await ctx.db.patch(id, { status });
     }
 
     return { status: "success" };

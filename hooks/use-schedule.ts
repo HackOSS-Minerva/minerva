@@ -1,23 +1,16 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
 import type { CalendarResponse } from "@/types/calendar";
-import designverse from "@/tenants/designverse/designverse.json";
-import cutiehack from "@/tenants/cutiehack/cutiehack.json";
-
-type tenantSlug = "designverse" | "cutiehack";
+import { useTenant } from "./use-tenant";
 
 export const useSchedule = () => {
-  const { tenant } = useParams<{ tenant: tenantSlug }>();
-  const configs: Record<string, typeof designverse | typeof cutiehack> = {
-    designverse,
-    cutiehack,
-  };
-  const config = configs[tenant] ?? designverse;
+  const { name: tenant, tenant: config } = useTenant();
 
   const fetchEvents = async (): Promise<CalendarResponse> => {
-    console.log();
+    if (!config) {
+      throw new Error("Unknown tenant");
+    }
 
     const response = await fetch(
       `https://www.googleapis.com/calendar/v3/calendars/${config.calendarid}/events?key=${process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY}&singleEvents=true&orderBy=startTime`,
@@ -34,6 +27,7 @@ export const useSchedule = () => {
   return useQuery({
     queryKey: ["schedule", tenant],
     queryFn: fetchEvents,
+    enabled: Boolean(config),
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 2,
   });

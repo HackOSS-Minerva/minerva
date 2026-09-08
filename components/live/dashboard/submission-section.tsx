@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCountdown } from "@/hooks/use-countdown";
 import { IconExternalLink, IconCheck } from "@tabler/icons-react";
 import Link from "next/link";
+import { useState } from "react";
 
 interface SubmissionSectionProps {
   tenant: string;
@@ -17,7 +18,7 @@ export function SubmissionSection({
   submissionDeadline,
 }: SubmissionSectionProps) {
   const timeLeft = useCountdown(submissionDeadline);
-  const now = Date.now();
+  const [now] = useState(Date.now);
   const isPastDeadline = now > submissionDeadline;
 
   const hasSubmitted = false;

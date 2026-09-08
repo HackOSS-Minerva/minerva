@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTenant } from "./use-tenant";
 
 export interface UseFormLockOptions {
@@ -45,6 +45,9 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
   const { tenant } = useTenant();
 
   const lock = useMemo(() => {
+    // DesignVerse currently has formLocks metadata for future scheduling, but
+    // development/testing intentionally remains unlocked because it has no
+    // legacy locks map. Only the active locks map is enforced here.
     if (!tenant?.locks) {
       return { opensAt: null, closesAt: null };
     }
@@ -77,7 +80,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
     return { opensAt: null, closesAt: null };
   }, [tenant?.locks, form]);
 
-  const now = useMemo(() => Date.now(), []);
+  const [now] = useState(Date.now);
 
   const opensIn = useMemo(() => {
     if (!lock.opensAt) return null;

@@ -10,6 +10,9 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     try {
       const item = window.localStorage.getItem(key);
       if (item) {
+        // Reading persisted external state is intentionally synchronized here
+        // after mount to avoid accessing localStorage during SSR.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setStoredValue(JSON.parse(item));
       }
     } catch (error) {

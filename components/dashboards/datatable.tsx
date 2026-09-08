@@ -62,19 +62,20 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import type { EmailRole } from "@/types/email";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
 import { TableToolbar } from "./toolbar";
 import { StatusActions } from "./status-actions";
 
-const PEOPLE_DASHBOARDS = [
-  "participants",
-  "judges",
-  "speakers",
-  "superadmins",
-  "volunteers",
-] as const;
+const emailRolesByDashboard: Partial<Record<string, EmailRole>> = {
+  participants: "participant",
+  judges: "judge",
+  speakers: "speaker",
+  superadmins: "superadmin",
+  volunteers: "volunteer",
+};
 
 interface DashboardProps {
   data: any[];
@@ -112,6 +113,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
   const { tenant } = useTenant();
+  const emailRole = emailRolesByDashboard[slug];
 
   const {
     data,
@@ -150,8 +152,9 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         setDeleteTarget({ type: "single", id });
         setDeleteDialogOpen(true);
       },
-      setStatusMany: ({ ids, status }: { ids: any; status: any }) => {
-        setStatusMany?.({ ids, status });
+      setStatusMany: async ({ ids, status }) => {
+        if (!setStatusMany) throw new Error("Status updates are unavailable");
+        await setStatusMany({ ids, status });
         setRowSelection({});
       },
     },
@@ -160,16 +163,11 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
   return (
     <Tabs defaultValue="outline">
       <div className="flex items-start px-4 lg:px-6 gap-2">
-        {PEOPLE_DASHBOARDS.includes(
-          slug as (typeof PEOPLE_DASHBOARDS)[number],
-        ) && (
+        {emailRole && (
           <StatusActions
             table={table}
-            onSuccess={(count) =>
-              toast.success(
-                `Updated status for ${count} user${count === 1 ? "" : "s"}`,
-              )
-            }
+            role={emailRole}
+            onSuccess={() => setRowSelection({})}
           />
         )}
         <TableToolbar table={table} slug={slug} />

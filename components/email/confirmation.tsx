@@ -1,29 +1,29 @@
-import Template, { type EmailConfig } from "./template";
+import Template from "./template";
 import { Text } from "@react-email/components";
-import designverseConfig from "@/tenants/designverse/designverse.json";
+import type { TenantConfig } from "@/hooks/get-tenant";
 
 interface ConfirmationProps {
   name: string;
   position: string;
   preview: string;
-  config?: EmailConfig;
+  tenant: TenantConfig;
 }
 
 const Confirmation = ({
   name,
   position,
   preview,
-  config = designverseConfig,
+  tenant,
 }: ConfirmationProps) => {
   return (
-    <Template name={name} preview={preview} config={config}>
+    <Template name={name} preview={preview} tenant={tenant}>
       <Text>
         Thank you for applying as a{" "}
         <strong>{position ?? "Insert Position"}</strong>!
       </Text>
       <Text>
-        We appreciate your support towards {config.name}. Please keep an eye out
-        for future {config.name} emails regarding updates and announcements.
+        We appreciate your support towards {tenant.name}. Please keep an eye out
+        for future {tenant.name} emails regarding updates and announcements.
       </Text>
     </Template>
   );

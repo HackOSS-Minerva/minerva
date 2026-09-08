@@ -34,8 +34,8 @@ export function CertificatePage({}: CertificatePageProps) {
     ? new Date(live.endTime).toLocaleDateString("en-US")
     : new Date().toLocaleDateString("en-US");
 
-  const tenantName = tenantConfig?.name || "DesignVerse 2026";
-  const organization = "DesignVerse Organizing Committee";
+  const tenantName = tenantConfig?.name || "the event";
+  const organization = `${tenantName} Organizing Committee`;
 
   const handleDownload = async () => {
     const html2pdf = (await import("html2pdf.js")).default;

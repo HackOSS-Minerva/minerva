@@ -9,9 +9,12 @@ import * as speaker from "@/components/forms/fields/speaker";
 import * as superadmin from "@/components/forms/fields/superadmin";
 import * as volunteer from "@/components/forms/fields/volunteer";
 import { captureAnalyticsEvent } from "@/lib/posthog";
-// import { useSendEmail } from "./use-send-email";
+import { useEmail } from "./use-email";
 import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
+import { toast } from "sonner";
+import type { EmailRecipient, EmailRole } from "@/types/email";
+import type { TenantSlug } from "./get-tenant";
 
 export type slugs =
   | "participant"
@@ -46,13 +49,38 @@ export const useFields = () => {
   } = useTenant();
 
   const add = useMutation(MUTATIONS[slug]);
-  // const sendEmail = useSendEmail();
+  const { sendEmail } = useEmail();
+
+  const sendConfirmationEmail = async (
+    role: EmailRole,
+    user: EmailRecipient,
+    id: string,
+    tenant: TenantSlug,
+  ) => {
+    try {
+      await sendEmail({
+        role,
+        type: "CONFIRMATION",
+        user,
+        idempotencyKey: `${id}:CONFIRMATION`,
+      });
+    } catch (error) {
+      console.error("Failed to send registration confirmation", {
+        role,
+        tenant,
+        error,
+      });
+      toast.warning(
+        "Registration submitted, but the confirmation email could not be sent.",
+      );
+    }
+  };
 
   const onSubmit = async (value: Record<string, unknown>) => {
     const email = value.email as string;
     const firstname = value.firstname as string;
     const lastname = value.lastname as string;
-    const tenant = tenantSlug.toLocaleLowerCase();
+    const tenant = tenantSlug;
 
     switch (slug) {
       case "volunteer": {
@@ -78,6 +106,15 @@ export const useFields = () => {
           role: "volunteer",
           status: "PENDING",
         });
+
+        if (result.user) {
+          await sendConfirmationEmail(
+            "volunteer",
+            result.user,
+            String(result.id),
+            tenant,
+          );
+        }
 
         return result;
       }
@@ -127,6 +164,15 @@ export const useFields = () => {
           grade: value.grade as string,
         });
 
+        if (result.user) {
+          await sendConfirmationEmail(
+            "participant",
+            result.user,
+            String(result.id),
+            tenant,
+          );
+        }
+
         return result;
       }
 
@@ -161,6 +207,15 @@ export const useFields = () => {
           role: "judge",
           status: "PENDING",
         });
+
+        if (result.user) {
+          await sendConfirmationEmail(
+            "judge",
+            result.user,
+            String(result.id),
+            tenant,
+          );
+        }
 
         return result;
       }
@@ -197,6 +252,15 @@ export const useFields = () => {
           status: "PENDING",
         });
 
+        if (result.user) {
+          await sendConfirmationEmail(
+            "speaker",
+            result.user,
+            String(result.id),
+            tenant,
+          );
+        }
+
         return result;
       }
 
@@ -225,6 +289,15 @@ export const useFields = () => {
           role: "superadmin",
           status: "PENDING",
         });
+
+        if (result.user) {
+          await sendConfirmationEmail(
+            "superadmin",
+            result.user,
+            String(result.id),
+            tenant,
+          );
+        }
 
         return result;
       }

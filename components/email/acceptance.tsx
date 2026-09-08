@@ -1,24 +1,19 @@
-import Template, { type EmailConfig } from "./template";
+import Template from "./template";
 import { Button, Section, Text } from "@react-email/components";
-import designverseConfig from "@/tenants/designverse/designverse.json";
+import type { TenantConfig } from "@/hooks/get-tenant";
 
 interface AcceptanceProps {
   name: string;
   position: string;
   preview: string;
-  config?: EmailConfig;
+  tenant: TenantConfig;
 }
 
-const Acceptance = ({
-  name,
-  position,
-  preview,
-  config = designverseConfig,
-}: AcceptanceProps) => {
+const Acceptance = ({ name, position, preview, tenant }: AcceptanceProps) => {
   return (
-    <Template name={name} preview={preview} config={config}>
+    <Template name={name} preview={preview} tenant={tenant}>
       <Text>
-        🎉 Congratulations 🎉 You have been accepted into {config.name} as a{" "}
+        🎉 Congratulations 🎉 You have been accepted into {tenant.name} as a{" "}
         <strong>{position ?? "Insert Position"}</strong>
       </Text>
       <Text>
@@ -27,7 +22,7 @@ const Acceptance = ({
       </Text>
       <Section className="text-center">
         <Button
-          href={config.discord}
+          href={tenant.discord}
           className="rounded bg-[#7289da] px-5 py-3 text-center text-xs font-semibold text-white no-underline"
         >
           Join Discord
