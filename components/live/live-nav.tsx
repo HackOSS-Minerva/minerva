@@ -14,7 +14,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navItems = [{ href: "/dashboard", label: "Dashboard" }];
+const navItems = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/photos", label: "Photos" },
+];
 
 const resourceItems = [
   {

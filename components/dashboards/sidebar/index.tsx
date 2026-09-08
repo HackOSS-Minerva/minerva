@@ -10,6 +10,7 @@ import {
   IconFileDescription,
   IconFileWord,
   IconListDetails,
+  IconPhoto,
   IconQrcode,
   IconReport,
   IconUserCheck,
@@ -54,6 +55,11 @@ const data = {
       url: "/admin/schedule",
       slug: "schedule",
       icon: IconListDetails,
+    },
+    {
+      title: "Photos",
+      url: "/admin/photos",
+      icon: IconPhoto,
     },
   ],
   navJudging: [
