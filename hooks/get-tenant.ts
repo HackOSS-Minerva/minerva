@@ -43,6 +43,7 @@ export interface TenantConfig {
     startTime: string;
     endTime: string;
     deadline: string;
+    gitCommitGraceWindowMinutes?: number;
     status?: string;
     openOffset?: string;
   };
