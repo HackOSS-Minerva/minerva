@@ -162,6 +162,7 @@ export default defineSchema({
 
   submissions: defineTable({
     teamName: v.string(),
+    submitterEmail: v.optional(v.string()),
     projectName: v.string(),
     description: v.string(),
     devpost: v.string(),
@@ -177,9 +178,7 @@ export default defineSchema({
       v.literal("needs_review"),
       v.literal("disqualified"),
     ),
-    // Pre-existing documents in the dev deployment carry this field; it's
-    // not written by the app (the app uses `vetted`), but it must be declared
-    // optional here so schema validation passes against that legacy data.
+    // Keep this open for legacy values already stored in existing deployments.
     vettingStatus: v.optional(v.string()),
   }),
   assignments: defineTable({

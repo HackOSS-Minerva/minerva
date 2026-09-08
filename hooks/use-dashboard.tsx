@@ -18,6 +18,7 @@ import {
   type AnalyticsRole,
   type ApplicationStatus,
 } from "@/lib/posthog";
+import { useSubmissionVetting } from "./use-submissions";
 
 type slugs =
   | "participants"
@@ -71,6 +72,7 @@ const QUERIES: Record<slugs, DashboardQuery> = {
 export const useDashboard = (eventid?: string) => {
   const { dashboard } = useParams<{ dashboard: slugs }>();
   const { tenant } = useTenant();
+  const { runVettingMany } = useSubmissionVetting();
   const slug = dashboard;
   const tenantName = tenant.slug.toLocaleLowerCase();
 
@@ -193,5 +195,6 @@ export const useDashboard = (eventid?: string) => {
       ? onDeleteManyWithAnalytics
       : onDeleteMany,
     setStatusMany: role ? setStatusManyWithAnalytics : setStatusMany,
+    runVettingMany: slug === "submissions" ? runVettingMany : undefined,
   } as const;
 };
