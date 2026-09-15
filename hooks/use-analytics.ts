@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import type { AnalyticsData } from "@/lib/posthog";
+import { parseAppError } from "@/lib/app-error";
 
 export function useAnalytics(tenant: string) {
   return useQuery({
@@ -11,7 +12,8 @@ export function useAnalytics(tenant: string) {
         `/api/analytics?tenant=${encodeURIComponent(tenant)}`,
       );
 
-      if (!response.ok) throw new Error("Failed to load analytics");
+      if (!response.ok)
+        throw await parseAppError(response, "ANALYTICS_UNAVAILABLE");
       return response.json();
     },
   });

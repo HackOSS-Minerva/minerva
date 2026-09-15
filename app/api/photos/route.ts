@@ -2,9 +2,9 @@ import {
   assertPhotoOrigin,
   getConfiguredPhotoEvent,
   listEventPhotos,
-  photoErrorResponse,
   removeEventPhoto,
 } from "@/lib/google-photos";
+import { AppError, requireFeature, withFetchHandler } from "@/lib/app-error";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { getFeatureFlag } from "@/lib/feature-flags";
@@ -12,10 +12,8 @@ import { getFeatureFlag } from "@/lib/feature-flags";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export const GET = async (request: Request): Promise<Response> => {
-  if (!getFeatureFlag("photos")) {
-    return photoErrorResponse(new Error("PHOTO_FEATURE_DISABLED"));
-  }
+export const GET = withFetchHandler("photos-list", async (request) => {
+  requireFeature(getFeatureFlag("photos"), "PHOTO_FEATURE_DISABLED");
 
   const searchParams = new URL(request.url).searchParams;
   const tenants = searchParams.getAll("tenant");
@@ -26,57 +24,47 @@ export const GET = async (request: Request): Promise<Response> => {
     pageTokens.length > 1 ||
     (pageTokens.length === 1 && !pageTokens[0])
   ) {
-    return photoErrorResponse(new Error("PHOTO_REQUEST_INVALID"));
+    throw new AppError("PHOTO_REQUEST_INVALID");
   }
 
+  const event = getConfiguredPhotoEvent(tenants[0]);
+  const page = await listEventPhotos(event, pageTokens[0]);
+  return Response.json(page);
+});
+
+export const DELETE = withFetchHandler("photos-remove", async (request) => {
+  requireFeature(getFeatureFlag("photos"), "PHOTO_FEATURE_DISABLED");
+
+  assertPhotoOrigin(request);
+
+  let body: unknown;
   try {
-    const event = getConfiguredPhotoEvent(tenants[0]);
-    const page = await listEventPhotos(event, pageTokens[0]);
-    return Response.json(page);
-  } catch (error) {
-    return photoErrorResponse(error);
+    body = await request.json();
+  } catch {
+    throw new AppError("PHOTO_REQUEST_INVALID");
   }
-};
 
-export const DELETE = async (request: Request): Promise<Response> => {
-  try {
-    if (!getFeatureFlag("photos")) {
-      throw new Error("PHOTO_FEATURE_DISABLED");
-    }
-
-    assertPhotoOrigin(request);
-
-    let body: unknown;
-    try {
-      body = await request.json();
-    } catch {
-      throw new Error("PHOTO_REQUEST_INVALID");
-    }
-
-    if (!body || typeof body !== "object") {
-      throw new Error("PHOTO_REQUEST_INVALID");
-    }
-
-    const { tenant, mediaItemId } = body as Record<string, unknown>;
-    if (
-      typeof tenant !== "string" ||
-      !tenant ||
-      typeof mediaItemId !== "string" ||
-      !mediaItemId ||
-      mediaItemId.length > 2_048
-    ) {
-      throw new Error("PHOTO_REQUEST_INVALID");
-    }
-
-    const event = getConfiguredPhotoEvent(tenant);
-    const access = await fetchAuthQuery(api.auth.getAdminAccess, { tenant });
-    if (!access.authenticated || !access.authorized) {
-      throw new Error("PHOTO_ADMIN_FORBIDDEN");
-    }
-
-    await removeEventPhoto(event, mediaItemId);
-    return new Response(null, { status: 204 });
-  } catch (error) {
-    return photoErrorResponse(error);
+  if (!body || typeof body !== "object") {
+    throw new AppError("PHOTO_REQUEST_INVALID");
   }
-};
+
+  const { tenant, mediaItemId } = body as Record<string, unknown>;
+  if (
+    typeof tenant !== "string" ||
+    !tenant ||
+    typeof mediaItemId !== "string" ||
+    !mediaItemId ||
+    mediaItemId.length > 2_048
+  ) {
+    throw new AppError("PHOTO_REQUEST_INVALID");
+  }
+
+  const event = getConfiguredPhotoEvent(tenant);
+  const access = await fetchAuthQuery(api.auth.getAdminAccess, { tenant });
+  if (!access.authenticated || !access.authorized) {
+    throw new AppError("PHOTO_ADMIN_FORBIDDEN");
+  }
+
+  await removeEventPhoto(event, mediaItemId);
+  return new Response(null, { status: 204 });
+});

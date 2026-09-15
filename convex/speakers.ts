@@ -1,4 +1,5 @@
 import { query, mutation } from "./_generated/server";
+import { convexError } from "./app-error";
 import { v } from "convex/values";
 import { statuses } from "../data/status";
 import { affiliations, dietrestrictions, genders, shirts } from "./schema";
@@ -58,7 +59,7 @@ export const add = mutation({
   handler: async (ctx, { tenant, user }) => {
     const authUser = await authComponent.safeGetAuthUser(ctx);
     if (!authUser) {
-      throw new Error("Unauthenticated");
+      throw convexError("UNAUTHORIZED");
     }
 
     const id = await ctx.db.insert("speakers", {
@@ -79,7 +80,7 @@ export const add = mutation({
     });
 
     const created = await ctx.db.get("speakers", id);
-    if (!created) throw new Error("Failed to create speaker");
+    if (!created) throw convexError("INTERNAL", "Failed to create speaker");
 
     return { id, user: created };
   },
@@ -135,7 +136,7 @@ export const setStatus = mutation({
   },
   handler: async (ctx, { id, status }) => {
     const speaker = await ctx.db.get("speakers", id);
-    if (!speaker) throw new Error("Speaker not found");
+    if (!speaker) throw convexError("NOT_FOUND", "Speaker not found");
 
     if (speaker.status === status) {
       return { status: "unchanged" };
@@ -155,7 +156,7 @@ export const setStatusMany = mutation({
   handler: async (ctx, { ids, status }) => {
     for (const id of ids) {
       const speaker = await ctx.db.get("speakers", id);
-      if (!speaker) throw new Error(`Speaker ${id} not found`);
+      if (!speaker) throw convexError("NOT_FOUND", `Speaker ${id} not found`);
 
       if (speaker.status === status) continue;
 

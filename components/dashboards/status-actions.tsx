@@ -4,6 +4,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useEmail } from "@/hooks/use-email";
+import { logAppError } from "@/lib/app-error";
+import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRole, EmailType } from "@/types/email";
 import type { Table } from "@tanstack/react-table";
 
@@ -89,12 +91,8 @@ export function StatusActions({ table, role, onSuccess }: StatusActionsProps) {
 
       onSuccess();
     } catch (error) {
-      console.error("Failed to update applicant statuses", {
-        role,
-        status,
-        error,
-      });
-      toast.error("Failed to update applicant statuses.");
+      logAppError({ route: "status-actions", error, requestId: "client" });
+      toastAppError(error, "Failed to update applicant statuses.");
     } finally {
       setIsUpdating(false);
     }

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { SendEmailPayload } from "@/types/email";
 import { useTenant } from "./use-tenant";
+import { AppError, parseAppError } from "@/lib/app-error";
 
 type ClientSendEmailPayload = Omit<SendEmailPayload, "tenant">;
 
@@ -13,11 +14,11 @@ const sendEmailRequest = async (payload: SendEmailPayload) => {
     body: JSON.stringify(payload),
   });
 
-  const result = await response.json();
-
   if (!response.ok) {
-    throw new Error(result.error ?? "Failed to send email");
+    throw await parseAppError(response, "EMAIL_SEND_FAILED");
   }
+
+  const result = await response.json();
 
   return result as { id: string };
 };
@@ -27,7 +28,7 @@ export const useEmail = () => {
   const { tenant } = useTenant();
 
   if (!tenant) {
-    throw new Error("Unsupported tenant");
+    throw new AppError("TENANT_INVALID");
   }
 
   return {

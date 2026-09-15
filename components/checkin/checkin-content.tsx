@@ -25,6 +25,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { UserCheck } from "lucide-react";
 import { captureAnalyticsEvent } from "@/lib/posthog";
+import { getUserMessage } from "@/lib/app-error";
+import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
 
 interface DecodedQR {
   id: string;
@@ -144,17 +146,15 @@ const CheckinContent = () => {
             setLastScan(null);
           }, 3000);
         } catch (err) {
-          const message =
-            err instanceof Error ? err.message : "Check-in failed";
-          if (message.includes("User already checked into this event")) {
+          const code = resolveAppErrorCode(err);
+          const message = getUserMessage(code);
+          if (code === "VALIDATION_FAILED") {
             toast("Note: User is already checked in", {
               description: `${parsed.firstname} ${parsed.lastname}`,
               icon: <UserCheck className="h-4 w-4" />,
             });
           } else {
-            toast.error(message, {
-              description: `${parsed.firstname} ${parsed.lastname}`,
-            });
+            toastAppError(err, message);
           }
           setLastScan(null);
         } finally {

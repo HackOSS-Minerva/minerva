@@ -1,4 +1,5 @@
 import Acceptance from "./acceptance";
+import { AppError } from "@/lib/app-error";
 import Confirmation from "./confirmation";
 import Rejection from "./rejection";
 import type { EmailRole, EmailType } from "@/types/email";
@@ -59,7 +60,9 @@ const Email = ({ type, role, name, tenant }: EmailProps) => {
       );
     default: {
       const unsupportedType: never = type;
-      throw new Error(`Unsupported email type: ${unsupportedType}`);
+      throw new AppError("VALIDATION_FAILED", {
+        details: `Unsupported email type: ${unsupportedType}`,
+      });
     }
   }
 };

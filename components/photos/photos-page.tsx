@@ -48,10 +48,9 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
   const [photoToRemove, setPhotoToRemove] = useState<PhotoItem | null>(null);
   const [removeError, setRemoveError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isLive = event.status === "live";
 
   const handleUpload = async () => {
-    if (!files.length || !isLive) return;
+    if (!files.length) return;
     const result = await upload(files);
     setFiles(result.failedFiles);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -92,7 +91,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
             className="sr-only"
             accept="image/jpeg,image/png,image/webp"
             multiple
-            disabled={!isLive || uploading}
+            disabled={uploading}
             onChange={(event) =>
               setFiles(Array.from(event.currentTarget.files ?? []))
             }
@@ -101,7 +100,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
             <Button
               type="button"
               variant="outline"
-              disabled={!isLive || uploading}
+              disabled={uploading}
               onClick={() => fileInputRef.current?.click()}
             >
               Choose files
@@ -116,18 +115,13 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
         </div>
         <Button
           type="button"
-          disabled={!isLive || uploading || files.length === 0}
+          disabled={uploading || files.length === 0}
           onClick={handleUpload}
         >
           {uploading ? "Uploading…" : "Upload"}
         </Button>
       </div>
 
-      {!isLive ? (
-        <p className="text-sm text-muted-foreground">
-          Uploads are available while the event is live.
-        </p>
-      ) : null}
       {error ? (
         <p role="status" className="text-sm text-destructive">
           {error}

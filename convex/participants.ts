@@ -1,4 +1,5 @@
 import { query, mutation } from "./_generated/server";
+import { convexError } from "./app-error";
 import { v } from "convex/values";
 import {
   countries,
@@ -71,7 +72,7 @@ export const add = mutation({
   handler: async (ctx, { tenant, user }) => {
     const authUser = await authComponent.safeGetAuthUser(ctx);
     if (!authUser) {
-      throw new Error("Unauthenticated");
+      throw convexError("UNAUTHORIZED");
     }
 
     const id = await ctx.db.insert("participants", {
@@ -96,7 +97,7 @@ export const add = mutation({
     });
 
     const created = await ctx.db.get("participants", id);
-    if (!created) throw new Error("Failed to create participant");
+    if (!created) throw convexError("INTERNAL", "Failed to create participant");
 
     return { id, user: created };
   },
@@ -156,7 +157,7 @@ export const setStatus = mutation({
   },
   handler: async (ctx, { id, status }) => {
     const participant = await ctx.db.get("participants", id);
-    if (!participant) throw new Error("Participant not found");
+    if (!participant) throw convexError("NOT_FOUND", "Participant not found");
 
     if (participant.status === status) {
       return { status: "unchanged" };
@@ -176,7 +177,8 @@ export const setStatusMany = mutation({
   handler: async (ctx, { ids, status }) => {
     for (const id of ids) {
       const participant = await ctx.db.get("participants", id);
-      if (!participant) throw new Error(`Participant ${id} not found`);
+      if (!participant)
+        throw convexError("NOT_FOUND", `Participant ${id} not found`);
 
       if (participant.status === status) continue;
 

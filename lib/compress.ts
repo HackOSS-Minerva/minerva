@@ -1,4 +1,5 @@
 import Compressor from "compressorjs";
+import { AppError } from "@/lib/app-error";
 
 export const MAX_IMAGE_FILE_SIZE = 800_000;
 
@@ -28,7 +29,7 @@ export const compress = async (
   }: CompressOptions = {},
 ): Promise<File> => {
   if (acceptedTypes && !acceptedTypes.includes(file.type)) {
-    throw new Error("COMPRESS_FILE_TYPE_INVALID");
+    throw new AppError("COMPRESS_FILE_TYPE_INVALID");
   }
   if (!file.type.startsWith("image/")) return file;
 
@@ -39,7 +40,7 @@ export const compress = async (
       maxHeight,
       success: (result) => {
         if (maxFileSize !== undefined && result.size > maxFileSize) {
-          reject(new Error("COMPRESS_FILE_TOO_LARGE"));
+          reject(new AppError("COMPRESS_FILE_TOO_LARGE"));
           return;
         }
 

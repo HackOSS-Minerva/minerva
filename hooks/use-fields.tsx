@@ -13,6 +13,8 @@ import { useEmail } from "./use-email";
 import { useTenant } from "./use-tenant";
 import { uploadFile } from "../lib/storage";
 import { toast } from "sonner";
+import { AppError, logAppError } from "@/lib/app-error";
+import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRecipient, EmailRole } from "@/types/email";
 import type { TenantSlug } from "./get-tenant";
 
@@ -65,12 +67,13 @@ export const useFields = () => {
         idempotencyKey: `${id}:CONFIRMATION`,
       });
     } catch (error) {
-      console.error("Failed to send registration confirmation", {
-        role,
-        tenant,
+      logAppError({
+        route: "registration-confirmation-email",
         error,
+        requestId: "client",
       });
-      toast.warning(
+      toastAppError(
+        error,
         "Registration submitted, but the confirmation email could not be sent.",
       );
     }
@@ -303,7 +306,9 @@ export const useFields = () => {
       }
 
       default:
-        throw new Error(`Unsupported form: ${slug}`);
+        throw new AppError("VALIDATION_FAILED", {
+          details: `Unsupported form: ${slug}`,
+        });
     }
   };
 

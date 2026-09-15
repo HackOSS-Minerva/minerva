@@ -43,7 +43,6 @@ export interface TenantConfig {
     startTime: string;
     endTime: string;
     deadline: string;
-    status?: string;
     openOffset?: string;
   };
   locks?: Record<

@@ -1,4 +1,5 @@
 import { query, mutation } from "./_generated/server";
+import { convexError } from "./app-error";
 import { v } from "convex/values";
 
 export const get = query({
@@ -35,7 +36,7 @@ export const add = mutation({
     });
 
     const created = await ctx.db.get("feedback", id);
-    if (!created) throw new Error("Failed to create feedback");
+    if (!created) throw convexError("INTERNAL", "Failed to create feedback");
 
     return { success: true };
   },

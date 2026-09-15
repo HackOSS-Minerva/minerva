@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { useFormLock } from "./use-form-lock";
 import { z } from "zod";
 import { captureAnalyticsEvent } from "@/lib/posthog";
+import { logAppError } from "@/lib/app-error";
+import { toastAppError } from "@/hooks/use-app-error";
 import { triggerConfetti } from "./use-confetti";
 
 const optionalUrl = z.union([
@@ -114,8 +116,8 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
         triggerConfetti();
         router.push(`/${tenant}/live/dashboard`);
       } catch (error) {
-        console.error("Failed to submit project:", error);
-        toast.error("Failed to submit project. Please try again.");
+        logAppError({ route: "submission-form", error, requestId: "client" });
+        toastAppError(error, "Failed to submit project. Please try again.");
       }
     },
   });

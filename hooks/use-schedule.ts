@@ -3,13 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import type { CalendarResponse } from "@/types/calendar";
 import { useTenant } from "./use-tenant";
+import { AppError } from "@/lib/app-error";
 
 export const useSchedule = () => {
   const { name: tenant, tenant: config } = useTenant();
 
   const fetchEvents = async (): Promise<CalendarResponse> => {
     if (!config) {
-      throw new Error("Unknown tenant");
+      throw new AppError("TENANT_INVALID");
     }
 
     const response = await fetch(
@@ -18,7 +19,7 @@ export const useSchedule = () => {
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch calendar events");
+      throw new AppError("CALENDAR_UNAVAILABLE");
     }
 
     return response.json();

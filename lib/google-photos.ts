@@ -1,28 +1,14 @@
 import { MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
+import { AppError, toErrorResponse, type ErrorCode } from "@/lib/app-error";
 import designverse from "@/tenants/designverse/designverse.json";
 
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_PHOTOS_URL = "https://photoslibrary.googleapis.com/v1";
 const TOKEN_EXPIRY_BUFFER_MS = 60_000;
-const PHOTO_ERROR_STATUS: Record<string, number> = {
-  PHOTO_REQUEST_INVALID: 400,
-  PHOTO_FILE_INVALID: 400,
-  PHOTO_ORIGIN_FORBIDDEN: 403,
-  PHOTO_ADMIN_FORBIDDEN: 403,
-  PHOTO_EVENT_NOT_LIVE: 403,
-  PHOTO_FEATURE_DISABLED: 403,
-  PHOTO_EVENT_NOT_FOUND: 404,
-  PHOTO_CONFIGURATION_INVALID: 500,
-  PHOTO_GOOGLE_UNAVAILABLE: 502,
-  PHOTO_LIST_FAILED: 502,
-  PHOTO_UPLOAD_FAILED: 502,
-  PHOTO_REMOVE_FAILED: 502,
-};
 
 export interface PhotoEvent {
   tenant: string;
   eventName: string;
-  status: "live" | "scheduled" | "ended";
 }
 
 export interface PhotoItem {
@@ -58,9 +44,10 @@ interface GoogleMediaItem {
 
 let accessTokenCache: AccessTokenCache | null = null;
 
-const photoError = (code: string): Error => new Error(code);
+/** @deprecated Use `new AppError(code)` from `@/lib/app-error` instead. */
+const photoError = (code: ErrorCode): AppError => new AppError(code);
 
-const readJson = async <T>(response: Response, code: string): Promise<T> => {
+const readJson = async <T>(response: Response, code: ErrorCode): Promise<T> => {
   try {
     return (await response.json()) as T;
   } catch {
@@ -85,15 +72,15 @@ export const assertPhotoOrigin = (request: Request): void => {
   }
 };
 
-export const photoErrorResponse = (error: unknown): Response => {
-  const code = error instanceof Error ? error.message : "";
-  const status = PHOTO_ERROR_STATUS[code];
-
-  return Response.json(
-    { error: status ? code : "PHOTO_REQUEST_FAILED" },
-    { status: status ?? 500 },
-  );
-};
+/**
+ * @deprecated Use `toErrorResponse(error, requestId)` from `@/lib/app-error`
+ * instead. Kept for backwards compatibility; now emits the unified
+ * `{ error: { code, message } }` shape.
+ */
+export const photoErrorResponse = (
+  error: unknown,
+  requestId?: string,
+): Response => toErrorResponse(error, requestId);
 
 const getCredentials = (): GoogleCredentials => {
   const clientId = process.env.GOOGLE_PHOTOS_CLIENT_ID;
@@ -194,7 +181,7 @@ const googleRequest = async (
 
 const requireOk = async (
   response: Response,
-  code: string,
+  code: ErrorCode,
 ): Promise<Response> => {
   if (!response.ok) throw photoError(code);
   return response;
@@ -228,15 +215,10 @@ const toPhotoItem = (item: GoogleMediaItem): PhotoItem | null => {
 
 export const getConfiguredPhotoEvent = (tenant: string): PhotoEvent => {
   if (tenant !== "designverse") throw photoError("PHOTO_EVENT_NOT_FOUND");
-  const status = designverse.event.status;
-  if (status !== "live" && status !== "scheduled" && status !== "ended") {
-    throw photoError("PHOTO_CONFIGURATION_INVALID");
-  }
 
   return {
     tenant,
     eventName: designverse.event.name,
-    status,
   };
 };
 

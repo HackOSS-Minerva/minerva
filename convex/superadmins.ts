@@ -1,4 +1,5 @@
 import { query, mutation } from "./_generated/server";
+import { convexError } from "./app-error";
 import { v } from "convex/values";
 import {
   dietrestrictions,
@@ -67,7 +68,7 @@ export const add = mutation({
   handler: async (ctx, { tenant, user }) => {
     const authUser = await authComponent.safeGetAuthUser(ctx);
     if (!authUser) {
-      throw new Error("Unauthenticated");
+      throw convexError("UNAUTHORIZED");
     }
 
     const id = await ctx.db.insert("superadmins", {
@@ -89,7 +90,7 @@ export const add = mutation({
     });
 
     const created = await ctx.db.get("superadmins", id);
-    if (!created) throw new Error("Failed to create superadmin");
+    if (!created) throw convexError("INTERNAL", "Failed to create superadmin");
 
     return { id, user: created };
   },
@@ -146,7 +147,7 @@ export const setStatus = mutation({
   },
   handler: async (ctx, { id, status }) => {
     const superadmin = await ctx.db.get("superadmins", id);
-    if (!superadmin) throw new Error("Superadmin not found");
+    if (!superadmin) throw convexError("NOT_FOUND", "Superadmin not found");
 
     if (superadmin.status === status) {
       return { status: "unchanged" };
@@ -166,7 +167,8 @@ export const setStatusMany = mutation({
   handler: async (ctx, { ids, status }) => {
     for (const id of ids) {
       const superadmin = await ctx.db.get("superadmins", id);
-      if (!superadmin) throw new Error(`Superadmin ${id} not found`);
+      if (!superadmin)
+        throw convexError("NOT_FOUND", `Superadmin ${id} not found`);
 
       if (superadmin.status === status) continue;
 

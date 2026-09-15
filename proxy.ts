@@ -11,6 +11,13 @@ import { getSessionCookie } from "better-auth/cookies";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Propagate the unified error-handling request-id (`x-request-id`).
+  // `withFetchHandler` in `@/lib/app-error` echoes it on API responses;
+  // forwarding it here keeps page navigations in the same trace.
+  const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-request-id", requestId);
+
   // Routes that require a signed-in user:
   //   - /:tenant/admin/*            (admin section — also checks superadmin role)
   //   - /:tenant/judge/*            (judge section — also checks judge role)
@@ -25,7 +32,7 @@ export async function proxy(request: NextRequest) {
   const isForm = /^\/[^/]+\/forms\/[^/]+$/.test(pathname);
   const isSubmission = /^\/[^/]+\/live\/submit$/.test(pathname);
   if (!isAdmin && !isJudge && !isForm && !isSubmission) {
-    return NextResponse.next();
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   const sessionCookie = getSessionCookie(request);
@@ -33,10 +40,10 @@ export async function proxy(request: NextRequest) {
     const tenant = pathname.split("/")[1];
     const signInUrl = new URL(`/${tenant}/sign-in`, request.url);
     signInUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(signInUrl);
+    return NextResponse.redirect(signInUrl, { headers: requestHeaders });
   }
 
-  return NextResponse.next();
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {

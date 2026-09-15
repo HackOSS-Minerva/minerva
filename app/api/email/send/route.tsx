@@ -5,6 +5,7 @@ import { z } from "zod";
 import Email, { getEmailSubject } from "@/components/email";
 import { getTenant, tenantSlugs } from "@/hooks/get-tenant";
 import { fetchAuthQuery } from "@/lib/auth-server";
+import { AppError, withFetchHandler } from "@/lib/app-error";
 import { api } from "@/convex/_generated/api";
 
 const payloadSchema = z.object({
@@ -19,18 +20,15 @@ const payloadSchema = z.object({
   idempotencyKey: z.string().min(1).max(200),
 });
 
-export async function POST(request: Request) {
+export const POST = withFetchHandler("email-send", async (request) => {
   const { authenticated } = await fetchAuthQuery(api.auth.getAuthStatus, {});
   if (!authenticated) {
-    return Response.json({ error: "Authentication required" }, { status: 401 });
+    throw new AppError("UNAUTHORIZED");
   }
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    return Response.json(
-      { error: "Email delivery is not configured" },
-      { status: 503 },
-    );
+    throw new AppError("EMAIL_CONFIG_ERROR");
   }
 
   let body: unknown;
@@ -38,18 +36,20 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json({ error: "Invalid JSON payload" }, { status: 400 });
+    throw new AppError("BAD_REQUEST");
   }
 
   const parsed = payloadSchema.safeParse(body);
   if (!parsed.success) {
-    return Response.json({ error: "Invalid email payload" }, { status: 400 });
+    throw new AppError("VALIDATION_FAILED", {
+      details: parsed.error.flatten(),
+    });
   }
 
   const { type, role, tenant, user, idempotencyKey } = parsed.data;
   const { config: tenantConfig } = getTenant(tenant);
   if (!tenantConfig) {
-    return Response.json({ error: "Unknown tenant" }, { status: 400 });
+    throw new AppError("TENANT_INVALID");
   }
 
   const name = `${user.firstname} ${user.lastname}`.trim();
@@ -71,18 +71,18 @@ export async function POST(request: Request) {
     );
 
     if (error) {
-      console.error("[email-api] Resend error", { type, role, tenant, error });
-      return Response.json({ error: error.message }, { status: 502 });
+      throw new AppError("EMAIL_SEND_FAILED", {
+        details: { type, role, tenant },
+        cause: error,
+      });
     }
 
     return Response.json({ id: data.id });
   } catch (error) {
-    console.error("[email-api] Failed to send email", {
-      type,
-      role,
-      tenant,
-      error,
+    if (error instanceof AppError) throw error;
+    throw new AppError("EMAIL_SEND_FAILED", {
+      details: { type, role, tenant },
+      cause: error,
     });
-    return Response.json({ error: "Failed to send email" }, { status: 500 });
   }
-}
+});

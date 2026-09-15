@@ -1,4 +1,5 @@
 import { mutation, query } from "./_generated/server";
+import { convexError } from "./app-error";
 import { v } from "convex/values";
 
 export const checkin = mutation({
@@ -21,7 +22,10 @@ export const checkin = mutation({
       .first();
 
     if (existing) {
-      throw new Error("User already checked into this event");
+      throw convexError(
+        "VALIDATION_FAILED",
+        "User already checked into this event",
+      );
     }
 
     const id = await ctx.db.insert("checkins", {
@@ -36,7 +40,7 @@ export const checkin = mutation({
     });
 
     const created = await ctx.db.get("checkins", id);
-    if (!created) throw new Error("Failed to create checkin");
+    if (!created) throw convexError("INTERNAL", "Failed to create checkin");
 
     return { id, checkin: created };
   },

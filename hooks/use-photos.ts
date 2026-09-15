@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { compress, MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
+import { AppError, getUserMessage, parseAppError } from "@/lib/app-error";
 import type { PhotoItem, PhotoPage } from "@/lib/google-photos";
 
 const PHOTO_COMPRESSION_OPTIONS = {
@@ -140,7 +141,8 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
       const response = await fetch(`/api/photos?${searchParams.toString()}`, {
         cache: "no-store",
       });
-      if (!response.ok) throw new Error("PHOTO_LIST_FAILED");
+      if (!response.ok)
+        throw await parseAppError(response, "PHOTO_LIST_FAILED");
 
       const body = (await response.json()) as {
         photos?: unknown;
@@ -152,7 +154,7 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
         (body.nextPageToken !== undefined &&
           typeof body.nextPageToken !== "string")
       ) {
-        throw new Error("PHOTO_LIST_FAILED");
+        throw new AppError("PHOTO_LIST_FAILED");
       }
 
       return {
@@ -185,7 +187,7 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
         setError(null);
       } catch {
         if (coordinator.isCurrent(operation)) {
-          setError("Unable to load photos.");
+          setError(getUserMessage("PHOTO_LIST_FAILED"));
         }
       } finally {
         coordinator.finish();
@@ -221,7 +223,7 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
       updateNextPageToken(page.nextPageToken);
     } catch {
       if (coordinator.isCurrent(operation)) {
-        setError("Unable to load more photos.");
+        setError(getUserMessage("PHOTO_LIST_FAILED"));
       }
     } finally {
       coordinator.finish();
@@ -246,7 +248,8 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
             method: "POST",
             body: formData,
           });
-          if (!response.ok) throw new Error("PHOTO_UPLOAD_FAILED");
+          if (!response.ok)
+            throw await parseAppError(response, "PHOTO_UPLOAD_FAILED");
         });
 
         if (result.uploadedCount > 0) {
@@ -281,7 +284,8 @@ export const usePhotos = (tenant: string): UsePhotosResult => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ tenant, mediaItemId }),
         });
-        if (!response.ok) throw new Error("PHOTO_REMOVE_FAILED");
+        if (!response.ok)
+          throw await parseAppError(response, "PHOTO_REMOVE_FAILED");
 
         const remaining = photosRef.current.filter(
           (photo) => photo.id !== mediaItemId,

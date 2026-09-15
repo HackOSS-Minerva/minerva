@@ -1,4 +1,5 @@
 import posthog from "posthog-js";
+import { AppError } from "@/lib/app-error";
 
 export type AnalyticsRole =
   | "participant"
@@ -131,7 +132,9 @@ async function queryPostHog(query: string): Promise<HogQLResponse> {
   ).replace(/\/$/, "");
 
   if (!apiKey || !projectId) {
-    throw new Error("PostHog query credentials are not configured");
+    throw new AppError("CONFIG_ERROR", {
+      details: "PostHog query credentials are not configured",
+    });
   }
 
   const response = await fetch(`${host}/api/projects/${projectId}/query/`, {
@@ -145,7 +148,9 @@ async function queryPostHog(query: string): Promise<HogQLResponse> {
   });
 
   if (!response.ok) {
-    throw new Error(`PostHog query failed with status ${response.status}`);
+    throw new AppError("ANALYTICS_UNAVAILABLE", {
+      details: `PostHog query failed with status ${response.status}`,
+    });
   }
 
   return response.json();
@@ -160,7 +165,7 @@ export async function getPostHogAnalytics(
   tenant: string,
 ): Promise<AnalyticsData> {
   if (!/^[a-z0-9-]+$/.test(tenant)) {
-    throw new Error("Invalid analytics tenant");
+    throw new AppError("TENANT_INVALID");
   }
 
   const applicationQuery = `
