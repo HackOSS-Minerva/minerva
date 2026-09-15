@@ -22,7 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { usePhotos } from "@/hooks/use-photos";
-import type { PhotoEvent, PhotoItem } from "@/lib/photos/google-photos";
+import type { PhotoEvent, PhotoItem } from "@/lib/google-photos";
 
 interface PhotosPageProps {
   event: PhotoEvent;

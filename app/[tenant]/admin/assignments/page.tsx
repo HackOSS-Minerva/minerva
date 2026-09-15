@@ -1,9 +1,10 @@
-import { AdminLockModal } from "@/components/admin/admin-lock-modal";
+import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal";
 import { AppSidebar } from "@/components/dashboards/sidebar";
 import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AssignmentsContent from "@/components/admin/assignments-page";
 import { getAdminPageLock } from "@/lib/admin-locks";
+import { getFeatureFlag } from "@/lib/feature-flags";
 
 export default async function AssignmentsPage({
   params,
@@ -27,9 +28,13 @@ export default async function AssignmentsPage({
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex py-4 md:gap-6 md:py-6">
-              {getAdminPageLock(tenant, "assignments") ? (
+              {!getFeatureFlag("assignments") ? (
                 <div className="w-full">
-                  <AdminLockModal />
+                  <FeatureGateModal reason="disabled" />
+                </div>
+              ) : getAdminPageLock(tenant, "assignments") ? (
+                <div className="w-full">
+                  <FeatureGateModal reason="locked" />
                 </div>
               ) : (
                 <AssignmentsContent />

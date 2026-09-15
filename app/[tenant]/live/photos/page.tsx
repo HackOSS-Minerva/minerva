@@ -1,5 +1,7 @@
 import { PhotosPage } from "@/components/photos/photos-page";
-import { getConfiguredPhotoEvent } from "@/lib/photos/google-photos";
+import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal";
+import { getConfiguredPhotoEvent } from "@/lib/google-photos";
+import { getFeatureFlag } from "@/lib/feature-flags";
 
 interface PhotosRouteProps {
   params: Promise<{ tenant: string }>;
@@ -7,6 +9,11 @@ interface PhotosRouteProps {
 
 const PhotosRoute = async ({ params }: PhotosRouteProps) => {
   const { tenant } = await params;
+
+  if (!getFeatureFlag("photos")) {
+    return <FeatureGateModal reason="locked" />;
+  }
+
   const event = getConfiguredPhotoEvent(tenant);
 
   return <PhotosPage event={event} />;

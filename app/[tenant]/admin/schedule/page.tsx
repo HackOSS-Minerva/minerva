@@ -1,4 +1,4 @@
-import { AdminLockModal } from "@/components/admin/admin-lock-modal";
+import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal";
 import { AppSidebar } from "@/components/dashboards/sidebar";
 import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -28,7 +28,7 @@ export default async function SchedulePage({
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               {getAdminPageLock(tenant, "schedule") ? (
-                <AdminLockModal />
+                <FeatureGateModal reason="locked" />
               ) : (
                 <ScheduleContent />
               )}

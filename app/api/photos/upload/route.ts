@@ -3,13 +3,18 @@ import {
   getConfiguredPhotoEvent,
   photoErrorResponse,
   uploadEventPhoto,
-} from "@/lib/photos/google-photos";
+} from "@/lib/google-photos";
+import { getFeatureFlag } from "@/lib/feature-flags";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const POST = async (request: Request): Promise<Response> => {
   try {
+    if (!getFeatureFlag("photos")) {
+      throw new Error("PHOTO_FEATURE_DISABLED");
+    }
+
     assertPhotoOrigin(request);
 
     let formData: FormData;

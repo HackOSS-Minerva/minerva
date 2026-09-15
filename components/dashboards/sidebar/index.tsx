@@ -17,6 +17,8 @@ import {
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useTenant } from "@/hooks/use-tenant";
+import { useFeatureFlag } from "@/hooks/use-feature-flags";
+import type { FeatureFlagKey } from "@/lib/feature-flags";
 
 import { NavMain } from "@/components/dashboards/sidebar/primary";
 import { NavSecondary } from "@/components/dashboards/sidebar/secondary";
@@ -59,6 +61,7 @@ const data = {
     {
       title: "Photos",
       url: "/admin/photos",
+      slug: "photos",
       icon: IconPhoto,
     },
   ],
@@ -199,6 +202,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     tenant: { logo, domain },
   } = useTenant();
 
+  // Feature-flagged nav entries are hidden entirely when their flag is off.
+  const enabled = {
+    photos: useFeatureFlag("photos").isEnabled,
+    analytics: useFeatureFlag("analytics").isEnabled,
+    assignments: useFeatureFlag("assignments").isEnabled,
+  };
+  const flagBySlug: Partial<Record<string, FeatureFlagKey>> = {
+    analytics: "analytics",
+    photos: "photos",
+    assignments: "assignments",
+  };
+  const isFlagEnabled = (slug: string) => {
+    const flag = flagBySlug[slug];
+    return !flag || enabled[flag];
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -210,8 +229,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain label="Dashboards" items={data.navDashboards} />
-        <NavMain label="Judging" items={data.navJudging} />
-        <NavMain label="Utilities" items={data.navUtilities} />
+        <NavMain
+          label="Judging"
+          items={data.navJudging.filter((item) => isFlagEnabled(item.slug))}
+        />
+        <NavMain
+          label="Utilities"
+          items={data.navUtilities.filter((item) => isFlagEnabled(item.slug))}
+        />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

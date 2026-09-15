@@ -1,6 +1,14 @@
 import { getPostHogAnalytics } from "@/lib/posthog";
+import { getFeatureFlag } from "@/lib/feature-flags";
 
 export async function GET(request: Request) {
+  if (!getFeatureFlag("analytics")) {
+    return Response.json(
+      { error: "Analytics is not available" },
+      { status: 403 },
+    );
+  }
+
   const tenant = new URL(request.url).searchParams.get("tenant");
 
   if (!tenant || !/^[a-z0-9-]+$/.test(tenant)) {

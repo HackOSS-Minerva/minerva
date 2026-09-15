@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTenant } from "@/hooks/use-tenant";
+import { useFeatureFlag } from "@/hooks/use-feature-flags";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -61,6 +62,12 @@ export function SponsorNav({ tenant }: { tenant: string }) {
   const pathname = usePathname();
   const { tenant: tenantConfig } = useTenant();
   const logo = tenantConfig?.logo;
+
+  // Feature-flagged nav entries are hidden entirely when their flag is off.
+  const { isEnabled: analyticsEnabled } = useFeatureFlag("analytics");
+  const flaggedGetInvolvedItems = getInvolvedItems.filter(
+    (item) => item.href !== "/sponsor/analytics" || analyticsEnabled,
+  );
 
   return (
     <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
@@ -155,7 +162,7 @@ export function SponsorNav({ tenant }: { tenant: string }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center">
-            {getInvolvedItems.map((item) => (
+            {flaggedGetInvolvedItems.map((item) => (
               <DropdownMenuItem key={item.href} asChild>
                 <Link
                   href={`/${tenant}${item.href}`}

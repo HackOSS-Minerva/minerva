@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { compress, MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
-import type { PhotoItem, PhotoPage } from "@/lib/photos/google-photos";
+import type { PhotoItem, PhotoPage } from "@/lib/google-photos";
 
 const PHOTO_COMPRESSION_OPTIONS = {
   maxWidth: 1920,

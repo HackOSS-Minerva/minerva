@@ -4,14 +4,19 @@ import {
   listEventPhotos,
   photoErrorResponse,
   removeEventPhoto,
-} from "@/lib/photos/google-photos";
+} from "@/lib/google-photos";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
+import { getFeatureFlag } from "@/lib/feature-flags";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const GET = async (request: Request): Promise<Response> => {
+  if (!getFeatureFlag("photos")) {
+    return photoErrorResponse(new Error("PHOTO_FEATURE_DISABLED"));
+  }
+
   const searchParams = new URL(request.url).searchParams;
   const tenants = searchParams.getAll("tenant");
   const pageTokens = searchParams.getAll("pageToken");
@@ -35,6 +40,10 @@ export const GET = async (request: Request): Promise<Response> => {
 
 export const DELETE = async (request: Request): Promise<Response> => {
   try {
+    if (!getFeatureFlag("photos")) {
+      throw new Error("PHOTO_FEATURE_DISABLED");
+    }
+
     assertPhotoOrigin(request);
 
     let body: unknown;

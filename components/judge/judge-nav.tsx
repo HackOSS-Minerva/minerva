@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { ChevronDownIcon, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTenant } from "@/hooks/use-tenant";
+import { useFeatureFlag } from "@/hooks/use-feature-flags";
+import type { FeatureFlagKey } from "@/lib/feature-flags";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -81,6 +83,24 @@ export function JudgeNav({ tenant, isAuthorized }: JudgeNavProps) {
   const pathname = usePathname();
   const { tenant: tenantConfig } = useTenant();
   const logo = tenantConfig?.logo;
+
+  // Feature-flagged nav entries are hidden entirely when their flag is off.
+  const enabled: Record<FeatureFlagKey, boolean> = {
+    photos: useFeatureFlag("photos").isEnabled,
+    analytics: useFeatureFlag("analytics").isEnabled,
+    assignments: useFeatureFlag("assignments").isEnabled,
+  };
+  const flagByHref: Partial<Record<string, FeatureFlagKey>> = {
+    "/judge/assignments": "assignments",
+    "/judge/analytics": "analytics",
+  };
+  const isFlagEnabled = (href: string) => {
+    const flag = flagByHref[href];
+    return !flag || enabled[flag];
+  };
+  const flaggedParticipateItems = participateItems.filter((item) =>
+    isFlagEnabled(item.href),
+  );
 
   return (
     <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
@@ -180,7 +200,7 @@ export function JudgeNav({ tenant, isAuthorized }: JudgeNavProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="center">
             {isAuthorized ? (
-              participateItems.map((item) => (
+              flaggedParticipateItems.map((item) => (
                 <DropdownMenuItem key={item.href} asChild>
                   <Link
                     href={`/${tenant}${item.href}`}
@@ -195,7 +215,7 @@ export function JudgeNav({ tenant, isAuthorized }: JudgeNavProps) {
               ))
             ) : (
               <div className="min-w-[220px]">
-                {participateItems.map((item) => (
+                {flaggedParticipateItems.map((item) => (
                   <div
                     key={item.href}
                     className="flex flex-col items-start gap-0.5 px-2 py-1.5 opacity-50"
