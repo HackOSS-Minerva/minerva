@@ -1,5 +1,17 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { authComponent } from "./auth";
+import {
+  getSubmissionTeam,
+  MAX_TEAM_SIZE,
+  TEAM_SIZE_ERROR,
+} from "../lib/vetting/rules";
+
+const vettedStatus = v.union(
+  v.literal("verified"),
+  v.literal("needs_review"),
+  v.literal("disqualified"),
+);
 
 export const get = query({
   args: { tenant: v.string() },
@@ -39,8 +51,18 @@ export const add = mutation({
       invites,
     },
   ) => {
+    const user = await authComponent.safeGetAuthUser(ctx);
+    const submitterEmail = user?.email?.trim().toLowerCase();
+    if (!submitterEmail) {
+      throw new Error("An authenticated submitter email is required.");
+    }
+
+    const team = getSubmissionTeam(submitterEmail, invites);
+    if (team.memberCount > MAX_TEAM_SIZE) throw new Error(TEAM_SIZE_ERROR);
+
     const id = await ctx.db.insert("submissions", {
       teamName,
+      submitterEmail,
       projectName,
       description,
       devpost,
@@ -48,10 +70,11 @@ export const add = mutation({
       figma,
       canva,
       presentation,
-      invites,
+      invites: team.normalizedInvites,
       tenant,
       timestamp: Date.now(),
       vetted: "needs_review",
+      vettingStatus: "not_started",
     });
     return { success: true, id };
   },
@@ -78,11 +101,7 @@ export const deleteMany = mutation({
 export const updateVetted = mutation({
   args: {
     id: v.id("submissions"),
-    vetted: v.union(
-      v.literal("verified"),
-      v.literal("needs_review"),
-      v.literal("disqualified"),
-    ),
+    vetted: vettedStatus,
   },
   handler: async (ctx, { id, vetted }) => {
     await ctx.db.patch(id, { vetted });
@@ -93,11 +112,7 @@ export const updateVetted = mutation({
 export const updateVettedMany = mutation({
   args: {
     ids: v.array(v.id("submissions")),
-    vetted: v.union(
-      v.literal("verified"),
-      v.literal("needs_review"),
-      v.literal("disqualified"),
-    ),
+    vetted: vettedStatus,
   },
   handler: async (ctx, { ids, vetted }) => {
     for (const id of ids) {

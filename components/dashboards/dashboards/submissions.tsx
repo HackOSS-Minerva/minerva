@@ -16,19 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  IconCircleCheck,
-  IconAlertTriangle,
-  IconCircleX,
-  IconDotsVertical,
-  IconX,
-} from "@tabler/icons-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { IconX } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -37,14 +25,23 @@ import {
   Link as LinkIcon,
   Github,
   Figma,
+  PanelRightOpen,
   Presentation,
 } from "lucide-react";
 import DetailRow from "../row";
+import { VettingSummary } from "../vetting-summary";
+import {
+  normalizeVettingStatus,
+  reviewStatusMeta,
+  visibleVettingStatus,
+} from "../vetting-status";
+import type { SubmissionReviewStatus } from "@/lib/vetting/types";
 
 interface SubmissionRecord {
   _id: string;
   _creationTime: number;
   teamName: string;
+  submitterEmail?: string;
   projectName: string;
   description: string;
   devpost: string;
@@ -54,7 +51,8 @@ interface SubmissionRecord {
   presentation?: string;
   invites: string[];
   tenant: string;
-  vetted: "verified" | "needs_review" | "disqualified";
+  vetted: SubmissionReviewStatus;
+  vettingStatus?: string;
   timestamp: number;
 }
 
@@ -66,6 +64,7 @@ export const schema = undefined;
 
 export const csvFields = [
   "teamName",
+  "submitterEmail",
   "projectName",
   "description",
   "devpost",
@@ -84,6 +83,17 @@ function formatTimestamp(ts: number): string {
     month: "short",
     day: "numeric",
     year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
+function formatCompactTimestamp(ts: number): string {
+  const date = new Date(ts);
+  return date.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
@@ -121,16 +131,29 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.teamName}
+        <Button
+          variant="ghost"
+          className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
+        >
+          <span className="min-w-0 truncate font-medium text-foreground">
+            {item.teamName}
+          </span>
+          <PanelRightOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-xl">
         <div className="flex h-full flex-col gap-5 px-4 py-5">
           <div className="flex items-start justify-between">
             <DrawerHeader className="gap-1 p-0 w-full">
-              <div className="flex items-center justify-between w-full">
-                <DrawerTitle>{item.teamName}</DrawerTitle>
+              <div className="flex items-start justify-between gap-3 w-full">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium uppercase text-muted-foreground">
+                    Team Name
+                  </p>
+                  <DrawerTitle className="break-words">
+                    {item.teamName}
+                  </DrawerTitle>
+                </div>
                 <DrawerClose asChild>
                   <Button
                     variant="ghost"
@@ -147,10 +170,19 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
             </DrawerHeader>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:theme(colors.border)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border">
             <div className="grid gap-5">
+              <VettingSummary
+                submissionId={item._id}
+                currentStatus={item.vetted}
+                vettingStatus={normalizeVettingStatus(item.vettingStatus)}
+              />
+
               <div className="flex flex-col gap-1">
-                <h3 className="text-lg font-semibold">{item.projectName}</h3>
+                <p className="text-xs font-medium uppercase text-muted-foreground">
+                  Project Details
+                </p>
+                <h3 className="text-base font-semibold">{item.projectName}</h3>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                   {item.description}
                 </p>
@@ -225,13 +257,15 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                   icon={Users}
                   label="Team Members"
                   value={
-                    item.invites && item.invites.length > 0
-                      ? item.invites.map((email, i) => (
-                          <span key={i} className="block text-sm">
-                            {email}
-                          </span>
-                        ))
-                      : "No invites"
+                    item.submitterEmail || item.invites.length > 0
+                      ? [item.submitterEmail, ...item.invites]
+                          .filter((email): email is string => Boolean(email))
+                          .map((email, i) => (
+                            <span key={i} className="block text-sm">
+                              {email}
+                            </span>
+                          ))
+                      : "No team emails"
                   }
                 />
               </div>
@@ -245,7 +279,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
 
 function truncateDescription(
   description: string,
-  maxLength: number = 75,
+  maxLength: number = 52,
 ): string {
   if (description.length <= maxLength) {
     return description;
@@ -253,26 +287,37 @@ function truncateDescription(
   return description.substring(0, maxLength).trim() + "...";
 }
 
-const vettedConfig: Record<
-  string,
-  { icon: React.ElementType; color: string; label: string }
-> = {
-  verified: {
-    icon: IconCircleCheck,
-    color: "text-emerald-500",
-    label: "Verified",
-  },
-  needs_review: {
-    icon: IconAlertTriangle,
-    color: "text-amber-500",
-    label: "Needs Review",
-  },
-  disqualified: {
-    icon: IconCircleX,
-    color: "text-red-500",
-    label: "Disqualified",
-  },
-};
+function ReviewCell({ item }: { item: SubmissionRecord }) {
+  const reviewStatus = item.vetted ?? "needs_review";
+  const runStatus = normalizeVettingStatus(item.vettingStatus);
+  const visibleStatus = visibleVettingStatus(reviewStatus, runStatus);
+  const review = reviewStatusMeta[reviewStatus];
+  const VisibleIcon = visibleStatus.icon;
+
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="ml-auto inline-flex max-w-full items-center justify-end gap-1.5 px-1.5 text-sm">
+            <VisibleIcon
+              className={`h-4 w-4 shrink-0 ${visibleStatus.iconClass}`}
+            />
+            <span className="truncate whitespace-nowrap">
+              {visibleStatus.label}
+            </span>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="top">
+          <p>
+            {runStatus === "completed"
+              ? review.label
+              : `${visibleStatus.label} / ${review.label}`}
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
 export const columns: ColumnDef<SubmissionRecord>[] = [
   {
@@ -305,9 +350,18 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     accessorKey: "timestamp",
     header: "Submitted",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5 whitespace-nowrap">
-        {formatTimestamp(row.original.timestamp)}
-      </Label>
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Label className="text-muted-foreground block truncate px-1.5 whitespace-nowrap">
+              {formatCompactTimestamp(row.original.timestamp)}
+            </Label>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>{formatTimestamp(row.original.timestamp)}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
   },
   {
@@ -322,7 +376,7 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     accessorKey: "projectName",
     header: "Project",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
+      <Label className="text-muted-foreground block truncate px-1.5">
         {row.original.projectName}
       </Label>
     ),
@@ -331,77 +385,14 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => (
-      <span className="text-muted-foreground px-1.5 text-sm">
+      <span className="block truncate px-1.5 text-sm text-muted-foreground">
         {truncateDescription(row.original.description)}
       </span>
     ),
   },
   {
-    accessorKey: "devpost",
-    header: "Devpost",
-    cell: ({ row }) => (
-      <a
-        href={row.original.devpost}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary underline underline-offset-2 text-sm px-1.5 hover:opacity-80 transition-opacity"
-      >
-        View Submission
-      </a>
-    ),
-  },
-  {
     accessorKey: "vetted",
-    header: "Vetted",
-    cell: ({ row }) => {
-      const vetted = row.original.vetted ?? "needs_review";
-      const config = vettedConfig[vetted];
-      if (!config)
-        return <span className="text-muted-foreground px-1.5">—</span>;
-      const Icon = config.icon;
-      return (
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex items-center justify-center px-1.5 cursor-pointer">
-                <Icon className={`h-5 w-5 ${config.color}`} />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              <p>{config.label}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ table, row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() =>
-              table.options.meta?.onDelete(
-                row.original._id as unknown as number,
-              )
-            }
-          >
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    header: "Review",
+    cell: ({ row }) => <ReviewCell item={row.original} />,
   },
 ];
