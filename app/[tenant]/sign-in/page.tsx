@@ -5,9 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { use } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SignInPageProps {
-  params: Promise<{ tenant: string }>;
+  params: Promise<{
+    tenant: TenantSlug }>;
 }
 
 /**

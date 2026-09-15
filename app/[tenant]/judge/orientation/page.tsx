@@ -1,9 +1,10 @@
 import { OrientationPage } from "@/components/judge/orientation-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface OrientationRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const OrientationRoute = async ({ params }: OrientationRouteProps) => {

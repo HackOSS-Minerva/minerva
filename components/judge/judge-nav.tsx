@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { useFeatureFlag } from "@/hooks/use-feature-flags";
 import type { FeatureFlagKey } from "@/lib/feature-flags";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -75,14 +75,14 @@ const participateItems = [
 ];
 
 interface JudgeNavProps {
-  tenant: string;
+  tenant: TenantSlug;
   isAuthorized: boolean;
 }
 
 export function JudgeNav({ tenant, isAuthorized }: JudgeNavProps) {
   const pathname = usePathname();
-  const { tenant: tenantConfig } = useTenant();
-  const logo = tenantConfig?.logo;
+  const { config } = getTenant(tenant);
+  const logo = config?.logo;
 
   // Feature-flagged nav entries are hidden entirely when their flag is off.
   const enabled: Record<FeatureFlagKey, boolean> = {

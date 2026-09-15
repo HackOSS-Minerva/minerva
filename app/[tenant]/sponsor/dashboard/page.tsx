@@ -1,9 +1,10 @@
 import { SponsorDashboardPage } from "@/components/sponsor/sponsor-dashboard-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SponsorDashboardRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const SponsorDashboardRoute = async ({

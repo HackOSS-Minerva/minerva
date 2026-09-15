@@ -1,9 +1,10 @@
 import { SubmissionsPage } from "@/components/judge/submissions-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmissionsRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const SubmissionsRoute = async ({ params }: SubmissionsRouteProps) => {

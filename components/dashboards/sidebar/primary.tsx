@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/sidebar";
 import { IconLock } from "@tabler/icons-react";
 import Link from "next/link";
-import { useTenant } from "@/hooks/use-tenant";
+import { useParams } from "next/navigation";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 
 export function NavMain({
   label,
@@ -25,9 +26,10 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
-  const { name, tenant } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
 
-  const rawAdminLocks = tenant?.locks?.admin;
+  const rawAdminLocks = config?.locks?.admin;
   const adminLocks =
     rawAdminLocks &&
     typeof rawAdminLocks === "object" &&
@@ -50,7 +52,7 @@ export function NavMain({
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <Link
-                    href={`/${name}${item.url}`}
+                    href={`/${tenant}${item.url}`}
                     aria-disabled={locked}
                     className={locked ? "pointer-events-none opacity-50" : ""}
                   >

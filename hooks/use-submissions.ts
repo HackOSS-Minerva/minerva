@@ -12,7 +12,8 @@ import { captureAnalyticsEvent } from "@/lib/posthog";
 import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import { triggerConfetti } from "./use-confetti";
-import { useTenant } from "./use-tenant";
+import { useParams } from "next/navigation";
+import { getTenant, type TenantSlug } from "./get-tenant";
 import type { Id } from "@/convex/_generated/dataModel";
 import type {
   SubmissionVettingResult,
@@ -154,7 +155,9 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
 type SubmissionId = Id<"submissions">;
 
 export function useSubmissionVetting() {
-  const { live } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
+  const live = config?.event ?? null;
   const vetSubmission = useAction(api.vetting.runSubmissionVetting);
   const vetSubmissions = useAction(api.vetting.runSubmissionVettingMany);
 

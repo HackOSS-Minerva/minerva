@@ -1,9 +1,10 @@
 import { TeamsPage } from "@/components/live/teams/teams-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface TeamsRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const TeamsRoute = async ({ params }: TeamsRouteProps) => {

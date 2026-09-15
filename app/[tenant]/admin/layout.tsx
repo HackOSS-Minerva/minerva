@@ -9,7 +9,7 @@ interface AdminLayoutProps {
 }
 
 const Layout = async ({ children, params }: AdminLayoutProps) => {
-  const { tenant } = (await params) as { tenant: string };
+  const { tenant } = (await params) as { tenant: "designverse" | "cutiehack" };
 
   // Secure authorization check. The proxy already did an optimistic
   // cookie-existence redirect, but this is the check that actually validates

@@ -1,11 +1,12 @@
 import { DashboardPage } from "@/components/live/dashboard/dashboard-page";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface DashboardRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const DashboardRoute = async ({ params }: DashboardRouteProps) => {

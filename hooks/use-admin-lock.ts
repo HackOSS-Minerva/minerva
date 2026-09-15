@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTenant } from "./use-tenant";
+import { useParams } from "next/navigation";
+import { getTenant, type TenantSlug } from "./get-tenant";
 
 export interface UseAdminLockOptions {
   /**
@@ -22,10 +23,11 @@ export interface UseAdminLockResult {
 export function useAdminLock({
   page,
 }: UseAdminLockOptions): UseAdminLockResult {
-  const { tenant } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
 
   const isLocked = useMemo(() => {
-    const adminLocks = tenant?.locks?.admin;
+    const adminLocks = config?.locks?.admin;
     if (
       !adminLocks ||
       typeof adminLocks !== "object" ||
@@ -34,7 +36,7 @@ export function useAdminLock({
       return false;
     }
     return (adminLocks as Record<string, boolean>)[page] === true;
-  }, [tenant?.locks?.admin, page]);
+  }, [config?.locks?.admin, page]);
 
   return { isLocked };
 }

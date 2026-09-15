@@ -1,9 +1,10 @@
 import { ResumeBookPage } from "@/components/sponsor/resume-book-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface ResumeBookRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const ResumeBookRoute = async ({ params }: ResumeBookRouteProps) => {

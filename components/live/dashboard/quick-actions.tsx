@@ -1,6 +1,7 @@
 "use client";
 
-import { useTenant } from "@/hooks/use-tenant";
+import { useParams } from "next/navigation";
+import { type TenantSlug } from "@/hooks/get-tenant";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,27 +12,27 @@ import {
 } from "@tabler/icons-react";
 
 export function QuickActions() {
-  const { name } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
 
   const actions = [
     {
       label: "View Hackpacks",
-      href: `/${name}/live/hackpacks`,
+      href: `/${tenant}/live/hackpacks`,
       icon: IconPackage,
     },
     {
       label: "Team Finder",
-      href: `/${name}/live/teams`,
+      href: `/${tenant}/live/teams`,
       icon: IconUsers,
     },
     {
       label: "Submit Project",
-      href: `/${name}/live/submit`,
+      href: `/${tenant}/live/submit`,
       icon: IconUpload,
     },
     {
       label: "Venue Information",
-      href: `/${name}/live/dashboard#venue`,
+      href: `/${tenant}/live/dashboard#venue`,
       icon: IconMapPin,
     },
   ];

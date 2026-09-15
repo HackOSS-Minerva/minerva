@@ -9,7 +9,7 @@ interface LayoutProps {
 }
 
 const Layout = async ({ children, params }: LayoutProps) => {
-  const { tenant } = (await params) as { tenant: string };
+  const { tenant } = (await params) as { tenant: "designverse" | "cutiehack" };
 
   // The judge section requires a signed-in user. This is the secure check
   // (validates the session via Convex); the proxy only does an optimistic

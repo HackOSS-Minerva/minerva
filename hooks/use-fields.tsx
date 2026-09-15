@@ -10,7 +10,7 @@ import * as superadmin from "@/components/forms/fields/superadmin";
 import * as volunteer from "@/components/forms/fields/volunteer";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { useEmail } from "./use-email";
-import { useTenant } from "./use-tenant";
+import { getTenant } from "./get-tenant";
 import { uploadFile } from "../lib/storage";
 import { toast } from "sonner";
 import { AppError, logAppError } from "@/lib/app-error";
@@ -42,13 +42,10 @@ const MUTATIONS = {
 } as const;
 
 export const useFields = () => {
-  const { form } = useParams<{ form: slugs }>();
+  const { form, tenant } = useParams<{ form: slugs; tenant: TenantSlug }>();
   const slug = form;
 
-  const {
-    headers,
-    tenant: { slug: tenantSlug },
-  } = useTenant();
+  const { headers } = getTenant(tenant);
 
   const add = useMutation(MUTATIONS[slug]);
   const { sendEmail } = useEmail();
@@ -83,8 +80,6 @@ export const useFields = () => {
     const email = value.email as string;
     const firstname = value.firstname as string;
     const lastname = value.lastname as string;
-    const tenant = tenantSlug;
-
     switch (slug) {
       case "volunteer": {
         const result = await add({

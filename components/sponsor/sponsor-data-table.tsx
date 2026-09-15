@@ -50,16 +50,18 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { TableToolbar } from "@/components/dashboards/toolbar";
 
 interface SponsorDataTableProps {
+  tenant: TenantSlug;
   data: any[];
   columns: ColumnDef<any>[];
   csvFields: string[];
 }
 
 export function SponsorDataTable({
+  tenant,
   data,
   columns,
   csvFields,
@@ -74,7 +76,7 @@ export function SponsorDataTable({
     pageSize: 10,
   });
 
-  const { tenant } = useTenant();
+  const { config } = getTenant(tenant);
 
   const table = useReactTable<any>({
     data,
@@ -137,7 +139,7 @@ export function SponsorDataTable({
               const now = new Date();
               const pad = (n: number) => String(n).padStart(2, "0");
               const timestamp = `${pad(now.getMonth() + 1)}_${pad(now.getDate())}_${now.getFullYear()}_${pad(now.getHours())}_${pad(now.getMinutes())}_${pad(now.getSeconds())}`;
-              const filename = `${tenant.name.toUpperCase()}_RESUME_BOOK_${timestamp}.csv`;
+              const filename = `${config.name.toUpperCase()}_RESUME_BOOK_${timestamp}.csv`;
               const url = URL.createObjectURL(blob);
               const a = document.createElement("a");
               a.href = url;

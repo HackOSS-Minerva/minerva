@@ -1,9 +1,10 @@
 import { CheckinPage } from "@/components/live/checkin/checkin-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface CheckinRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const CheckinRoute = async ({ params }: CheckinRouteProps) => {

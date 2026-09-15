@@ -5,11 +5,13 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AssignmentsContent from "@/components/admin/assignments-page";
 import { getAdminPageLock } from "@/lib/admin-locks";
 import { getFeatureFlag } from "@/lib/feature-flags";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 export default async function AssignmentsPage({
   params,
 }: {
-  params: Promise<{ tenant: string }>;
+  params: Promise<{
+    tenant: TenantSlug }>;
 }) {
   const { tenant } = await params;
 

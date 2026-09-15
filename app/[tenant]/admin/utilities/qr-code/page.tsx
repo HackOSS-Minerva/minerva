@@ -4,11 +4,13 @@ import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import QRCodeGenerator from "@/components/admin/qr-code-generator";
 import { getAdminPageLock } from "@/lib/admin-locks";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 export default async function QRCodePage({
   params,
 }: {
-  params: Promise<{ tenant: string }>;
+  params: Promise<{
+    tenant: TenantSlug }>;
 }) {
   const { tenant } = await params;
 

@@ -1,9 +1,10 @@
 import { FeedbackContent } from "@/components/feedback/feedback-content";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface FeedbackPageProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const FeedbackPage = async ({ params }: FeedbackPageProps) => {

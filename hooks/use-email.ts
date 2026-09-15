@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import type { SendEmailPayload } from "@/types/email";
-import { useTenant } from "./use-tenant";
+import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError, parseAppError } from "@/lib/app-error";
 
 type ClientSendEmailPayload = Omit<SendEmailPayload, "tenant">;
@@ -25,9 +26,10 @@ const sendEmailRequest = async (payload: SendEmailPayload) => {
 
 export const useEmail = () => {
   const mutation = useMutation({ mutationFn: sendEmailRequest });
-  const { tenant } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
 
-  if (!tenant) {
+  if (!config) {
     throw new AppError("TENANT_INVALID");
   }
 
@@ -36,7 +38,7 @@ export const useEmail = () => {
     sendEmail: (payload: ClientSendEmailPayload) => {
       const requestPayload: SendEmailPayload = {
         ...payload,
-        tenant: tenant.slug,
+        tenant: config.slug,
       };
       return mutation.mutateAsync(requestPayload);
     },

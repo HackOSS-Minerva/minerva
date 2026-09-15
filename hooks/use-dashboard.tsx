@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useTenant } from "./use-tenant";
+import { getTenant, type TenantSlug } from "./get-tenant";
 import type { FunctionReference } from "convex/server";
 import * as participants from "@/components/dashboards/dashboards/participants";
 import * as judges from "@/components/dashboards/dashboards/judges";
@@ -70,11 +70,11 @@ const QUERIES: Record<slugs, DashboardQuery> = {
 };
 
 export const useDashboard = (eventid?: string) => {
-  const { dashboard } = useParams<{ dashboard: slugs }>();
-  const { tenant } = useTenant();
+  const { dashboard, tenant } = useParams<{ dashboard: slugs; tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
   const { runVettingMany } = useSubmissionVetting();
   const slug = dashboard;
-  const tenantName = tenant.slug.toLocaleLowerCase();
+  const tenantName = config.slug.toLocaleLowerCase();
 
   const data = useQuery(QUERIES[slug], {
     tenant: tenantName,

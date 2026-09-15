@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { triggerConfetti } from "@/hooks/use-confetti";
 import { toast } from "sonner";
@@ -41,9 +41,9 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   const [submitting, setSubmitting] = useState(false);
 
   const addFeedback = useMutation(api.feedback.add);
-  const { headers, tenant: tenantConfig } = useTenant();
+  const { headers, config } = getTenant(tenant as TenantSlug);
   const Header = headers.feedback;
-  const eventName = tenantConfig?.event?.name ?? tenant;
+  const eventName = config?.event?.name ?? tenant;
 
   const canSubmit =
     find.trim() && likedToSee.trim() && notBeneficial.trim() && rating !== "";
@@ -94,7 +94,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
 
   return (
     <>
-      <Image src={tenantConfig.logo} alt="logo" width={200} height={200} />
+      <Image src={config.logo} alt="logo" width={200} height={200} />
       <FormLockModal form="feedback" />
       <Card className="w-full sm:max-w-md border-none">
         <CardHeader>

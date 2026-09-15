@@ -1,6 +1,6 @@
 "use client";
 
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
 import { CheckinSection } from "@/components/live/dashboard/checkin-section";
@@ -9,7 +9,7 @@ import { ApplicationStatusBadge } from "@/components/live/dashboard/application-
 import type { ApplicationStatus } from "@/components/live/dashboard/application-status-badge";
 
 interface JudgeDashboardPageProps {
-  tenant: string;
+  tenant: TenantSlug;
   judgeStatus: ApplicationStatus;
 }
 
@@ -17,7 +17,8 @@ export function JudgeDashboardPage({
   tenant,
   judgeStatus,
 }: JudgeDashboardPageProps) {
-  const { live } = useTenant();
+  const { config } = getTenant(tenant);
+  const live = config?.event ?? null;
 
   if (!live) {
     return (

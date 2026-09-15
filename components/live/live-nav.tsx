@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon, ExternalLink, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -76,14 +76,14 @@ const participateItems: {
 ];
 
 interface LiveNavProps {
-  tenant: string;
+  tenant: TenantSlug;
   isAuthorized: boolean;
 }
 
 export function LiveNav({ tenant, isAuthorized }: LiveNavProps) {
   const pathname = usePathname();
-  const { tenant: tenantConfig } = useTenant();
-  const logo = tenantConfig?.logo;
+  const { config } = getTenant(tenant);
+  const logo = config?.logo;
 
   return (
     <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">

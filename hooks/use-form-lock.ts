@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTenant } from "./use-tenant";
+import { useParams } from "next/navigation";
+import { getTenant, type TenantSlug } from "./get-tenant";
 
 export interface UseFormLockOptions {
   /**
@@ -42,13 +43,14 @@ export interface UseFormLockResult {
 }
 
 export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
-  const { tenant } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
 
   const lock = useMemo(() => {
     // DesignVerse currently has formLocks metadata for future scheduling, but
     // development/testing intentionally remains unlocked because it has no
     // legacy locks map. Only the active locks map is enforced here.
-    if (!tenant?.locks) {
+    if (!config?.locks) {
       return { opensAt: null, closesAt: null };
     }
 
@@ -56,7 +58,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
     let lockEntry: string[] | undefined;
 
     // Forms are stored in locks.forms (participant, judge, speaker, superadmin, volunteer, submission, feedback)
-    const formsCategory = tenant.locks.forms;
+    const formsCategory = config.locks.forms;
     if (
       formsCategory &&
       typeof formsCategory === "object" &&
@@ -67,7 +69,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
 
     // Other categories are stored at the top level (judge, sponsor, live)
     if (!lockEntry) {
-      lockEntry = tenant.locks[form] as string[] | undefined;
+      lockEntry = config.locks[form] as string[] | undefined;
     }
 
     if (lockEntry && Array.isArray(lockEntry) && lockEntry.length >= 2) {
@@ -78,7 +80,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
     }
 
     return { opensAt: null, closesAt: null };
-  }, [tenant?.locks, form]);
+  }, [config?.locks, form]);
 
   const [now] = useState(Date.now);
 

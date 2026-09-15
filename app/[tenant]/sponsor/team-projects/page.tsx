@@ -1,9 +1,10 @@
 import { TeamProjectsPage } from "@/components/sponsor/team-projects-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface TeamProjectsRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const TeamProjectsRoute = async ({ params }: TeamProjectsRouteProps) => {

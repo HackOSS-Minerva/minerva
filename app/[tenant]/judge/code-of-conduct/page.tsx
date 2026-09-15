@@ -1,9 +1,10 @@
 import { CodeOfConductPage } from "@/components/live/code-of-conduct/code-of-conduct-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface JudgeCodeOfConductRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const JudgeCodeOfConductRoute = async ({

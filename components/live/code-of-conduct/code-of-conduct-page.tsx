@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,10 +6,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 
 interface CodeOfConductPageProps {
-  tenant: string;
+  tenant: TenantSlug;
   baseHref?: string;
 }
 
@@ -19,7 +17,7 @@ export function CodeOfConductPage({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
 }: CodeOfConductPageProps) {
-  const { markdown } = useTenant();
+  const { markdown } = getTenant(tenant);
   const Markdown = markdown.codeOfConduct;
   return (
     <div className="space-y-6">

@@ -1,9 +1,10 @@
 import { CertificatePage } from "@/components/judge/certificate-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface CertificateRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const CertificateRoute = async ({ params }: CertificateRouteProps) => {

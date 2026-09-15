@@ -1,11 +1,12 @@
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { JudgeDashboardPage } from "@/components/judge/judge-dashboard-page";
 import { api } from "@/convex/_generated/api";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface JudgeDashboardRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const JudgeDashboardRoute = async ({ params }: JudgeDashboardRouteProps) => {

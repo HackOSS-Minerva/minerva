@@ -1,9 +1,10 @@
 import { RulesPage } from "@/components/live/rules/rules-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SponsorRulesRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const SponsorRulesRoute = async ({ params }: SponsorRulesRouteProps) => {

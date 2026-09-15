@@ -8,7 +8,7 @@ interface LayoutProps {
 }
 
 const Layout = async ({ children, params }: LayoutProps) => {
-  const { tenant } = (await params) as { tenant: string };
+  const { tenant } = (await params) as { tenant: "designverse" | "cutiehack" };
 
   // Whether the visitor can access the Participate section: signed in AND an
   // accepted participant. Signed-out / non-accepted users still see it in the

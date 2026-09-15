@@ -1,17 +1,18 @@
 "use client";
 
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { authClient } from "@/lib/auth-client";
 import { HeroSection } from "@/components/live/dashboard/hero-section";
 import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
 import { Separator } from "@/components/ui/separator";
 
 interface SponsorDashboardPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
-export function SponsorDashboardPage({}: SponsorDashboardPageProps) {
-  const { live } = useTenant();
+export function SponsorDashboardPage({ tenant }: SponsorDashboardPageProps) {
+  const { config } = getTenant(tenant);
+  const live = config?.event ?? null;
   const { data: session } = authClient.useSession();
   const name = session?.user?.name ?? "hacker";
 

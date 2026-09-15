@@ -1,9 +1,10 @@
 import { RegisterPage } from "@/components/judge/register-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface RegisterRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const RegisterRoute = async ({ params }: RegisterRouteProps) => {

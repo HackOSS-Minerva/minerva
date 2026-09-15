@@ -6,11 +6,13 @@ import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getAdminPageLock } from "@/lib/admin-locks";
 import { getFeatureFlag } from "@/lib/feature-flags";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 export default async function AdminAnalyticsPage({
   params,
 }: {
-  params: Promise<{ tenant: string }>;
+  params: Promise<{
+    tenant: TenantSlug }>;
 }) {
   const { tenant } = await params;
 

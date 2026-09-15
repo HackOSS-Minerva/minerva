@@ -5,8 +5,10 @@ import { columns } from "./team-projects-columns";
 import type { TeamProjectsRow } from "./team-projects-columns";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 
+import type { TenantSlug } from "@/hooks/get-tenant";
+
 interface TeamProjectsPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 const dummyData: TeamProjectsRow[] = [
@@ -102,7 +104,7 @@ const dummyData: TeamProjectsRow[] = [
   },
 ];
 
-export function TeamProjectsPage({}: TeamProjectsPageProps) {
+export function TeamProjectsPage({ tenant }: TeamProjectsPageProps) {
   return (
     <>
       <FormLockModal form="sponsor-team-projects" />
@@ -114,7 +116,7 @@ export function TeamProjectsPage({}: TeamProjectsPageProps) {
           </p>
         </div>
 
-        <SponsorDataTable data={dummyData} columns={columns} csvFields={[]} />
+        <SponsorDataTable tenant={tenant} data={dummyData} columns={columns} csvFields={[]} />
       </div>
     </>
   );

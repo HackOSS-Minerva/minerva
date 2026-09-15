@@ -65,7 +65,7 @@ import { useParams } from "next/navigation";
 import type { EmailRole } from "@/types/email";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { toastAppError } from "@/hooks/use-app-error";
 import { AppError, logAppError } from "@/lib/app-error";
 import type { VettingBatchResult } from "@/lib/vetting/types";
@@ -119,7 +119,8 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
   >(null);
 
   const { dashboard: slug } = useParams<{ dashboard: string }>();
-  const { tenant } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
   const isSubmissions = slug === "submissions";
   const emailRole = emailRolesByDashboard[slug];
 
@@ -316,7 +317,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
                 const now = new Date();
                 const pad = (n: number) => String(n).padStart(2, "0");
                 const timestamp = `${pad(now.getMonth() + 1)}_${pad(now.getDate())}_${now.getFullYear()}_${pad(now.getHours())}_${pad(now.getMinutes())}_${pad(now.getSeconds())}`;
-                const filename = `${tenant.name.toUpperCase()}_${slug.toUpperCase()}_${timestamp}.csv`;
+                const filename = `${config.name.toUpperCase()}_${slug.toUpperCase()}_${timestamp}.csv`;
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;

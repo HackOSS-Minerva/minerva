@@ -1,9 +1,10 @@
 import { VenuePage } from "@/components/live/venue/venue-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface JudgeVenueRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const JudgeVenueRoute = async ({ params }: JudgeVenueRouteProps) => {

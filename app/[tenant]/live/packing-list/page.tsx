@@ -1,9 +1,10 @@
 import { PackingListPage } from "@/components/live/packing-list/packing-list-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface PackingListRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const PackingListRoute = async ({ params }: PackingListRouteProps) => {

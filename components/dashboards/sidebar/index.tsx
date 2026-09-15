@@ -16,7 +16,8 @@ import {
   IconUserCheck,
 } from "@tabler/icons-react";
 import Image from "next/image";
-import { useTenant } from "@/hooks/use-tenant";
+import { useParams } from "next/navigation";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { useFeatureFlag } from "@/hooks/use-feature-flags";
 import type { FeatureFlagKey } from "@/lib/feature-flags";
 
@@ -198,9 +199,10 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
   const {
-    tenant: { logo, domain },
-  } = useTenant();
+    config: { logo, domain },
+  } = getTenant(tenant);
 
   // Feature-flagged nav entries are hidden entirely when their flag is off.
   const enabled = {

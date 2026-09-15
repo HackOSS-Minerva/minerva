@@ -10,13 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { useTenant } from "@/hooks/use-tenant";
+import { useParams } from "next/navigation";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { authClient } from "@/lib/auth-client";
 
 export function AvatarProfile() {
-  const {
-    tenant: { domain },
-  } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
+  const { domain } = config;
   const { data: session } = authClient.useSession();
 
   const name = session?.user?.name ?? "Guest User";

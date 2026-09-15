@@ -5,11 +5,12 @@ import { SubmissionFormPage } from "@/components/live/submit/submission-form-pag
 import { Button } from "@/components/ui/button";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmitRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const SubmitRoute = async ({ params }: SubmitRouteProps) => {

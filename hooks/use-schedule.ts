@@ -2,11 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import type { CalendarResponse } from "@/types/calendar";
-import { useTenant } from "./use-tenant";
+import { useParams } from "next/navigation";
+import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError } from "@/lib/app-error";
 
 export const useSchedule = () => {
-  const { name: tenant, tenant: config } = useTenant();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { config } = getTenant(tenant);
 
   const fetchEvents = async (): Promise<CalendarResponse> => {
     if (!config) {

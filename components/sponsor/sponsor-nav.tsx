@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { useFeatureFlag } from "@/hooks/use-feature-flags";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -58,10 +58,10 @@ const getInvolvedItems = [
   },
 ];
 
-export function SponsorNav({ tenant }: { tenant: string }) {
+export function SponsorNav({ tenant }: { tenant: TenantSlug }) {
   const pathname = usePathname();
-  const { tenant: tenantConfig } = useTenant();
-  const logo = tenantConfig?.logo;
+  const { config } = getTenant(tenant);
+  const logo = config?.logo;
 
   // Feature-flagged nav entries are hidden entirely when their flag is off.
   const { isEnabled: analyticsEnabled } = useFeatureFlag("analytics");

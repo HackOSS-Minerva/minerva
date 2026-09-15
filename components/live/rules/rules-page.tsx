@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,10 +6,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 
 interface RulesPageProps {
-  tenant: string;
+  tenant: TenantSlug;
   baseHref?: string;
 }
 
@@ -19,7 +17,7 @@ export function RulesPage({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
 }: RulesPageProps) {
-  const { markdown } = useTenant();
+  const { markdown } = getTenant(tenant);
   const Markdown = markdown.rules;
   return (
     <div className="space-y-6">

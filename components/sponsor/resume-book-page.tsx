@@ -5,8 +5,10 @@ import { csvFields } from "@/components/dashboards/dashboards/participants";
 import { columns } from "./resume-book-columns";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 
+import type { TenantSlug } from "@/hooks/get-tenant";
+
 interface SponsorResumeBookPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 const dummyData = [
@@ -246,7 +248,7 @@ const dummyData = [
   },
 ];
 
-export function ResumeBookPage({}: SponsorResumeBookPageProps) {
+export function ResumeBookPage({ tenant }: SponsorResumeBookPageProps) {
   return (
     <>
       <FormLockModal form="sponsor-resume-book" />
@@ -259,6 +261,7 @@ export function ResumeBookPage({}: SponsorResumeBookPageProps) {
         </div>
 
         <SponsorDataTable
+          tenant={tenant}
           data={dummyData}
           columns={columns}
           csvFields={csvFields}

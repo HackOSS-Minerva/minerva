@@ -7,7 +7,7 @@ import Fields from "./fields";
 import { FormLockModal } from "./form-lock-modal";
 import Image from "next/image";
 import { slugs } from "@/hooks/use-fields";
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import Status from "./status";
 
 interface WrapperProps {
@@ -18,8 +18,8 @@ interface WrapperProps {
 
 const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
   const {
-    tenant: { logo, email: tenantEmail },
-  } = useTenant();
+    config: { logo, email: tenantEmail },
+  } = getTenant(tenant as TenantSlug);
 
   // Map database status to EmailType for the Status component.
   // Database uses "PENDING", Status component expects "CONFIRMATION".

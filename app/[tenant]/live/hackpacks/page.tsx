@@ -1,9 +1,10 @@
 import { HackpacksPage } from "@/components/live/hackpacks/hackpacks-page";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface HackpacksRouteProps {
-  params: {
-    tenant: string;
-  };
+  params: Promise<{
+    tenant: TenantSlug;
+  }>;
 }
 
 const HackpacksRoute = async ({ params }: HackpacksRouteProps) => {

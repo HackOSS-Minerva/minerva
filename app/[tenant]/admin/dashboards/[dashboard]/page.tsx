@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/dashboards/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import Dashboard from "@/components/dashboards/dashboard";
 import { getAdminPageLock } from "@/lib/admin-locks";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 const DASHBOARD_TITLES: Record<string, string> = {
   participants: "Participants",
@@ -18,7 +19,7 @@ const DASHBOARD_TITLES: Record<string, string> = {
 
 interface PageProps {
   params: Promise<{
-    tenant: string;
+    tenant: TenantSlug;
     dashboard: string;
   }>;
 }

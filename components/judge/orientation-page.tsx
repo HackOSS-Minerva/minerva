@@ -1,14 +1,12 @@
-"use client";
-
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 
 interface OrientationPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
-export function OrientationPage({}: OrientationPageProps) {
-  const { markdown } = useTenant();
+export function OrientationPage({ tenant }: OrientationPageProps) {
+  const { markdown } = getTenant(tenant);
   const Markdown = markdown.orientation;
   return (
     <>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTenant } from "@/hooks/use-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,11 +15,12 @@ import { useEffect, useState } from "react";
 import { JudgeBreadcrumb } from "@/components/judge/judge-breadcrumb";
 
 interface CertificatePageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
-export function CertificatePage({}: CertificatePageProps) {
-  const { tenant: tenantConfig, live } = useTenant();
+export function CertificatePage({ tenant }: CertificatePageProps) {
+  const { config: tenantConfig } = getTenant(tenant);
+  const live = tenantConfig?.event ?? null;
 
   const judgeName = "Alex J. Morgan";
 
