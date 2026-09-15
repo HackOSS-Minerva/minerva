@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,17 +6,19 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { PackingChecklist } from "@/components/portal/pages/packing-checklist";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 
-interface PackingListPageProps {
-  tenant: string;
+interface RulesPageProps {
+  tenant: TenantSlug;
   baseHref?: string;
 }
 
-export function PackingListPage({
+export function RulesPage({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
-}: PackingListPageProps) {
+}: RulesPageProps) {
+  const { markdown } = getTenant(tenant);
+  const Markdown = markdown.rules;
   return (
     <div className="space-y-6">
       <Breadcrumb>
@@ -28,18 +28,17 @@ export function PackingListPage({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Packing List</BreadcrumbPage>
+            <BreadcrumbPage>Rules</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <div>
-        <h1 className="text-2xl font-bold md:text-3xl">Packing List</h1>
+        <h1 className="text-2xl font-bold md:text-3xl">Rules</h1>
         <p className="mt-1 text-muted-foreground">
-          Make sure you have everything you need for the event.
+          Review the hackathon rules and guidelines.
         </p>
       </div>
-
-      <PackingChecklist tenant={tenant} />
+      <Markdown />
     </div>
   );
 }

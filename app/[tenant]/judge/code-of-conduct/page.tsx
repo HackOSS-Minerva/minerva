@@ -1,4 +1,4 @@
-import { CodeOfConductPage } from "@/components/live/code-of-conduct/code-of-conduct-page";
+import { CodeOfConductPage } from "@/components/portal/pages/code-of-conduct-page";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface JudgeCodeOfConductRouteProps {

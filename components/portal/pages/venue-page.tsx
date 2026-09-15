@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,17 +6,19 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { PackingChecklist } from "@/components/portal/pages/packing-checklist";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 
-interface PackingListPageProps {
-  tenant: string;
+interface VenuePageProps {
+  tenant: TenantSlug;
   baseHref?: string;
 }
 
-export function PackingListPage({
+export function VenuePage({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
-}: PackingListPageProps) {
+}: VenuePageProps) {
+  const { markdown } = getTenant(tenant);
+  const Markdown = markdown.venue;
   return (
     <div className="space-y-6">
       <Breadcrumb>
@@ -28,18 +28,17 @@ export function PackingListPage({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Packing List</BreadcrumbPage>
+            <BreadcrumbPage>Venue</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <div>
-        <h1 className="text-2xl font-bold md:text-3xl">Packing List</h1>
+        <h1 className="text-2xl font-bold md:text-3xl">Venue</h1>
         <p className="mt-1 text-muted-foreground">
-          Make sure you have everything you need for the event.
+          Find location and event details.
         </p>
       </div>
-
-      <PackingChecklist tenant={tenant} />
+      <Markdown />
     </div>
   );
 }

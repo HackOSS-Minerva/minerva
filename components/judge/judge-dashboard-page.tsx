@@ -1,12 +1,12 @@
 "use client";
 
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
-import { HeroSection } from "@/components/live/dashboard/hero-section";
-import { ScheduleSection } from "@/components/live/dashboard/schedule-section";
-import { CheckinSection } from "@/components/live/dashboard/checkin-section";
+import { HeroSection } from "@/components/portal/dashboard/hero-section";
+import { ScheduleSection } from "@/components/portal/dashboard/schedule-section";
+import { CheckinSection } from "@/components/portal/dashboard/checkin-section";
 import { Separator } from "@/components/ui/separator";
-import { ApplicationStatusBadge } from "@/components/live/dashboard/application-status-badge";
-import type { ApplicationStatus } from "@/components/live/dashboard/application-status-badge";
+import { ApplicationStatusBadge } from "@/components/portal/dashboard/application-status-badge";
+import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
 
 interface JudgeDashboardPageProps {
   tenant: TenantSlug;

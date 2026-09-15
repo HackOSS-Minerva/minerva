@@ -1,4 +1,4 @@
-import { VenuePage } from "@/components/live/venue/venue-page";
+import { VenuePage } from "@/components/portal/pages/venue-page";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface VenueRouteProps {

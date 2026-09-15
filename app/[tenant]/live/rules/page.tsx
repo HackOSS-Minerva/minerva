@@ -1,4 +1,4 @@
-import { RulesPage } from "@/components/live/rules/rules-page";
+import { RulesPage } from "@/components/portal/pages/rules-page";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface RulesRouteProps {

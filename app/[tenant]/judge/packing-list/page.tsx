@@ -1,4 +1,4 @@
-import { PackingListPage } from "@/components/live/packing-list/packing-list-page";
+import { PackingListPage } from "@/components/portal/pages/packing-list-page";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface JudgePackingListRouteProps {
