@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { PortalNav } from "@/components/portal/portal-nav";
+import { judgeNavItems, judgeDropdowns } from "@/components/portal/judge-nav-config";
 import { fetchAuthQuery } from "@/lib/auth-server";
-import { JudgeNav } from "@/components/judge/judge-nav";
 import { api } from "@/convex/_generated/api";
 
 interface LayoutProps {
@@ -26,7 +27,14 @@ const Layout = async ({ children, params }: LayoutProps) => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <JudgeNav tenant={tenant} isAuthorized={access.authorized} />
+      <PortalNav
+        tenant={tenant}
+        dashboardPath="/judge/dashboard"
+        navItems={judgeNavItems}
+        dropdowns={judgeDropdowns}
+        isAuthorized={access.authorized}
+        registerHref="/forms/judge"
+      />
       {children}
     </div>
   );

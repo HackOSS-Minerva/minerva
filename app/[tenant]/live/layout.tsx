@@ -1,4 +1,5 @@
-import { LiveNav } from "@/components/live/live-nav";
+import { PortalNav } from "@/components/portal/portal-nav";
+import { liveNavItems, liveDropdowns } from "@/components/portal/live-nav-config";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 
@@ -20,7 +21,14 @@ const Layout = async ({ children, params }: LayoutProps) => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
-      <LiveNav tenant={tenant} isAuthorized={access.authorized} />
+      <PortalNav
+        tenant={tenant}
+        dashboardPath="/live/dashboard"
+        navItems={liveNavItems}
+        dropdowns={liveDropdowns}
+        isAuthorized={access.authorized}
+        registerHref="/forms/participant"
+      />
       {children}
     </div>
   );

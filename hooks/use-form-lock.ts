@@ -67,7 +67,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
       lockEntry = (formsCategory as Record<string, string[]>)[form];
     }
 
-    // Other categories are stored at the top level (judge, sponsor, live)
+    // Other categories are stored at the top level (judge, live)
     if (!lockEntry) {
       lockEntry = config.locks[form] as string[] | undefined;
     }

@@ -42,7 +42,7 @@ export const FEATURE_FLAGS = {
   },
   analytics: {
     description:
-      "Event analytics dashboards (admin, judge, sponsor) and the analytics API backed by PostHog.",
+      "Event analytics dashboards (admin, judge) and the analytics API backed by PostHog.",
     value: true,
   },
   assignments: {
