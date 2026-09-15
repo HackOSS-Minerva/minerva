@@ -19,6 +19,9 @@ export const CONVEX_ERROR_MESSAGES = {
   UNAUTHORIZED: "Authentication required.",
   FORBIDDEN: "Access forbidden.",
   NOT_FOUND: "Not found.",
+  RATE_LIMITED: "Too many requests. Please try again.",
+  UPSTREAM_UNAVAILABLE: "Upstream service unavailable.",
+  CONFIG_ERROR: "Service is not configured.",
   INTERNAL: "Something went wrong.",
 } as const;
 

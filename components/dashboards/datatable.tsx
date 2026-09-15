@@ -66,6 +66,8 @@ import type { EmailRole } from "@/types/email";
 import { toast } from "sonner";
 import { convertToCSV } from "@/lib/csv";
 import { useTenant } from "@/hooks/use-tenant";
+import { toastAppError } from "@/hooks/use-app-error";
+import { AppError, logAppError } from "@/lib/app-error";
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { MAX_VETTING_BATCH_SIZE } from "@/lib/vetting/rules";
 import { cn } from "@/lib/utils";
@@ -160,7 +162,10 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
         setDeleteDialogOpen(true);
       },
       setStatusMany: async ({ ids, status }) => {
-        if (!setStatusMany) throw new Error("Status updates are unavailable");
+        if (!setStatusMany)
+          throw new AppError("INTERNAL", {
+            details: "Status updates are unavailable",
+          });
         await setStatusMany({ ids, status });
         setRowSelection({});
       },
@@ -194,18 +199,25 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
           `Vetted ${results.length} project${results.length === 1 ? "" : "s"}`,
         );
       } else if (succeeded === 0) {
-        toast.error(
+        logAppError({
+          route: "datatable-vetting",
+          error: results[0]?.errorDetails,
+          requestId: "client",
+        });
+        toast.warning(
           `Failed to vet ${failed} project${failed === 1 ? "" : "s"}`,
         );
       } else {
-        toast.error(`Vetted ${succeeded} projects; ${failed} failed`);
+        logAppError({
+          route: "datatable-vetting",
+          error: results.find((result) => !result.success)?.errorDetails,
+          requestId: "client",
+        });
+        toast.warning(`Vetted ${succeeded} projects; ${failed} failed`);
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Failed to queue project vetting",
-      );
+      logAppError({ route: "datatable-vetting", error, requestId: "client" });
+      toastAppError(error, "Failed to queue project vetting");
     } finally {
       setVetting(false);
     }

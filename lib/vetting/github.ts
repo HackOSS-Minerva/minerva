@@ -221,7 +221,8 @@ async function fetchCommitPages(args: {
 }
 
 function failedResult(
-  error: string,
+  errorCode: "RATE_LIMITED" | "UPSTREAM_UNAVAILABLE",
+  errorDetails: string,
   findings: VettingFinding[],
   repos: GithubRepoSnapshot[],
   contributors: VettingContributor[],
@@ -229,7 +230,8 @@ function failedResult(
   return {
     success: false,
     result: "needs_review",
-    error,
+    errorCode,
+    errorDetails,
     findings,
     repos,
     contributors,
@@ -239,7 +241,11 @@ function failedResult(
 function apiFailure(
   result: GithubJsonResult,
   repoUrl: string,
-): { finding: VettingFinding; error: string } {
+): {
+  finding: VettingFinding;
+  errorCode: "RATE_LIMITED" | "UPSTREAM_UNAVAILABLE";
+  errorDetails: string;
+} {
   if (isRateLimited(result)) {
     return {
       finding: finding(
@@ -247,7 +253,8 @@ function apiFailure(
         "GitHub API rate limit was reached during vetting.",
         repoUrl,
       ),
-      error: "GitHub API rate limit reached",
+      errorCode: "RATE_LIMITED",
+      errorDetails: `GitHub API rate limit reached (status ${result.status})`,
     };
   }
 
@@ -257,7 +264,8 @@ function apiFailure(
       "GitHub could not complete repository vetting.",
       repoUrl,
     ),
-    error: `GitHub API request failed with status ${result.status}`,
+    errorCode: "UPSTREAM_UNAVAILABLE",
+    errorDetails: `GitHub API request failed with status ${result.status}`,
   };
 }
 
@@ -354,7 +362,7 @@ export async function runSubmissionVetting(
 
         const failure = apiFailure(repoResult, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.error, findings, repos, contributors);
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
       const repo = normalizeRepo(repoResult.data);
@@ -396,7 +404,7 @@ export async function runSubmissionVetting(
       if (!eventCommitsResult.ok && eventCommitsResult.status !== 409) {
         const failure = apiFailure(eventCommitsResult, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.error, findings, repos, contributors);
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
       const eventCommits =
@@ -433,7 +441,7 @@ export async function runSubmissionVetting(
       if (!beforeStart.ok && beforeStart.status !== 409) {
         const failure = apiFailure(beforeStart, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.error, findings, repos, contributors);
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
       const earlyCommitCount = normalizeCommits(beforeStart.data).length;
@@ -457,7 +465,7 @@ export async function runSubmissionVetting(
       if (!afterGrace.ok && afterGrace.status !== 409) {
         const failure = apiFailure(afterGrace, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.error, findings, repos, contributors);
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
       const lateCommitCount = normalizeCommits(afterGrace.data).length;
@@ -524,11 +532,17 @@ export async function runSubmissionVetting(
       contributors,
     };
   } catch (error) {
-    const message =
+    const details =
       error instanceof Error ? error.message : "Unknown GitHub API failure";
     findings.push(
       finding("github_api_error", "GitHub could not complete project vetting."),
     );
-    return failedResult(message, findings, repos, contributors);
+    return failedResult(
+      "UPSTREAM_UNAVAILABLE",
+      details,
+      findings,
+      repos,
+      contributors,
+    );
   }
 }

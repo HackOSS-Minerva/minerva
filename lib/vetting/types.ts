@@ -86,7 +86,10 @@ export interface GithubSubmissionVettingInput {
 export interface GithubSubmissionVettingResult {
   success: boolean;
   result: AutomatedVettingResult;
-  error?: string;
+  /** Coded upstream failure (e.g. RATE_LIMITED). Display via getUserMessage. */
+  errorCode?: "RATE_LIMITED" | "UPSTREAM_UNAVAILABLE";
+  /** Raw upstream detail for logging only — never render directly. */
+  errorDetails?: string;
   findings: VettingFinding[];
   repos: GithubRepoSnapshot[];
   contributors: VettingContributor[];
@@ -99,5 +102,6 @@ export interface SubmissionVettingResult extends GithubSubmissionVettingResult {
 export interface VettingBatchResult {
   submissionId: string;
   success: boolean;
-  error?: string;
+  errorCode?: "RATE_LIMITED" | "UPSTREAM_UNAVAILABLE";
+  errorDetails?: string;
 }

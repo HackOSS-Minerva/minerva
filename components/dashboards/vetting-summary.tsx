@@ -12,11 +12,12 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSubmissionVetting } from "@/hooks/use-submissions";
+import { toastAppError } from "@/hooks/use-app-error";
+import { getUserMessage, logAppError } from "@/lib/app-error";
 import { cn } from "@/lib/utils";
 import type {
   FindingCode,
@@ -110,9 +111,8 @@ export function VettingSummary({
     try {
       setResult(await runVetting(submissionId));
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to run vetting",
-      );
+      logAppError({ route: "vetting-summary", error, requestId: "client" });
+      toastAppError(error, "Failed to run vetting");
     } finally {
       setIsRunning(false);
     }
@@ -167,8 +167,10 @@ export function VettingSummary({
           <p className="text-xs text-amber-700 dark:text-amber-300">
             {repositoryExplanation}
           </p>
-        ) : result?.error ? (
-          <p className="text-xs text-red-600">{result.error}</p>
+        ) : result?.errorCode ? (
+          <p className="text-xs text-red-600">
+            {getUserMessage(result.errorCode)}
+          </p>
         ) : null}
       </div>
 

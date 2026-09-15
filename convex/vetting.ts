@@ -7,6 +7,7 @@ import {
 import { api, internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
+import { convexError } from "./app-error";
 import { runSubmissionVetting as runGithubSubmissionVetting } from "../lib/vetting/github";
 import {
   applyAutomatedReviewResult,
@@ -54,7 +55,7 @@ export const updateSubmissionVettingStatus = internalMutation({
   },
   handler: async (ctx, { id, vetted, vettingStatus }) => {
     const submission = await ctx.db.get(id);
-    if (!submission) throw new Error("Submission not found");
+    if (!submission) throw convexError("NOT_FOUND", "Submission not found");
 
     const nextVetted = applyAutomatedReviewResult(submission.vetted, vetted);
 
@@ -82,13 +83,16 @@ async function requireOrganizerAccess(
     internal.vetting.getSubmissionForVetting,
     { id: submissionId },
   );
-  if (!submission) throw new Error("Submission not found");
+  if (!submission) throw convexError("NOT_FOUND", "Submission not found");
 
   const access = await ctx.runQuery(api.auth.getAdminAccess, {
     tenant: submission.tenant,
   });
   if (!access.authorized) {
-    throw new Error("Organizer access is required to vet projects");
+    throw convexError(
+      "FORBIDDEN",
+      "Organizer access is required to vet projects",
+    );
   }
 
   return submission;
@@ -132,6 +136,19 @@ async function executeSubmissionVetting(
 
     return { ...githubResult, storedVetted };
   } catch (error) {
+    // Vetting swallows failures by design (marks the run "failed"), so log
+    // here — nothing is thrown for the client-side handler to log.
+    console.error(
+      JSON.stringify({
+        ts: new Date().toISOString(),
+        level: "error",
+        route: "vetting/executeSubmissionVetting",
+        submissionId: submission._id,
+        tenant: submission.tenant,
+        cause: error instanceof Error ? (error.stack ?? error.message) : error,
+      }),
+    );
+
     const storedVetted: SubmissionReviewStatus = await ctx.runMutation(
       internal.vetting.updateSubmissionVettingStatus,
       {
@@ -145,7 +162,9 @@ async function executeSubmissionVetting(
       success: false,
       result: "needs_review",
       storedVetted,
-      error: error instanceof Error ? error.message : "Unknown vetting failure",
+      errorCode: "UPSTREAM_UNAVAILABLE",
+      errorDetails:
+        error instanceof Error ? error.message : "Unknown vetting failure",
       findings: githubResult?.findings ?? [],
       repos: githubResult?.repos ?? [],
       contributors: githubResult?.contributors ?? [],
@@ -181,7 +200,8 @@ export const runSubmissionVettingMany = action({
 
     const uniqueSubmissionIds = Array.from(new Set(submissionIds));
     if (uniqueSubmissionIds.length > MAX_VETTING_BATCH_SIZE) {
-      throw new Error(
+      throw convexError(
+        "VALIDATION_FAILED",
         `Vetting batches can include at most ${MAX_VETTING_BATCH_SIZE} submissions.`,
       );
     }
@@ -201,7 +221,12 @@ export const runSubmissionVettingMany = action({
       results.push({
         submissionId: submission._id,
         success: result.success,
-        error: result.success ? undefined : result.error,
+        ...(result.success
+          ? {}
+          : {
+              errorCode: result.errorCode ?? "UPSTREAM_UNAVAILABLE",
+              errorDetails: result.errorDetails,
+            }),
       });
     }
 

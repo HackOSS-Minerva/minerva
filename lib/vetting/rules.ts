@@ -6,6 +6,8 @@ import type {
   VettingEventConfig,
   VettingFinding,
 } from "./types";
+import { ConvexError } from "convex/values";
+import type { ConvexErrorCode } from "../../convex/app-error";
 
 export const MAX_TEAM_SIZE = 4;
 export const MAX_VETTING_BATCH_SIZE = 10;
@@ -48,16 +50,28 @@ export function getSubmissionTeam(
   };
 }
 
+/**
+ * Shared validation for the vetting event window supplied by the
+ * organizer-authorized UI. Throws `ConvexError({ code: "VALIDATION_FAILED" })`
+ * so both Convex actions and client hooks surface it through the unified
+ * coded-error path (`isConvexErrorCode` / `resolveAppErrorCode`).
+ */
 export function validateVettingEventConfig(event: VettingEventConfig): void {
+  const invalid = (message: string): ConvexError<{ code: ConvexErrorCode }> =>
+    new ConvexError({
+      code: "VALIDATION_FAILED",
+      message,
+    });
+
   if (!Number.isFinite(event.startsAt)) {
-    throw new Error("Event start time is invalid");
+    throw invalid("Event start time is invalid");
   }
 
   if (
     !Number.isFinite(event.submissionDeadlineAt) ||
     event.submissionDeadlineAt < event.startsAt
   ) {
-    throw new Error("Submission deadline is invalid");
+    throw invalid("Submission deadline is invalid");
   }
 
   if (
@@ -65,7 +79,7 @@ export function validateVettingEventConfig(event: VettingEventConfig): void {
     event.gitCommitGraceWindowMinutes < 0 ||
     event.gitCommitGraceWindowMinutes > MAX_GIT_COMMIT_GRACE_WINDOW_MINUTES
   ) {
-    throw new Error("Git commit grace window is invalid");
+    throw invalid("Git commit grace window is invalid");
   }
 }
 

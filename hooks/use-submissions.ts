@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useFormLock } from "./use-form-lock";
 import { z } from "zod";
 import { captureAnalyticsEvent } from "@/lib/posthog";
-import { logAppError } from "@/lib/app-error";
+import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import { triggerConfetti } from "./use-confetti";
 import { useTenant } from "./use-tenant";
@@ -160,7 +160,9 @@ export function useSubmissionVetting() {
 
   const getEventConfig = useCallback((): VettingEventConfig => {
     if (!live) {
-      throw new Error("Event configuration is unavailable");
+      throw new AppError("CONFIG_ERROR", {
+        details: "Event configuration is unavailable",
+      });
     }
 
     const startsAt = new Date(live.startTime).getTime();

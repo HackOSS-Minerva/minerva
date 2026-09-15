@@ -24,6 +24,8 @@ import { useTenant } from "@/hooks/use-tenant";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { triggerConfetti } from "@/hooks/use-confetti";
 import { toast } from "sonner";
+import { logAppError } from "@/lib/app-error";
+import { toastAppError } from "@/hooks/use-app-error";
 
 interface FeedbackContentProps {
   tenant: string;
@@ -41,6 +43,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   const addFeedback = useMutation(api.feedback.add);
   const { headers, tenant: tenantConfig } = useTenant();
   const Header = headers.feedback;
+  const eventName = tenantConfig?.event?.name ?? tenant;
 
   const canSubmit =
     find.trim() && likedToSee.trim() && notBeneficial.trim() && rating !== "";
@@ -64,7 +67,8 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
       toast.success("Feedback submitted successfully!");
       triggerConfetti();
     } catch (error) {
-      console.error("Failed to submit feedback:", error);
+      logAppError({ route: "feedback-form", error, requestId: "client" });
+      toastAppError(error, "Failed to submit feedback. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -106,7 +110,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
           >
             {/* Question 1 */}
             <Field>
-              <FieldLabel>How did you find DesignVerse 2026?</FieldLabel>
+              <FieldLabel>How did you find {eventName}?</FieldLabel>
               <Select
                 value={find}
                 onValueChange={setFind}
@@ -144,7 +148,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
             <Field>
               <FieldLabel>
                 Was there anything that you would have liked to see at
-                DesignVerse 2026?
+                {eventName}?
               </FieldLabel>
               <Textarea
                 placeholder="What sessions, activities, or features would you have liked?"
@@ -161,7 +165,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
             <Field>
               <FieldLabel>
                 Was there anything that you did not find beneficial about
-                DesignVerse 2026?
+                {eventName}?
               </FieldLabel>
               <Textarea
                 placeholder="What could be improved or removed?"
@@ -177,7 +181,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
             {/* Question 4 - Rating */}
             <Field>
               <FieldLabel>
-                Please rate DesignVerse 2026 on a scale of 1 - 10
+                Please rate {eventName} on a scale of 1 - 10
               </FieldLabel>
               <Select
                 value={rating}
@@ -201,7 +205,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
             <Field>
               <FieldLabel>
                 Is there anything else you&apos;d like to let us know about
-                DesignVerse 2026?
+                {eventName}?
               </FieldLabel>
               <Textarea
                 placeholder="Any additional thoughts or comments..."

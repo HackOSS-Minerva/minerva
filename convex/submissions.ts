@@ -1,4 +1,5 @@
 import { query, mutation } from "./_generated/server";
+import { convexError } from "./app-error";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
 import {
@@ -54,11 +55,12 @@ export const add = mutation({
     const user = await authComponent.safeGetAuthUser(ctx);
     const submitterEmail = user?.email?.trim().toLowerCase();
     if (!submitterEmail) {
-      throw new Error("An authenticated submitter email is required.");
+      throw convexError("UNAUTHORIZED", "An authenticated submitter email is required.");
     }
 
     const team = getSubmissionTeam(submitterEmail, invites);
-    if (team.memberCount > MAX_TEAM_SIZE) throw new Error(TEAM_SIZE_ERROR);
+    if (team.memberCount > MAX_TEAM_SIZE)
+      throw convexError("VALIDATION_FAILED", TEAM_SIZE_ERROR);
 
     const id = await ctx.db.insert("submissions", {
       teamName,
