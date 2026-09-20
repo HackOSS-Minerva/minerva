@@ -9,7 +9,8 @@
     "lint": "eslint",
     "format": "npx prettier --write .",
     "check": "npx prettier --check .",
-    "email": "email dev --dir components/email --port 4000"
+    "email": "email dev --dir components/email --port 4000",
+    "tenant:sync": "bun scripts/tenant-sync/index.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
