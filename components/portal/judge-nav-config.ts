@@ -15,11 +15,6 @@ export const judgeDropdowns: DropdownConfig[] = [
         description: "Find location and event details.",
       },
       {
-        href: "/judge/packing-list",
-        label: "Packing List",
-        description: "Check what to bring to the event.",
-      },
-      {
         href: "/judge/rules",
         label: "Rules",
         description: "Review the hackathon rules and guidelines.",

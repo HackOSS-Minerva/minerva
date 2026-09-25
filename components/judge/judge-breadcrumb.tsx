@@ -13,7 +13,6 @@ import {
 
 const resourcePaths: Record<string, string> = {
   "/judge/venue": "Venue",
-  "/judge/packing-list": "Packing List",
   "/judge/rules": "Rules",
   "/judge/code-of-conduct": "Code of Conduct",
 };
