@@ -19,8 +19,7 @@ import { statuses as Statuses } from "../data/status";
 
 export const union = <const T extends readonly [string, ...string[]]>(
   values: T,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Validator<any> => {
+): Validator<T[number]> => {
   return v.union(...values.map((value) => v.literal(value)));
 };
 

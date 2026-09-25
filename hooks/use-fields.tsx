@@ -16,6 +16,32 @@ import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRecipient, EmailRole } from "@/types/email";
 import type { TenantSlug } from "./get-tenant";
+import type {
+  ages,
+  affiliations,
+  availabilities,
+  countries,
+  dietrestrictions,
+  genders,
+  grades,
+  majors,
+  schools,
+  shirts,
+  teams,
+} from "@/convex/schema";
+import type { Infer } from "convex/values";
+
+type Gender = Infer<typeof genders>;
+type Shirt = Infer<typeof shirts>;
+type Affiliation = Infer<typeof affiliations>;
+type DietRestriction = Infer<typeof dietrestrictions>;
+type Availabilities = Infer<typeof availabilities>;
+type Major = Infer<typeof majors>;
+type Age = Infer<typeof ages>;
+type Grade = Infer<typeof grades>;
+type Country = Infer<typeof countries>;
+type School = Infer<typeof schools>;
+type Team = Infer<typeof teams>;
 
 export type slugs =
   | "participant"
@@ -87,12 +113,12 @@ export const useFields = () => {
             lastname: lastname,
             email: email,
             telephone: value.telephone as string,
-            gender: value.gender as string,
-            shirt: value.shirt as string,
+            gender: value.gender as Gender,
+            shirt: value.shirt as Shirt,
             discord: value.discord as string,
             terms: Boolean(value.terms),
-            dietrestriction: value.dietrestriction as string,
-            availabilities: value.availabilities as string[],
+            dietrestriction: value.dietrestriction as DietRestriction,
+            availabilities: value.availabilities as Availabilities[],
           },
         });
 
@@ -131,16 +157,16 @@ export const useFields = () => {
             lastname: lastname,
             email: email,
             telephone: value.telephone as string,
-            gender: value.gender as string,
-            shirt: value.shirt as string,
+            gender: value.gender as Gender,
+            shirt: value.shirt as Shirt,
             discord: value.discord as string,
-            major: value.major as string,
-            age: value.age as string,
-            country: value.country as string,
-            school: value.school as string,
-            grade: value.grade as string,
+            major: value.major as Major,
+            age: value.age as Age,
+            country: value.country as Country,
+            school: value.school as School,
+            grade: value.grade as Grade,
             mlh_marketing: Boolean(value.mlh_marketing),
-            dietrestriction: value.dietrestriction as string,
+            dietrestriction: value.dietrestriction as DietRestriction,
             resume: url || undefined,
           },
         });
@@ -150,13 +176,13 @@ export const useFields = () => {
           entity_id: String(result.id),
           role: "participant",
           status: "PENDING",
-          gender: value.gender as string,
-          dietrestriction: value.dietrestriction as string,
-          shirt: value.shirt as string,
-          school: value.school as string,
-          major: value.major as string,
-          age: value.age as string,
-          grade: value.grade as string,
+          gender: value.gender as Gender,
+          dietrestriction: value.dietrestriction as DietRestriction,
+          shirt: value.shirt as Shirt,
+          school: value.school as School,
+          major: value.major as Major,
+          age: value.age as Age,
+          grade: value.grade as Grade,
         });
 
         if (result.user) {
@@ -185,12 +211,12 @@ export const useFields = () => {
             lastname: lastname,
             email: email,
             telephone: value.telephone as string,
-            gender: value.gender as string,
-            shirt: value.shirt as string,
-            affiliation: value.affiliation as string,
+            gender: value.gender as Gender,
+            shirt: value.shirt as Shirt,
+            affiliation: value.affiliation as Affiliation,
             title: value.title as string,
             organization: value.organization as string,
-            dietrestriction: value.dietrestriction as string,
+            dietrestriction: value.dietrestriction as DietRestriction,
             picture: url,
           },
         });
@@ -224,12 +250,12 @@ export const useFields = () => {
             lastname: lastname,
             email: email,
             telephone: value.telephone as string,
-            gender: value.gender as string,
-            shirt: value.shirt as string,
-            affiliation: value.affiliation as string,
+            gender: value.gender as Gender,
+            shirt: value.shirt as Shirt,
+            affiliation: value.affiliation as Affiliation,
             title: value.title as string,
             organization: value.organization as string,
-            dietrestriction: value.dietrestriction as string,
+            dietrestriction: value.dietrestriction as DietRestriction,
             picture: url,
           },
         });
@@ -260,14 +286,14 @@ export const useFields = () => {
             lastname: lastname,
             email: email,
             telephone: value.telephone as string,
-            gender: value.gender as string,
-            shirt: value.shirt as string,
+            gender: value.gender as Gender,
+            shirt: value.shirt as Shirt,
             discord: value.discord as string,
-            major: value.major as string,
-            age: value.age as string,
-            grade: value.grade as string,
-            team: value.team as string,
-            dietrestriction: value.dietrestriction as string,
+            major: value.major as Major,
+            age: value.age as Age,
+            grade: value.grade as Grade,
+            team: value.team as Team,
+            dietrestriction: value.dietrestriction as DietRestriction,
           },
         });
 

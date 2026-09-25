@@ -72,7 +72,7 @@ import type { VettingBatchResult } from "@/lib/vetting/types";
 import { MAX_VETTING_BATCH_SIZE } from "@/lib/vetting/rules";
 import { cn } from "@/lib/utils";
 import { TableToolbar } from "./toolbar";
-import { StatusActions } from "./status-actions";
+import { StatusActions, type ApplicantRow } from "./status-actions";
 
 const emailRolesByDashboard: Partial<Record<string, EmailRole>> = {
   participants: "participant",
@@ -83,14 +83,14 @@ const emailRolesByDashboard: Partial<Record<string, EmailRole>> = {
 };
 
 interface DashboardProps {
-  data: any[];
+  data: unknown[];
   dashboard: {
-    columns: ColumnDef<any>[];
+    columns: unknown[];
     csvFields: string[];
   };
-  onDelete?: (...args: any[]) => any;
-  onDeleteMany?: (...args: any[]) => any;
-  setStatusMany?: (...args: any[]) => any;
+  onDelete?(args: { id: string }): unknown;
+  onDeleteMany?(args: { ids: string[] }): unknown;
+  setStatusMany?(args: { ids: string[]; status: string }): unknown;
   runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
 
@@ -117,11 +117,11 @@ export const DataTable = ({
   const [deleteTarget, setDeleteTarget] = useState<
     | {
         type: "single";
-        id: any;
+        id: string;
       }
     | {
         type: "many";
-        ids: any[];
+        ids: string[];
       }
     | null
   >(null);
@@ -144,12 +144,13 @@ export const DataTable = ({
     runVettingMany,
   } = dashboard;
 
+  const tableColumns = columns as ColumnDef<ApplicantRow>[];
   const visibleColumns = readOnly
-    ? columns.filter((column) => column.id !== "select")
-    : columns;
+    ? tableColumns.filter((column) => column.id !== "select")
+    : tableColumns;
 
-  const table = useReactTable<any>({
-    data,
+  const table = useReactTable<ApplicantRow>({
+    data: data as ApplicantRow[],
     columns: visibleColumns,
     state: {
       sorting,
@@ -173,7 +174,7 @@ export const DataTable = ({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     meta: {
-      onDelete: (id: any) => {
+      onDelete: (id: string) => {
         setDeleteTarget({ type: "single", id });
         setDeleteDialogOpen(true);
       },

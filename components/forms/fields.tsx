@@ -2,7 +2,7 @@
 import { CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
 import { useFields } from "@/hooks/use-fields";
-import { useForm } from "@tanstack/react-form";
+import { useForm, type DeepKeys } from "@tanstack/react-form";
 import { useParams } from "next/navigation";
 import { useFormLock } from "@/hooks/use-form-lock";
 import { toast } from "sonner";
@@ -113,7 +113,10 @@ const Fields = () => {
         <FieldGroup>
           <FieldGroup>
             {fields.map(({ name, children }, key) => (
-              <formInstance.Field key={key} name={name as any}>
+              <formInstance.Field
+                key={key}
+                name={name as DeepKeys<typeof initialValues>}
+              >
                 {(fieldApi) => {
                   const child = children(fieldApi);
                   if (

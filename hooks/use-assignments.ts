@@ -112,7 +112,7 @@ export function useAssignments(tenant: string) {
   // ── Memoised transforms ────────────────────────────────────────────────
   const submissions: SubmissionDisplay[] = useMemo(
     () =>
-      (rawSubmissions ?? []).map((s: any) => ({
+      (rawSubmissions ?? []).map((s) => ({
         _id: s._id as Id<"submissions">,
         teamName: s.teamName,
         projectName: s.projectName,
@@ -122,7 +122,7 @@ export function useAssignments(tenant: string) {
 
   const judges: JudgeDisplay[] = useMemo(
     () =>
-      (rawJudges ?? []).map((j: any) => ({
+      (rawJudges ?? []).map((j) => ({
         _id: j._id as Id<"judges">,
         firstname: j.firstname,
         lastname: j.lastname,
@@ -133,7 +133,7 @@ export function useAssignments(tenant: string) {
 
   const assignments: AssignmentData[] = useMemo(
     () =>
-      (rawAssignments ?? []).map((a: any) => ({
+      (rawAssignments ?? []).map((a) => ({
         judgeId: a.judgeId as Id<"judges">,
         submissionId: a.submissionId as Id<"submissions">,
         room: a.room,
@@ -178,7 +178,7 @@ export function useAssignments(tenant: string) {
   const enrichedAssignments: EnrichedAssignment[] = useMemo(() => {
     if (!rawAssignments || !rawSubmissions || !rawJudges) return [];
 
-    return (rawAssignments as any[]).map((a) => {
+    return rawAssignments.map((a) => {
       const sub = submissionsById.get(a.submissionId as Id<"submissions">);
       const judge = judgesById.get(a.judgeId as Id<"judges">);
       const judgeName = judge ? getJudgeName(judge) : "Unknown Judge";

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { Table } from "@tanstack/react-table";
+import type { RowData, Table } from "@tanstack/react-table";
 import {
   Combobox,
   ComboboxChip,
@@ -182,12 +182,11 @@ function getColumnValue(value: string): string {
   return value.split(":").slice(1).join(":");
 }
 
-export function TableToolbar({
+export function TableToolbar<TData extends RowData>({
   table,
   slug,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  table: Table<any>;
+  table: Table<TData>;
   slug: string;
 }) {
   const anchor = useComboboxAnchor();

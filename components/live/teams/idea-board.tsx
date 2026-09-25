@@ -20,6 +20,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { IconPlus } from "@tabler/icons-react";
 import { roles } from "@/data/roles";
+import type { Id } from "@/convex/_generated/dataModel";
 
 interface IdeaBoardProps {
   tenant: string;
@@ -32,7 +33,9 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
 
   const [newIdeaOpen, setNewIdeaOpen] = useState(false);
   const [deleteIdeaOpen, setDeleteIdeaOpen] = useState(false);
-  const [selectedIdeaId, setSelectedIdeaId] = useState<string | null>(null);
+  const [selectedIdeaId, setSelectedIdeaId] = useState<Id<"ideas"> | null>(
+    null,
+  );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedRolesInput, setSelectedRolesInput] = useState<string[]>([]);
@@ -56,7 +59,7 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
 
   const handleConfirmDelete = async () => {
     if (!selectedIdeaId) return;
-    await removeIdea({ id: selectedIdeaId as any });
+    await removeIdea({ id: selectedIdeaId });
     setDeleteIdeaOpen(false);
     setSelectedIdeaId(null);
   };

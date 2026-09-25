@@ -117,16 +117,11 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
     // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
     // getComputedStyle and replace any unsupported color values with a safe fallback
     const origGetComputedStyle = window.getComputedStyle;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).getComputedStyle = function (...args: any[]) {
-      const styles = origGetComputedStyle.apply(
-        window,
-        args as [Element, string?],
-      );
+    window.getComputedStyle = (element, pseudoElt) => {
+      const styles = origGetComputedStyle.call(window, element, pseudoElt);
       return new Proxy(styles, {
         get(target, prop) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const val = (target as any)[prop];
+          const val: unknown = Reflect.get(target, prop);
           if (
             typeof val === "string" &&
             (val.includes("lab(") || val.includes("oklch("))
@@ -151,8 +146,7 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
         .from(certElement)
         .save();
     } finally {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).getComputedStyle = origGetComputedStyle;
+      window.getComputedStyle = origGetComputedStyle;
     }
 
     document.body.removeChild(iframe);

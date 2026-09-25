@@ -17,7 +17,7 @@ import type { Table } from "@tanstack/react-table";
 
 type DecisionStatus = Exclude<EmailType, "CONFIRMATION"> | "PENDING";
 
-interface ApplicantRow {
+export interface ApplicantRow {
   _id: string;
   firstname: string;
   lastname: string;
