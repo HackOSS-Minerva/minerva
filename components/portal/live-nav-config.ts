@@ -25,6 +25,11 @@ export const liveDropdowns: DropdownConfig[] = [
         description: "Access tools and resources for your project.",
       },
       {
+        href: "/live/dev-tools",
+        label: "Dev Tools",
+        description: "Browse AI tools, editors, and services.",
+      },
+      {
         href: "/live/packing-list",
         label: "Packing List",
         description: "Check what to bring to the event.",
