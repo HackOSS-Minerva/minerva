@@ -9,19 +9,14 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { useSchedule } from "@/hooks/use-schedule";
 import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxGroup,
-  ComboboxLabel,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { UserCheck } from "lucide-react";
 import { captureAnalyticsEvent } from "@/lib/posthog";
@@ -36,13 +31,10 @@ interface DecodedQR {
 }
 
 const CheckinContent = () => {
-  const anchor = useComboboxAnchor();
   const params = useParams<{ tenant: string }>();
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [lastScan, setLastScan] = useState<DecodedQR | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
-  const [inputValue, setInputValue] = React.useState("");
-  const isSelecting = React.useRef(false);
   const setIsCheckingIn = useState(false)[1];
 
   const { data: schedule, isLoading, isError, error } = useSchedule();
@@ -60,8 +52,8 @@ const CheckinContent = () => {
     });
   };
 
-  // Build filter options grouped by day, matching toolbar pattern
-  const allFilterOptions = React.useMemo(() => {
+  // Build event options grouped by day
+  const eventOptions = React.useMemo(() => {
     return events.map((event) => {
       const day = getDayOfWeek(
         event.start.dateTime,
@@ -75,27 +67,16 @@ const CheckinContent = () => {
     });
   }, [events]);
 
-  // Filter options based on input value
-  const filteredOptions = React.useMemo(() => {
-    if (!inputValue) return allFilterOptions;
-    const q = inputValue.toLowerCase();
-    return allFilterOptions.filter(
-      (opt) =>
-        opt.label.toLowerCase().includes(q) ||
-        opt.group.toLowerCase().includes(q),
-    );
-  }, [inputValue, allFilterOptions]);
-
   // Group options for rendering
-  const groupedOptions = React.useMemo(() => {
-    const map = new Map<string, typeof allFilterOptions>();
-    for (const opt of filteredOptions) {
+  const groupedEventOptions = React.useMemo(() => {
+    const map = new Map<string, typeof eventOptions>();
+    for (const opt of eventOptions) {
       const group = map.get(opt.group) ?? [];
       group.push(opt);
       map.set(opt.group, group);
     }
     return Array.from(map.entries());
-  }, [filteredOptions]);
+  }, [eventOptions]);
 
   const onDecodeResult = useCallback(
     async (result: { getText: () => string }) => {
@@ -220,60 +201,31 @@ const CheckinContent = () => {
 
   return (
     <div className="flex h-full flex-col gap-6">
-      {/* Event selector - toolbar style */}
-      <Combobox
-        value={selectedEventId}
-        onValueChange={(value: string | null) => {
-          setSelectedEventId(value ?? "");
-          setInputValue("");
-          isSelecting.current = true;
-        }}
-        onInputValueChange={(value: string) => {
-          if (isSelecting.current) {
-            isSelecting.current = false;
-            return;
-          }
-          setInputValue(value);
-        }}
-        filteredItems={filteredOptions}
+      {/* Event selector */}
+      <Select
+        value={selectedEventId || undefined}
+        onValueChange={setSelectedEventId}
       >
-        <ComboboxChips ref={anchor} className="w-full min-w-0">
-          <ComboboxValue>
-            {(value: string) => {
-              if (!value) return null;
-              const option = allFilterOptions.find((o) => o.value === value);
-              const label = option?.label ?? value;
-              const group = option?.group ?? "";
-
-              return (
-                <ComboboxChip key={value}>
-                  {group ? `${group}: ${label}` : label}
-                </ComboboxChip>
-              );
-            }}
-          </ComboboxValue>
-          <ComboboxChipsInput
+        <SelectTrigger className="w-full">
+          <SelectValue
             placeholder={
               events.length > 0 ? "Select an event..." : "No events available"
             }
           />
-        </ComboboxChips>
-        <ComboboxContent anchor={anchor}>
-          <ComboboxEmpty>No events found.</ComboboxEmpty>
-          <ComboboxList>
-            {groupedOptions.map(([groupLabel, options]) => (
-              <ComboboxGroup key={groupLabel}>
-                <ComboboxLabel>{groupLabel}</ComboboxLabel>
-                {options.map((opt) => (
-                  <ComboboxItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </ComboboxItem>
-                ))}
-              </ComboboxGroup>
-            ))}
-          </ComboboxList>
-        </ComboboxContent>
-      </Combobox>
+        </SelectTrigger>
+        <SelectContent>
+          {groupedEventOptions.map(([groupLabel, options]) => (
+            <SelectGroup key={groupLabel}>
+              <SelectLabel>{groupLabel}</SelectLabel>
+              {options.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          ))}
+        </SelectContent>
+      </Select>
 
       {/* QR Scanner */}
       <div className="rounded-lg border bg-muted p-3">

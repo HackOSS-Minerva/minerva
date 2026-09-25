@@ -1,30 +1,22 @@
 "use client";
 import { useParams } from "next/navigation";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useSchedule } from "@/hooks/use-schedule";
 import { useDashboard } from "@/hooks/use-dashboard";
 import { DataTable } from "./datatable";
 import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxGroup,
-  ComboboxLabel,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Dashboard = () => {
   const { dashboard: slug } = useParams<{ dashboard: string }>();
-  const anchor = useComboboxAnchor();
   const [selectedEventId, setSelectedEventId] = useState<string>("");
-  const [inputValue, setInputValue] = useState("");
-  const isSelecting = useRef(false);
 
   const { data: schedule } = useSchedule();
 
@@ -41,7 +33,7 @@ const Dashboard = () => {
     });
   };
 
-  const allFilterOptions = useMemo(() => {
+  const eventOptions = useMemo(() => {
     return events.map((event) => {
       const day = getDayOfWeek(
         event.start.dateTime,
@@ -55,25 +47,15 @@ const Dashboard = () => {
     });
   }, [events]);
 
-  const filteredOptions = useMemo(() => {
-    if (!inputValue) return allFilterOptions;
-    const q = inputValue.toLowerCase();
-    return allFilterOptions.filter(
-      (opt) =>
-        opt.label.toLowerCase().includes(q) ||
-        opt.group.toLowerCase().includes(q),
-    );
-  }, [inputValue, allFilterOptions]);
-
-  const groupedOptions = useMemo(() => {
-    const map = new Map<string, typeof allFilterOptions>();
-    for (const opt of filteredOptions) {
+  const groupedEventOptions = useMemo(() => {
+    const map = new Map<string, typeof eventOptions>();
+    for (const opt of eventOptions) {
       const group = map.get(opt.group) ?? [];
       group.push(opt);
       map.set(opt.group, group);
     }
     return Array.from(map.entries());
-  }, [filteredOptions]);
+  }, [eventOptions]);
 
   if (dashboard.data === undefined) return <div>Loading...</div>;
 
@@ -81,63 +63,32 @@ const Dashboard = () => {
     <div className="flex flex-col gap-6">
       {slug === "attendance" && (
         <div>
-          <Combobox
-            value={selectedEventId}
-            onValueChange={(value: string | null) => {
-              setSelectedEventId(value ?? "");
-              setInputValue("");
-              isSelecting.current = true;
-            }}
-            onInputValueChange={(value: string) => {
-              if (isSelecting.current) {
-                isSelecting.current = false;
-                return;
-              }
-              setInputValue(value);
-            }}
-            filteredItems={filteredOptions}
+          <Select
+            value={selectedEventId || undefined}
+            onValueChange={setSelectedEventId}
           >
-            <ComboboxChips ref={anchor} className="w-full min-w-0">
-              <ComboboxValue>
-                {(value: string) => {
-                  if (!value) return null;
-                  const option = allFilterOptions.find(
-                    (o) => o.value === value,
-                  );
-                  const label = option?.label ?? value;
-                  const group = option?.group ?? "";
-
-                  return (
-                    <ComboboxChip key={value}>
-                      {group ? `${group}: ${label}` : label}
-                    </ComboboxChip>
-                  );
-                }}
-              </ComboboxValue>
-              <ComboboxChipsInput
+            <SelectTrigger className="w-full">
+              <SelectValue
                 placeholder={
                   events.length > 0
                     ? "Select an event to view attendance..."
                     : "No events available"
                 }
               />
-            </ComboboxChips>
-            <ComboboxContent anchor={anchor}>
-              <ComboboxEmpty>No events found.</ComboboxEmpty>
-              <ComboboxList>
-                {groupedOptions.map(([groupLabel, options]) => (
-                  <ComboboxGroup key={groupLabel}>
-                    <ComboboxLabel>{groupLabel}</ComboboxLabel>
-                    {options.map((opt) => (
-                      <ComboboxItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxGroup>
-                ))}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
+            </SelectTrigger>
+            <SelectContent>
+              {groupedEventOptions.map(([groupLabel, options]) => (
+                <SelectGroup key={groupLabel}>
+                  <SelectLabel>{groupLabel}</SelectLabel>
+                  {options.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
       <DataTable dashboard={dashboard} />
