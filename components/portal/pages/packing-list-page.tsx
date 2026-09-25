@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { PackingChecklist } from "@/components/live/dashboard/packing-checklist";
+import { PackingChecklist } from "@/components/portal/pages/packing-checklist";
 
 interface PackingListPageProps {
   tenant: string;

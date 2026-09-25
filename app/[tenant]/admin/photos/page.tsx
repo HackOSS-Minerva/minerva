@@ -17,7 +17,7 @@ const AdminPhotosRoute = async ({ params }: AdminPhotosRouteProps) => {
   if (!getFeatureFlag("photos")) {
     return (
       <AdminShell title="Photos">
-        <FeatureGateModal reason="locked" />
+        <FeatureGateModal reason="disabled" />
       </AdminShell>
     );
   }

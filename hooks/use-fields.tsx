@@ -12,7 +12,6 @@ import { captureAnalyticsEvent } from "@/lib/posthog";
 import { useEmail } from "./use-email";
 import { getTenant } from "./get-tenant";
 import { uploadFile } from "../lib/storage";
-import { toast } from "sonner";
 import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRecipient, EmailRole } from "@/types/email";
@@ -54,7 +53,6 @@ export const useFields = () => {
     role: EmailRole,
     user: EmailRecipient,
     id: string,
-    tenant: TenantSlug,
   ) => {
     try {
       await sendEmail({
@@ -110,7 +108,6 @@ export const useFields = () => {
             "volunteer",
             result.user,
             String(result.id),
-            tenant,
           );
         }
 
@@ -167,7 +164,6 @@ export const useFields = () => {
             "participant",
             result.user,
             String(result.id),
-            tenant,
           );
         }
 
@@ -207,12 +203,7 @@ export const useFields = () => {
         });
 
         if (result.user) {
-          await sendConfirmationEmail(
-            "judge",
-            result.user,
-            String(result.id),
-            tenant,
-          );
+          await sendConfirmationEmail("judge", result.user, String(result.id));
         }
 
         return result;
@@ -255,7 +246,6 @@ export const useFields = () => {
             "speaker",
             result.user,
             String(result.id),
-            tenant,
           );
         }
 
@@ -293,7 +283,6 @@ export const useFields = () => {
             "superadmin",
             result.user,
             String(result.id),
-            tenant,
           );
         }
 

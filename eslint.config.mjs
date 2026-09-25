@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Convex-generated bindings are not hand-edited; don't lint them.
+    "convex/_generated/**",
   ]),
   {
     rules: {

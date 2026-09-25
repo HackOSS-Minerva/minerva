@@ -1,6 +1,10 @@
 "use client";
 
-import { getFeatureFlag, type FeatureFlagKey } from "@/lib/feature-flags";
+import {
+  FEATURE_FLAGS,
+  getFeatureFlag,
+  type FeatureFlagKey,
+} from "@/lib/feature-flags";
 
 export type { FeatureFlagKey } from "@/lib/feature-flags";
 
@@ -21,4 +25,22 @@ export function useFeatureFlag<K extends FeatureFlagKey>(
   flag: K,
 ): UseFeatureFlagResult<K> {
   return { flag, isEnabled: getFeatureFlag(flag) };
+}
+
+/**
+ * Resolve every registered flag in a single, order-stable hook call.
+ *
+ * Use this instead of calling {@link useFeatureFlag} in a loop: hook order must
+ * be identical on every render, so a loop whose length depends on props/state
+ * (e.g. the flags referenced by a dynamic nav config) is unsafe. The registry is
+ * a compile-time constant, so this is a single call with a fixed evaluation
+ * order in every environment.
+ */
+export function useFeatureFlags(): Record<FeatureFlagKey, boolean> {
+  return Object.fromEntries(
+    (Object.keys(FEATURE_FLAGS) as FeatureFlagKey[]).map((key) => [
+      key,
+      getFeatureFlag(key),
+    ]),
+  ) as Record<FeatureFlagKey, boolean>;
 }

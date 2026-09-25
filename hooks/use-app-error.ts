@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback } from "react";
 import { toast } from "sonner";
 import { AppError, getUserMessage, toErrorCode } from "@/lib/app-error";
 import { isConvexErrorCode } from "@/convex/app_error";
@@ -27,12 +26,4 @@ export const toastAppError = (error: unknown, fallback?: string): string => {
     ...(requestId ? { description: `Request ID: ${requestId}` } : {}),
   });
   return message;
-};
-
-export const useAppError = () => {
-  const notify = useCallback(
-    (error: unknown, fallback?: string) => toastAppError(error, fallback),
-    [],
-  );
-  return { toastAppError: notify, resolveAppErrorCode, getUserMessage };
 };

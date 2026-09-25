@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDownIcon, ExternalLink, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
-import { useFeatureFlag } from "@/hooks/use-feature-flags";
+import { useFeatureFlags } from "@/hooks/use-feature-flags";
 import type { FeatureFlagKey } from "@/lib/feature-flags";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -76,23 +76,10 @@ export function PortalNav({
   const { config } = getTenant(tenant);
   const logo = config?.logo;
 
-  // Collect all feature flag keys used across nav items and dropdown items
-  const flagKeys: FeatureFlagKey[] = [
-    ...new Set(
-      [...navItems, ...dropdowns.flatMap((d) => d.items)]
-        .map((item) => item.featureFlagKey)
-        .filter((key): key is FeatureFlagKey => key !== undefined)
-        .sort(),
-    ),
-  ];
-
-  const enabled: Record<FeatureFlagKey, boolean> = {} as Record<
-    FeatureFlagKey,
-    boolean
-  >;
-  for (const key of flagKeys) {
-    enabled[key] = useFeatureFlag(key).isEnabled;
-  }
+  // Feature-flagged nav items are hidden when their flag is off. All flags are
+  // resolved in one order-stable hook call (hook order must never depend on the
+  // nav config's contents).
+  const enabled = useFeatureFlags();
 
   const visibleNavItems = navItems.filter(
     (item) => !item.featureFlagKey || enabled[item.featureFlagKey],
