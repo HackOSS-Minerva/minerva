@@ -1,7 +1,5 @@
 import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal";
-import { AppSidebar } from "@/components/dashboards/sidebar";
-import { SiteHeader } from "@/components/dashboards/header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AdminShell } from "@/components/dashboards/admin-shell";
 import AssignmentsContent from "@/components/admin/assignments-page";
 import { getAdminPageLock } from "@/lib/admin-locks";
 import { getFeatureFlag } from "@/lib/feature-flags";
@@ -17,35 +15,14 @@ export default async function AssignmentsPage({
   const { tenant } = await params;
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader>Assignments</SiteHeader>
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex py-4 md:gap-6 md:py-6">
-              {!getFeatureFlag("assignments") ? (
-                <div className="w-full">
-                  <FeatureGateModal reason="disabled" />
-                </div>
-              ) : getAdminPageLock(tenant, "assignments") ? (
-                <div className="w-full">
-                  <FeatureGateModal reason="locked" />
-                </div>
-              ) : (
-                <AssignmentsContent />
-              )}
-            </div>
-          </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <AdminShell title="Assignments">
+      {!getFeatureFlag("assignments") ? (
+        <FeatureGateModal reason="disabled" />
+      ) : getAdminPageLock(tenant, "assignments") ? (
+        <FeatureGateModal reason="locked" />
+      ) : (
+        <AssignmentsContent />
+      )}
+    </AdminShell>
   );
 }

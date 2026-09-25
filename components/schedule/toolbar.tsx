@@ -138,7 +138,7 @@ export function ScheduleToolbar({
   }, [filteredOptions]);
 
   return (
-    <div className="flex flex-col gap-3 px-4 lg:px-6">
+    <div className="flex flex-col gap-3">
       {/* Grouped filter combobox */}
       <div className="flex items-center gap-2">
         <Combobox

@@ -80,7 +80,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col gap-6">
       {slug === "attendance" && (
-        <div className="px-4 lg:px-6">
+        <div>
           <Combobox
             value={selectedEventId}
             onValueChange={(value: string | null) => {

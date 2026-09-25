@@ -1,7 +1,5 @@
 import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal";
-import { AppSidebar } from "@/components/dashboards/sidebar";
-import { SiteHeader } from "@/components/dashboards/header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AdminShell } from "@/components/dashboards/admin-shell";
 import Dashboard from "@/components/dashboards/dashboard";
 import { getAdminPageLock } from "@/lib/admin-locks";
 import type { TenantSlug } from "@/hooks/get-tenant";
@@ -29,30 +27,13 @@ const Page = async ({ params }: PageProps) => {
   const title = DASHBOARD_TITLES[dashboard] ?? "Dashboard";
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader>{title}</SiteHeader>
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              {getAdminPageLock(tenant, dashboard) ? (
-                <FeatureGateModal reason="locked" />
-              ) : (
-                <Dashboard />
-              )}
-            </div>
-          </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <AdminShell title={title}>
+      {getAdminPageLock(tenant, dashboard) ? (
+        <FeatureGateModal reason="locked" />
+      ) : (
+        <Dashboard />
+      )}
+    </AdminShell>
   );
 };
 

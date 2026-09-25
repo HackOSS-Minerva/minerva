@@ -193,7 +193,7 @@ const CheckinContent = () => {
   // --- Loading state ---
   if (isLoading) {
     return (
-      <div className="flex h-full flex-col gap-6 px-4 lg:px-6">
+      <div className="flex h-full flex-col gap-6">
         <div className="h-9 w-32 animate-pulse rounded bg-muted" />
         <div className="h-10 w-full animate-pulse rounded-lg bg-muted" />
         <div className="aspect-[4/3] w-full animate-pulse rounded-lg bg-muted" />
@@ -204,7 +204,7 @@ const CheckinContent = () => {
   // --- Error state ---
   if (isError) {
     return (
-      <div className="flex h-full flex-col gap-6 px-4 lg:px-6">
+      <div className="flex h-full flex-col gap-6">
         <span className="text-2xl font-bold">Checkin</span>
         <div className="rounded-lg border border-destructive/50 p-4">
           <p className="text-lg font-semibold text-destructive">
@@ -219,7 +219,7 @@ const CheckinContent = () => {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6 px-4 lg:px-6">
+    <div className="flex h-full flex-col gap-6">
       {/* Event selector - toolbar style */}
       <Combobox
         value={selectedEventId}

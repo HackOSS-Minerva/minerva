@@ -89,7 +89,7 @@ export function DataTable<TData, TValue>({
     <div className="flex w-full flex-col justify-start gap-6">
       <ScheduleToolbar table={table} />
       {/* Table */}
-      <div className="overflow-hidden rounded-lg border mx-4 lg:mx-6">
+      <div className="overflow-hidden rounded-lg border">
         <Table>
           <TableHeader className="bg-muted sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -141,7 +141,7 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-4 py-4 lg:px-6">
+      <div className="flex items-center justify-between py-4">
         <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.

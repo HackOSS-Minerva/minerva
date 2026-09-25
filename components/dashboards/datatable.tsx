@@ -247,7 +247,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
 
   return (
     <Tabs defaultValue="outline">
-      <div className="flex items-start px-4 lg:px-6 gap-2">
+      <div className="flex items-start gap-2">
         {emailRole && (
           <StatusActions
             table={table}
@@ -386,7 +386,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       </div>
       <TabsContent
         value="outline"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
+        className="relative flex flex-col gap-4 overflow-auto"
       >
         <div className="overflow-hidden rounded-lg border">
           <Table className={isSubmissions ? "table-fixed" : undefined}>
@@ -452,7 +452,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-between px-4">
+        <div className="flex items-center justify-between">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
             {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -530,13 +530,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
           </div>
         </div>
       </TabsContent>
-      <TabsContent value="pending" className="flex flex-col px-4 lg:px-6">
+      <TabsContent value="pending" className="flex flex-col">
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
-      <TabsContent value="accepted" className="flex flex-col px-4 lg:px-6">
+      <TabsContent value="accepted" className="flex flex-col">
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
-      <TabsContent value="rejected" className="flex flex-col px-4 lg:px-6">
+      <TabsContent value="rejected" className="flex flex-col">
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
 
