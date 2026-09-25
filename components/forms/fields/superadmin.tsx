@@ -27,6 +27,8 @@ import Link from "next/link";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { statuses } from "@/data/status";
 
+import type { AnyFieldApi } from "@tanstack/react-form";
+
 export const metadata = {
   id: "superadmin-form",
 };
@@ -81,7 +83,7 @@ export const schema = z.object({
 export const fields = [
   {
     name: "firstname",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -119,7 +121,7 @@ export const fields = [
   },
   {
     name: "lastname",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -156,7 +158,7 @@ export const fields = [
   },
   {
     name: "email",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -182,7 +184,7 @@ export const fields = [
   },
   {
     name: "telephone",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -208,7 +210,7 @@ export const fields = [
   },
   {
     name: "discord",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -246,7 +248,7 @@ export const fields = [
   },
   {
     name: "major",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -274,7 +276,7 @@ export const fields = [
   },
   {
     name: "age",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -302,7 +304,7 @@ export const fields = [
   },
   {
     name: "grade",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -330,7 +332,7 @@ export const fields = [
   },
   {
     name: "team",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -360,7 +362,7 @@ export const fields = [
   },
   {
     name: "gender",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -390,7 +392,7 @@ export const fields = [
   },
   {
     name: "shirt",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -420,7 +422,7 @@ export const fields = [
   },
   {
     name: "dietrestriction",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>
@@ -450,7 +452,7 @@ export const fields = [
   },
   {
     name: "terms",
-    children: (field: any) => {
+    children: (field: AnyFieldApi) => {
       const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
       return (
         <Field data-invalid={isInvalid}>

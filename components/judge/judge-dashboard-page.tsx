@@ -48,7 +48,7 @@ export function JudgeDashboardPage({
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
       <Separator className="my-6" />
 
-      <CheckinSection tenant={tenant} />
+      <CheckinSection />
       <Separator className="my-6" />
 
       <ScheduleSection />

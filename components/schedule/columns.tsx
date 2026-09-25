@@ -6,6 +6,7 @@ import { ArrowUpDown, ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getDayOfWeek } from "@/lib/schedule";
 
 const formatTime = (dateTime: string, timeZone: string) => {
   return new Date(dateTime).toLocaleTimeString("en-US", {
@@ -27,13 +28,6 @@ const getEventStatus = (start: string, end: string): EventStatus => {
   return "planned";
 };
 
-const getDayOfWeek = (dateTime: string, timeZone: string): string => {
-  return new Date(dateTime).toLocaleDateString("en-US", {
-    weekday: "long",
-    timeZone: timeZone,
-  });
-};
-
 const statusVariant = (
   status: EventStatus,
 ): "default" | "secondary" | "destructive" | "outline" => {
@@ -44,8 +38,6 @@ const statusVariant = (
       return "secondary";
     case "completed":
       return "outline";
-    default:
-      return "outline";
   }
 };
 
@@ -55,13 +47,7 @@ const eventStatusFilter = (
   filterValues: string[],
 ) => {
   const { start, end } = row.original;
-  const now = Date.now();
-  const startTime = new Date(start.dateTime).getTime();
-  const endTime = new Date(end.dateTime).getTime();
-  let status: string;
-  if (now > endTime) status = "completed";
-  else if (now >= startTime && now <= endTime) status = "ongoing";
-  else status = "planned";
+  const status = getEventStatus(start.dateTime, end.dateTime);
   return filterValues.includes(status);
 };
 

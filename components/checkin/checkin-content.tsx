@@ -1,7 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useParams } from "next/navigation";
 import { useZxing } from "react-zxing";
 import { useMutation } from "convex/react";
@@ -22,6 +21,7 @@ import { UserCheck } from "lucide-react";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { getUserMessage } from "@/lib/app-error";
 import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
+import { groupEventsByDay } from "@/lib/schedule";
 
 interface DecodedQR {
   id: string;
@@ -35,48 +35,21 @@ const CheckinContent = () => {
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [lastScan, setLastScan] = useState<DecodedQR | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
-  const setIsCheckingIn = useState(false)[1];
+  const [, setIsCheckingIn] = useState(false);
 
   const { data: schedule, isLoading, isError, error } = useSchedule();
   const doCheckin = useMutation(api.checkins.checkin);
 
   const tenant = params.tenant;
 
-  const events = schedule?.items?.filter((event) => event.summary) ?? [];
+  const events = useMemo(
+    () => schedule?.items?.filter((event) => event.summary) ?? [],
+    [schedule],
+  );
   const isPaused = !selectedEventId;
 
-  const getDayOfWeek = (dateTime: string, timeZone: string): string => {
-    return new Date(dateTime).toLocaleDateString("en-US", {
-      weekday: "long",
-      timeZone: timeZone,
-    });
-  };
-
-  // Build event options grouped by day
-  const eventOptions = React.useMemo(() => {
-    return events.map((event) => {
-      const day = getDayOfWeek(
-        event.start.dateTime,
-        event.start.timeZone ?? "America/New_York",
-      );
-      return {
-        value: event.id,
-        label: event.summary,
-        group: day,
-      };
-    });
-  }, [events]);
-
-  // Group options for rendering
-  const groupedEventOptions = React.useMemo(() => {
-    const map = new Map<string, typeof eventOptions>();
-    for (const opt of eventOptions) {
-      const group = map.get(opt.group) ?? [];
-      group.push(opt);
-      map.set(opt.group, group);
-    }
-    return Array.from(map.entries());
-  }, [eventOptions]);
+  // Grouped options for the event selector
+  const groupedEventOptions = useMemo(() => groupEventsByDay(events), [events]);
 
   const onDecodeResult = useCallback(
     async (result: { getText: () => string }) => {

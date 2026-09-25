@@ -13,13 +13,7 @@ const guestQR = JSON.stringify({
   email: "guest@example.com",
 });
 
-interface CheckinSectionProps {
-  tenant: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function CheckinSection({ tenant }: CheckinSectionProps) {
-  // tenant is passed from parent but not yet used in this component
+export function CheckinSection() {
   const hasCheckedIn = false; // TODO: wire up real check-in status
 
   return (

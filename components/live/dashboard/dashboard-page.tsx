@@ -50,7 +50,7 @@ export function DashboardPage({
       <Separator className="my-6" />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <CheckinSection tenant={tenant} />
+        <CheckinSection />
 
         <SubmissionSection
           tenant={tenant}

@@ -22,10 +22,3 @@ export type SendEmailPayload = {
   user: EmailRecipient;
   idempotencyKey: string;
 };
-
-export type EmailPayload = {
-  name: string;
-  position: string;
-  preview: string;
-  type: EmailType;
-};
