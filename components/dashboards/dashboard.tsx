@@ -25,13 +25,34 @@ const Dashboard = () => {
     slug === "attendance" ? selectedEventId || undefined : undefined;
   const dashboard = useDashboard(eventid);
 
+  // Narrow the correlated bundle per slug so `DataTable` infers one concrete
+  // row type per dashboard.
+  const renderTable = () => {
+    switch (dashboard.slug) {
+      case "participants":
+        return <DataTable dashboard={dashboard} />;
+      case "judges":
+        return <DataTable dashboard={dashboard} />;
+      case "speakers":
+        return <DataTable dashboard={dashboard} />;
+      case "superadmins":
+        return <DataTable dashboard={dashboard} />;
+      case "volunteers":
+        return <DataTable dashboard={dashboard} />;
+      case "attendance":
+        return <DataTable dashboard={dashboard} />;
+      case "feedback":
+        return <DataTable dashboard={dashboard} />;
+      case "submissions":
+        return <DataTable dashboard={dashboard} />;
+    }
+  };
+
   const events = useMemo(
     () => schedule?.items?.filter((event) => event.summary) ?? [],
     [schedule],
   );
   const groupedEventOptions = useMemo(() => groupEventsByDay(events), [events]);
-
-  if (dashboard.data === undefined) return <div>Loading...</div>;
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,7 +86,7 @@ const Dashboard = () => {
           </Select>
         </div>
       )}
-      <DataTable dashboard={dashboard} />
+      {renderTable()}
     </div>
   );
 };

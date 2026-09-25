@@ -11,19 +11,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
+import type { Doc } from "@/convex/_generated/dataModel";
 
-interface CheckinRecord {
-  _id: string;
-  _creationTime: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  role: string;
-  timestamp: number;
-  eventid: string;
-  userid: string;
-  tenant: string;
-}
+type CheckinRecord = Doc<"checkins">;
 
 export const metadata = {
   title: "Attendance",

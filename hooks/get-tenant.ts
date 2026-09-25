@@ -99,7 +99,7 @@ const tenantContent = {
 
 type TenantContent = (typeof tenantContent)[TenantSlug];
 
-const isTenantSlug = (slug: string): slug is TenantSlug =>
+export const isTenantSlug = (slug: string): slug is TenantSlug =>
   tenantSlugs.includes(slug as TenantSlug);
 
 export function getTenant(slug: TenantSlug): {

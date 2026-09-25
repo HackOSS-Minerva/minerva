@@ -3,8 +3,8 @@
 import { useParams } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { getTenant, type TenantSlug } from "./get-tenant";
-import type { FunctionReference } from "convex/server";
 import * as participants from "@/components/dashboards/dashboards/participants";
 import * as judges from "@/components/dashboards/dashboards/judges";
 import * as speakers from "@/components/dashboards/dashboards/speakers";
@@ -18,6 +18,7 @@ import {
   type AnalyticsRole,
   type ApplicationStatus,
 } from "@/lib/posthog";
+import type { VettingBatchResult } from "@/lib/vetting/types";
 import { useSubmissionVetting } from "./use-submissions";
 
 type slugs =
@@ -30,16 +31,51 @@ type slugs =
   | "feedback"
   | "submissions";
 
-type DashboardQueryArgs = { tenant: string; eventid?: string };
+/** Dashboard column/csv modules, keyed by route slug. */
+type DashboardModules = {
+  participants: typeof participants;
+  judges: typeof judges;
+  speakers: typeof speakers;
+  superadmins: typeof superadmins;
+  volunteers: typeof volunteers;
+  attendance: typeof attendance;
+  feedback: typeof feedback;
+  submissions: typeof submissions;
+};
 
-type DashboardQuery = FunctionReference<
-  "query",
-  "public",
-  DashboardQueryArgs,
-  unknown
->;
+/** Row shape returned by each dashboard's Convex query, keyed by route slug. */
+type DashboardRowMap = {
+  participants: Doc<"participants">;
+  judges: Doc<"judges">;
+  speakers: Doc<"speakers">;
+  superadmins: Doc<"superadmins">;
+  volunteers: Doc<"volunteers">;
+  attendance: Doc<"checkins">;
+  feedback: Doc<"feedback">;
+  submissions: Doc<"submissions">;
+};
 
-const DASHBOARDS = {
+/**
+ * Correlated view of everything a dashboard table needs: the discriminant
+ * (`slug`) ties the row data, the column module, and the callbacks together so
+ * consumers can narrow with a single `switch`.
+ */
+export type DashboardBundle = {
+  [S in slugs]: {
+    slug: S;
+    dashboard: DashboardModules[S];
+    data: DashboardRowMap[S][];
+    onDelete(args: { id: string }): Promise<unknown>;
+    onDeleteMany(args: { ids: string[] }): Promise<unknown>;
+    setStatusMany?(args: {
+      ids: string[];
+      status: ApplicationStatus;
+    }): Promise<unknown>;
+    runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
+  };
+}[slugs];
+
+const DASHBOARDS: DashboardModules = {
   participants,
   judges,
   speakers,
@@ -48,7 +84,18 @@ const DASHBOARDS = {
   attendance,
   feedback,
   submissions,
-} as const;
+};
+
+/**
+ * Convex mutations take branded `Id<Table>` arguments (compile-time only; the
+ * brand is a plain string at runtime), while dashboard callbacks receive row
+ * ids as plain strings from table selection. This helper is the single
+ * conversion point between the two.
+ */
+const adaptMutationArgs = <TArgs extends object>(
+  mutation: (args: never) => unknown,
+): ((args: TArgs) => Promise<unknown>) =>
+  mutation as unknown as (args: TArgs) => Promise<unknown>;
 
 const applicationRoleByDashboard = {
   participants: "participant",
@@ -58,7 +105,7 @@ const applicationRoleByDashboard = {
   volunteers: "volunteer",
 } as const satisfies Partial<Record<slugs, AnalyticsRole>>;
 
-const QUERIES: Record<slugs, DashboardQuery> = {
+const QUERIES = {
   participants: api.participants.get,
   judges: api.judges.get,
   speakers: api.speakers.get,
@@ -67,7 +114,7 @@ const QUERIES: Record<slugs, DashboardQuery> = {
   attendance: api.checkins.getByEvent,
   feedback: api.feedback.get,
   submissions: api.submissions.get,
-};
+} as const;
 
 export const useDashboard = (eventid?: string) => {
   const { dashboard, tenant } = useParams<{
@@ -146,19 +193,15 @@ export const useDashboard = (eventid?: string) => {
   };
 
   const onDeleteWithAnalytics = async ({ id }: { id: string }) => {
-    const mutation = onDelete as unknown as (args: {
-      id: string;
-    }) => Promise<unknown>;
-    const result = await mutation({ id });
+    const callDelete = adaptMutationArgs<{ id: string }>(onDelete);
+    const result = await callDelete({ id });
     captureDeletion(id);
     return result;
   };
 
   const onDeleteManyWithAnalytics = async ({ ids }: { ids: string[] }) => {
-    const mutation = onDeleteMany as unknown as (args: {
-      ids: string[];
-    }) => Promise<unknown>;
-    const result = await mutation({ ids });
+    const callDeleteMany = adaptMutationArgs<{ ids: string[] }>(onDeleteMany);
+    const result = await callDeleteMany({ ids });
     ids.forEach(captureDeletion);
     return result;
   };
@@ -170,11 +213,11 @@ export const useDashboard = (eventid?: string) => {
     ids: string[];
     status: ApplicationStatus;
   }) => {
-    const mutation = setStatusMany as unknown as (args: {
+    const callSetStatusMany = adaptMutationArgs<{
       ids: string[];
       status: ApplicationStatus;
-    }) => Promise<unknown>;
-    const result = await mutation({ ids, status });
+    }>(setStatusMany);
+    const result = await callSetStatusMany({ ids, status });
 
     if (role) {
       for (const id of ids) {
@@ -190,14 +233,19 @@ export const useDashboard = (eventid?: string) => {
     return result;
   };
 
+  // Single correlation cast: the runtime `slug` determines which member of
+  // `DashboardBundle` this object is (row data, column module, and callbacks
+  // all line up for that slug) — a relationship TypeScript cannot verify
+  // across separately-computed dynamic key lookups.
   return {
+    slug,
     dashboard: DASHBOARDS[slug],
-    data: (data ?? []) as unknown[],
+    data: data ?? [],
     onDelete: shouldCaptureDeletion ? onDeleteWithAnalytics : onDelete,
     onDeleteMany: shouldCaptureDeletion
       ? onDeleteManyWithAnalytics
       : onDeleteMany,
     setStatusMany: role ? setStatusManyWithAnalytics : setStatusMany,
     runVettingMany: slug === "submissions" ? runVettingMany : undefined,
-  } as const;
+  } as DashboardBundle;
 };

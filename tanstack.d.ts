@@ -1,10 +1,14 @@
-import { type RowData } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { ApplicationStatus } from "@/lib/posthog";
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface TableMeta<TData extends RowData> {
     onDelete: (id: string) => void;
-    setStatusMany: (args: { ids: string[]; status: string }) => Promise<void>;
+    setStatusMany: (args: {
+      ids: string[];
+      status: ApplicationStatus;
+    }) => Promise<void>;
   }
 }
 

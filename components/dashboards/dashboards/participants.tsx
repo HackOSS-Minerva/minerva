@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { ColumnDef } from "@tanstack/react-table";
-import { z } from "zod";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { schema as participantSchema } from "@/components/forms/fields/participant";
 import {
@@ -59,7 +59,7 @@ export const csvFields = [
   "code_of_conduct_consent",
 ];
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Doc<"participants"> }) {
   const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
 
@@ -160,11 +160,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                 <DetailRow
                   icon={FileText}
                   label="Resume"
-                  value={
-                    item.resume
-                      ? (item.resume as unknown as string)
-                      : "Not Attached"
-                  }
+                  value={item.resume ? item.resume : "Not Attached"}
                 />
               </div>
             </div>
@@ -175,7 +171,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   );
 }
 
-export const columns: ColumnDef<z.infer<typeof schema>>[] = [
+export const columns: ColumnDef<Doc<"participants">>[] = [
   {
     id: "select",
     header: ({ table }) => (

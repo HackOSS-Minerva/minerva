@@ -6,11 +6,11 @@ import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  params: Promise<unknown>;
+  params: Promise<{ tenant: string }>;
 }
 
 const Layout = async ({ children, params }: AdminLayoutProps) => {
-  const { tenant } = (await params) as { tenant: "designverse" | "cutiehack" };
+  const { tenant } = await params;
 
   // Secure authorization check. The proxy already did an optimistic
   // cookie-existence redirect, but this is the check that actually validates

@@ -19,6 +19,7 @@ import {
 import { IconDotsVertical, IconX } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Star,
@@ -29,17 +30,7 @@ import {
 } from "lucide-react";
 import DetailRow from "../row";
 
-interface FeedbackRecord {
-  _id: string;
-  _creationTime: number;
-  find: string;
-  liked_to_see: string;
-  not_beneficial: string;
-  rating: number;
-  anything_else: string;
-  tenant: string;
-  timestamp: number;
-}
+type FeedbackRecord = Doc<"feedback">;
 
 export const metadata = {
   title: "Feedback",

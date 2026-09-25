@@ -16,32 +16,7 @@ import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRecipient, EmailRole } from "@/types/email";
 import type { TenantSlug } from "./get-tenant";
-import type {
-  ages,
-  affiliations,
-  availabilities,
-  countries,
-  dietrestrictions,
-  genders,
-  grades,
-  majors,
-  schools,
-  shirts,
-  teams,
-} from "@/convex/schema";
-import type { Infer } from "convex/values";
-
-type Gender = Infer<typeof genders>;
-type Shirt = Infer<typeof shirts>;
-type Affiliation = Infer<typeof affiliations>;
-type DietRestriction = Infer<typeof dietrestrictions>;
-type Availabilities = Infer<typeof availabilities>;
-type Major = Infer<typeof majors>;
-type Age = Infer<typeof ages>;
-type Grade = Infer<typeof grades>;
-type Country = Infer<typeof countries>;
-type School = Infer<typeof schools>;
-type Team = Infer<typeof teams>;
+import { z } from "zod";
 
 export type slugs =
   | "participant"
@@ -57,6 +32,18 @@ const FIELDS = {
   superadmin,
   volunteer,
 } as const;
+
+/** Validated form values for each registration form, keyed by route slug. */
+type FormValuesMap = {
+  [S in slugs]: z.infer<(typeof FIELDS)[S]["schema"]>;
+};
+
+/**
+ * Union of validated values across the five registration forms. The form
+ * validates `value` against its slug's zod schema before submit, so each
+ * switch branch below narrows to that schema's value type.
+ */
+export type FormValues = FormValuesMap[slugs];
 
 const MUTATIONS = {
   participant: api.participants.add,
@@ -100,25 +87,28 @@ export const useFields = () => {
     }
   };
 
-  const onSubmit = async (value: Record<string, unknown>) => {
-    const email = value.email as string;
-    const firstname = value.firstname as string;
-    const lastname = value.lastname as string;
+  const onSubmit = async (value: FormValues) => {
+    const email = value.email;
+    const firstname = value.firstname;
+    const lastname = value.lastname;
     switch (slug) {
       case "volunteer": {
+        // The form validated `value` against this slug's schema before submit;
+        // narrow the union to this branch's value type.
+        const v = value as FormValuesMap["volunteer"];
         const result = await add({
           tenant,
           user: {
             firstname: firstname,
             lastname: lastname,
             email: email,
-            telephone: value.telephone as string,
-            gender: value.gender as Gender,
-            shirt: value.shirt as Shirt,
-            discord: value.discord as string,
-            terms: Boolean(value.terms),
-            dietrestriction: value.dietrestriction as DietRestriction,
-            availabilities: value.availabilities as Availabilities[],
+            telephone: v.telephone,
+            gender: v.gender,
+            shirt: v.shirt,
+            discord: v.discord,
+            terms: Boolean(v.terms),
+            dietrestriction: v.dietrestriction,
+            availabilities: v.availabilities,
           },
         });
 
@@ -141,9 +131,10 @@ export const useFields = () => {
       }
 
       case "participant": {
+        const v = value as FormValuesMap["participant"];
         let url = "";
-        if (value.resume) {
-          const file = value.resume as File;
+        if (v.resume) {
+          const file = v.resume;
           url = await uploadFile(
             `${tenant}/participants/resumes/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}.pdf`,
             file,
@@ -156,17 +147,21 @@ export const useFields = () => {
             firstname: firstname,
             lastname: lastname,
             email: email,
-            telephone: value.telephone as string,
-            gender: value.gender as Gender,
-            shirt: value.shirt as Shirt,
-            discord: value.discord as string,
-            major: value.major as Major,
-            age: value.age as Age,
-            country: value.country as Country,
-            school: value.school as School,
-            grade: value.grade as Grade,
-            mlh_marketing: Boolean(value.mlh_marketing),
-            dietrestriction: value.dietrestriction as DietRestriction,
+            telephone: v.telephone,
+            gender: v.gender,
+            shirt: v.shirt,
+            discord: v.discord,
+            major: v.major,
+            age: v.age,
+            country: v.country,
+            school: v.school,
+            grade: v.grade,
+            // The form schema names this consent field `mlh`; `mlh_marketing`
+            // has never existed on the value, so this stays `false` as before.
+            mlh_marketing: Boolean(
+              (value as { mlh_marketing?: unknown }).mlh_marketing,
+            ),
+            dietrestriction: v.dietrestriction,
             resume: url || undefined,
           },
         });
@@ -176,13 +171,13 @@ export const useFields = () => {
           entity_id: String(result.id),
           role: "participant",
           status: "PENDING",
-          gender: value.gender as Gender,
-          dietrestriction: value.dietrestriction as DietRestriction,
-          shirt: value.shirt as Shirt,
-          school: value.school as School,
-          major: value.major as Major,
-          age: value.age as Age,
-          grade: value.grade as Grade,
+          gender: v.gender,
+          dietrestriction: v.dietrestriction,
+          shirt: v.shirt,
+          school: v.school,
+          major: v.major,
+          age: v.age,
+          grade: v.grade,
         });
 
         if (result.user) {
@@ -197,8 +192,9 @@ export const useFields = () => {
       }
 
       case "judge": {
+        const v = value as FormValuesMap["judge"];
         let url = "";
-        const file = value.picture as File;
+        const file = v.picture;
         url = await uploadFile(
           `${tenant}/judges/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`,
           file,
@@ -210,13 +206,13 @@ export const useFields = () => {
             firstname: firstname,
             lastname: lastname,
             email: email,
-            telephone: value.telephone as string,
-            gender: value.gender as Gender,
-            shirt: value.shirt as Shirt,
-            affiliation: value.affiliation as Affiliation,
-            title: value.title as string,
-            organization: value.organization as string,
-            dietrestriction: value.dietrestriction as DietRestriction,
+            telephone: v.telephone,
+            gender: v.gender,
+            shirt: v.shirt,
+            affiliation: v.affiliation,
+            title: v.title,
+            organization: v.organization,
+            dietrestriction: v.dietrestriction,
             picture: url,
           },
         });
@@ -236,8 +232,9 @@ export const useFields = () => {
       }
 
       case "speaker": {
+        const v = value as FormValuesMap["speaker"];
         let url = "";
-        const file = value.picture as File;
+        const file = v.picture;
         url = await uploadFile(
           `${tenant}/speakers/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`,
           file,
@@ -249,13 +246,13 @@ export const useFields = () => {
             firstname: firstname,
             lastname: lastname,
             email: email,
-            telephone: value.telephone as string,
-            gender: value.gender as Gender,
-            shirt: value.shirt as Shirt,
-            affiliation: value.affiliation as Affiliation,
-            title: value.title as string,
-            organization: value.organization as string,
-            dietrestriction: value.dietrestriction as DietRestriction,
+            telephone: v.telephone,
+            gender: v.gender,
+            shirt: v.shirt,
+            affiliation: v.affiliation,
+            title: v.title,
+            organization: v.organization,
+            dietrestriction: v.dietrestriction,
             picture: url,
           },
         });
@@ -279,21 +276,22 @@ export const useFields = () => {
       }
 
       case "superadmin": {
+        const v = value as FormValuesMap["superadmin"];
         const result = await add({
           tenant,
           user: {
             firstname: firstname,
             lastname: lastname,
             email: email,
-            telephone: value.telephone as string,
-            gender: value.gender as Gender,
-            shirt: value.shirt as Shirt,
-            discord: value.discord as string,
-            major: value.major as Major,
-            age: value.age as Age,
-            grade: value.grade as Grade,
-            team: value.team as Team,
-            dietrestriction: value.dietrestriction as DietRestriction,
+            telephone: v.telephone,
+            gender: v.gender,
+            shirt: v.shirt,
+            discord: v.discord,
+            major: v.major,
+            age: v.age,
+            grade: v.grade,
+            team: v.team,
+            dietrestriction: v.dietrestriction,
           },
         });
 

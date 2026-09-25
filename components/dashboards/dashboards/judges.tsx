@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/drawer";
 import { IconCopy, IconCheck, IconX } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { z } from "zod";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { schema as judgeSchema } from "@/components/forms/fields/judge";
@@ -45,7 +45,7 @@ export const csvFields = [
   "code_of_conduct_consent",
 ];
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Doc<"judges"> }) {
   const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
   const [pictureCopied, setPictureCopied] = useState(false);
@@ -57,7 +57,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   };
 
   const handleCopyPicture = () => {
-    navigator.clipboard.writeText(item.picture as unknown as string);
+    navigator.clipboard.writeText(item.picture);
     setPictureCopied(true);
     setTimeout(() => setPictureCopied(false), 2000);
   };
@@ -83,7 +83,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           <div className="flex flex-col items-center text-sm text-foreground">
             <div className="relative h-64 w-64 overflow-hidden rounded-2xl border border-border">
               <Image
-                src={item.picture as unknown as string}
+                src={item.picture}
                 alt={`${item.firstname} ${item.lastname}`}
                 fill
                 sizes="128px"
@@ -155,7 +155,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   );
 }
 
-export const columns: ColumnDef<z.infer<typeof schema>>[] = [
+export const columns: ColumnDef<Doc<"judges">>[] = [
   {
     id: "select",
     header: ({ table }) => (

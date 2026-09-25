@@ -37,7 +37,7 @@ export function StatusIcon({
   status,
   className,
 }: {
-  status: unknown;
+  status: ApplicantStatus;
   className?: string;
 }) {
   const normalized = normalizeApplicantStatus(status);

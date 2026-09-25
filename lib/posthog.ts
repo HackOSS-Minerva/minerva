@@ -77,8 +77,11 @@ export type AnalyticsData = {
   };
 };
 
+/** Scalar values a HogQL query can return in a result row. */
+type HogQLScalar = string | number | boolean | null;
+
 type HogQLResponse = {
-  results?: unknown[][];
+  results?: HogQLScalar[][];
 };
 
 const analyticsRoles: AnalyticsRole[] = [
@@ -156,7 +159,7 @@ async function queryPostHog(query: string): Promise<HogQLResponse> {
   return response.json();
 }
 
-const toCount = (value: unknown) => {
+const toCount = (value: HogQLScalar) => {
   const count = Number(value);
   return Number.isFinite(count) ? count : 0;
 };

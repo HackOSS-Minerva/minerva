@@ -1,5 +1,5 @@
-export function convertToCSV(
-  data: Record<string, unknown>[],
+export function convertToCSV<T extends object>(
+  data: T[],
   fields: string[],
 ): Blob {
   if (data.length === 0) {
@@ -23,6 +23,12 @@ export function convertToCSV(
     return str;
   };
 
+  // `fields` are plain strings that may reference keys absent on a given row
+  // (e.g. legacy consent columns), so reads go through a permissive record
+  // view of the row.
+  const readField = (row: T, field: string): unknown =>
+    (row as Record<string, unknown>)[field];
+
   const header = fields.join(",");
   const rows = data.map((row) =>
     fields
@@ -33,7 +39,7 @@ export function convertToCSV(
         ) {
           return "TRUE";
         }
-        return escapeValue(row[field]);
+        return escapeValue(readField(row, field));
       })
       .join(","),
   );

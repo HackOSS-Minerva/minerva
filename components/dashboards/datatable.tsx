@@ -68,6 +68,7 @@ import { convertToCSV } from "@/lib/csv";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { toastAppError } from "@/hooks/use-app-error";
 import { AppError, logAppError } from "@/lib/app-error";
+import type { ApplicationStatus } from "@/lib/posthog";
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { MAX_VETTING_BATCH_SIZE } from "@/lib/vetting/rules";
 import { cn } from "@/lib/utils";
@@ -82,24 +83,27 @@ const emailRolesByDashboard: Partial<Record<string, EmailRole>> = {
   volunteers: "volunteer",
 };
 
-interface DashboardProps {
-  data: unknown[];
+export interface DashboardProps<T extends ApplicantRow> {
+  data: T[];
   dashboard: {
-    columns: unknown[];
+    columns: ColumnDef<T>[];
     csvFields: string[];
   };
-  onDelete?(args: { id: string }): unknown;
-  onDeleteMany?(args: { ids: string[] }): unknown;
-  setStatusMany?(args: { ids: string[]; status: string }): unknown;
+  onDelete?(args: { id: string }): Promise<unknown>;
+  onDeleteMany?(args: { ids: string[] }): Promise<unknown>;
+  setStatusMany?(args: {
+    ids: string[];
+    status: ApplicationStatus;
+  }): Promise<unknown>;
   runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
 
-export const DataTable = ({
+export const DataTable = <T extends ApplicantRow>({
   dashboard,
   slugOverride,
   readOnly = false,
 }: {
-  dashboard: DashboardProps;
+  dashboard: DashboardProps<T>;
   slugOverride?: string;
   readOnly?: boolean;
 }) => {
@@ -144,13 +148,13 @@ export const DataTable = ({
     runVettingMany,
   } = dashboard;
 
-  const tableColumns = columns as ColumnDef<ApplicantRow>[];
+  const tableColumns = columns;
   const visibleColumns = readOnly
     ? tableColumns.filter((column) => column.id !== "select")
     : tableColumns;
 
-  const table = useReactTable<ApplicantRow>({
-    data: data as ApplicantRow[],
+  const table = useReactTable<T>({
+    data,
     columns: visibleColumns,
     state: {
       sorting,
@@ -191,8 +195,7 @@ export const DataTable = ({
 
   const selectedIds = table
     .getSelectedRowModel()
-    .rows.map((row) => row.original._id)
-    .filter((id): id is string => typeof id === "string");
+    .rows.map((row) => row.original._id);
 
   const handleRunVetting = async () => {
     if (!runVettingMany || selectedIds.length === 0) return;
@@ -330,10 +333,7 @@ export const DataTable = ({
                   const rows = table
                     .getFilteredRowModel()
                     .rows.map((row) => row.original);
-                  const blob = convertToCSV(
-                    rows as unknown as Record<string, unknown>[],
-                    csvFields,
-                  );
+                  const blob = convertToCSV(rows, csvFields);
                   const now = new Date();
                   const pad = (n: number) => String(n).padStart(2, "0");
                   const timestamp = `${pad(now.getMonth() + 1)}_${pad(now.getDate())}_${now.getFullYear()}_${pad(now.getHours())}_${pad(now.getMinutes())}_${pad(now.getSeconds())}`;

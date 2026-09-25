@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/drawer";
 import { IconX } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { z } from "zod";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { schema as superadminSchema } from "@/components/forms/fields/superadmin";
@@ -52,7 +52,7 @@ export const csvFields = [
   "code_of_conduct_consent",
 ];
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
   const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
 
@@ -157,7 +157,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   );
 }
 
-export const columns: ColumnDef<z.infer<typeof schema>>[] = [
+export const columns: ColumnDef<Doc<"superadmins">>[] = [
   {
     id: "select",
     header: ({ table }) => (

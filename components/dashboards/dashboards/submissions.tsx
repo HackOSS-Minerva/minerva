@@ -19,6 +19,7 @@ import {
 import { IconX } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Users,
@@ -35,26 +36,8 @@ import {
   reviewStatusMeta,
   visibleVettingStatus,
 } from "../vetting-status";
-import type { SubmissionReviewStatus } from "@/lib/vetting/types";
 
-interface SubmissionRecord {
-  _id: string;
-  _creationTime: number;
-  teamName: string;
-  submitterEmail?: string;
-  projectName: string;
-  description: string;
-  devpost: string;
-  github: string[];
-  figma: string[];
-  canva: string[];
-  presentation?: string;
-  invites: string[];
-  tenant: string;
-  vetted: SubmissionReviewStatus;
-  vettingStatus?: string;
-  timestamp: number;
-}
+type SubmissionRecord = Doc<"submissions">;
 
 export const metadata = {
   title: "Submissions",

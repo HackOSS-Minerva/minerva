@@ -1,4 +1,5 @@
 import { query, mutation } from "./_generated/server";
+import type { Doc } from "./_generated/dataModel";
 import { v } from "convex/values";
 
 export const getByTenant = query({
@@ -89,7 +90,7 @@ export const updateAssignment = mutation({
     ),
   },
   handler: async (ctx, { id, room, status }) => {
-    const patch: Record<string, unknown> = {};
+    const patch: Partial<Doc<"assignments">> = {};
     if (room !== undefined) patch.room = room;
     if (status !== undefined) patch.status = status;
     await ctx.db.patch(id, patch);

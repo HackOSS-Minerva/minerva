@@ -8,9 +8,15 @@ import { AppError, requireFeature, withFetchHandler } from "@/lib/app-error";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { getFeatureFlag } from "@/lib/feature-flags";
+import { z } from "zod";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const deletePhotoSchema = z.object({
+  tenant: z.string().min(1),
+  mediaItemId: z.string().min(1).max(2_048),
+});
 
 export const GET = withFetchHandler("photos-list", async (request) => {
   requireFeature(getFeatureFlag("photos"), "PHOTO_FEATURE_DISABLED");
@@ -44,20 +50,11 @@ export const DELETE = withFetchHandler("photos-remove", async (request) => {
     throw new AppError("PHOTO_REQUEST_INVALID");
   }
 
-  if (!body || typeof body !== "object") {
+  const parsed = deletePhotoSchema.safeParse(body);
+  if (!parsed.success) {
     throw new AppError("PHOTO_REQUEST_INVALID");
   }
-
-  const { tenant, mediaItemId } = body as Record<string, unknown>;
-  if (
-    typeof tenant !== "string" ||
-    !tenant ||
-    typeof mediaItemId !== "string" ||
-    !mediaItemId ||
-    mediaItemId.length > 2_048
-  ) {
-    throw new AppError("PHOTO_REQUEST_INVALID");
-  }
+  const { tenant, mediaItemId } = parsed.data;
 
   const event = getConfiguredPhotoEvent(tenant);
   // Dev-mode unlock: photo deletion never requires superadmin in `next dev`.

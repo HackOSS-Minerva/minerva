@@ -17,21 +17,31 @@ import type { Table } from "@tanstack/react-table";
 
 type DecisionStatus = Exclude<EmailType, "CONFIRMATION"> | "PENDING";
 
+/**
+ * Shape StatusActions needs from a table row. Only applicant dashboards
+ * (participants/judges/speakers/superadmins/volunteers) render this component,
+ * so person fields are guaranteed at runtime — but the table itself is generic
+ * over every dashboard row type, hence the optional fields here.
+ */
 export interface ApplicantRow {
   _id: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  status: DecisionStatus;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  status?: DecisionStatus;
 }
 
-interface StatusActionsProps {
-  table: Table<ApplicantRow>;
+interface StatusActionsProps<T extends ApplicantRow> {
+  table: Table<T>;
   role: EmailRole;
   onSuccess: () => void;
 }
 
-export function StatusActions({ table, role, onSuccess }: StatusActionsProps) {
+export function StatusActions<T extends ApplicantRow>({
+  table,
+  role,
+  onSuccess,
+}: StatusActionsProps<T>) {
   const [isUpdating, setIsUpdating] = useState(false);
   const { sendEmail } = useEmail();
   const selectedCount = table.getSelectedRowModel().rows.length;
@@ -72,9 +82,9 @@ export function StatusActions({ table, role, onSuccess }: StatusActionsProps) {
               type: status,
               role,
               user: {
-                firstname: user.firstname,
-                lastname: user.lastname,
-                email: user.email,
+                firstname: user.firstname ?? "",
+                lastname: user.lastname ?? "",
+                email: user.email ?? "",
               },
               idempotencyKey: `${user._id}:${status}`,
             }),

@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { PortalNav } from "@/components/portal/portal-nav";
 import {
   judgeNavItems,
@@ -7,14 +7,16 @@ import {
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
+import { isTenantSlug } from "@/hooks/get-tenant";
 
 interface LayoutProps {
   children: React.ReactNode;
-  params: Promise<unknown>;
+  params: Promise<{ tenant: string }>;
 }
 
 const Layout = async ({ children, params }: LayoutProps) => {
-  const { tenant } = (await params) as { tenant: "designverse" | "cutiehack" };
+  const { tenant } = await params;
+  if (!isTenantSlug(tenant)) notFound();
 
   // The judge section requires a signed-in user. This is the secure check
   // (validates the session via Convex); the proxy only does an optimistic

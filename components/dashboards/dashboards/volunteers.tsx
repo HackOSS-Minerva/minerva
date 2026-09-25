@@ -15,7 +15,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { ColumnDef } from "@tanstack/react-table";
-import { z } from "zod";
+import type { Doc } from "@/convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { schema as volunteerSchema } from "@/components/forms/fields/volunteer";
 import { Sun, Moon, CloudSun, Sunset } from "lucide-react";
@@ -120,7 +120,7 @@ const AllAvailabilities = ({ selected }: { selected: string[] }) => {
   );
 };
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
   const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
 
@@ -202,7 +202,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   );
 }
 
-export const columns: ColumnDef<z.infer<typeof schema>>[] = [
+export const columns: ColumnDef<Doc<"volunteers">>[] = [
   {
     id: "select",
     header: ({ table }) => (

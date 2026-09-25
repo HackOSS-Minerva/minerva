@@ -1,7 +1,7 @@
 "use client";
 import { CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
-import { useFields } from "@/hooks/use-fields";
+import { useFields, type FormValues } from "@/hooks/use-fields";
 import { useForm, type DeepKeys } from "@tanstack/react-form";
 import { useParams } from "next/navigation";
 import { useFormLock } from "@/hooks/use-form-lock";
@@ -74,7 +74,10 @@ const Fields = () => {
         `Thank you for applying. We will send you an application update shortly!`,
       );
       triggerConfetti();
-      onSubmit(value);
+      // TanStack types `value` from the `defaultValues` placeholders (plain
+      // strings); the `onSubmit` validator above has already constrained the
+      // runtime value to this slug's zod schema.
+      onSubmit(value as FormValues);
     },
   });
 
