@@ -208,8 +208,8 @@ export default function AssignmentsContent() {
 
       {!hasAssignments && judges.length > 0 && submissions.length > 0 && (
         <div className="rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
-          No assignments have been created yet. Click the Assign button above
-          to generate judge assignments.
+          No assignments have been created yet. Click the Assign button above to
+          generate judge assignments.
         </div>
       )}
 
@@ -277,7 +277,10 @@ export default function AssignmentsContent() {
               {filteredSubmissions.map((submission) => {
                 const judgeIds = judgesByTeam.get(submission._id) ?? [];
                 return (
-                  <Card key={submission._id} className="gap-0 overflow-hidden py-0">
+                  <Card
+                    key={submission._id}
+                    className="gap-0 overflow-hidden py-0"
+                  >
                     <CardHeader className="border-b bg-muted/30 px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/30 pr-2">

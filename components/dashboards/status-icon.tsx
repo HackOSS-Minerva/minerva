@@ -30,9 +30,7 @@ export const statusIconMeta: Record<
 };
 
 export function normalizeApplicantStatus(status: unknown): ApplicantStatus {
-  return status === "ACCEPTANCE" || status === "REJECTION"
-    ? status
-    : "PENDING";
+  return status === "ACCEPTANCE" || status === "REJECTION" ? status : "PENDING";
 }
 
 export function StatusIcon({

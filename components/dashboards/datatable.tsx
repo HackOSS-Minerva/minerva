@@ -310,7 +310,9 @@ export const DataTable = ({
                     const emails = rows.map((row) => row.original.email);
                     const csv = emails.join(",");
                     navigator.clipboard.writeText(csv);
-                    toast.success(`Copied ${emails.length} emails to clipboard`);
+                    toast.success(
+                      `Copied ${emails.length} emails to clipboard`,
+                    );
                   }}
                   disabled={table.getFilteredRowModel().rows.length === 0}
                 >
@@ -436,7 +438,9 @@ export const DataTable = ({
               ))}
             </TableHeader>
             <TableBody
-              className={readOnly ? undefined : "**:data-[slot=table-cell]:first:w-8"}
+              className={
+                readOnly ? undefined : "**:data-[slot=table-cell]:first:w-8"
+              }
             >
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (

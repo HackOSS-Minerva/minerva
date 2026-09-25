@@ -299,9 +299,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
                           disabled={
-                            !canAddMore ||
-                            isLocked ||
-                            form.state.isSubmitting
+                            !canAddMore || isLocked || form.state.isSubmitting
                           }
                           title={
                             canAddMore
@@ -398,9 +396,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
                           disabled={
-                            !canAddMore ||
-                            isLocked ||
-                            form.state.isSubmitting
+                            !canAddMore || isLocked || form.state.isSubmitting
                           }
                           title={
                             canAddMore
@@ -497,9 +493,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
                           disabled={
-                            !canAddMore ||
-                            isLocked ||
-                            form.state.isSubmitting
+                            !canAddMore || isLocked || form.state.isSubmitting
                           }
                           title={
                             canAddMore
