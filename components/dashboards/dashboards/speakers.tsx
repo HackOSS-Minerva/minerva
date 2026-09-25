@@ -20,8 +20,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { schema as speakerSchema } from "@/components/forms/fields/speaker";
-import { variants } from "@/data/status";
-import { Badge } from "@/components/ui/badge";
+import { StatusIcon } from "../status-icon";
 import { formatShirtSize } from "@/lib/utils";
 
 export const metadata = {
@@ -152,9 +151,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="flex flex-col gap-1">
               <Label className="text-muted-foreground">Status</Label>
               <div>
-                <Badge className={variants[item.status || "PENDING"]}>
-                  {item.status || "PENDING"}
-                </Badge>
+                <StatusIcon status={item.status} />
               </div>
             </div>
           </div>
@@ -244,10 +241,11 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.original.status;
-      return <Badge className={variants[status]}>{status}</Badge>;
-    },
+    header: () => <div className="text-center">Status</div>,
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <StatusIcon status={row.original.status} />
+      </div>
+    ),
   },
 ];

@@ -14,8 +14,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { schema as superadminSchema } from "@/components/forms/fields/superadmin";
-import { variants } from "@/data/status";
-import { Badge } from "@/components/ui/badge";
+import { StatusIcon } from "../status-icon";
 import {
   Phone,
   UserRound,
@@ -63,12 +62,6 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const statusCircleClass: Record<string, string> = {
-    ACCEPTANCE: "bg-green-500",
-    PENDING: "bg-yellow-500",
-    REJECTION: "bg-red-500",
-  };
-
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
@@ -95,12 +88,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             </div>
           </div>
           <div className="flex items-center justify-center gap-2">
-            <div
-              className={`h-2.5 w-2.5 rounded-full ${
-                statusCircleClass[item.status]
-              }`}
-            />
-            <p className="font-semibold text-foreground">{item.status}</p>
+            <StatusIcon status={item.status} />
           </div>
           <hr />
           <div className="space-y-4 text-sm">
@@ -253,10 +241,11 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.original.status;
-      return <Badge className={variants[status]}>{status}</Badge>;
-    },
+    header: () => <div className="text-center">Status</div>,
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <StatusIcon status={row.original.status} />
+      </div>
+    ),
   },
 ];

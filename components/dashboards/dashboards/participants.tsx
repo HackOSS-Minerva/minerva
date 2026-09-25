@@ -28,8 +28,7 @@ import {
   FileText,
   Utensils,
 } from "lucide-react";
-import { variants } from "@/data/status";
-import { Badge } from "@/components/ui/badge";
+import { StatusIcon } from "../status-icon";
 import DetailRow from "../row";
 import { formatShirtSize } from "@/lib/utils";
 
@@ -59,12 +58,6 @@ export const csvFields = [
   "privacy_policy_consent",
   "code_of_conduct_consent",
 ];
-
-const statusCircleClass: Record<string, string> = {
-  ACCEPTANCE: "bg-green-500",
-  PENDING: "bg-yellow-500",
-  REJECTION: "bg-red-500",
-};
 
 function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile();
@@ -104,12 +97,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
               </div>
 
               <div className="flex items-center gap-2">
-                <div
-                  className={`h-2.5 w-2.5 rounded-full ${
-                    statusCircleClass[item.status]
-                  }`}
-                />
-                <p className="font-semibold text-foreground">{item.status}</p>
+                <StatusIcon status={item.status} />
               </div>
             </DrawerHeader>
           </div>
@@ -253,10 +241,11 @@ export const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.original.status;
-      return <Badge className={variants[status]}>{status}</Badge>;
-    },
+    header: () => <div className="text-center">Status</div>,
+    cell: ({ row }) => (
+      <div className="flex items-center justify-center">
+        <StatusIcon status={row.original.status} />
+      </div>
+    ),
   },
 ];

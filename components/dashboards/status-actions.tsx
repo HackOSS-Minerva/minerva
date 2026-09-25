@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Clock, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useEmail } from "@/hooks/use-email";
 import { logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
@@ -100,36 +106,57 @@ export function StatusActions({ table, role, onSuccess }: StatusActionsProps) {
 
   return (
     <div className="flex shrink-0 items-center gap-2">
-      <Button
-        variant="outline"
-        size="sm"
-        title="Mark selected users as accepted"
-        onClick={() => void updateStatus("ACCEPTANCE")}
-        disabled={selectedCount === 0 || isUpdating}
-        className="border-green-500 bg-green-500 text-white hover:bg-green-600 hover:text-white"
-      >
-        Accept
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        title="Move selected users to the waitlist"
-        onClick={() => void updateStatus("PENDING")}
-        disabled={selectedCount === 0 || isUpdating}
-        className="border-yellow-500 bg-yellow-500 text-white hover:bg-yellow-600 hover:text-white"
-      >
-        Waitlist
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        title="Mark selected users as rejected"
-        onClick={() => void updateStatus("REJECTION")}
-        disabled={selectedCount === 0 || isUpdating}
-        className="border-red-500 bg-red-500 text-white hover:bg-red-600 hover:text-white"
-      >
-        Reject
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label="Accept"
+            onClick={() => void updateStatus("ACCEPTANCE")}
+            disabled={selectedCount === 0 || isUpdating}
+            className="cursor-pointer border-green-500 text-green-500 transition-all hover:scale-105 hover:bg-green-500 hover:text-white hover:shadow-md hover:shadow-green-500/25 active:scale-95"
+          >
+            <Check />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Accept</p>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label="Waitlist"
+            onClick={() => void updateStatus("PENDING")}
+            disabled={selectedCount === 0 || isUpdating}
+            className="cursor-pointer border-yellow-500 text-yellow-500 transition-all hover:scale-105 hover:bg-yellow-500 hover:text-white hover:shadow-md hover:shadow-yellow-500/25 active:scale-95"
+          >
+            <Clock />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Waitlist</p>
+        </TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label="Reject"
+            onClick={() => void updateStatus("REJECTION")}
+            disabled={selectedCount === 0 || isUpdating}
+            className="cursor-pointer border-red-500 text-red-500 transition-all hover:scale-105 hover:bg-red-500 hover:text-white hover:shadow-md hover:shadow-red-500/25 active:scale-95"
+          >
+            <X />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Reject</p>
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }
