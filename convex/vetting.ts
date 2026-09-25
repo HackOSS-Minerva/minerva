@@ -7,7 +7,7 @@ import {
 import { api, internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
-import { convexError } from "./app-error";
+import { convexError } from "./app_error";
 import { runSubmissionVetting as runGithubSubmissionVetting } from "../lib/vetting/github";
 import {
   applyAutomatedReviewResult,

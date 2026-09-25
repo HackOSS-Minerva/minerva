@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as app_error from "../app_error.js";
 import type * as assignments from "../assignments.js";
 import type * as auth from "../auth.js";
 import type * as checkins from "../checkins.js";
@@ -29,6 +30,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  app_error: typeof app_error;
   assignments: typeof assignments;
   auth: typeof auth;
   checkins: typeof checkins;

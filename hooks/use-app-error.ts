@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { AppError, getUserMessage, toErrorCode } from "@/lib/app-error";
-import { isConvexErrorCode } from "@/convex/app-error";
+import { isConvexErrorCode } from "@/convex/app_error";
 
 /** Extract a unified ErrorCode from fetch AppErrors or Convex throws. */
 export const resolveAppErrorCode = (error: unknown): string => {

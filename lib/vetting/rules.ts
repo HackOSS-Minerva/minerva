@@ -7,7 +7,7 @@ import type {
   VettingFinding,
 } from "./types";
 import { ConvexError } from "convex/values";
-import type { ConvexErrorCode } from "../../convex/app-error";
+import type { ConvexErrorCode } from "../../convex/app_error";
 
 export const MAX_TEAM_SIZE = 4;
 export const MAX_LINKS_PER_TYPE = 3;

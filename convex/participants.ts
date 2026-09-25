@@ -1,5 +1,5 @@
 import { query, mutation } from "./_generated/server";
-import { convexError } from "./app-error";
+import { convexError } from "./app_error";
 import { v } from "convex/values";
 import {
   countries,

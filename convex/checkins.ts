@@ -1,5 +1,5 @@
 import { mutation, query } from "./_generated/server";
-import { convexError } from "./app-error";
+import { convexError } from "./app_error";
 import { v } from "convex/values";
 
 export const checkin = mutation({

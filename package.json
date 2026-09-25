@@ -9,7 +9,9 @@
     "lint": "eslint",
     "format": "npx prettier --write .",
     "check": "npx prettier --check .",
-    "email": "email dev --dir components/email --port 4000"
+    "email": "email dev --dir components/email --port 4000",
+    "convex": "bunx convex dev",
+    "deploy": "bunx convex deploy"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

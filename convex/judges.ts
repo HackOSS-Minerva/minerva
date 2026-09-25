@@ -1,5 +1,5 @@
 import { query, mutation } from "./_generated/server";
-import { convexError } from "./app-error";
+import { convexError } from "./app_error";
 import { v } from "convex/values";
 import { statuses } from "../data/status";
 import { affiliations, dietrestrictions, genders, shirts } from "./schema";
