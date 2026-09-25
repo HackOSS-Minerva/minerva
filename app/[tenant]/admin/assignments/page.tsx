@@ -11,7 +11,8 @@ export default async function AssignmentsPage({
   params,
 }: {
   params: Promise<{
-    tenant: TenantSlug }>;
+    tenant: TenantSlug;
+  }>;
 }) {
   const { tenant } = await params;
 

@@ -362,7 +362,13 @@ export async function runSubmissionVetting(
 
         const failure = apiFailure(repoResult, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
+        return failedResult(
+          failure.errorCode,
+          failure.errorDetails,
+          findings,
+          repos,
+          contributors,
+        );
       }
 
       const repo = normalizeRepo(repoResult.data);
@@ -404,7 +410,13 @@ export async function runSubmissionVetting(
       if (!eventCommitsResult.ok && eventCommitsResult.status !== 409) {
         const failure = apiFailure(eventCommitsResult, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
+        return failedResult(
+          failure.errorCode,
+          failure.errorDetails,
+          findings,
+          repos,
+          contributors,
+        );
       }
 
       const eventCommits =
@@ -441,7 +453,13 @@ export async function runSubmissionVetting(
       if (!beforeStart.ok && beforeStart.status !== 409) {
         const failure = apiFailure(beforeStart, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
+        return failedResult(
+          failure.errorCode,
+          failure.errorDetails,
+          findings,
+          repos,
+          contributors,
+        );
       }
 
       const earlyCommitCount = normalizeCommits(beforeStart.data).length;
@@ -465,7 +483,13 @@ export async function runSubmissionVetting(
       if (!afterGrace.ok && afterGrace.status !== 409) {
         const failure = apiFailure(afterGrace, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
+        return failedResult(
+          failure.errorCode,
+          failure.errorDetails,
+          findings,
+          repos,
+          contributors,
+        );
       }
 
       const lateCommitCount = normalizeCommits(afterGrace.data).length;

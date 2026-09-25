@@ -58,10 +58,7 @@ function resolveHref(tenant: TenantSlug, href: string): string {
   return `/${tenant}${href}`;
 }
 
-function isActiveDropdown(
-  pathname: string,
-  dropdown: DropdownConfig,
-): boolean {
+function isActiveDropdown(pathname: string, dropdown: DropdownConfig): boolean {
   return dropdown.items.some((item) => pathname.includes(item.href));
 }
 
@@ -82,10 +79,7 @@ export function PortalNav({
   // Collect all feature flag keys used across nav items and dropdown items
   const flagKeys: FeatureFlagKey[] = [
     ...new Set(
-      [
-        ...navItems,
-        ...dropdowns.flatMap((d) => d.items),
-      ]
+      [...navItems, ...dropdowns.flatMap((d) => d.items)]
         .map((item) => item.featureFlagKey)
         .filter((key): key is FeatureFlagKey => key !== undefined)
         .sort(),
@@ -113,10 +107,7 @@ export function PortalNav({
   return (
     <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
       {logo && (
-        <Link
-          href={`/${tenant}${dashboardPath}`}
-          className="flex items-center"
-        >
+        <Link href={`/${tenant}${dashboardPath}`} className="flex items-center">
           <Image
             src={logo}
             alt="Logo"
@@ -159,12 +150,8 @@ export function PortalNav({
                   aria-disabled={!isAuthorized}
                   className={cn(
                     "gap-1 transition-all",
-                    isAuthorized && isActive
-                      ? "bg-background shadow-sm"
-                      : "",
-                    isAuthorized
-                      ? "text-foreground"
-                      : "text-muted-foreground",
+                    isAuthorized && isActive ? "bg-background shadow-sm" : "",
+                    isAuthorized ? "text-foreground" : "text-muted-foreground",
                     !isAuthorized && "opacity-60",
                   )}
                 >
@@ -180,11 +167,7 @@ export function PortalNav({
                       <Link
                         href={resolveHref(tenant, item.href)}
                         target={item.external ? "_blank" : undefined}
-                        rel={
-                          item.external
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
+                        rel={item.external ? "noopener noreferrer" : undefined}
                         className="flex flex-col items-start gap-0.5"
                       >
                         <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
@@ -219,9 +202,7 @@ export function PortalNav({
                         Register to get access
                       </span>
                       <Button asChild size="sm" variant="outline">
-                        <Link href={`/${tenant}${registerHref}`}>
-                          Register
-                        </Link>
+                        <Link href={`/${tenant}${registerHref}`}>Register</Link>
                       </Button>
                     </div>
                   </div>

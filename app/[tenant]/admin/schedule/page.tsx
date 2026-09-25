@@ -10,7 +10,8 @@ export default async function SchedulePage({
   params,
 }: {
   params: Promise<{
-    tenant: TenantSlug }>;
+    tenant: TenantSlug;
+  }>;
 }) {
   const { tenant } = await params;
 

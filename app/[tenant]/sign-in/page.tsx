@@ -9,7 +9,8 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SignInPageProps {
   params: Promise<{
-    tenant: TenantSlug }>;
+    tenant: TenantSlug;
+  }>;
 }
 
 /**

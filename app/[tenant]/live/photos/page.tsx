@@ -6,7 +6,8 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface PhotosRouteProps {
   params: Promise<{
-    tenant: TenantSlug }>;
+    tenant: TenantSlug;
+  }>;
 }
 
 const PhotosRoute = async ({ params }: PhotosRouteProps) => {

@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
 import { PortalNav } from "@/components/portal/portal-nav";
-import { judgeNavItems, judgeDropdowns } from "@/components/portal/judge-nav-config";
+import {
+  judgeNavItems,
+  judgeDropdowns,
+} from "@/components/portal/judge-nav-config";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 

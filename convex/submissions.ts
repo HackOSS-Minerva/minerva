@@ -55,7 +55,10 @@ export const add = mutation({
     const user = await authComponent.safeGetAuthUser(ctx);
     const submitterEmail = user?.email?.trim().toLowerCase();
     if (!submitterEmail) {
-      throw convexError("UNAUTHORIZED", "An authenticated submitter email is required.");
+      throw convexError(
+        "UNAUTHORIZED",
+        "An authenticated submitter email is required.",
+      );
     }
 
     const team = getSubmissionTeam(submitterEmail, invites);

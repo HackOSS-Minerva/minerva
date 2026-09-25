@@ -10,7 +10,8 @@ export default async function CheckinPage({
   params,
 }: {
   params: Promise<{
-    tenant: TenantSlug }>;
+    tenant: TenantSlug;
+  }>;
 }) {
   const { tenant } = await params;
 

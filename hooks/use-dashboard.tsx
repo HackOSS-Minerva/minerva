@@ -70,7 +70,10 @@ const QUERIES: Record<slugs, DashboardQuery> = {
 };
 
 export const useDashboard = (eventid?: string) => {
-  const { dashboard, tenant } = useParams<{ dashboard: slugs; tenant: TenantSlug }>();
+  const { dashboard, tenant } = useParams<{
+    dashboard: slugs;
+    tenant: TenantSlug;
+  }>();
   const { config } = getTenant(tenant);
   const { runVettingMany } = useSubmissionVetting();
   const slug = dashboard;
