@@ -37,6 +37,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { useSubmissions } from "@/hooks/use-submissions";
+import { MAX_LINKS_PER_TYPE } from "@/lib/vetting/rules";
 
 interface SubmissionFormPageProps {
   tenant: string;
@@ -273,6 +274,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const links = field.state.value;
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
+                const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -282,20 +284,34 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           GitHub Repositories
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Add at least one repository link (max 100 characters
-                          each).
+                          Add at least one repository link (up to{" "}
+                          {MAX_LINKS_PER_TYPE}, max 100 characters each).
                         </p>
                       </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => field.handleChange([...links, ""])}
-                        disabled={isLocked || form.state.isSubmitting}
-                      >
-                        <IconPlus className="h-3 w-3 mr-1" /> Add Repo
-                      </Button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs text-muted-foreground">
+                          {links.length}/{MAX_LINKS_PER_TYPE}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 px-2 text-xs"
+                          onClick={() => field.handleChange([...links, ""])}
+                          disabled={
+                            !canAddMore ||
+                            isLocked ||
+                            form.state.isSubmitting
+                          }
+                          title={
+                            canAddMore
+                              ? "Add repository link"
+                              : `Maximum ${MAX_LINKS_PER_TYPE} links`
+                          }
+                        >
+                          <IconPlus className="h-3 w-3 mr-1" /> Add Repo
+                        </Button>
+                      </div>
                     </div>
                     {links.map((link, idx) => (
                       <div key={idx} className="flex gap-2 items-center">
@@ -357,6 +373,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const links = field.state.value;
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
+                const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -367,19 +384,33 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Include links to your Figma design files or prototypes
-                          (max 100 characters each).
+                          (up to {MAX_LINKS_PER_TYPE}, max 100 characters each).
                         </p>
                       </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => field.handleChange([...links, ""])}
-                        disabled={isLocked || form.state.isSubmitting}
-                      >
-                        <IconPlus className="h-3 w-3 mr-1" /> Add Design
-                      </Button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs text-muted-foreground">
+                          {links.length}/{MAX_LINKS_PER_TYPE}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 px-2 text-xs"
+                          onClick={() => field.handleChange([...links, ""])}
+                          disabled={
+                            !canAddMore ||
+                            isLocked ||
+                            form.state.isSubmitting
+                          }
+                          title={
+                            canAddMore
+                              ? "Add design link"
+                              : `Maximum ${MAX_LINKS_PER_TYPE} links`
+                          }
+                        >
+                          <IconPlus className="h-3 w-3 mr-1" /> Add Design
+                        </Button>
+                      </div>
                     </div>
                     {links.map((link, idx) => (
                       <div key={idx} className="flex gap-2 items-center">
@@ -441,6 +472,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const links = field.state.value;
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
+                const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -451,19 +483,33 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Include links to your Canva presentations or designs
-                          (max 100 characters each).
+                          (up to {MAX_LINKS_PER_TYPE}, max 100 characters each).
                         </p>
                       </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="h-7 px-2 text-xs"
-                        onClick={() => field.handleChange([...links, ""])}
-                        disabled={isLocked || form.state.isSubmitting}
-                      >
-                        <IconPlus className="h-3 w-3 mr-1" /> Add Design
-                      </Button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs text-muted-foreground">
+                          {links.length}/{MAX_LINKS_PER_TYPE}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 px-2 text-xs"
+                          onClick={() => field.handleChange([...links, ""])}
+                          disabled={
+                            !canAddMore ||
+                            isLocked ||
+                            form.state.isSubmitting
+                          }
+                          title={
+                            canAddMore
+                              ? "Add design link"
+                              : `Maximum ${MAX_LINKS_PER_TYPE} links`
+                          }
+                        >
+                          <IconPlus className="h-3 w-3 mr-1" /> Add Design
+                        </Button>
+                      </div>
                     </div>
                     {links.map((link, idx) => (
                       <div key={idx} className="flex gap-2 items-center">

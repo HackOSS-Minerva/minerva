@@ -27,6 +27,8 @@ export function useAdminLock({
   const { config } = getTenant(tenant);
 
   const isLocked = useMemo(() => {
+    // Dev-mode unlock: admin sidebar entries never show as locked in `next dev`.
+    if (process.env.NODE_ENV !== "production") return false;
     const adminLocks = config?.locks?.admin;
     if (
       !adminLocks ||

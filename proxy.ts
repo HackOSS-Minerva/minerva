@@ -8,6 +8,11 @@ import { getSessionCookie } from "better-auth/cookies";
 // confirms that a session cookie is present — so this is purely for UX (early
 // redirect to the sign-in page). The real, secure authorization checks happen
 // server-side in the route components/layouts via authenticated Convex queries.
+//
+// Auth redirects are skipped entirely in non-production builds so local
+// development never requires sign-in. `process.env.NODE_ENV` is statically
+// inlined at build time, so production builds always enforce the checks.
+const BYPASS_AUTH_IN_DEV = process.env.NODE_ENV !== "production";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -31,6 +36,9 @@ export async function proxy(request: NextRequest) {
   const isJudge = /^\/[^/]+\/judge(?:\/|$)/.test(pathname);
   const isForm = /^\/[^/]+\/forms\/[^/]+$/.test(pathname);
   const isSubmission = /^\/[^/]+\/live\/submit$/.test(pathname);
+  if (BYPASS_AUTH_IN_DEV) {
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
   if (!isAdmin && !isJudge && !isForm && !isSubmission) {
     return NextResponse.next({ request: { headers: requestHeaders } });
   }

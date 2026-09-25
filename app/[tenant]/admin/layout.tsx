@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { SignOutButton } from "@/components/profile/sign-out-button";
+import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -14,7 +15,11 @@ const Layout = async ({ children, params }: AdminLayoutProps) => {
   // Secure authorization check. The proxy already did an optimistic
   // cookie-existence redirect, but this is the check that actually validates
   // the session (via the authenticated Convex query) and the superadmin role.
-  const access = await fetchAuthQuery(api.auth.getAdminAccess, { tenant });
+  // Skipped entirely in dev so local development never requires sign-in or a
+  // registered superadmin account.
+  const access = BYPASS_AUTH_IN_DEV
+    ? { authenticated: true as const, authorized: true as const, status: null }
+    : await fetchAuthQuery(api.auth.getAdminAccess, { tenant });
 
   if (!access.authenticated) {
     redirect(`/${tenant}/sign-in?redirect=/${tenant}/admin`);

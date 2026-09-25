@@ -38,7 +38,9 @@ export function NavMain({
       : undefined;
 
   const isLocked = (slug?: string) =>
-    slug !== undefined && adminLocks?.[slug] === true;
+    process.env.NODE_ENV === "production" &&
+    slug !== undefined &&
+    adminLocks?.[slug] === true;
 
   return (
     <SidebarGroup>

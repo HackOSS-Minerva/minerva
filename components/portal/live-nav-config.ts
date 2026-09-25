@@ -50,7 +50,7 @@ export const liveDropdowns: DropdownConfig[] = [
         description: "Show your QR code to check in at the event.",
       },
       {
-        href: "/forms/judge",
+        href: "/forms/participant",
         label: "Register",
         description: "Create an account or sign in.",
       },

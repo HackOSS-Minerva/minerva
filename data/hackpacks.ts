@@ -5,11 +5,14 @@ export interface Hackpack {
   description: string;
   link: string;
   category: (
-    | "Cloud Credits"
-    | "AI APIs"
-    | "Developer Tools"
-    | "Design Tools"
-    | "Domains"
+    | "Web Development"
+    | "Mobile"
+    | "Backend & Database"
+    | "AI/ML"
+    | "Bots"
+    | "Hardware"
+    | "Game Dev"
+    | "General"
   )[];
   featured: boolean;
   instructions?: string;
@@ -17,146 +20,155 @@ export interface Hackpack {
 
 export const hackpacks: Hackpack[] = [
   {
-    id: "google-cloud",
-    name: "Google Cloud Credits",
-    sponsor: "Google for Startups",
+    id: "nextjs-hackpack",
+    name: "Next.js Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Get $250 in Google Cloud credits to build and deploy your hackathon project. Includes access to Compute Engine, Cloud Run, and Firebase.",
-    link: "https://cloud.google.com/startup",
-    category: ["Cloud Credits"],
+      "Starter Next.js + Tailwind template with Prettier and ESLint. Perfect starting point for any web project.",
+    link: "https://github.com/acm-ucr/nextjs-hackpack",
+    category: ["Web Development"],
     featured: true,
     instructions:
-      "Sign up with your .edu email and use code HACKATHON250 at checkout.",
+      "Use This Template → npm i → npm run dev (Node 20.10+, localhost:3000).",
   },
   {
-    id: "aws-credits",
-    name: "AWS Educate Credits",
-    sponsor: "Amazon Web Services",
+    id: "firebase-nextjs-hackpack",
+    name: "Firebase + Next.js Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Receive $100 in AWS credits plus free access to AWS Educate learning resources. Build with EC2, Lambda, S3, and more.",
-    link: "https://aws.amazon.com/education/awseducate/",
-    category: ["Cloud Credits"],
+      "Next.js template wired up with Firebase. Includes auth domain, project ID, and storage bucket env setup.",
+    link: "https://github.com/acm-ucr/firebase-nextjs-hackpack",
+    category: ["Web Development"],
     featured: true,
     instructions:
-      "Create an AWS Educate account using your university email to claim credits.",
+      "Use This Template → add NEXT_PUBLIC_FIREBASE_* env vars → npm i → npm run dev.",
   },
   {
-    id: "openai-api",
-    name: "OpenAI API Access",
-    sponsor: "OpenAI",
+    id: "nextjs-auth-hackpack",
+    name: "Next.js Auth Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Free API credits to integrate GPT-4, DALL-E, and Whisper into your hackathon project. Includes $50 in free credits.",
-    link: "https://platform.openai.com",
-    category: ["AI APIs"],
+      "Next.js + Auth.js skeleton with Google login and MongoDB. Skip auth boilerplate and start building.",
+    link: "https://github.com/acm-ucr/nextjs-auth-hackpack",
+    category: ["Web Development"],
     featured: true,
     instructions:
-      "Apply for the OpenAI hackathon program using your .edu email to receive credits.",
+      "Use This Template → set AUTH_SECRET, GOOGLE_CLIENT_ID/SECRET, MONGODB_URI → npm i → npm run dev.",
   },
   {
-    id: "claude-api",
-    name: "Claude API Credits",
-    sponsor: "Anthropic",
+    id: "mongodb-nextjs-hackpack",
+    name: "MongoDB + Next.js Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Build with Claude, Anthropic's AI assistant. Get $50 in API credits plus access to the latest Claude models.",
-    link: "https://console.anthropic.com",
-    category: ["AI APIs"],
+      "Next.js template connected to MongoDB. Just drop in your connection string and start reading/writing data.",
+    link: "https://github.com/acm-ucr/mongodb-nextjs-hackpack",
+    category: ["Backend & Database"],
     featured: false,
-    instructions:
-      "Sign up for the Anthropic console and use promo code HACKCLAUDE50.",
+    instructions: "Use This Template → set MONGODB_URI → npm i → npm run dev.",
   },
   {
-    id: "huggingface",
-    name: "Hugging Face Spaces",
-    sponsor: "Hugging Face",
+    id: "expo-tailwind-hackpack",
+    name: "Expo + Tailwind Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Deploy your AI models for free on Hugging Face Spaces. Access thousands of pre-trained models and datasets.",
-    link: "https://huggingface.co/spaces",
-    category: ["AI APIs"],
-    featured: false,
-    instructions:
-      "Create an account and deploy your model to Spaces with zero configuration.",
-  },
-  {
-    id: "vercel",
-    name: "Vercel Pro",
-    sponsor: "Vercel",
-    description:
-      "Deploy your frontend instantly with Vercel. Get 90 days of Pro tier including serverless functions, analytics, and more.",
-    link: "https://vercel.com/hackathons",
-    category: ["Developer Tools"],
+      "React Native mobile starter using Expo and NativeWind. Scan the QR code with Expo Go to run on your phone.",
+    link: "https://github.com/acm-ucr/expo-tailwind-hackpack",
+    category: ["Mobile"],
     featured: true,
     instructions:
-      "Sign up for Vercel and apply your hackathon coupon code VERCELHACK2026.",
+      "Use This Template → npm i → npm run start → scan QR with Expo Go.",
   },
   {
-    id: "github-copilot",
-    name: "GitHub Copilot",
-    sponsor: "GitHub",
+    id: "discord-typescript-hackpack",
+    name: "Discord Bot (TypeScript) Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Free access to GitHub Copilot during the hackathon. AI-powered code completion and suggestions in your editor.",
-    link: "https://github.com/features/copilot",
-    category: ["Developer Tools"],
+      "Discord.js bot starter in TypeScript. Command handling boilerplate included — just add your bot token.",
+    link: "https://github.com/acm-ucr/discord-typescript-hackpack",
+    category: ["Bots"],
     featured: false,
     instructions:
-      "Install the Copilot extension in VS Code and sign in with your GitHub account.",
+      "Use This Template → set DISCORD_TOKEN → npm i → npm run bot.",
   },
   {
-    id: "supabase",
-    name: "Supabase Pro",
-    sponsor: "Supabase",
+    id: "discord-python-hackpack",
+    name: "Discord Bot (Python) Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Get 3 months of Supabase Pro for free. Includes PostgreSQL database, authentication, real-time subscriptions, and storage.",
-    link: "https://supabase.com/hackathon",
-    category: ["Developer Tools"],
+      "Discord bot starter in Python using Poetry. Great if you prefer Python over Node for bot logic.",
+    link: "https://github.com/acm-ucr/discord-python-hackpack",
+    category: ["Bots"],
     featured: false,
     instructions:
-      "Create a Supabase account and use promo code SUPABASEHACK to activate.",
+      "Use This Template → set DISCORD_BOT_TOKEN → poetry install → poetry run bot.",
   },
   {
-    id: "figma",
-    name: "Figma Professional",
-    sponsor: "Figma",
+    id: "mongodb-python-hackpack",
+    name: "MongoDB + Python Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "90-day free trial of Figma Professional with unlimited project files, version history, and advanced prototyping tools.",
-    link: "https://www.figma.com/education/hackathon/",
-    category: ["Design Tools"],
+      "Python + PyMongo template managed with Poetry. Connect to MongoDB and build a backend in minutes.",
+    link: "https://github.com/acm-ucr/mongodb-python-hackpack",
+    category: ["Backend & Database"],
+    featured: false,
+    instructions:
+      "Use This Template → set MONGODB_URI → poetry install → poetry run app.",
+  },
+  {
+    id: "machine-learning-hackpack",
+    name: "Machine Learning Hackpack",
+    sponsor: "ACM at UCR",
+    description:
+      "Jupyter Notebook starter for ML experiments. Open in VS Code or Google Colab and start training models.",
+    link: "https://github.com/acm-ucr/machine-learning-hackpack",
+    category: ["AI/ML"],
     featured: true,
     instructions:
-      "Register with your .edu email and join the Figma Education plan to unlock Pro features.",
+      "Open machine-learning-hackpack.ipynb in VS Code or Google Colab (Python 3.8+).",
   },
   {
-    id: "canva",
-    name: "Canva Pro",
-    sponsor: "Canva",
+    id: "computer-vision-hackpack",
+    name: "Computer Vision Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Free 30-day Canva Pro trial with premium templates, design assets, and team collaboration features.",
-    link: "https://www.canva.com/hackathons/",
-    category: ["Design Tools"],
+      "Python + Poetry starter for computer vision projects. Image processing boilerplate ready to extend.",
+    link: "https://github.com/acm-ucr/computer-vision-hackpack",
+    category: ["AI/ML"],
     featured: false,
-    instructions: "Sign up for Canva and enter promo CANVAHACK30 at checkout.",
+    instructions: "Use This Template → poetry install → poetry run app.",
   },
   {
-    id: "namecheap",
-    name: ".XYZ Domain",
-    sponsor: "Namecheap",
+    id: "arduino-hackpack",
+    name: "Arduino Hackpack",
+    sponsor: "ACM at UCR",
     description:
-      "Get a free .xyz domain for one year. Perfect for hosting your hackathon project landing page.",
-    link: "https://www.namecheap.com/hackathons/",
-    category: ["Domains"],
+      "Arduino IDE starter sketch for hardware hacks. Install the Arduino IDE, flash the sample, and iterate.",
+    link: "https://github.com/acm-ucr/arduino-hackpack",
+    category: ["Hardware"],
     featured: false,
+    instructions: "Install Arduino IDE → open src → flash to your board.",
+  },
+  {
+    id: "unity-hackpack",
+    name: "Unity Hackpack",
+    sponsor: "ACM at UCR",
+    description:
+      "Unity starter project (2022.3.29f1). Open the repo as a project in Unity Hub to start building your game.",
+    link: "https://github.com/acm-ucr/unity-hackpack",
+    category: ["Game Dev"],
+    featured: false,
+    instructions: "Install Unity Hub + 2022.3.29f1 → open repo as project.",
+  },
+  {
+    id: "python-hackpack",
+    name: "Python Hackpack",
+    sponsor: "ACM at UCR",
+    description:
+      "General-purpose Python starter using Poetry with YAPF and Pylint. Ideal for scripts, APIs, and tooling.",
+    link: "https://github.com/acm-ucr/python-hackpack",
+    category: ["General"],
+    featured: true,
     instructions:
-      "Use coupon code XYZHACK2026 at checkout to claim your free domain.",
-  },
-  {
-    id: "googledomains",
-    name: ".dev Domain + Hosting",
-    sponsor: "Google Domains",
-    description:
-      "Free .dev domain for one year plus $50 in Firebase hosting credits. Launch your project with a professional domain.",
-    link: "https://domains.google/hackathon",
-    category: ["Domains"],
-    featured: false,
-    instructions:
-      "Register your .dev domain through Google Domains using promo DEVHACK50.",
+      "Use This Template → poetry install → poetry run app (Python 3.8+).",
   },
 ];

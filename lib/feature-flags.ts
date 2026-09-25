@@ -62,6 +62,10 @@ const REGISTRY: FeatureFlagRegistry = FEATURE_FLAGS;
  * against {@link FEATURE_FLAGS}, so unknown keys are a type error.
  */
 export function getFeatureFlag(flag: FeatureFlagKey): boolean {
+  // Dev-mode unlock: every page gated by a feature flag (photos, analytics,
+  // assignments) renders in `next dev` without extra setup. Production still
+  // respects the registry values above.
+  if (process.env.NODE_ENV !== "production") return true;
   const { value, production } = REGISTRY[flag] as FeatureFlagDefinition;
   return IS_PRODUCTION ? (production ?? value) : value;
 }

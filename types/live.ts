@@ -14,11 +14,14 @@ export interface Hackpack {
   description: string;
   link: string;
   category: (
-    | "Cloud Credits"
-    | "AI APIs"
-    | "Developer Tools"
-    | "Design Tools"
-    | "Domains"
+    | "Web Development"
+    | "Mobile"
+    | "Backend & Database"
+    | "AI/ML"
+    | "Bots"
+    | "Hardware"
+    | "Game Dev"
+    | "General"
   )[];
   featured: boolean;
   instructions?: string;

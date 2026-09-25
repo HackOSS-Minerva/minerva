@@ -5,6 +5,7 @@ import { SubmissionFormPage } from "@/components/live/submit/submission-form-pag
 import { Button } from "@/components/ui/button";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
+import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmitRouteProps {
@@ -19,6 +20,12 @@ const SubmitRoute = async ({ params }: SubmitRouteProps) => {
   // The project submission form requires a signed-in AND accepted participant.
   // This is the secure check (validates the session and participant status via
   // Convex); the proxy only does an optimistic cookie-existence redirect.
+  // Unlocked in dev so local development never requires a registered
+  // participant account.
+  if (BYPASS_AUTH_IN_DEV) {
+    return <SubmissionFormPage tenant={tenant} />;
+  }
+
   const access = await fetchAuthQuery(api.auth.getParticipantAccess, {
     tenant,
   });

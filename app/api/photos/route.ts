@@ -60,9 +60,12 @@ export const DELETE = withFetchHandler("photos-remove", async (request) => {
   }
 
   const event = getConfiguredPhotoEvent(tenant);
-  const access = await fetchAuthQuery(api.auth.getAdminAccess, { tenant });
-  if (!access.authenticated || !access.authorized) {
-    throw new AppError("PHOTO_ADMIN_FORBIDDEN");
+  // Dev-mode unlock: photo deletion never requires superadmin in `next dev`.
+  if (process.env.NODE_ENV === "production") {
+    const access = await fetchAuthQuery(api.auth.getAdminAccess, { tenant });
+    if (!access.authenticated || !access.authorized) {
+      throw new AppError("PHOTO_ADMIN_FORBIDDEN");
+    }
   }
 
   await removeEventPhoto(event, mediaItemId);

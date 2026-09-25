@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import { authComponent } from "./auth";
 import {
   getSubmissionTeam,
+  MAX_LINKS_PER_TYPE,
   MAX_TEAM_SIZE,
   TEAM_SIZE_ERROR,
 } from "../lib/vetting/rules";
@@ -64,6 +65,22 @@ export const add = mutation({
     const team = getSubmissionTeam(submitterEmail, invites);
     if (team.memberCount > MAX_TEAM_SIZE)
       throw convexError("VALIDATION_FAILED", TEAM_SIZE_ERROR);
+
+    const nonEmpty = (links: string[]) =>
+      links.filter((link) => link.trim() !== "");
+    if (
+      github.length > MAX_LINKS_PER_TYPE ||
+      figma.length > MAX_LINKS_PER_TYPE ||
+      canva.length > MAX_LINKS_PER_TYPE ||
+      nonEmpty(github).length > MAX_LINKS_PER_TYPE ||
+      nonEmpty(figma).length > MAX_LINKS_PER_TYPE ||
+      nonEmpty(canva).length > MAX_LINKS_PER_TYPE
+    ) {
+      throw convexError(
+        "VALIDATION_FAILED",
+        `You can add at most ${MAX_LINKS_PER_TYPE} links per type.`,
+      );
+    }
 
     const id = await ctx.db.insert("submissions", {
       teamName,

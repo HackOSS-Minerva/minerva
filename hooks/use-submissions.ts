@@ -23,6 +23,7 @@ import type {
 import {
   DEFAULT_GIT_COMMIT_GRACE_WINDOW_MINUTES,
   getSubmissionTeam,
+  MAX_LINKS_PER_TYPE,
   MAX_TEAM_SIZE,
   TEAM_SIZE_ERROR,
   validateVettingEventConfig,
@@ -53,9 +54,15 @@ export const submissionSchema = z.object({
   devpost: z
     .url("Please enter a valid URL (e.g., https://devpost.com/...)")
     .max(100, "URL must be 100 characters or less."),
-  github: z.array(optionalUrl),
-  figma: z.array(optionalUrl),
-  canva: z.array(optionalUrl),
+  github: z
+    .array(optionalUrl)
+    .max(MAX_LINKS_PER_TYPE, "You can add at most 3 GitHub links."),
+  figma: z
+    .array(optionalUrl)
+    .max(MAX_LINKS_PER_TYPE, "You can add at most 3 Figma links."),
+  canva: z
+    .array(optionalUrl)
+    .max(MAX_LINKS_PER_TYPE, "You can add at most 3 Canva links."),
   presentation: z.union([
     z.literal(""),
     z
@@ -100,6 +107,14 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
       const cleanGithub = value.github.filter((l) => l.trim() !== "");
       const cleanFigma = value.figma.filter((l) => l.trim() !== "");
       const cleanCanva = value.canva.filter((l) => l.trim() !== "");
+      if (
+        cleanGithub.length > MAX_LINKS_PER_TYPE ||
+        cleanFigma.length > MAX_LINKS_PER_TYPE ||
+        cleanCanva.length > MAX_LINKS_PER_TYPE
+      ) {
+        toast.error("You can add at most 3 links per type.");
+        return;
+      }
       if (
         !(
           cleanGithub.length > 0 ||

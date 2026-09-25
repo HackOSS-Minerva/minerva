@@ -39,7 +39,7 @@ export function HackpacksPage({ tenant }: HackpacksPageProps) {
       <div className="mb-6">
         <h1 className="text-2xl font-bold md:text-3xl">Hackpacks</h1>
         <p className="mt-1 text-muted-foreground">
-          Explore sponsor resources, APIs, and tools to help build your project.
+          Explore starter templates and boilerplates to kickstart your project.
         </p>
       </div>
       <HackpacksContent />
