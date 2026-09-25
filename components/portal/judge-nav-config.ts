@@ -57,11 +57,6 @@ export const judgeDropdowns: DropdownConfig[] = [
         description: "Browse all submitted team projects and demo links.",
       },
       {
-        href: "/judge/orientation",
-        label: "Orientation",
-        description: "Review judging criteria, rubrics, and event guidelines.",
-      },
-      {
         href: "/judge/certificate",
         label: "Certificate",
         description: "Download your certificate of service.",

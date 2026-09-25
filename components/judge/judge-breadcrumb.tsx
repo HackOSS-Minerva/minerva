@@ -21,7 +21,6 @@ const resourcePaths: Record<string, string> = {
 const participatePaths: Record<string, string> = {
   "/judge/assignments": "View Assignments",
   "/judge/submissions": "Project Submissions",
-  "/judge/orientation": "Orientation",
   "/judge/certificate": "Certificate",
 };
 

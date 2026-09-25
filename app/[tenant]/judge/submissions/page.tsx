@@ -1,4 +1,4 @@
-import { SubmissionsPage } from "@/components/judge/submissions-page";
+import { JudgeSubmissionsDashboard } from "@/components/judge/judge-submissions-dashboard";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmissionsRouteProps {
@@ -10,7 +10,7 @@ interface SubmissionsRouteProps {
 const SubmissionsRoute = async ({ params }: SubmissionsRouteProps) => {
   const { tenant } = await params;
 
-  return <SubmissionsPage tenant={tenant} />;
+  return <JudgeSubmissionsDashboard tenant={tenant} />;
 };
 
 export default SubmissionsRoute;

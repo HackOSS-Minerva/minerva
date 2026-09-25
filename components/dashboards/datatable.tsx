@@ -94,7 +94,15 @@ interface DashboardProps {
   runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
 
-export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
+export const DataTable = ({
+  dashboard,
+  slugOverride,
+  readOnly = false,
+}: {
+  dashboard: DashboardProps;
+  slugOverride?: string;
+  readOnly?: boolean;
+}) => {
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -118,7 +126,10 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     | null
   >(null);
 
-  const { dashboard: slug } = useParams<{ dashboard: string }>();
+  const { dashboard: routeSlug } = useParams<{
+    dashboard?: string;
+  }>();
+  const slug = slugOverride ?? routeSlug ?? "";
   const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { config } = getTenant(tenant);
   const isSubmissions = slug === "submissions";
@@ -133,9 +144,13 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
     runVettingMany,
   } = dashboard;
 
+  const visibleColumns = readOnly
+    ? columns.filter((column) => column.id !== "select")
+    : columns;
+
   const table = useReactTable<any>({
     data,
-    columns,
+    columns: visibleColumns,
     state: {
       sorting,
       columnVisibility,
@@ -144,7 +159,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
       globalFilter,
       pagination,
     },
-    enableRowSelection: !!onDeleteMany,
+    enableRowSelection: readOnly ? false : !!onDeleteMany,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -272,65 +287,68 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
             </SelectContent>
           </Select>
           <div className="flex items-center gap-2">
-            {slug === "submissions" ? (
-              <Button
-                variant="outline"
-                size="sm"
-                aria-label="Vet Projects"
-                onClick={handleRunVetting}
-                disabled={selectedIds.length === 0 || vetting}
-              >
-                <IconSwords />
-                <span className="hidden lg:inline ml-1">
-                  {vetting ? "Vetting..." : "Vet Projects"}
-                </span>
-              </Button>
-            ) : (
+            {!readOnly &&
+              (slug === "submissions" ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  aria-label="Vet Projects"
+                  onClick={handleRunVetting}
+                  disabled={selectedIds.length === 0 || vetting}
+                >
+                  <IconSwords />
+                  <span className="hidden lg:inline ml-1">
+                    {vetting ? "Vetting..." : "Vet Projects"}
+                  </span>
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const rows = table.getFilteredRowModel().rows;
+                    const emails = rows.map((row) => row.original.email);
+                    const csv = emails.join(",");
+                    navigator.clipboard.writeText(csv);
+                    toast.success(`Copied ${emails.length} emails to clipboard`);
+                  }}
+                  disabled={table.getFilteredRowModel().rows.length === 0}
+                >
+                  <IconCopy />
+                  <span className="hidden lg:inline ml-1">Copy Emails</span>
+                </Button>
+              ))}
+
+            {!readOnly && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const rows = table.getFilteredRowModel().rows;
-                  const emails = rows.map((row) => row.original.email);
-                  const csv = emails.join(",");
-                  navigator.clipboard.writeText(csv);
-                  toast.success(`Copied ${emails.length} emails to clipboard`);
+                  const rows = table
+                    .getFilteredRowModel()
+                    .rows.map((row) => row.original);
+                  const blob = convertToCSV(
+                    rows as unknown as Record<string, unknown>[],
+                    csvFields,
+                  );
+                  const now = new Date();
+                  const pad = (n: number) => String(n).padStart(2, "0");
+                  const timestamp = `${pad(now.getMonth() + 1)}_${pad(now.getDate())}_${now.getFullYear()}_${pad(now.getHours())}_${pad(now.getMinutes())}_${pad(now.getSeconds())}`;
+                  const filename = `${config?.name.toUpperCase()}_${slug.toUpperCase()}_${timestamp}.csv`;
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = filename;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  toast.success(`Downloaded ${rows.length} rows as CSV`);
                 }}
                 disabled={table.getFilteredRowModel().rows.length === 0}
               >
-                <IconCopy />
-                <span className="hidden lg:inline ml-1">Copy Emails</span>
+                <IconDownload />
+                <span className="hidden lg:inline ml-1">Download CSV</span>
               </Button>
             )}
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const rows = table
-                  .getFilteredRowModel()
-                  .rows.map((row) => row.original);
-                const blob = convertToCSV(
-                  rows as unknown as Record<string, unknown>[],
-                  csvFields,
-                );
-                const now = new Date();
-                const pad = (n: number) => String(n).padStart(2, "0");
-                const timestamp = `${pad(now.getMonth() + 1)}_${pad(now.getDate())}_${now.getFullYear()}_${pad(now.getHours())}_${pad(now.getMinutes())}_${pad(now.getSeconds())}`;
-                const filename = `${config.name.toUpperCase()}_${slug.toUpperCase()}_${timestamp}.csv`;
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = filename;
-                a.click();
-                URL.revokeObjectURL(url);
-                toast.success(`Downloaded ${rows.length} rows as CSV`);
-              }}
-              disabled={table.getFilteredRowModel().rows.length === 0}
-            >
-              <IconDownload />
-              <span className="hidden lg:inline ml-1">Download CSV</span>
-            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -365,22 +383,24 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const ids = table
-                  .getSelectedRowModel()
-                  .rows.map((row) => row.original._id);
-                setDeleteTarget({ type: "many", ids });
-                setDeleteDialogOpen(true);
-              }}
-              disabled={table.getSelectedRowModel().rows.length === 0}
-              className="hover:bg-red-500 hover:text-white"
-            >
-              <IconTrash />
-              <span className="hidden lg:inline ml-1">Delete</span>
-            </Button>
+            {!readOnly && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const ids = table
+                    .getSelectedRowModel()
+                    .rows.map((row) => row.original._id);
+                  setDeleteTarget({ type: "many", ids });
+                  setDeleteDialogOpen(true);
+                }}
+                disabled={table.getSelectedRowModel().rows.length === 0}
+                className="hover:bg-red-500 hover:text-white"
+              >
+                <IconTrash />
+                <span className="hidden lg:inline ml-1">Delete</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -415,7 +435,9 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody className="**:data-[slot=table-cell]:first:w-8">
+            <TableBody
+              className={readOnly ? undefined : "**:data-[slot=table-cell]:first:w-8"}
+            >
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
@@ -442,7 +464,7 @@ export const DataTable = ({ dashboard }: { dashboard: DashboardProps }) => {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={visibleColumns.length}
                     className="h-24 text-center"
                   >
                     No results.

@@ -10,7 +10,6 @@ import DesignverseSubmissionHeader from "@/tenants/designverse/descriptions/subm
 import DesignverseRules from "@/tenants/designverse/descriptions/rules.mdx";
 import DesignverseVenue from "@/tenants/designverse/descriptions/venue.mdx";
 import DesignverseCodeOfConduct from "@/tenants/designverse/descriptions/code-of-conduct.mdx";
-import DesignverseJudgeOrientation from "@/tenants/designverse/descriptions/judge-orientation.mdx";
 import CutiehackParticipantHeader from "@/tenants/cutiehack/descriptions/participants.mdx";
 import CutiehackJudgeHeader from "@/tenants/cutiehack/descriptions/judges.mdx";
 import CutiehackSpeakerHeader from "@/tenants/cutiehack/descriptions/speakers.mdx";
@@ -21,7 +20,6 @@ import CutiehackSubmissionHeader from "@/tenants/cutiehack/descriptions/submissi
 import CutiehackRules from "@/tenants/cutiehack/descriptions/rules.mdx";
 import CutiehackVenue from "@/tenants/cutiehack/descriptions/venue.mdx";
 import CutiehackCodeOfConduct from "@/tenants/cutiehack/descriptions/code-of-conduct.mdx";
-import CutiehackJudgeOrientation from "@/tenants/cutiehack/descriptions/judge-orientation.mdx";
 
 export const tenantSlugs = ["designverse", "cutiehack"] as const;
 export type TenantSlug = (typeof tenantSlugs)[number];
@@ -79,7 +77,6 @@ const tenantContent = {
       rules: DesignverseRules,
       codeOfConduct: DesignverseCodeOfConduct,
       venue: DesignverseVenue,
-      orientation: DesignverseJudgeOrientation,
     },
   },
   cutiehack: {
@@ -96,7 +93,6 @@ const tenantContent = {
       rules: CutiehackRules,
       codeOfConduct: CutiehackCodeOfConduct,
       venue: CutiehackVenue,
-      orientation: CutiehackJudgeOrientation,
     },
   },
 } satisfies Record<TenantSlug, object>;
