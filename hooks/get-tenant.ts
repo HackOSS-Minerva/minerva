@@ -1,27 +1,6 @@
-import designverse from "@/tenants/designverse/designverse.json";
-import cutiehack from "@/tenants/cutiehack/cutiehack.json";
-import DesignverseParticipantHeader from "@/tenants/designverse/descriptions/participants.mdx";
-import DesignverseJudgeHeader from "@/tenants/designverse/descriptions/judges.mdx";
-import DesignverseSpeakerHeader from "@/tenants/designverse/descriptions/speakers.mdx";
-import DesignverseSuperadminHeader from "@/tenants/designverse/descriptions/superadmins.mdx";
-import DesignverseVolunteerHeader from "@/tenants/designverse/descriptions/volunteers.mdx";
-import DesignverseFeedbackHeader from "@/tenants/designverse/descriptions/feedback.mdx";
-import DesignverseSubmissionHeader from "@/tenants/designverse/descriptions/submission.mdx";
-import DesignverseRules from "@/tenants/designverse/descriptions/rules.mdx";
-import DesignverseVenue from "@/tenants/designverse/descriptions/venue.mdx";
-import DesignverseCodeOfConduct from "@/tenants/designverse/descriptions/code-of-conduct.mdx";
-import CutiehackParticipantHeader from "@/tenants/cutiehack/descriptions/participants.mdx";
-import CutiehackJudgeHeader from "@/tenants/cutiehack/descriptions/judges.mdx";
-import CutiehackSpeakerHeader from "@/tenants/cutiehack/descriptions/speakers.mdx";
-import CutiehackSuperadminHeader from "@/tenants/cutiehack/descriptions/superadmins.mdx";
-import CutiehackVolunteerHeader from "@/tenants/cutiehack/descriptions/volunteers.mdx";
-import CutiehackFeedbackHeader from "@/tenants/cutiehack/descriptions/feedback.mdx";
-import CutiehackSubmissionHeader from "@/tenants/cutiehack/descriptions/submission.mdx";
-import CutiehackRules from "@/tenants/cutiehack/descriptions/rules.mdx";
-import CutiehackVenue from "@/tenants/cutiehack/descriptions/venue.mdx";
-import CutiehackCodeOfConduct from "@/tenants/cutiehack/descriptions/code-of-conduct.mdx";
+import { tenantConfigs, tenantContent, tenantSlugs } from "@/tenants/generated";
 
-export const tenantSlugs = ["designverse", "cutiehack"] as const;
+export { tenantSlugs };
 export type TenantSlug = (typeof tenantSlugs)[number];
 
 export interface TenantConfig {
@@ -51,53 +30,19 @@ export interface TenantConfig {
   formLocks?: Record<string, { opens: string; closes: string }>;
 }
 
-const tenantConfigs: Record<TenantSlug, TenantConfig> = {
-  designverse: {
-    ...designverse,
-    slug: "designverse",
-  },
-  cutiehack: {
-    ...cutiehack,
-    slug: "cutiehack",
-  },
+const typedTenantConfigs = Object.fromEntries<TenantConfig>(
+  tenantSlugs.map((slug) => [
+    slug,
+    { ...tenantConfigs[slug], slug } satisfies TenantConfig,
+  ]),
+) as Record<TenantSlug, TenantConfig>;
+
+type RegistryContent = (typeof tenantContent)[TenantSlug];
+type TenantContent = {
+  [Section in keyof RegistryContent]: {
+    -readonly [Key in keyof RegistryContent[Section]]: RegistryContent[Section][Key];
+  };
 };
-
-const tenantContent = {
-  designverse: {
-    headers: {
-      participant: DesignverseParticipantHeader,
-      judge: DesignverseJudgeHeader,
-      speaker: DesignverseSpeakerHeader,
-      superadmin: DesignverseSuperadminHeader,
-      volunteer: DesignverseVolunteerHeader,
-      feedback: DesignverseFeedbackHeader,
-      submission: DesignverseSubmissionHeader,
-    },
-    markdown: {
-      rules: DesignverseRules,
-      codeOfConduct: DesignverseCodeOfConduct,
-      venue: DesignverseVenue,
-    },
-  },
-  cutiehack: {
-    headers: {
-      participant: CutiehackParticipantHeader,
-      judge: CutiehackJudgeHeader,
-      speaker: CutiehackSpeakerHeader,
-      superadmin: CutiehackSuperadminHeader,
-      volunteer: CutiehackVolunteerHeader,
-      feedback: CutiehackFeedbackHeader,
-      submission: CutiehackSubmissionHeader,
-    },
-    markdown: {
-      rules: CutiehackRules,
-      codeOfConduct: CutiehackCodeOfConduct,
-      venue: CutiehackVenue,
-    },
-  },
-} satisfies Record<TenantSlug, object>;
-
-type TenantContent = (typeof tenantContent)[TenantSlug];
 
 export const isTenantSlug = (slug: string): slug is TenantSlug =>
   tenantSlugs.includes(slug as TenantSlug);
@@ -125,7 +70,7 @@ export function getTenant(slug: string): {
     };
   }
 
-  const config = tenantConfigs[slug];
+  const config = typedTenantConfigs[slug];
   const content = tenantContent[slug];
 
   return {
