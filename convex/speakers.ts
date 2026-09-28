@@ -5,15 +5,6 @@ import { statuses } from "../data/status";
 import { affiliations, dietrestrictions, genders, shirts } from "./schema";
 import { authComponent } from "./auth";
 
-export const getbyid = query({
-  args: { id: v.id("speakers") },
-  handler: async (ctx, { id }) => {
-    const speaker = await ctx.db.get("speakers", id);
-    if (!speaker) return null;
-    return { id: speaker._id, user: speaker };
-  },
-});
-
 export const getstatus = query({
   args: { tenant: v.string(), userId: v.string() },
   handler: async (ctx, { tenant, userId }) => {
@@ -86,31 +77,6 @@ export const add = mutation({
   },
 });
 
-export const update = mutation({
-  args: {
-    id: v.id("speakers"),
-    updates: v.object({
-      firstname: v.string(),
-      lastname: v.string(),
-      email: v.string(),
-      telephone: v.string(),
-      gender: genders,
-      shirt: shirts,
-      affiliation: affiliations,
-      title: v.string(),
-      organization: v.string(),
-      dietrestriction: dietrestrictions,
-      picture: v.string(),
-    }),
-  },
-  handler: async (ctx, { id, updates }) => {
-    await ctx.db.patch(id, updates);
-    const speaker = await ctx.db.get("speakers", id);
-    if (!speaker) return null;
-    return { id: speaker._id, user: speaker };
-  },
-});
-
 export const remove = mutation({
   args: { id: v.id("speakers") },
   handler: async (ctx, { id }) => {
@@ -126,25 +92,6 @@ export const deleteMany = mutation({
       await ctx.db.delete(id);
     }
     return { success: true };
-  },
-});
-
-export const setStatus = mutation({
-  args: {
-    id: v.id("speakers"),
-    status: v.union(...statuses.map((s) => v.literal(s))),
-  },
-  handler: async (ctx, { id, status }) => {
-    const speaker = await ctx.db.get("speakers", id);
-    if (!speaker) throw convexError("NOT_FOUND", "Speaker not found");
-
-    if (speaker.status === status) {
-      return { status: "unchanged" };
-    }
-
-    await ctx.db.patch(id, { status });
-
-    return { status: "success" };
   },
 });
 

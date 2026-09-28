@@ -1,5 +1,5 @@
 import { MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
-import { AppError, toErrorResponse, type ErrorCode } from "@/lib/app-error";
+import { AppError, type ErrorCode } from "@/lib/app-error";
 import designverse from "@/tenants/designverse/designverse.json";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
@@ -72,12 +72,6 @@ export const assertPhotoOrigin = (request: Request): void => {
     throw photoError("PHOTO_ORIGIN_FORBIDDEN");
   }
 };
-
-/** @deprecated Use `toErrorResponse(error, requestId)` from `@/lib/app-error`. */
-export const photoErrorResponse = (
-  error: unknown,
-  requestId?: string,
-): Response => toErrorResponse(error, requestId);
 
 const getCredentials = (): GoogleCredentials => {
   const clientId = process.env.GOOGLE_PHOTOS_CLIENT_ID;

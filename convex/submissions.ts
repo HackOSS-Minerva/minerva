@@ -9,12 +9,6 @@ import {
   TEAM_SIZE_ERROR,
 } from "../lib/vetting/rules";
 
-const vettedStatus = v.union(
-  v.literal("verified"),
-  v.literal("needs_review"),
-  v.literal("disqualified"),
-);
-
 export const get = query({
   args: { tenant: v.string() },
   handler: async (ctx, { tenant }) => {
@@ -115,30 +109,6 @@ export const deleteMany = mutation({
   handler: async (ctx, { ids }) => {
     for (const id of ids) {
       await ctx.db.delete(id);
-    }
-    return { success: true };
-  },
-});
-
-export const updateVetted = mutation({
-  args: {
-    id: v.id("submissions"),
-    vetted: vettedStatus,
-  },
-  handler: async (ctx, { id, vetted }) => {
-    await ctx.db.patch(id, { vetted });
-    return { success: true };
-  },
-});
-
-export const updateVettedMany = mutation({
-  args: {
-    ids: v.array(v.id("submissions")),
-    vetted: vettedStatus,
-  },
-  handler: async (ctx, { ids, vetted }) => {
-    for (const id of ids) {
-      await ctx.db.patch(id, { vetted });
     }
     return { success: true };
   },

@@ -193,8 +193,5 @@ export default defineSchema({
       ),
     ),
     assignedAt: v.number(),
-  })
-    .index("by_judge", ["judgeId"])
-    .index("by_submission", ["submissionId"])
-    .index("by_tenant", ["tenant"]),
+  }).index("by_tenant", ["tenant"]),
 });

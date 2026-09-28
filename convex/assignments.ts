@@ -1,5 +1,4 @@
 import { query, mutation } from "./_generated/server";
-import type { Doc } from "./_generated/dataModel";
 import { v } from "convex/values";
 
 export const getByTenant = query({
@@ -8,26 +7,6 @@ export const getByTenant = query({
     return await ctx.db
       .query("assignments")
       .withIndex("by_tenant", (q) => q.eq("tenant", tenant))
-      .collect();
-  },
-});
-
-export const getByJudge = query({
-  args: { judgeId: v.id("judges") },
-  handler: async (ctx, { judgeId }) => {
-    return await ctx.db
-      .query("assignments")
-      .withIndex("by_judge", (q) => q.eq("judgeId", judgeId))
-      .collect();
-  },
-});
-
-export const getBySubmission = query({
-  args: { submissionId: v.id("submissions") },
-  handler: async (ctx, { submissionId }) => {
-    return await ctx.db
-      .query("assignments")
-      .withIndex("by_submission", (q) => q.eq("submissionId", submissionId))
       .collect();
   },
 });
@@ -74,27 +53,6 @@ export const setAssignments = mutation({
     }
 
     return { success: true, count: ids.length };
-  },
-});
-
-export const updateAssignment = mutation({
-  args: {
-    id: v.id("assignments"),
-    room: v.optional(v.string()),
-    status: v.optional(
-      v.union(
-        v.literal("assigned"),
-        v.literal("completed"),
-        v.literal("no_show"),
-      ),
-    ),
-  },
-  handler: async (ctx, { id, room, status }) => {
-    const patch: Partial<Doc<"assignments">> = {};
-    if (room !== undefined) patch.room = room;
-    if (status !== undefined) patch.status = status;
-    await ctx.db.patch(id, patch);
-    return { success: true };
   },
 });
 

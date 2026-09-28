@@ -35,18 +35,6 @@ export const add = mutation({
   },
 });
 
-export const update = mutation({
-  args: {
-    id: v.id("ideas"),
-    title: v.optional(v.string()),
-    description: v.optional(v.string()),
-    skills: v.optional(v.array(v.string())),
-  },
-  handler: async (ctx, { id, ...updates }) => {
-    await ctx.db.patch(id, updates);
-  },
-});
-
 export const remove = mutation({
   args: { id: v.id("ideas") },
   handler: async (ctx, { id }) => {

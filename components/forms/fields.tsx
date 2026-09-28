@@ -61,7 +61,6 @@ const Fields = () => {
     onSubmit: async ({ value }) => {
       if (isLocked) return;
       toast.success(
-        // `Thank you for applying. You will receive a confirmation email shortly at ${value.email}`,
         `Thank you for applying. We will send you an application update shortly!`,
       );
       triggerConfetti();

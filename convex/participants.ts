@@ -14,15 +14,6 @@ import {
 import { statuses } from "../data/status";
 import { authComponent } from "./auth";
 
-export const getbyid = query({
-  args: { id: v.id("participants") },
-  handler: async (ctx, { id }) => {
-    const participant = await ctx.db.get("participants", id);
-    if (!participant) return null;
-    return { id: participant._id, user: participant };
-  },
-});
-
 export const get = query({
   args: { tenant: v.string() },
   handler: async (ctx, { tenant }) => {
@@ -103,35 +94,6 @@ export const add = mutation({
   },
 });
 
-export const update = mutation({
-  args: {
-    id: v.id("participants"),
-    updates: v.object({
-      firstname: v.string(),
-      lastname: v.string(),
-      email: v.string(),
-      telephone: v.string(),
-      gender: genders,
-      shirt: shirts,
-      discord: v.string(),
-      major: majors,
-      age: ages,
-      country: countries,
-      school: schools,
-      grade: grades,
-      mlh_marketing: v.boolean(),
-      dietrestriction: dietrestrictions,
-      resume: v.optional(v.string()),
-    }),
-  },
-  handler: async (ctx, { id, updates }) => {
-    await ctx.db.patch(id, updates);
-    const updated = await ctx.db.get("participants", id);
-    if (!updated) return null;
-    return { id: updated._id, user: updated };
-  },
-});
-
 export const remove = mutation({
   args: { id: v.id("participants") },
   handler: async (ctx, { id }) => {
@@ -147,25 +109,6 @@ export const deleteMany = mutation({
       await ctx.db.delete(id);
     }
     return { success: true };
-  },
-});
-
-export const setStatus = mutation({
-  args: {
-    id: v.id("participants"),
-    status: v.union(...statuses.map((s) => v.literal(s))),
-  },
-  handler: async (ctx, { id, status }) => {
-    const participant = await ctx.db.get("participants", id);
-    if (!participant) throw convexError("NOT_FOUND", "Participant not found");
-
-    if (participant.status === status) {
-      return { status: "unchanged" };
-    }
-
-    await ctx.db.patch(id, { status });
-
-    return { status: "success" };
   },
 });
 
