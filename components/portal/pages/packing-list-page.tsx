@@ -9,9 +9,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { PackingChecklist } from "@/components/portal/pages/packing-checklist";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface PackingListPageProps {
-  tenant: string;
+  tenant: TenantSlug;
   baseHref?: string;
 }
 

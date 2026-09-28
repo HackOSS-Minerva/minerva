@@ -13,14 +13,10 @@ interface SignInPageProps {
   }>;
 }
 
-/**
- * The interactive sign-in content. This is split into its own component so it
- * can be wrapped in `<Suspense>`, which Next.js requires for any component
- * that calls `useSearchParams()`. Without the Suspense boundary the page
- * de-optimizes client rendering and the sign-in button's onClick can fail to
- * attach (so clicking "Sign in with Google" does nothing / no redirect).
- */
-const SignInContent = ({ tenant }: { tenant: string }) => {
+// Split out so it can be wrapped in `<Suspense>`, which Next.js requires for
+// components calling `useSearchParams()` — without it the page de-optimizes and
+// the sign-in button's onClick can fail to attach.
+const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 

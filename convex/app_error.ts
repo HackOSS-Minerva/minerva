@@ -1,16 +1,8 @@
 import { ConvexError } from "convex/values";
 
-/**
- * Convex-side counterpart to `AppError` (`@/lib/app-error`).
- *
- * Convex functions cannot return `Response`, so coded failures are thrown
- * as `ConvexError({ code, message })`. Clients read `err.data.code` and map
- * it with `getUserMessage(code)` from `@/lib/app-error` (see
- * `@/hooks/use-app-error`).
- *
- * Convention: `throw convexError("NOT_FOUND")` - never
- * `throw new Error("some string")` in new Convex code.
- */
+// Convex-side counterpart to `AppError`. Convex can't return a `Response`, so
+// coded failures throw `ConvexError({ code, message })`. Convention:
+// `throw convexError("NOT_FOUND")`, never `throw new Error("...")`.
 
 export const CONVEX_ERROR_MESSAGES = {
   BAD_REQUEST: "Invalid request.",

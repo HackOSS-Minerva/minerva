@@ -21,9 +21,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { IconPlus } from "@tabler/icons-react";
 import { roles } from "@/data/roles";
 import type { Id } from "@/convex/_generated/dataModel";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface IdeaBoardProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function IdeaBoard({ tenant }: IdeaBoardProps) {

@@ -22,6 +22,7 @@ import { captureAnalyticsEvent } from "@/lib/posthog";
 import { getUserMessage } from "@/lib/app-error";
 import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
 import { groupEventsByDay } from "@/lib/schedule";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface DecodedQR {
   id: string;
@@ -31,7 +32,7 @@ interface DecodedQR {
 }
 
 const CheckinContent = () => {
-  const params = useParams<{ tenant: string }>();
+  const params = useParams<{ tenant: TenantSlug }>();
   const [selectedEventId, setSelectedEventId] = useState<string>("");
   const [lastScan, setLastScan] = useState<DecodedQR | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);

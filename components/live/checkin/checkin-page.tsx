@@ -12,9 +12,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QRCodeSVG } from "qrcode.react";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { authClient } from "@/lib/auth-client";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface CheckinPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function CheckinPage({ tenant }: CheckinPageProps) {

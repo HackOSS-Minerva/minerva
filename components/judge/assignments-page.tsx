@@ -14,9 +14,10 @@ import {
   formatStatus,
 } from "@/hooks/use-assignments";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface AssignmentsPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function AssignmentsPage({ tenant }: AssignmentsPageProps) {

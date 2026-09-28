@@ -23,9 +23,8 @@ export function convertToCSV<T extends object>(
     return str;
   };
 
-  // `fields` are plain strings that may reference keys absent on a given row
-  // (e.g. legacy consent columns), so reads go through a permissive record
-  // view of the row.
+  // `fields` may reference keys absent on a given row (e.g. legacy consent
+  // columns), so reads go through a permissive record view of the row.
   const readField = (row: T, field: string): unknown =>
     (row as Record<string, unknown>)[field];
 

@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import { IdeaBoard } from "@/components/live/teams/idea-board";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface TeamsPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function TeamsPage({ tenant }: TeamsPageProps) {

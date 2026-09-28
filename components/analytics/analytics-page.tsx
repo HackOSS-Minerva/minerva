@@ -22,9 +22,10 @@ import type {
   ParticipantDemographicBreakdown,
   ParticipantDemographicKey,
 } from "@/lib/posthog";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 type AnalyticsPageProps = {
-  tenant: string;
+  tenant: TenantSlug;
   scope: "shared" | "admin";
 };
 

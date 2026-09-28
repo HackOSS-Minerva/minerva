@@ -10,13 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConstructionIcon, LockIcon } from "lucide-react";
 
-/**
- * Blocking modal shown when a page's content is gated:
- * - `"locked"` — the admin portal page is locked via the boolean
- *   `locks.admin` entry in the tenant config (see `lib/admin-locks.ts`).
- * - `"disabled"` — the page's feature flag is disabled (see
- *   `lib/feature-flags.ts`).
- */
+// Blocking modal for gated content: "locked" (admin `locks.admin` flag, see
+// `lib/admin-locks.ts`) or "disabled" (page feature flag, see `lib/feature-flags.ts`).
 export type FeatureGateReason = "locked" | "disabled";
 
 const COPY: Record<

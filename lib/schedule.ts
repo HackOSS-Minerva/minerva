@@ -7,10 +7,7 @@ export interface ScheduleEventOption {
   group: string;
 }
 
-/**
- * Weekday label for an event start time, rendered in the event's own time zone
- * (falls back to Eastern when the calendar API omits one).
- */
+/** Weekday label in the event's own time zone (defaults to Eastern if absent). */
 export function getDayOfWeek(dateTime: string, timeZone: string): string {
   return new Date(dateTime).toLocaleDateString("en-US", {
     weekday: "long",
@@ -18,10 +15,7 @@ export function getDayOfWeek(dateTime: string, timeZone: string): string {
   });
 }
 
-/**
- * Group schedule events into `[dayLabel, options]` entries for grouped
- * `<Select>` rendering, preserving the order the calendar API returned.
- */
+/** Group events into `[dayLabel, options]` for grouped `<Select>`, API order kept. */
 export function groupEventsByDay(
   events: readonly GoogleEvent[],
 ): [string, ScheduleEventOption[]][] {

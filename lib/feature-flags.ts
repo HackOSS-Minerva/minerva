@@ -1,19 +1,6 @@
-/**
- * Central feature flag definitions (server-safe, no React).
- *
- * Each flag requires a human-readable `description` and:
- * - `value` — the default enabled state (used in development),
- * - `production` — optional override for production builds, e.g.
- *   `value: true, production: false` = on in dev, off in prod. When omitted,
- *   production uses `value`.
- *
- * Values are static compile-time constants (no runtime/remote toggling), so
- * flags resolve synchronously and are hydration-safe.
- *
- * For client components use the `useFeatureFlag` hook
- * (`@/hooks/use-feature-flags`); everywhere else (server components, API
- * routes) use {@link getFeatureFlag}.
- */
+/** Central feature flag definitions (server-safe, no React). Values are
+ * compile-time constants, so flags resolve synchronously and are
+ * hydration-safe. Client: {@link useFeatureFlag}; server: {@link getFeatureFlag}. */
 
 export interface FeatureFlagDefinition {
   /** What this flag does, where it's used, and when it can be removed. */
@@ -26,11 +13,8 @@ export interface FeatureFlagDefinition {
 
 export type FeatureFlagRegistry = Record<string, FeatureFlagDefinition>;
 
-/**
- * Whether this bundle was built for production. Next.js statically inlines
- * `process.env.NODE_ENV` in client bundles, so this costs nothing at runtime
- * and never mismatches between server and client render.
- */
+// `process.env.NODE_ENV` is statically inlined in client bundles, so this is
+// free at runtime and never mismatches between server and client render.
 export const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export const FEATURE_FLAGS = {
@@ -57,14 +41,10 @@ export type FeatureFlagKey = keyof typeof FEATURE_FLAGS;
 /** Registry-typed view of {@link FEATURE_FLAGS} for uniform flag access. */
 const REGISTRY: FeatureFlagRegistry = FEATURE_FLAGS;
 
-/**
- * Resolve a feature flag by key. The `flag` argument is compile-time checked
- * against {@link FEATURE_FLAGS}, so unknown keys are a type error.
- */
+/** Resolve a flag by key; `flag` is checked against {@link FEATURE_FLAGS}. */
 export function getFeatureFlag(flag: FeatureFlagKey): boolean {
-  // Dev-mode unlock: every page gated by a feature flag (photos, analytics,
-  // assignments) renders in `next dev` without extra setup. Production still
-  // respects the registry values above.
+  // Dev-mode unlock: flag-gated pages (photos, analytics, assignments) render in
+  // `next dev` without setup. Production still respects the registry values.
   if (process.env.NODE_ENV !== "production") return true;
   const { value, production } = REGISTRY[flag] as FeatureFlagDefinition;
   return IS_PRODUCTION ? (production ?? value) : value;

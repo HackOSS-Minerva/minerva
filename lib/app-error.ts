@@ -1,22 +1,7 @@
 /**
- * Unified application error handling.
- *
- * Single source of truth for coded errors across all APIs and services.
- * Generalizes the previous photos-only pattern (`photoError` /
- * `photoErrorResponse` in `lib/google-photos.ts`).
- *
- * Conventions:
- * - In routes/services: `throw new AppError("BAD_REQUEST")` - never
- *   `throw new Error("some string")`.
- * - In routes: wrap handlers with `withFetchHandler("route-name", handler)`.
- *   It assigns a request-id, catches all errors, logs once (structured),
- *   and returns `{ error: { code, message } }` with an `x-request-id` header.
- * - On the client: `if (!res.ok) throw await parseAppError(res)`, display
- *   with `getUserMessage(code)`.
- *
- * Response shape (v1): `{ error: { code, message } }`.
- * The legacy photos shape `{ error: "CODE" }` is still *parsed* for
- * backwards compatibility but never *emitted*.
+ * Unified coded errors, the single source of truth. Shape: `{ error: { code,
+ * message } }`. Throw `new AppError("CODE")`; wrap route handlers in
+ * `withFetchHandler`; clients use `parseAppError` + `getUserMessage`.
  */
 
 export const REQUEST_ID_HEADER = "x-request-id";
@@ -174,10 +159,7 @@ export interface AppErrorOptions {
   cause?: unknown;
   requestId?: string;
 }
-/**
- * Unified application error. Construct directly:
- * `throw new AppError("BAD_REQUEST")`.
- */
+/** Unified application error: `throw new AppError("BAD_REQUEST")`. */
 export class AppError extends Error {
   readonly code: ErrorCode;
   readonly status: number;

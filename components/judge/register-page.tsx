@@ -8,9 +8,10 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface RegisterPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function RegisterPage({}: RegisterPageProps) {

@@ -38,11 +38,8 @@ type FormValuesMap = {
   [S in slugs]: z.infer<(typeof FIELDS)[S]["schema"]>;
 };
 
-/**
- * Union of validated values across the five registration forms. The form
- * validates `value` against its slug's zod schema before submit, so each
- * switch branch below narrows to that schema's value type.
- */
+/** Union of validated values across the registration forms; each switch branch
+ * narrows to its slug's zod schema. */
 export type FormValues = FormValuesMap[slugs];
 
 const MUTATIONS = {

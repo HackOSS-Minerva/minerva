@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { compress, MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
 import { AppError, getUserMessage, parseAppError } from "@/lib/app-error";
 import type { PhotoItem, PhotoPage } from "@/lib/google-photos";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 const PHOTO_COMPRESSION_OPTIONS = {
   maxWidth: 1920,
@@ -112,7 +113,7 @@ const createPhotoListCoordinator = () => {
   };
 };
 
-export const usePhotos = (tenant: string): UsePhotosResult => {
+export const usePhotos = (tenant: TenantSlug): UsePhotosResult => {
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);

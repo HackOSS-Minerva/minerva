@@ -10,15 +10,8 @@ import { useEffect, useMemo, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
 import { triggerConfetti } from "@/hooks/use-confetti";
 
-/**
- * Derives per-field identity values from the Better Auth session user.
- *
- * Google (and most Better Auth social providers) expose a single `name`
- * string plus an `email`. The registration forms collect `firstname`,
- * `lastname`, and `email` separately, so the full name is split into its
- * first token (first name) and the remaining tokens (last name). Both fields
- * remain editable by the user — this only seeds the initial values.
- */
+/** Seeds the form's identity fields from the session's `name` + `email`,
+ * splitting the name into first token / rest so multi-word last names survive. */
 function useSessionIdentity() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -46,10 +39,8 @@ const Fields = () => {
 
   const identity = useSessionIdentity();
 
-  // Seed the form's default values with the signed-in user's identity so the
-  // first name, last name, and email fields are auto-populated when the
-  // session is already available at mount time. Other fields keep their
-  // static defaults.
+  // Seed defaults with the signed-in user's identity so the name/email fields
+  // are pre-populated when the session is available at mount.
   const initialValues = useMemo(() => {
     if (!identity.firstname && !identity.lastname && !identity.email) {
       return defaultValues;
@@ -74,18 +65,15 @@ const Fields = () => {
         `Thank you for applying. We will send you an application update shortly!`,
       );
       triggerConfetti();
-      // TanStack types `value` from the `defaultValues` placeholders (plain
-      // strings); the `onSubmit` validator above has already constrained the
-      // runtime value to this slug's zod schema.
+      // The onSubmit validator above already narrowed `value` to this slug's
+      // zod schema; TanStack still types it from the string placeholders.
       onSubmit(value as FormValues);
     },
   });
 
-  // `useForm` only consumes `defaultValues` once, at mount. When the session
-  // resolves *after* the form has already mounted (the common case, since
-  // `authClient.useSession()` is asynchronous), apply the prefilled identity
-  // via `reset`. This runs at most once and only when the identity fields are
-  // still empty, so it never overwrites values a user has already typed.
+  // `useForm` only reads `defaultValues` at mount, so when the session resolves
+  // later (the common case) apply the identity via `reset` — at most once, and
+  // only while the identity fields are still empty.
   const didPrefill = useRef(false);
   useEffect(() => {
     if (didPrefill.current) return;
@@ -99,8 +87,7 @@ const Fields = () => {
       formInstance.reset(initialValues);
       didPrefill.current = true;
     }
-    // Intentionally excludes `formInstance` (stable) and `initialValues`
-    // (memoized alongside `identity`).
+    // Deps intentionally exclude `formInstance` (stable) and `initialValues`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identity]);
 

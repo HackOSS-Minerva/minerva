@@ -2,11 +2,12 @@ import { EmailType } from "@/types/email";
 import Accepted from "./accepted";
 import Rejected from "./rejected";
 import Pending from "./pending";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface StatusProps {
   status: EmailType;
   form: string;
-  tenant: string;
+  tenant: TenantSlug;
   tenantEmail: string;
 }
 

@@ -2,9 +2,10 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface PackingChecklistProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 // Items must match the markdown list in packing-checklist.mdx

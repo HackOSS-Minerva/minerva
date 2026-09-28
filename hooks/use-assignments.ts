@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 // ── Public types ──────────────────────────────────────────────────────────────
 
@@ -100,7 +101,7 @@ export function formatStatus(status?: string): string {
 
 // ── React hook ────────────────────────────────────────────────────────────────
 
-export function useAssignments(tenant: string) {
+export function useAssignments(tenant: TenantSlug) {
   // ── Queries ────────────────────────────────────────────────────────────
   const rawSubmissions = useQuery(api.submissions.get, { tenant });
   const rawJudges = useQuery(api.judges.get, { tenant });

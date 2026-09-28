@@ -53,12 +53,8 @@ export interface TenantData {
   markdown: TenantContent["markdown"];
 }
 
-/**
- * Resolves a validated tenant slug to its config and MDX content. Every slug in
- * the generated registry has a complete config, headers and markdown record, so
- * all three fields are always present. Validate untrusted strings (route params,
- * request bodies) with `isTenantSlug` before calling this.
- */
+// Resolves a validated slug to its config and MDX content (always complete).
+// Validate untrusted strings with `isTenantSlug` before calling this.
 export function getTenant(slug: TenantSlug): TenantData {
   return {
     config: typedTenantConfigs[slug],

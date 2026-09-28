@@ -12,9 +12,8 @@ interface JudgeDashboardRouteProps {
 const JudgeDashboardRoute = async ({ params }: JudgeDashboardRouteProps) => {
   const { tenant } = await params;
 
-  // Fetch the judge's access state so the dashboard can show their application
-  // status and conditionally render UI. The proxy already did an optimistic
-  // cookie-existence redirect; this is the secure session validation via Convex.
+  // Judge access state: the dashboard shows the application status. This is the
+  // secure session check; the proxy only did an optimistic cookie redirect.
   const access = await fetchAuthQuery(api.auth.getJudgeAccess, { tenant });
 
   return <JudgeDashboardPage tenant={tenant} judgeStatus={access.status} />;

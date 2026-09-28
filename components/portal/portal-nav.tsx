@@ -76,9 +76,8 @@ export function PortalNav({
   const { config } = getTenant(tenant);
   const logo = config?.logo;
 
-  // Feature-flagged nav items are hidden when their flag is off. All flags are
-  // resolved in one order-stable hook call (hook order must never depend on the
-  // nav config's contents).
+  // Flagged nav items are hidden when their flag is off. One order-stable hook
+  // call, since hook order must not depend on the nav config's contents.
   const enabled = useFeatureFlags();
 
   const visibleNavItems = navItems.filter(

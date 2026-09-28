@@ -1,27 +1,22 @@
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import Wrapper from "./wrapper";
 import { slugs } from "@/hooks/use-fields";
-import { isTenantSlug } from "@/hooks/get-tenant";
+import type { TenantSlug } from "@/hooks/get-tenant";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 
 interface FormProps {
   params: {
-    tenant: string;
+    tenant: TenantSlug;
     form: slugs;
   };
 }
 
 const Form = async ({ params }: FormProps) => {
-  const { tenant: rawTenant, form } = await params;
+  const { tenant, form } = await params;
 
-  if (!isTenantSlug(rawTenant)) notFound();
-  const tenant = rawTenant;
-
-  // All registration forms (participant, judge, speaker, superadmin,
-  // volunteer) require a signed-in user — any authenticated account, no
-  // role/status check. This is the secure check (validates the session via
-  // Convex); the proxy only does an optimistic cookie-existence redirect.
+  // Every registration form requires a signed-in user, no role/status check.
+  // Secure check; the proxy only does an optimistic cookie redirect.
   const { authenticated } = await fetchAuthQuery(api.auth.getAuthStatus, {});
   if (!authenticated) {
     redirect(`/${tenant}/sign-in?redirect=/${tenant}/forms/${form}`);

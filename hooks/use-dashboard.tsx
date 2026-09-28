@@ -55,11 +55,9 @@ type DashboardRowMap = {
   submissions: Doc<"submissions">;
 };
 
-/**
- * Correlated view of everything a dashboard table needs: the discriminant
- * (`slug`) ties the row data, the column module, and the callbacks together so
- * consumers can narrow with a single `switch`.
- */
+// Correlated view of everything a dashboard table needs: the discriminant
+// (`slug`) ties row data, column module, and callbacks so consumers narrow
+// with a single `switch`.
 export type DashboardBundle = {
   [S in slugs]: {
     slug: S;
@@ -86,12 +84,8 @@ const DASHBOARDS: DashboardModules = {
   submissions,
 };
 
-/**
- * Convex mutations take branded `Id<Table>` arguments (compile-time only; the
- * brand is a plain string at runtime), while dashboard callbacks receive row
- * ids as plain strings from table selection. This helper is the single
- * conversion point between the two.
- */
+// Convex mutations take branded `Id<Table>` args (plain strings at runtime),
+// but callbacks get row ids as strings. This is the single conversion point.
 const adaptMutationArgs = <TArgs extends object>(
   mutation: (args: never) => unknown,
 ): ((args: TArgs) => Promise<unknown>) =>
@@ -124,7 +118,7 @@ export const useDashboard = (eventid?: string) => {
   const { config } = getTenant(tenant);
   const { runVettingMany } = useSubmissionVetting();
   const slug = dashboard;
-  const tenantName = config.slug.toLocaleLowerCase();
+  const tenantName = config.slug;
 
   const data = useQuery(QUERIES[slug], {
     tenant: tenantName,
@@ -233,10 +227,8 @@ export const useDashboard = (eventid?: string) => {
     return result;
   };
 
-  // Single correlation cast: the runtime `slug` determines which member of
-  // `DashboardBundle` this object is (row data, column module, and callbacks
-  // all line up for that slug) — a relationship TypeScript cannot verify
-  // across separately-computed dynamic key lookups.
+  // Single correlation cast: the runtime `slug` picks the `DashboardBundle`
+  // member — a relationship TypeScript can't verify across dynamic key lookups.
   return {
     slug,
     dashboard: DASHBOARDS[slug],

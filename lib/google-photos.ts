@@ -1,13 +1,14 @@
 import { MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
 import { AppError, toErrorResponse, type ErrorCode } from "@/lib/app-error";
 import designverse from "@/tenants/designverse/designverse.json";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_PHOTOS_URL = "https://photoslibrary.googleapis.com/v1";
 const TOKEN_EXPIRY_BUFFER_MS = 60_000;
 
 export interface PhotoEvent {
-  tenant: string;
+  tenant: TenantSlug;
   eventName: string;
 }
 
@@ -72,11 +73,7 @@ export const assertPhotoOrigin = (request: Request): void => {
   }
 };
 
-/**
- * @deprecated Use `toErrorResponse(error, requestId)` from `@/lib/app-error`
- * instead. Kept for backwards compatibility; now emits the unified
- * `{ error: { code, message } }` shape.
- */
+/** @deprecated Use `toErrorResponse(error, requestId)` from `@/lib/app-error`. */
 export const photoErrorResponse = (
   error: unknown,
   requestId?: string,

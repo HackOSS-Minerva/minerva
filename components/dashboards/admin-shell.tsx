@@ -8,15 +8,9 @@ interface AdminShellProps {
   children: ReactNode;
 }
 
-/**
- * Shared chrome + content spacing for every /admin page.
- *
- * This is the single source of truth for admin content padding
- * (`px-4 py-4 md:py-6 lg:px-6`). Pages must not add their own outer
- * px/py/mx wrappers, and inner content components must not add
- * horizontal page padding either — otherwise we get double-padding on
- * some pages and zero-padding on others (the assignments bug).
- */
+// Shared chrome + content spacing for every /admin page: the single source of
+// truth for admin padding. Pages and inner content must not add their own
+// horizontal/vertical page wrappers (causes double- or zero-padding).
 export function AdminShell({ title, children }: AdminShellProps) {
   return (
     <SidebarProvider

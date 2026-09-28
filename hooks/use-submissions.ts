@@ -89,7 +89,7 @@ export const defaultValues: SubmissionFormData = {
 };
 
 interface UseSubmissionsOptions {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function useSubmissions({ tenant }: UseSubmissionsOptions) {

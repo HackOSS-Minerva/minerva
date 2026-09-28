@@ -38,12 +38,8 @@ export const getCurrentUser = query({
   },
 });
 
-/**
- * Returns whether the request carries a valid Better Auth session.
- *
- * This is a lightweight auth-only check; it does not perform any role or
- * tenant-specific authorization. For admin gating, use `getAdminAccess`.
- */
+// Auth-only session check; no role/tenant authorization. Use `getAdminAccess`
+// (and friends) for role gating.
 export const getAuthStatus = query({
   args: {},
   handler: async (ctx) => {
@@ -52,18 +48,9 @@ export const getAuthStatus = query({
   },
 });
 
-/**
- * Returns the access state for the admin section of a tenant.
- *
- * - `authenticated` is true when the request carries a valid Better Auth
- *   session (i.e. the user is signed in with Google).
- * - `authorized` is true when the signed-in user's email matches a superadmin
- *   record in the given tenant whose status is "ACCEPTANCE" (approved).
- *
- * This is the secure authorization check used by the admin layout. The proxy
- * only does an optimistic cookie-existence check; this query is what actually
- * gates access.
- */
+// Admin section access. `authenticated` = valid Better Auth session;
+// `authorized` = an ACCEPTANCE-status superadmin record in the tenant. This is
+// the secure gate — the proxy only does an optimistic cookie check.
 export const getAdminAccess = query({
   args: { tenant: v.string() },
   handler: async (ctx, { tenant }) => {
@@ -89,20 +76,8 @@ export const getAdminAccess = query({
   },
 });
 
-/**
- * Returns the access state for the judge section of a tenant.
- *
- * - `authenticated` is true when the request carries a valid Better Auth
- *   session (i.e. the user is signed in with Google).
- * - `authorized` is true when the signed-in user's email matches a judge
- *   record in the given tenant whose status is "ACCEPTANCE" (approved).
- * - `status` is the judge's approval status ("ACCEPTANCE", "PENDING",
- *   "REJECTION", or `null` if the user has not applied yet).
- *
- * This is the secure authorization check used by the judge layout. The proxy
- * only does an optimistic cookie-existence check; this query is what actually
- * gates access to judge-only features.
- */
+// Judge section access, same shape as `getAdminAccess` but against the tenant's
+// judge records. This is the secure gate; the proxy only checks cookies.
 export const getJudgeAccess = query({
   args: { tenant: v.string() },
   handler: async (ctx, { tenant }) => {
@@ -128,19 +103,8 @@ export const getJudgeAccess = query({
   },
 });
 
-/**
- * Returns the access state for the participant (live) section of a tenant.
- *
- * - `authenticated` is true when the request carries a valid Better Auth
- *   session (i.e. the user is signed in with Google).
- * - `authorized` is true when the signed-in user's email matches a participant
- *   record in the given tenant whose status is "ACCEPTANCE" (approved).
- * - `status` is the participant's approval status ("ACCEPTANCE", "PENDING",
- *   "REJECTION", or `null` if the user has not applied yet).
- *
- * This is the authorization check that determines whether a user may unlock the
- * live "Participate" section in the nav.
- */
+// Participant (live) access, same shape as `getJudgeAccess` but against the
+// tenant's participant records. Gates the live "Participate" nav section.
 export const getParticipantAccess = query({
   args: { tenant: v.string() },
   handler: async (ctx, { tenant }) => {

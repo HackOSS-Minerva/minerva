@@ -9,9 +9,7 @@ export type DevToolCategory =
   | "Analytics";
 
 export interface DevTool {
-  /**
-   * Also the default logo filename, resolved as `/logos/<id>.svg`.
-   */
+  /** Also the default logo filename, resolved as `/logos/<id>.svg`. */
   id: string;
   name: string;
   url: string;
@@ -24,9 +22,7 @@ export interface DevTool {
   tags: string[];
 }
 
-/**
- * Display order for both the category filter tabs and the grouped sections.
- */
+/** Display order for both the category filter tabs and the grouped sections. */
 export const devToolCategories: DevToolCategory[] = [
   "AI Coding Agents",
   "Code Editors & IDEs",

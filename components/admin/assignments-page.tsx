@@ -30,9 +30,10 @@ import {
   getJudgeName,
 } from "@/hooks/use-assignments";
 import type { ViewMode } from "@/hooks/use-assignments";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 export default function AssignmentsContent() {
-  const params = useParams<{ tenant: string }>();
+  const params = useParams<{ tenant: TenantSlug }>();
   const tenant = params.tenant;
 
   const {

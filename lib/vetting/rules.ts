@@ -51,12 +51,9 @@ export function getSubmissionTeam(
   };
 }
 
-/**
- * Shared validation for the vetting event window supplied by the
- * organizer-authorized UI. Throws `ConvexError({ code: "VALIDATION_FAILED" })`
- * so both Convex actions and client hooks surface it through the unified
- * coded-error path (`isConvexErrorCode` / `resolveAppErrorCode`).
- */
+// Validates the vetting event window from the organizer-authorized UI. Throws
+// `ConvexError({ code: "VALIDATION_FAILED" })` so actions and hooks share the
+// unified coded-error path.
 export function validateVettingEventConfig(event: VettingEventConfig): void {
   const invalid = (message: string): ConvexError<{ code: ConvexErrorCode }> =>
     new ConvexError({

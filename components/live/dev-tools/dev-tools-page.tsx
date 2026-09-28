@@ -9,9 +9,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { DevToolsContent } from "@/components/live/dev-tools/dev-tools-content";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface DevToolsPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function DevToolsPage({ tenant }: DevToolsPageProps) {

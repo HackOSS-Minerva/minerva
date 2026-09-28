@@ -5,40 +5,24 @@ import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 
 export interface UseFormLockOptions {
-  /**
-   * Form slug, e.g. "participant", "judge", "submission", "feedback"
-   */
+  /** Form slug, e.g. "participant", "judge", "submission", "feedback" */
   form: string;
 }
 
 export interface UseFormLockResult {
-  /**
-   * Whether the form is currently locked (before opens or after closes).
-   */
+  /** Whether the form is currently locked (before opens or after closes). */
   isLocked: boolean;
-  /**
-   * ISO open time for this form.
-   */
+  /** ISO open time for this form. */
   opensAt: string | null;
-  /**
-   * ISO close time for this form.
-   */
+  /** ISO close time for this form. */
   closesAt: string | null;
-  /**
-   * Milliseconds until the form opens. Null if already open or if no open time.
-   */
+  /** Milliseconds until the form opens. Null if already open or unset. */
   opensIn: number | null;
-  /**
-   * Milliseconds until the form closes. Null if already closed or if no close time.
-   */
+  /** Milliseconds until the form closes. Null if already closed or unset. */
   closesIn: number | null;
-  /**
-   * Human-readable label for the open time.
-   */
+  /** Human-readable label for the open time. */
   opensLabel: string | null;
-  /**
-   * Human-readable label for the close time.
-   */
+  /** Human-readable label for the close time. */
   closesLabel: string | null;
 }
 
@@ -47,9 +31,8 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
   const { config } = getTenant(tenant);
 
   const lock = useMemo(() => {
-    // DesignVerse currently has formLocks metadata for future scheduling, but
-    // development/testing intentionally remains unlocked because it has no
-    // legacy locks map. Only the active locks map is enforced here.
+    // Dev/testing stays unlocked: there is no legacy locks map, only the active
+    // `locks` map below is enforced.
     if (!config.locks) {
       return { opensAt: null, closesAt: null };
     }

@@ -172,9 +172,8 @@ async function executeSubmissionVetting(
   }
 }
 
-// v1 internal-tool trust boundary: the organizer-authorized UI supplies tenant
-// dates from useTenant; Convex validates shape but does not duplicate tenant
-// configuration server-side.
+// v1 trust boundary: the organizer-authorized UI supplies tenant dates from
+// useTenant; Convex validates shape but does not duplicate tenant config.
 export const runSubmissionVetting = action({
   args: {
     submissionId: v.id("submissions"),

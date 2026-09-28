@@ -9,20 +9,20 @@ import { api } from "@/convex/_generated/api";
 import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
 import { isTenantSlug } from "@/hooks/get-tenant";
 
+// `params` is typed from the route pattern by Next.js, so the dynamic segment is
+// an unvalidated `string` here. Narrow it to `TenantSlug` before passing it on.
 interface LayoutProps {
   children: React.ReactNode;
   params: Promise<{ tenant: string }>;
 }
 
 const Layout = async ({ children, params }: LayoutProps) => {
-  const { tenant } = await params;
-  if (!isTenantSlug(tenant)) notFound();
+  const { tenant: rawTenant } = await params;
+  if (!isTenantSlug(rawTenant)) notFound();
+  const tenant = rawTenant;
 
-  // Whether the visitor can access the Participate section: signed in AND an
-  // accepted participant. Signed-out / non-accepted users still see it in the
-  // menu bar, but grayed out with a lock icon and a "Register to get access"
-  // prompt. In dev (`next dev`) everything is unlocked via BYPASS_AUTH_IN_DEV
-  // so local development never requires a registered participant account.
+  // Participate is unlocked only for signed-in accepted participants; everyone
+  // else sees it locked with a register prompt. Unlocked in dev.
   const access = BYPASS_AUTH_IN_DEV
     ? { authorized: true as const }
     : await fetchAuthQuery(api.auth.getParticipantAccess, {

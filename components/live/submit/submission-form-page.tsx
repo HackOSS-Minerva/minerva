@@ -38,9 +38,10 @@ import { Separator } from "@/components/ui/separator";
 import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { useSubmissions } from "@/hooks/use-submissions";
 import { MAX_LINKS_PER_TYPE } from "@/lib/vetting/rules";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmissionFormPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {

@@ -9,12 +9,9 @@ interface SignOutButtonProps {
   className?: string;
 }
 
-/**
- * A client-side "Sign out" button. The admin layout (a server component)
- * cannot call `authClient.signOut()` directly, so it renders this component.
- * Clicking it clears the session and routes to `redirectTo` (the tenant's
- * sign-in page) so the user can sign in with a different Google account.
- */
+// Client-side sign-out: the server admin layout can't call `authClient.signOut()`
+// directly. Clears the session and routes to `redirectTo` so a different
+// Google account can be used.
 export function SignOutButton({ redirectTo, className }: SignOutButtonProps) {
   const router = useRouter();
 

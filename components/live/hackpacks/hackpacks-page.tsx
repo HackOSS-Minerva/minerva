@@ -9,9 +9,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { HackpacksContent } from "@/components/live/hackpacks/hackpacks-content";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface HackpacksPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function HackpacksPage({ tenant }: HackpacksPageProps) {

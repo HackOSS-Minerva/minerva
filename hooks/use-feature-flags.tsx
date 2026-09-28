@@ -15,27 +15,17 @@ export interface UseFeatureFlagResult<K extends FeatureFlagKey> {
   isEnabled: boolean;
 }
 
-/**
- * Resolve a single feature flag. The `flag` argument is compile-time checked
- * against the central registry in `@/lib/feature-flags`, so unknown keys are a
- * type error. For server components and API routes, use
- * `getFeatureFlag` from `@/lib/feature-flags` instead.
- */
+// Resolve one feature flag. `flag` is compile-time checked against the registry
+// in `@/lib/feature-flags`; server components/routes use `getFeatureFlag` instead.
 export function useFeatureFlag<K extends FeatureFlagKey>(
   flag: K,
 ): UseFeatureFlagResult<K> {
   return { flag, isEnabled: getFeatureFlag(flag) };
 }
 
-/**
- * Resolve every registered flag in a single, order-stable hook call.
- *
- * Use this instead of calling {@link useFeatureFlag} in a loop: hook order must
- * be identical on every render, so a loop whose length depends on props/state
- * (e.g. the flags referenced by a dynamic nav config) is unsafe. The registry is
- * a compile-time constant, so this is a single call with a fixed evaluation
- * order in every environment.
- */
+// Resolve every flag in one order-stable call. Use this instead of
+// {@link useFeatureFlag} in a loop: hook order must be identical on every
+// render, so a loop over dynamic content is unsafe.
 export function useFeatureFlags(): Record<FeatureFlagKey, boolean> {
   return Object.fromEntries(
     (Object.keys(FEATURE_FLAGS) as FeatureFlagKey[]).map((key) => [

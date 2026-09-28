@@ -1,10 +1,11 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface AcceptedProps {
   form: string;
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 const ACCEPTED_DASHBOARDS: Record<string, string> = {

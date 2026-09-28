@@ -7,9 +7,10 @@ import { useCountdown } from "@/hooks/use-countdown";
 import { IconExternalLink, IconCheck } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState } from "react";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmissionSectionProps {
-  tenant: string;
+  tenant: TenantSlug;
   submissionDeadline: number;
 }
 

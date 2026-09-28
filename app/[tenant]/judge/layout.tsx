@@ -9,19 +9,20 @@ import { api } from "@/convex/_generated/api";
 import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
 import { isTenantSlug } from "@/hooks/get-tenant";
 
+// `params` is typed from the route pattern by Next.js, so the dynamic segment is
+// an unvalidated `string` here. Narrow it to `TenantSlug` before passing it on.
 interface LayoutProps {
   children: React.ReactNode;
   params: Promise<{ tenant: string }>;
 }
 
 const Layout = async ({ children, params }: LayoutProps) => {
-  const { tenant } = await params;
-  if (!isTenantSlug(tenant)) notFound();
+  const { tenant: rawTenant } = await params;
+  if (!isTenantSlug(rawTenant)) notFound();
+  const tenant = rawTenant;
 
-  // The judge section requires a signed-in user. This is the secure check
-  // (validates the session via Convex); the proxy only does an optimistic
-  // cookie-existence redirect. Skipped entirely in dev so local development
-  // never requires sign-in or a registered judge account.
+  // Secure check (the proxy only does an optimistic cookie redirect). Skipped
+  // in dev via BYPASS_AUTH_IN_DEV.
   const { authenticated } = BYPASS_AUTH_IN_DEV
     ? { authenticated: true as const }
     : await fetchAuthQuery(api.auth.getAuthStatus, {});
@@ -29,9 +30,8 @@ const Layout = async ({ children, params }: LayoutProps) => {
     redirect(`/${tenant}/sign-in?redirect=/${tenant}/judge/dashboard`);
   }
 
-  // The Participate dropdown additionally requires an accepted judge
-  // application; otherwise it is shown locked (grayed out, lock icon, register
-  // prompt). Unlocked in dev via BYPASS_AUTH_IN_DEV.
+  // Participate also requires an accepted judge application; otherwise the
+  // dropdown renders locked with a register prompt. Unlocked in dev.
   const access = BYPASS_AUTH_IN_DEV
     ? { authorized: true as const }
     : await fetchAuthQuery(api.auth.getJudgeAccess, { tenant });

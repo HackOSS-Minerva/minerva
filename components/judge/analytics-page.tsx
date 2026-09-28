@@ -1,7 +1,9 @@
 import { AnalyticsPage as SharedAnalyticsPage } from "@/components/analytics/analytics-page";
 
+import type { TenantSlug } from "@/hooks/get-tenant";
+
 interface JudgeAnalyticsPageProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export function AnalyticsPage({ tenant }: JudgeAnalyticsPageProps) {

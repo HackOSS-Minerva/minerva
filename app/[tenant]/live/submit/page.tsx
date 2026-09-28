@@ -17,11 +17,8 @@ interface SubmitRouteProps {
 const SubmitRoute = async ({ params }: SubmitRouteProps) => {
   const { tenant } = await params;
 
-  // The project submission form requires a signed-in AND accepted participant.
-  // This is the secure check (validates the session and participant status via
-  // Convex); the proxy only does an optimistic cookie-existence redirect.
-  // Unlocked in dev so local development never requires a registered
-  // participant account.
+  // Secure check (the proxy only does an optimistic cookie redirect): requires
+  // a signed-in accepted participant. Unlocked in dev.
   if (BYPASS_AUTH_IN_DEV) {
     return <SubmissionFormPage tenant={tenant} />;
   }
@@ -35,9 +32,8 @@ const SubmitRoute = async ({ params }: SubmitRouteProps) => {
   }
 
   if (!access.authorized) {
-    // Signed in, but not an accepted participant for this tenant. Show a
-    // locked state instead of the submission form, with status-specific
-    // messaging (not registered / pending / rejected).
+    // Signed in but not an accepted participant: show a locked state with
+    // status-specific messaging instead of the form.
     const message =
       access.status === "PENDING"
         ? "Your participant registration is still pending approval. Once accepted, you will be able to submit your project."

@@ -1,22 +1,24 @@
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { SignOutButton } from "@/components/profile/sign-out-button";
 import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
+import { isTenantSlug } from "@/hooks/get-tenant";
 
+// Next.js types `params` from the route pattern, so the dynamic segment is an
+// unvalidated `string` here. Narrow it to `TenantSlug` before passing it on.
 interface AdminLayoutProps {
   children: React.ReactNode;
   params: Promise<{ tenant: string }>;
 }
 
 const Layout = async ({ children, params }: AdminLayoutProps) => {
-  const { tenant } = await params;
+  const { tenant: rawTenant } = await params;
+  if (!isTenantSlug(rawTenant)) notFound();
+  const tenant = rawTenant;
 
-  // Secure authorization check. The proxy already did an optimistic
-  // cookie-existence redirect, but this is the check that actually validates
-  // the session (via the authenticated Convex query) and the superadmin role.
-  // Skipped entirely in dev so local development never requires sign-in or a
-  // registered superadmin account.
+  // Secure check (the proxy only does an optimistic cookie redirect): validates
+  // the session and the superadmin role. Skipped in dev via BYPASS_AUTH_IN_DEV.
   const access = BYPASS_AUTH_IN_DEV
     ? { authenticated: true as const, authorized: true as const, status: null }
     : await fetchAuthQuery(api.auth.getAdminAccess, { tenant });

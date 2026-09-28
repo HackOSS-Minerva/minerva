@@ -17,11 +17,8 @@ import { IconSearch, IconExternalLink, IconX } from "@tabler/icons-react";
 
 const ALL = "All";
 
-/**
- * Up to two initials for the logo fallback tile. Single-word names fall back to
- * the first two characters (e.g. "Cline" -> "CL") so the tile is never a lone
- * letter.
- */
+// Up to two initials for the logo fallback tile; single-word names use the first
+// two characters ("Cline" -> "CL") so the tile is never a lone letter.
 function initialsOf(name: string) {
   const words = name.split(/\s+/).filter((word) => /^[a-z0-9]/i.test(word[0]));
   if (words.length === 1) {

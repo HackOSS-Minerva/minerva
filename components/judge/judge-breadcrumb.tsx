@@ -10,6 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 const resourcePaths: Record<string, string> = {
   "/judge/venue": "Venue",
@@ -25,7 +26,7 @@ const participatePaths: Record<string, string> = {
 
 export function JudgeBreadcrumb() {
   const pathname = usePathname();
-  const { tenant } = useParams<{ tenant: string }>();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
 
   const dashboardHref = `/${tenant}/judge/dashboard`;
 

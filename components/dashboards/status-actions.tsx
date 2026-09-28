@@ -17,12 +17,8 @@ import type { Table } from "@tanstack/react-table";
 
 type DecisionStatus = Exclude<EmailType, "CONFIRMATION"> | "PENDING";
 
-/**
- * Shape StatusActions needs from a table row. Only applicant dashboards
- * (participants/judges/speakers/superadmins/volunteers) render this component,
- * so person fields are guaranteed at runtime — but the table itself is generic
- * over every dashboard row type, hence the optional fields here.
- */
+// Row shape StatusActions needs. Only applicant dashboards render it, so person
+// fields exist at runtime, but the table is generic over every row type.
 export interface ApplicantRow {
   _id: string;
   firstname?: string;

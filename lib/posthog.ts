@@ -1,5 +1,6 @@
 import posthog from "posthog-js";
 import { AppError } from "@/lib/app-error";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
 export type AnalyticsRole =
   | "participant"
@@ -20,7 +21,7 @@ export type AnalyticsEvent =
   | "submission_deleted";
 
 export type AnalyticsEventProperties = {
-  tenant: string;
+  tenant: TenantSlug;
   entity_id: string;
   role?: AnalyticsRole;
   status?: ApplicationStatus;
