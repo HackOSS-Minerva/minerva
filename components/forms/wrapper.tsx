@@ -12,14 +12,14 @@ import Status from "./status";
 
 interface WrapperProps {
   form: slugs;
-  tenant: string;
+  tenant: TenantSlug;
   userStatus?: "ACCEPTANCE" | "PENDING" | "REJECTION" | null;
 }
 
 const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
   const {
     config: { logo, email: tenantEmail },
-  } = getTenant(tenant as TenantSlug);
+  } = getTenant(tenant);
 
   // Map database status to EmailType for the Status component.
   // Database uses "PENDING", Status component expects "CONFIRMATION".

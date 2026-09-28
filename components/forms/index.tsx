@@ -1,6 +1,7 @@
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import Wrapper from "./wrapper";
 import { slugs } from "@/hooks/use-fields";
+import { isTenantSlug } from "@/hooks/get-tenant";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 
@@ -12,7 +13,10 @@ interface FormProps {
 }
 
 const Form = async ({ params }: FormProps) => {
-  const { tenant, form } = await params;
+  const { tenant: rawTenant, form } = await params;
+
+  if (!isTenantSlug(rawTenant)) notFound();
+  const tenant = rawTenant;
 
   // All registration forms (participant, judge, speaker, superadmin,
   // volunteer) require a signed-in user — any authenticated account, no

@@ -47,35 +47,22 @@ type TenantContent = {
 export const isTenantSlug = (slug: string): slug is TenantSlug =>
   tenantSlugs.includes(slug as TenantSlug);
 
-export function getTenant(slug: TenantSlug): {
+export interface TenantData {
   config: TenantConfig;
   headers: TenantContent["headers"];
   markdown: TenantContent["markdown"];
-};
-export function getTenant(slug: string): {
-  config: TenantConfig | undefined;
-  headers: TenantContent["headers"] | undefined;
-  markdown: TenantContent["markdown"] | undefined;
-};
-export function getTenant(slug: string): {
-  config: TenantConfig | undefined;
-  headers: TenantContent["headers"] | undefined;
-  markdown: TenantContent["markdown"] | undefined;
-} {
-  if (!isTenantSlug(slug)) {
-    return {
-      config: undefined,
-      headers: undefined,
-      markdown: undefined,
-    };
-  }
+}
 
-  const config = typedTenantConfigs[slug];
-  const content = tenantContent[slug];
-
+/**
+ * Resolves a validated tenant slug to its config and MDX content. Every slug in
+ * the generated registry has a complete config, headers and markdown record, so
+ * all three fields are always present. Validate untrusted strings (route params,
+ * request bodies) with `isTenantSlug` before calling this.
+ */
+export function getTenant(slug: TenantSlug): TenantData {
   return {
-    config,
-    headers: content?.headers,
-    markdown: content?.markdown,
-  } as const;
+    config: typedTenantConfigs[slug],
+    headers: tenantContent[slug].headers,
+    markdown: tenantContent[slug].markdown,
+  };
 }

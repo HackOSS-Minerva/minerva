@@ -1,4 +1,4 @@
-import { getTenant } from "@/hooks/get-tenant";
+import { getTenant, isTenantSlug } from "@/hooks/get-tenant";
 
 /**
  * Server-safe lock config lookup. Admin locks are simple booleans stored in
@@ -8,7 +8,8 @@ import { getTenant } from "@/hooks/get-tenant";
  */
 export function getAdminPageLock(tenant: string, page: string): boolean {
   if (process.env.NODE_ENV !== "production") return false;
-  const adminLocks = getTenant(tenant).config?.locks?.admin;
+  if (!isTenantSlug(tenant)) return false;
+  const adminLocks = getTenant(tenant).config.locks?.admin;
   if (
     !adminLocks ||
     typeof adminLocks !== "object" ||

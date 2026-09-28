@@ -48,9 +48,6 @@ export const POST = withFetchHandler("email-send", async (request) => {
 
   const { type, role, tenant, user, idempotencyKey } = parsed.data;
   const { config: tenantConfig } = getTenant(tenant);
-  if (!tenantConfig) {
-    throw new AppError("TENANT_INVALID");
-  }
 
   const name = `${user.firstname} ${user.lastname}`.trim();
 

@@ -50,7 +50,7 @@ export function useFormLock({ form }: UseFormLockOptions): UseFormLockResult {
     // DesignVerse currently has formLocks metadata for future scheduling, but
     // development/testing intentionally remains unlocked because it has no
     // legacy locks map. Only the active locks map is enforced here.
-    if (!config?.locks) {
+    if (!config.locks) {
       return { opensAt: null, closesAt: null };
     }
 

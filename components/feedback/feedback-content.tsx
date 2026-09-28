@@ -28,7 +28,7 @@ import { logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 
 interface FeedbackContentProps {
-  tenant: string;
+  tenant: TenantSlug;
 }
 
 export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
@@ -41,9 +41,9 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   const [submitting, setSubmitting] = useState(false);
 
   const addFeedback = useMutation(api.feedback.add);
-  const { headers, config } = getTenant(tenant as TenantSlug);
+  const { headers, config } = getTenant(tenant);
   const Header = headers.feedback;
-  const eventName = config?.event?.name ?? tenant;
+  const eventName = config.event.name;
 
   const canSubmit =
     find.trim() && likedToSee.trim() && notBeneficial.trim() && rating !== "";
