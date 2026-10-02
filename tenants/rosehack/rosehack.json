@@ -1,0 +1,49 @@
+{
+  "event": {
+    "name": "Rosehack 2027",
+    "startTime": "2027-01-30T07:00:00-08:00",
+    "endTime": "2027-01-31T19:00:00-08:00",
+    "deadline": "2027-01-31T19:00:00-08:00",
+    "gitCommitGraceWindowMinutes": 5
+  },
+  "locks": {
+    "forms": {
+      "participant": ["2026-11-01T12:00:00-08:00", "2027-01-29T23:59:00-08:00"],
+      "judge": ["2026-11-15T12:00:00-08:00", "2027-01-24T23:58:00-08:00"],
+      "speaker": ["2026-10-15T12:00:00-07:00", "2027-01-10T23:59:00-08:00"],
+      "superadmin": ["2026-10-01T12:00:00-07:00", "2027-01-30T07:00:00-08:00"],
+      "volunteer": ["2027-01-04T12:00:00-08:00", "2027-01-25T23:57:00-08:00"],
+      "submission": ["2027-01-30T07:00:00-08:00", "2027-01-31T19:00:00-08:00"],
+      "feedback": ["2027-01-31T17:00:00-08:00", "2027-02-14T23:59:00-08:00"]
+    },
+    "judge": {
+      "assignments": ["2027-01-29T12:00:00-08:00", "2027-01-31T19:00:00-08:00"],
+      "submissions": ["2027-01-31T12:00:00-08:00", "2027-01-31T19:00:00-08:00"],
+      "orientation": ["2027-01-29T12:00:00-08:00", "2027-01-31T19:00:00-08:00"],
+      "certificate": ["2027-01-31T19:00:00-08:00", "2027-02-28T23:59:00-08:00"]
+    },
+    "sponsor": {
+      "resume-book": ["2027-01-30T07:00:00-08:00", "2027-02-14T23:59:00-08:00"],
+      "team-projects": [
+        "2027-01-31T07:00:00-08:00",
+        "2027-02-14T23:59:00-08:00"
+      ],
+      "analytics": ["2027-01-30T07:00:00-08:00", "2027-02-14T23:59:00-08:00"]
+    },
+    "live": {
+      "checkin": ["2027-01-30T07:00:00-08:00", "2027-01-31T19:00:00-08:00"],
+      "teams": ["2027-01-30T07:00:00-08:00", "2027-01-31T19:00:00-08:00"]
+    }
+  },
+  "slug": "rosehack",
+  "name": "RoseHack",
+  "domain": "https://rosehackucr.com",
+  "email": "ucr.rosehack@gmail.com",
+  "discord": "https://discord.gg/zD73VRb2W",
+  "instagram": "https://www.instagram.com/rosehackucr",
+  "linkedin": "https://www.linkedin.com/company/rosehack/",
+  "devpost": "",
+  "logo": "https://acm.cs.ucr.edu/_next/static/media/rosehack.15417323.svg",
+  "calendarid": "ed23effed7bc97cb85cc90b319df6d0052e8cd00253e367f568f393ad47528d2@group.calendar.google.com",
+  "heart": ""
+}
