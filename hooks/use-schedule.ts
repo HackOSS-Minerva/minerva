@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError } from "@/lib/app-error";
 
-export const useSchedule = () => {
+export const useSchedule = (initialData?: CalendarResponse) => {
   const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { config } = getTenant(tenant);
 
@@ -31,6 +31,9 @@ export const useSchedule = () => {
     queryKey: ["schedule", tenant],
     queryFn: fetchEvents,
     enabled: Boolean(config),
+    // SSR'd payload from the server page: first paint without a waterfall,
+    // then React Query revalidates in the background.
+    initialData,
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 2,
   });

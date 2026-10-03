@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useSchedule } from "@/hooks/use-schedule";
+import type { CalendarResponse } from "@/types/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
@@ -10,8 +11,16 @@ import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import { IconClock, IconSearch } from "@tabler/icons-react";
 
-export function ScheduleSection() {
-  const { data, isLoading, isError, error } = useSchedule();
+interface ScheduleSectionProps {
+  /** SSR'd calendar payload from the server page — used as React Query
+   * `initialData` so first paint has no client fetch waterfall. */
+  initialData?: CalendarResponse;
+}
+
+// Client island: search / day tabs / countdown need browser state. Data
+// itself is SSR'd by the page and passed as `initialData`.
+export function ScheduleSection({ initialData }: ScheduleSectionProps) {
+  const { data, isLoading, isError, error } = useSchedule(initialData);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDay, setSelectedDay] = useState<string>("all");
   const [showPastEvents, setShowPastEvents] = useState(false);

@@ -1,14 +1,13 @@
-"use client";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
 
 export type ApplicationStatus = "ACCEPTANCE" | "PENDING" | "REJECTION" | null;
 
 interface ApplicationStatusBadgeProps {
   status: ApplicationStatus;
+  /** Display name passed from the server session (avoids a client session hook). */
+  userName?: string;
   /** Link used by the "Apply" button shown only when status is null. */
   applyHref?: string;
   /** Label for the apply button, e.g. "Apply to be a Judge". */
@@ -35,13 +34,15 @@ const STATUS_CONFIG: Record<
   },
 };
 
+// Server Component: badge config is pure. The greeting name comes from the
+// server page's `fetchAuthQuery(getCurrentUser)` instead of `useSession()`.
 export function ApplicationStatusBadge({
   status,
+  userName,
   applyHref,
   applyLabel,
 }: ApplicationStatusBadgeProps) {
-  const { data: session } = authClient.useSession();
-  const name = session?.user?.name ?? "hacker";
+  const name = userName ?? "hacker";
   const config = status ? STATUS_CONFIG[status] : null;
 
   return (

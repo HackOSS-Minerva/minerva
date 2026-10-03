@@ -1,9 +1,7 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { QRCodeSVG } from "qrcode.react";
 import { IconCheck } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
+import { CheckinQR } from "@/components/portal/dashboard/checkin-qr";
 
 // Hardcoded guest QR payload matching the /checkin page
 const guestQR = JSON.stringify({
@@ -13,6 +11,7 @@ const guestQR = JSON.stringify({
   email: "guest@example.com",
 });
 
+// Server Component: static card + copy. Only the QR svg is a client island.
 export function CheckinSection() {
   const hasCheckedIn = false; // TODO: wire up real check-in status
 
@@ -38,7 +37,7 @@ export function CheckinSection() {
 
         <div className="flex justify-center">
           <div className="rounded-lg bg-white p-4 shadow-sm">
-            <QRCodeSVG value={guestQR} size={180} />
+            <CheckinQR value={guestQR} />
           </div>
         </div>
       </CardContent>

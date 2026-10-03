@@ -1,12 +1,9 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useCountdown } from "@/hooks/use-countdown";
 import { IconExternalLink, IconCheck } from "@tabler/icons-react";
 import Link from "next/link";
-import { useState } from "react";
+import { DeadlineBadge } from "@/components/live/dashboard/deadline-badge";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmissionSectionProps {
@@ -14,13 +11,16 @@ interface SubmissionSectionProps {
   submissionDeadline: number;
 }
 
+// Server Component: card + deadline text render on the server. The ticking
+// badge is a `DeadlineBadge` client island.
 export function SubmissionSection({
   tenant,
   submissionDeadline,
 }: SubmissionSectionProps) {
-  const timeLeft = useCountdown(submissionDeadline);
-  const [now] = useState(Date.now);
-  const isPastDeadline = now > submissionDeadline;
+  // Per-request "now" on the server (matches the previous `useState(Date.now)`
+  // mount-frozen semantics). Impure by design — evaluated once per request.
+  // eslint-disable-next-line react-hooks/purity
+  const isPastDeadline = Date.now() > submissionDeadline;
 
   const hasSubmitted = false;
 
@@ -53,13 +53,10 @@ export function SubmissionSection({
             </p>
           </div>
           <div>
-            {timeLeft && !isPastDeadline && (
-              <Badge variant="secondary" className="shrink-0">
-                {timeLeft.days > 0 ? `${timeLeft.days}d ` : ""}
-                {timeLeft.hours}h {timeLeft.minutes}m remaining
-              </Badge>
-            )}
-            {isPastDeadline && <Badge variant="outline">Deadline Passed</Badge>}
+            <DeadlineBadge
+              deadline={submissionDeadline}
+              isPastDeadline={isPastDeadline}
+            />
           </div>
         </div>
 

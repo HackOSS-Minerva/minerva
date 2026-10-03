@@ -1,16 +1,23 @@
-"use client";
 import { CardHeader } from "@/components/ui/card";
-import { useFields } from "@/hooks/use-fields";
+import { getFormDef, type slugs } from "@/lib/form-defs";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
-const Header = () => {
+interface HeaderProps {
+  form: slugs;
+  tenant: TenantSlug;
+}
+
+// Server Component: the per-form `Header` MDX is static content resolved via
+// the pure `getFormDef()` lookup — no `useFields()` (useParams) needed.
+const Header = ({ form, tenant }: HeaderProps) => {
   const {
-    metadata: { Header },
-  } = useFields();
+    metadata: { Header: FormHeader },
+  } = getFormDef(form, tenant);
 
   return (
     <CardHeader>
       <div className="px-4">
-        <Header />
+        <FormHeader />
       </div>
     </CardHeader>
   );

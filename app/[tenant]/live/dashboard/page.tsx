@@ -1,5 +1,6 @@
 import { DashboardPage } from "@/components/live/dashboard/dashboard-page";
 import { fetchAuthQuery } from "@/lib/auth-server";
+import { fetchScheduleServer } from "@/lib/schedule-server";
 import { api } from "@/convex/_generated/api";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
@@ -18,7 +19,23 @@ const DashboardRoute = async ({ params }: DashboardRouteProps) => {
     tenant,
   });
 
-  return <DashboardPage tenant={tenant} participantStatus={access.status} />;
+  // Display name for the greeting; avoids a client-side `useSession()` hook.
+  const authUser = await fetchAuthQuery(api.auth.getCurrentUser, {});
+  const userName = authUser?.name ?? undefined;
+
+  // SSR the calendar server-side (cached 5 min); the client island uses it
+  // as React Query `initialData`, so first paint has no client waterfall.
+  // A calendar outage must not take down the whole dashboard.
+  const schedule = await fetchScheduleServer(tenant).catch(() => null);
+
+  return (
+    <DashboardPage
+      tenant={tenant}
+      participantStatus={access.status}
+      userName={userName}
+      initialSchedule={schedule ?? undefined}
+    />
+  );
 };
 
 export default DashboardRoute;

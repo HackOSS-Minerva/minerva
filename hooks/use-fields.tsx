@@ -2,61 +2,30 @@
 
 import { useParams } from "next/navigation";
 import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import * as participant from "@/components/forms/fields/participant";
-import * as judge from "@/components/forms/fields/judge";
-import * as speaker from "@/components/forms/fields/speaker";
-import * as superadmin from "@/components/forms/fields/superadmin";
-import * as volunteer from "@/components/forms/fields/volunteer";
+import {
+  FORM_MUTATIONS,
+  getFormDef,
+  type FormValues,
+  type FormValuesMap,
+  type slugs,
+} from "@/lib/form-defs";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { useEmail } from "./use-email";
-import { getTenant } from "./get-tenant";
 import { uploadFile } from "../lib/storage";
 import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRecipient, EmailRole } from "@/types/email";
 import type { TenantSlug } from "./get-tenant";
-import { z } from "zod";
 
-export type slugs =
-  | "participant"
-  | "judge"
-  | "speaker"
-  | "superadmin"
-  | "volunteer";
-
-const FIELDS = {
-  participant,
-  judge,
-  speaker,
-  superadmin,
-  volunteer,
-} as const;
-
-/** Validated form values for each registration form, keyed by route slug. */
-type FormValuesMap = {
-  [S in slugs]: z.infer<(typeof FIELDS)[S]["schema"]>;
-};
-
-/** Union of validated values across the registration forms; each switch branch
- * narrows to its slug's zod schema. */
-export type FormValues = FormValuesMap[slugs];
-
-const MUTATIONS = {
-  participant: api.participants.add,
-  judge: api.judges.add,
-  speaker: api.speakers.add,
-  superadmin: api.superadmins.add,
-  volunteer: api.volunteers.add,
-} as const;
+export type { slugs, FormValues, FormValuesMap } from "@/lib/form-defs";
 
 export const useFields = () => {
   const { form, tenant } = useParams<{ form: slugs; tenant: TenantSlug }>();
   const slug = form;
 
-  const { headers } = getTenant(tenant);
+  const { metadata, form: formDef } = getFormDef(slug, tenant);
 
-  const add = useMutation(MUTATIONS[slug]);
+  const add = useMutation(FORM_MUTATIONS[slug]);
   const { sendEmail } = useEmail();
 
   const sendConfirmationEmail = async (
@@ -318,8 +287,8 @@ export const useFields = () => {
   };
 
   return {
-    metadata: { Header: headers[slug] },
-    form: FIELDS[slug],
+    metadata,
+    form: formDef,
     onSubmit,
   } as const;
 };

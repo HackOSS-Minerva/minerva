@@ -1,5 +1,3 @@
-"use client";
-
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { HeroSection } from "@/components/portal/dashboard/hero-section";
 import { ScheduleSection } from "@/components/portal/dashboard/schedule-section";
@@ -8,15 +6,24 @@ import { CheckinSection } from "@/components/portal/dashboard/checkin-section";
 import { Separator } from "@/components/ui/separator";
 import { ApplicationStatusBadge } from "@/components/portal/dashboard/application-status-badge";
 import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
+import type { CalendarResponse } from "@/types/calendar";
 
 interface DashboardPageProps {
   tenant: TenantSlug;
   participantStatus?: ApplicationStatus;
+  /** Display name from the server session. */
+  userName?: string;
+  /** SSR'd calendar payload; forwarded as the schedule island's initialData. */
+  initialSchedule?: CalendarResponse;
 }
 
+// Server Component shell: tenant config lookup is sync + server-safe.
+// Interactive children (countdown, QR, schedule filters) are client islands.
 export function DashboardPage({
   tenant,
   participantStatus,
+  userName,
+  initialSchedule,
 }: DashboardPageProps) {
   const { config } = getTenant(tenant);
   const live = config?.event ?? null;
@@ -27,6 +34,7 @@ export function DashboardPage({
         <div className="w-full max-w-2xl text-left">
           <ApplicationStatusBadge
             status={participantStatus ?? null}
+            userName={userName}
             applyHref={`/${tenant}/forms/participant`}
             applyLabel="Apply to be a Participant"
           />
@@ -42,6 +50,7 @@ export function DashboardPage({
     <div className="space-y-6">
       <ApplicationStatusBadge
         status={participantStatus ?? null}
+        userName={userName}
         applyHref={`/${tenant}/forms/participant`}
         applyLabel="Apply to be a Participant"
       />
@@ -60,7 +69,7 @@ export function DashboardPage({
 
       <Separator className="my-6" />
 
-      <ScheduleSection />
+      <ScheduleSection initialData={initialSchedule} />
     </div>
   );
 }
