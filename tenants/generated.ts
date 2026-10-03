@@ -20,12 +20,24 @@ import tenant_designverse_submission from "@/tenants/designverse/descriptions/su
 import tenant_designverse_rules from "@/tenants/designverse/descriptions/rules.mdx";
 import tenant_designverse_venue from "@/tenants/designverse/descriptions/venue.mdx";
 import tenant_designverse_code_of_conduct from "@/tenants/designverse/descriptions/code-of-conduct.mdx";
+import tenant_rosehack_config from "@/tenants/rosehack/rosehack.json";
+import tenant_rosehack_participants from "@/tenants/rosehack/descriptions/participants.mdx";
+import tenant_rosehack_judges from "@/tenants/rosehack/descriptions/judges.mdx";
+import tenant_rosehack_speakers from "@/tenants/rosehack/descriptions/speakers.mdx";
+import tenant_rosehack_superadmins from "@/tenants/rosehack/descriptions/superadmins.mdx";
+import tenant_rosehack_volunteers from "@/tenants/rosehack/descriptions/volunteers.mdx";
+import tenant_rosehack_feedback from "@/tenants/rosehack/descriptions/feedback.mdx";
+import tenant_rosehack_submission from "@/tenants/rosehack/descriptions/submission.mdx";
+import tenant_rosehack_rules from "@/tenants/rosehack/descriptions/rules.mdx";
+import tenant_rosehack_venue from "@/tenants/rosehack/descriptions/venue.mdx";
+import tenant_rosehack_code_of_conduct from "@/tenants/rosehack/descriptions/code-of-conduct.mdx";
 
-export const tenantSlugs = ["cutiehack", "designverse"] as const;
+export const tenantSlugs = ["cutiehack", "designverse", "rosehack"] as const;
 
 export const tenantConfigs = {
   cutiehack: tenant_cutiehack_config,
   designverse: tenant_designverse_config,
+  rosehack: tenant_rosehack_config,
 };
 
 export const tenantContent = {
@@ -59,6 +71,22 @@ export const tenantContent = {
       rules: tenant_designverse_rules,
       venue: tenant_designverse_venue,
       codeOfConduct: tenant_designverse_code_of_conduct,
+    },
+  },
+  rosehack: {
+    headers: {
+      participant: tenant_rosehack_participants,
+      judge: tenant_rosehack_judges,
+      speaker: tenant_rosehack_speakers,
+      superadmin: tenant_rosehack_superadmins,
+      volunteer: tenant_rosehack_volunteers,
+      feedback: tenant_rosehack_feedback,
+      submission: tenant_rosehack_submission,
+    },
+    markdown: {
+      rules: tenant_rosehack_rules,
+      venue: tenant_rosehack_venue,
+      codeOfConduct: tenant_rosehack_code_of_conduct,
     },
   },
 } as const;
