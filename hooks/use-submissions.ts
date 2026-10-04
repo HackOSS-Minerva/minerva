@@ -6,7 +6,6 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { useFormLock } from "./use-form-lock";
 import { z } from "zod";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { AppError, logAppError } from "@/lib/app-error";
@@ -95,7 +94,6 @@ interface UseSubmissionsOptions {
 export function useSubmissions({ tenant }: UseSubmissionsOptions) {
   const router = useRouter();
   const addSubmission = useMutation(api.submissions.add);
-  const { isLocked } = useFormLock({ form: "submission" });
 
   const form = useForm({
     defaultValues,
@@ -163,7 +161,6 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
 
   return {
     form,
-    isLocked,
   };
 }
 

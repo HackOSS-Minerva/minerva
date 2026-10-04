@@ -12,10 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type {
-  DropdownConfig,
-  NavItem,
-} from "@/components/portal/portal-nav";
+import type { DropdownConfig, NavItem } from "@/components/portal/portal-nav";
 
 interface PortalNavItemsProps {
   tenant: TenantSlug;
@@ -120,9 +117,7 @@ export function PortalNavItems({
                       key={item.href}
                       className="flex flex-col items-start gap-0.5 px-2 py-1.5 opacity-50"
                     >
-                      <span className="text-sm font-medium">
-                        {item.label}
-                      </span>
+                      <span className="text-sm font-medium">{item.label}</span>
                       <span className="text-xs text-muted-foreground">
                         {item.description}
                       </span>

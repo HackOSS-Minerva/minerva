@@ -23,11 +23,6 @@ export interface TenantConfig {
     gitCommitGraceWindowMinutes?: number;
     openOffset?: string;
   };
-  locks?: Record<
-    string,
-    string[] | boolean | Record<string, string[] | boolean>
-  >;
-  formLocks?: Record<string, { opens: string; closes: string }>;
 }
 
 const typedTenantConfigs = Object.fromEntries<TenantConfig>(

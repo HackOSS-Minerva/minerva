@@ -34,7 +34,11 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
 
   return (
     <div className="space-y-6">
-      <JudgeBreadcrumb tenant={tenant} page="Certificate" section="Participate" />
+      <JudgeBreadcrumb
+        tenant={tenant}
+        page="Certificate"
+        section="Participate"
+      />
 
       <div className="grid gap-6 md:grid-cols-1">
         <Card>

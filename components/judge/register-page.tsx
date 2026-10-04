@@ -7,7 +7,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { FormLockModal } from "@/components/forms/form-lock-modal";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface RegisterPageProps {
@@ -17,8 +16,6 @@ interface RegisterPageProps {
 export function RegisterPage({}: RegisterPageProps) {
   return (
     <div className="space-y-6">
-      <FormLockModal form="judge" />
-
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Judge Registration</h1>
         <p className="text-sm text-muted-foreground">

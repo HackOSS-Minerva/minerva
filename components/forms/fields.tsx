@@ -3,8 +3,6 @@ import { CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
 import { useFields, type FormValues } from "@/hooks/use-fields";
 import { useForm, type DeepKeys } from "@tanstack/react-form";
-import { useParams } from "next/navigation";
-import { useFormLock } from "@/hooks/use-form-lock";
 import { toast } from "sonner";
 import { useEffect, useMemo, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -29,13 +27,10 @@ function useSessionIdentity() {
 }
 
 const Fields = () => {
-  const { form } = useParams<{ form: string }>();
   const {
     form: { fields, metadata, schema, defaultValues },
     onSubmit,
   } = useFields();
-
-  const { isLocked } = useFormLock({ form: form ?? "participant" });
 
   const identity = useSessionIdentity();
 
@@ -59,7 +54,6 @@ const Fields = () => {
       onSubmit: schema,
     },
     onSubmit: async ({ value }) => {
-      if (isLocked) return;
       toast.success(
         `Thank you for applying. We will send you an application update shortly!`,
       );
@@ -96,7 +90,7 @@ const Fields = () => {
         id={metadata.id}
         onSubmit={(e) => {
           e.preventDefault();
-          if (!isLocked) formInstance.handleSubmit();
+          formInstance.handleSubmit();
         }}
       >
         <FieldGroup>
@@ -106,24 +100,7 @@ const Fields = () => {
                 key={key}
                 name={name as DeepKeys<typeof initialValues>}
               >
-                {(fieldApi) => {
-                  const child = children(fieldApi);
-                  if (
-                    isLocked &&
-                    child &&
-                    typeof child === "object" &&
-                    "props" in child
-                  ) {
-                    return {
-                      ...child,
-                      props: {
-                        ...(child.props || {}),
-                        disabled: true,
-                      },
-                    };
-                  }
-                  return child;
-                }}
+                {(fieldApi) => children(fieldApi)}
               </formInstance.Field>
             ))}
           </FieldGroup>

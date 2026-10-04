@@ -10,9 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConstructionIcon, LockIcon } from "lucide-react";
 
-// Blocking modal for gated content: "locked" (admin `locks.admin` flag, see
-// `lib/admin-locks.ts`) or "disabled" (page feature flag, see `lib/feature-flags.ts`).
-export type FeatureGateReason = "locked" | "disabled";
+// Blocking modal for gated content: "disabled" (page feature flag, see
+// `lib/feature-flags.ts`).
+export type FeatureGateReason = "disabled";
 
 const COPY: Record<
   FeatureGateReason,
@@ -24,14 +24,6 @@ const COPY: Record<
     note: string;
   }
 > = {
-  locked: {
-    icon: LockIcon,
-    iconClassName: "h-5 w-5 text-amber-500",
-    title: "Feature Not Enabled",
-    description:
-      "This page has been enabled by the developers and is not currently available.",
-    note: "Please contact the developers if you believe you need access.",
-  },
   disabled: {
     icon: ConstructionIcon,
     iconClassName: "h-5 w-5 text-muted-foreground",

@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import Footer from "@/components/forms/footer";
 import Header from "@/components/forms/header";
 import Fields from "./fields";
-import { FormLockModal } from "./form-lock-modal";
 import { isFormSlug, type slugs } from "@/lib/form-defs";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { notFound } from "next/navigation";
@@ -16,8 +15,8 @@ interface WrapperProps {
 }
 
 // Server Component shell: logo + status branch render on the server.
-// `Fields`/`Footer`/`FormLockModal` stay client islands — they self-resolve
-// their form def via `useFields()` (useParams + mutations). `Header`/`Footer`
+// `Fields` stays a client island — it self-resolves
+// its form def via `useFields()` (useParams + mutations). `Header`/`Footer`
 // additionally accept server-resolved props so they can SSR first.
 const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
   const {
@@ -34,7 +33,6 @@ const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
   return (
     <>
       {logo && <Image src={logo} alt="logo" width={100} height={100} />}
-      <FormLockModal form={slug} />
       <Card className="w-full sm:max-w-md border-none">
         {statusForUI && statusForUI !== null ? (
           <Status

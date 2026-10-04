@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
-import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { triggerConfetti } from "@/hooks/use-confetti";
 import { toast } from "sonner";
 import { logAppError } from "@/lib/app-error";
@@ -95,7 +94,6 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   return (
     <>
       <Image src={config.logo} alt="logo" width={200} height={200} />
-      <FormLockModal form="feedback" />
       <Card className="w-full sm:max-w-md border-none">
         <CardHeader>
           <div className="px-4">

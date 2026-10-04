@@ -35,7 +35,6 @@ import {
   IconFileText,
 } from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator";
-import { FormLockModal } from "@/components/forms/form-lock-modal";
 import { useSubmissions } from "@/hooks/use-submissions";
 import { MAX_LINKS_PER_TYPE } from "@/lib/vetting/rules";
 import type { TenantSlug } from "@/hooks/get-tenant";
@@ -46,7 +45,7 @@ interface SubmissionFormPageProps {
 
 export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
   const router = useRouter();
-  const { form, isLocked } = useSubmissions({ tenant });
+  const { form } = useSubmissions({ tenant });
 
   return (
     <div className="space-y-8">
@@ -72,7 +71,6 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
         </p>
       </div>
 
-      <FormLockModal form="submission" />
       <Card>
         <CardHeader>
           <CardTitle>Project Details</CardTitle>
@@ -85,7 +83,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             id="submission-form"
             onSubmit={(e) => {
               e.preventDefault();
-              if (!isLocked) form.handleSubmit();
+              form.handleSubmit();
             }}
             className="flex flex-col gap-6"
           >
@@ -120,7 +118,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       onBlur={field.handleBlur}
                       maxLength={50}
                       placeholder="Enter your team name"
-                      disabled={isLocked || form.state.isSubmitting}
+                      disabled={form.state.isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -163,7 +161,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       onBlur={field.handleBlur}
                       maxLength={50}
                       placeholder="Enter your project name"
-                      disabled={isLocked || form.state.isSubmitting}
+                      disabled={form.state.isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -212,7 +210,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       placeholder="Describe your project..."
                       rows={4}
                       maxLength={300}
-                      disabled={isLocked || form.state.isSubmitting}
+                      disabled={form.state.isSubmitting}
                       className="w-full"
                       aria-invalid={isInvalid}
                     />
@@ -255,7 +253,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       onBlur={field.handleBlur}
                       maxLength={100}
                       placeholder="https://devpost.com/..."
-                      disabled={isLocked || form.state.isSubmitting}
+                      disabled={form.state.isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -299,9 +297,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           size="sm"
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
-                          disabled={
-                            !canAddMore || isLocked || form.state.isSubmitting
-                          }
+                          disabled={!canAddMore || form.state.isSubmitting}
                           title={
                             canAddMore
                               ? "Add repository link"
@@ -325,7 +321,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           onBlur={field.handleBlur}
                           placeholder="https://github.com/..."
                           className="text-primary text-sm"
-                          disabled={isLocked || form.state.isSubmitting}
+                          disabled={form.state.isSubmitting}
                           autoComplete="off"
                           maxLength={100}
                         />
@@ -349,7 +345,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                                 links.filter((_, i) => i !== idx),
                               );
                             }}
-                            disabled={isLocked || form.state.isSubmitting}
+                            disabled={form.state.isSubmitting}
                           >
                             <IconTrash className="h-4 w-4" />
                           </Button>
@@ -396,9 +392,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           size="sm"
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
-                          disabled={
-                            !canAddMore || isLocked || form.state.isSubmitting
-                          }
+                          disabled={!canAddMore || form.state.isSubmitting}
                           title={
                             canAddMore
                               ? "Add design link"
@@ -422,7 +416,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           onBlur={field.handleBlur}
                           placeholder="https://figma.com/..."
                           className="text-primary text-sm"
-                          disabled={isLocked || form.state.isSubmitting}
+                          disabled={form.state.isSubmitting}
                           autoComplete="off"
                           maxLength={100}
                         />
@@ -446,7 +440,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                                 links.filter((_, i) => i !== idx),
                               );
                             }}
-                            disabled={isLocked || form.state.isSubmitting}
+                            disabled={form.state.isSubmitting}
                           >
                             <IconTrash className="h-4 w-4" />
                           </Button>
@@ -493,9 +487,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           size="sm"
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
-                          disabled={
-                            !canAddMore || isLocked || form.state.isSubmitting
-                          }
+                          disabled={!canAddMore || form.state.isSubmitting}
                           title={
                             canAddMore
                               ? "Add design link"
@@ -519,7 +511,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           onBlur={field.handleBlur}
                           placeholder="https://canva.com/..."
                           className="text-primary text-sm"
-                          disabled={isLocked || form.state.isSubmitting}
+                          disabled={form.state.isSubmitting}
                           autoComplete="off"
                           maxLength={100}
                         />
@@ -543,7 +535,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                                 links.filter((_, i) => i !== idx),
                               );
                             }}
-                            disabled={isLocked || form.state.isSubmitting}
+                            disabled={form.state.isSubmitting}
                           >
                             <IconTrash className="h-4 w-4" />
                           </Button>
@@ -600,7 +592,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       maxLength={100}
                       placeholder="https://slides.com/..."
                       className="text-primary mt-1"
-                      disabled={isLocked || form.state.isSubmitting}
+                      disabled={form.state.isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -638,7 +630,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         size="sm"
                         className="h-7 px-2 text-xs"
                         onClick={() => field.handleChange([...emails, ""])}
-                        disabled={isLocked || form.state.isSubmitting}
+                        disabled={form.state.isSubmitting}
                       >
                         <IconPlus className="h-3 w-3 mr-1" /> Add Member
                       </Button>
@@ -656,7 +648,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           onBlur={field.handleBlur}
                           placeholder={`member${idx + 2}@email.com`}
                           className="text-primary text-sm"
-                          disabled={isLocked || form.state.isSubmitting}
+                          disabled={form.state.isSubmitting}
                           autoComplete="off"
                         />
                         {emails.length > 1 && (
@@ -670,7 +662,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                                 emails.filter((_, i) => i !== idx),
                               );
                             }}
-                            disabled={isLocked || form.state.isSubmitting}
+                            disabled={form.state.isSubmitting}
                           >
                             <IconTrash className="h-4 w-4" />
                           </Button>
@@ -691,14 +683,11 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 type="button"
                 variant="outline"
                 onClick={() => router.push(`/${tenant}/live/dashboard`)}
-                disabled={isLocked || form.state.isSubmitting}
+                disabled={form.state.isSubmitting}
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={isLocked || form.state.isSubmitting}
-              >
+              <Button type="submit" disabled={form.state.isSubmitting}>
                 {form.state.isSubmitting ? "Submitting..." : "Submit Project"}
               </Button>
             </div>

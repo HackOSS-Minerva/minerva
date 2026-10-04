@@ -1,7 +1,5 @@
-import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal";
 import { AdminShell } from "@/components/dashboards/admin-shell";
 import Dashboard from "@/components/dashboards/dashboard";
-import { getAdminPageLock } from "@/lib/admin-locks";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 const DASHBOARD_TITLES: Record<string, string> = {
@@ -23,16 +21,12 @@ interface PageProps {
 }
 
 const Page = async ({ params }: PageProps) => {
-  const { tenant, dashboard } = await params;
+  const { dashboard } = await params;
   const title = DASHBOARD_TITLES[dashboard] ?? "Dashboard";
 
   return (
     <AdminShell title={title}>
-      {getAdminPageLock(tenant, dashboard) ? (
-        <FeatureGateModal reason="locked" />
-      ) : (
-        <Dashboard />
-      )}
+      <Dashboard />
     </AdminShell>
   );
 };

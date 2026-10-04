@@ -14,7 +14,7 @@ const PhotosRoute = async ({ params }: PhotosRouteProps) => {
   const { tenant } = await params;
 
   if (!getFeatureFlag("photos")) {
-    return <FeatureGateModal reason="locked" />;
+    return <FeatureGateModal reason="disabled" />;
   }
 
   const event = getConfiguredPhotoEvent(tenant);
