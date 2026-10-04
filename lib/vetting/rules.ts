@@ -12,8 +12,7 @@ import type { ConvexErrorCode } from "../../convex/app_error";
 export const MAX_TEAM_SIZE = 4;
 export const MAX_LINKS_PER_TYPE = 3;
 export const MAX_VETTING_BATCH_SIZE = 10;
-export const DEFAULT_GIT_COMMIT_GRACE_WINDOW_MINUTES = 15;
-export const MAX_GIT_COMMIT_GRACE_WINDOW_MINUTES = 1440;
+export const GIT_COMMIT_GRACE_WINDOW_MINUTES = 15;
 export const TEAM_SIZE_ERROR =
   "Teams can include at most 4 people including the submitter.";
 
@@ -70,14 +69,6 @@ export function validateVettingEventConfig(event: VettingEventConfig): void {
     event.submissionDeadlineAt < event.startsAt
   ) {
     throw invalid("Submission deadline is invalid");
-  }
-
-  if (
-    !Number.isInteger(event.gitCommitGraceWindowMinutes) ||
-    event.gitCommitGraceWindowMinutes < 0 ||
-    event.gitCommitGraceWindowMinutes > MAX_GIT_COMMIT_GRACE_WINDOW_MINUTES
-  ) {
-    throw invalid("Git commit grace window is invalid");
   }
 }
 

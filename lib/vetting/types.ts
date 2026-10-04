@@ -73,7 +73,6 @@ export interface VettingContributor extends ExtractedContributor {
 export interface VettingEventConfig {
   startsAt: number;
   submissionDeadlineAt: number;
-  gitCommitGraceWindowMinutes: number;
 }
 
 export interface GithubSubmissionVettingInput {

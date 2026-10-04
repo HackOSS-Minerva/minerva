@@ -39,7 +39,6 @@ const vettingStatus = v.union(
 const eventConfigValidator = v.object({
   startsAt: v.number(),
   submissionDeadlineAt: v.number(),
-  gitCommitGraceWindowMinutes: v.number(),
 });
 
 export const getSubmissionForVetting = internalQuery({
