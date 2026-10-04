@@ -1,5 +1,6 @@
 import {
   extractUniqueAuthors,
+  GIT_COMMIT_GRACE_WINDOW_MINUTES,
   MAX_TEAM_SIZE,
   resultFromFindings,
   uniqueNormalizedEmails,
@@ -286,8 +287,7 @@ export async function runSubmissionVetting(
   const projectCommits: GithubCommitAuthor[] = [];
   const declaredEmails = uniqueNormalizedEmails(input.declaredEmails);
   const graceUntil =
-    input.event.submissionDeadlineAt +
-    input.event.gitCommitGraceWindowMinutes * 60_000;
+    input.event.submissionDeadlineAt + GIT_COMMIT_GRACE_WINDOW_MINUTES * 60_000;
 
   if (input.declaredTeamCount > MAX_TEAM_SIZE) {
     findings.push(

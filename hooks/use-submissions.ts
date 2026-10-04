@@ -20,7 +20,6 @@ import type {
   VettingEventConfig,
 } from "@/lib/vetting/types";
 import {
-  DEFAULT_GIT_COMMIT_GRACE_WINDOW_MINUTES,
   getSubmissionTeam,
   MAX_LINKS_PER_TYPE,
   MAX_TEAM_SIZE,
@@ -182,13 +181,9 @@ export function useSubmissionVetting() {
 
     const startsAt = new Date(live.startTime).getTime();
     const submissionDeadlineAt = new Date(live.deadline).getTime();
-    const gitCommitGraceWindowMinutes =
-      live.gitCommitGraceWindowMinutes ??
-      DEFAULT_GIT_COMMIT_GRACE_WINDOW_MINUTES;
     const event = {
       startsAt,
       submissionDeadlineAt,
-      gitCommitGraceWindowMinutes,
     };
     validateVettingEventConfig(event);
     return event;
