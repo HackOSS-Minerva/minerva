@@ -1,0 +1,19 @@
+{
+  "event": {
+    "name": "Rosehack 2027",
+    "startTime": "2027-01-30T07:00:00-08:00",
+    "endTime": "2027-01-31T19:00:00-08:00",
+    "deadline": "2027-01-31T19:00:00-08:00"
+  },
+  "slug": "rosehack",
+  "name": "RoseHack",
+  "domain": "https://rosehackucr.com",
+  "email": "ucr.rosehack@gmail.com",
+  "discord": "https://discord.gg/zD73VRb2W",
+  "instagram": "https://www.instagram.com/rosehackucr",
+  "linkedin": "https://www.linkedin.com/company/rosehack/",
+  "devpost": "https://ucr-rosehack.devpost.com/?preview_token=OfvXkqNy7AzrervzgK44%2BYI7XJzxR%2BuvpzHBunk9CyA%3D",
+  "logo": "https://acm.cs.ucr.edu/_next/static/media/rosehack.15417323.svg",
+  "calendarid": "ed23effed7bc97cb85cc90b319df6d0052e8cd00253e367f568f393ad47528d2@group.calendar.google.com",
+  "heart": ""
+}
