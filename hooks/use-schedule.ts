@@ -27,7 +27,7 @@ export const useSchedule = (initialData?: CalendarResponse) => {
 
     return response.json();
   };
-  
+
   return useQuery({
     queryKey: ["schedule", tenant],
     queryFn: fetchEvents,
@@ -39,3 +39,8 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     retry: 2,
   });
 };
+
+export {
+  getIncompleteScheduleEvents,
+  checkEventCompleteness,
+} from "@/lib/schedule";

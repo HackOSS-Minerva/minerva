@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { IncompleteScheduleEvent, MissingScheduleField } from "@/types/calendar";
+import type {
+  IncompleteScheduleEvent,
+  MissingScheduleField,
+} from "@/types/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -82,8 +85,8 @@ export function IncompleteEventsAlert({
               <span className="font-medium text-foreground">description</span>,{" "}
               <span className="font-medium text-foreground">date</span>,{" "}
               <span className="font-medium text-foreground">time</span>, and{" "}
-              <span className="font-medium text-foreground">location</span>.
-              The events below are missing one or more of these fields.
+              <span className="font-medium text-foreground">location</span>. The
+              events below are missing one or more of these fields.
             </p>
           </div>
         </div>
@@ -132,7 +135,10 @@ export function IncompleteEventsAlert({
               const startDate = event.start?.date;
               const timeZone = event.start?.timeZone ?? "America/New_York";
               const formattedTime = formatEventTime(startDateTime, timeZone);
-              const dayLabel = getDayOfWeek(startDateTime ?? startDate, timeZone);
+              const dayLabel = getDayOfWeek(
+                startDateTime ?? startDate,
+                timeZone,
+              );
 
               return (
                 <div
@@ -234,4 +240,3 @@ export function IncompleteEventsAlert({
     </div>
   );
 }
-
