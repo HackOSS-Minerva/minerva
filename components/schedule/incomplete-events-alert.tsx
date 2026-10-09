@@ -133,7 +133,7 @@ export function IncompleteEventsAlert({
             {incompleteEvents.map(({ event, id, title, missingFields }) => {
               const startDateTime = event.start?.dateTime;
               const startDate = event.start?.date;
-              const timeZone = event.start?.timeZone ?? "America/New_York";
+              const timeZone = event.start?.timeZone ?? "America/Los_Angeles";
               const formattedTime = formatEventTime(startDateTime, timeZone);
               const dayLabel = getDayOfWeek(
                 startDateTime ?? startDate,
@@ -178,7 +178,11 @@ export function IncompleteEventsAlert({
                       <span className="flex items-center gap-1">
                         <Calendar className="size-3 text-muted-foreground/70" />
                         {dayLabel !== "N/A" ? dayLabel : "No date"}
-                        {formattedTime ? ` at ${formattedTime}` : " (No time)"}
+                        {formattedTime
+                          ? ` at ${formattedTime}`
+                          : startDate
+                            ? " (All Day)"
+                            : " (No time)"}
                       </span>
 
                       {/* Location display */}

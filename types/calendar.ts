@@ -18,14 +18,14 @@ export interface GoogleEvent {
     self: boolean;
   };
   start: {
-    dateTime: string;
+    dateTime?: string;
     date?: string;
-    timeZone: string;
+    timeZone?: string;
   };
   end: {
-    dateTime: string;
+    dateTime?: string;
     date?: string;
-    timeZone: string;
+    timeZone?: string;
   };
 }
 

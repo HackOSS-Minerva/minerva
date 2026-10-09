@@ -5,6 +5,7 @@ import { useSchedule } from "@/hooks/use-schedule";
 import { columns } from "@/components/schedule/columns";
 import { DataTable } from "@/components/schedule/data-table";
 import { IncompleteEventsAlert } from "@/components/schedule/incomplete-events-alert";
+import { ScheduleValidationSuccess } from "@/components/schedule/schedule-validation-success";
 import { getIncompleteScheduleEvents } from "@/lib/schedule";
 
 const ScheduleContent = () => {
@@ -50,16 +51,17 @@ const ScheduleContent = () => {
   const displayedEvents = filterIncompleteOnly
     ? incompleteEvents.map((issue) => issue.event)
     : (data?.items ?? []);
-
   return (
     <div className="flex w-full flex-col gap-6">
-      {/* UI showing which events do not have all of Title, description, date, time, location */}
-      {incompleteEvents.length > 0 && (
+      {/* UI showing validation status on page load */}
+      {incompleteEvents.length > 0 ? (
         <IncompleteEventsAlert
           incompleteEvents={incompleteEvents}
           filterActive={filterIncompleteOnly}
           onToggleFilter={() => setFilterIncompleteOnly((prev) => !prev)}
         />
+      ) : (
+        <ScheduleValidationSuccess totalCount={items?.length ?? 0} />
       )}
 
       <DataTable columns={columns} data={displayedEvents} />

@@ -16,8 +16,7 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     }
 
     const response = await fetch(
-      // `https://www.googleapis.com/calendar/v3/calendars/${config.calendarid}/events?key=${process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY}&singleEvents=true&orderBy=startTime`,
-      `https://www.googleapis.com/calendar/v3/calendars/schopra579@gmail.com/events?key=${process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY}&singleEvents=true&orderBy=startTime&timeMin=2026-09-26T00:00:00Z&timeMax=2026-10-03T23:59:59Z`,
+      `https://www.googleapis.com/calendar/v3/calendars/${config.calendarid}/events?key=${process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY}&singleEvents=true&orderBy=startTime`,
       { method: "GET" },
     );
 
@@ -39,8 +38,11 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     retry: 2,
   });
 };
+<<<<<<< HEAD
 
 export {
   getIncompleteScheduleEvents,
   checkEventCompleteness,
 } from "@/lib/schedule";
+=======
+>>>>>>> 2d1a751 (enhancement(schedule): user validation supports all-day events and notifies user when all events are correct)

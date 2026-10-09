@@ -25,11 +25,16 @@ const formatTime = (dateTime?: string, timeZone?: string) => {
 
 type EventStatus = "completed" | "ongoing" | "planned";
 
-const getEventStatus = (start?: string, end?: string): EventStatus => {
-  if (!start || !end) return "planned";
+const getEventStatus = (
+  start?: { dateTime?: string; date?: string },
+  end?: { dateTime?: string; date?: string },
+): EventStatus => {
+  const startStr = start?.dateTime ?? start?.date;
+  const endStr = end?.dateTime ?? end?.date;
+  if (!startStr || !endStr) return "planned";
   const now = Date.now();
-  const startTime = new Date(start).getTime();
-  const endTime = new Date(end).getTime();
+  const startTime = new Date(startStr).getTime();
+  const endTime = new Date(endStr).getTime();
 
   if (isNaN(startTime) || isNaN(endTime)) return "planned";
   if (now > endTime) return "completed";
@@ -56,7 +61,7 @@ const eventStatusFilter = (
   filterValues: string[],
 ) => {
   const { start, end } = row.original;
-  const status = getEventStatus(start?.dateTime, end?.dateTime);
+  const status = getEventStatus(start, end);
   return filterValues.includes(status);
 };
 
@@ -66,7 +71,7 @@ const dayOfWeekFilter = (
   filterValues: string[],
 ) => {
   const dateTime = row.original.start?.dateTime ?? row.original.start?.date;
-  const timeZone = row.original.start?.timeZone ?? "America/New_York";
+  const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
   const day = getDayOfWeek(dateTime, timeZone);
   return filterValues.includes(day);
 };
@@ -80,7 +85,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const dateTime = row.original.start?.dateTime ?? row.original.start?.date;
-      const timeZone = row.original.start?.timeZone ?? "America/New_York";
+      const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
       return <span>{getDayOfWeek(dateTime, timeZone)}</span>;
     },
   },
@@ -99,18 +104,26 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     },
     cell: ({ row }) => {
       const dateTime = row.original.start?.dateTime;
-      const timeZone = row.original.start?.timeZone ?? "America/New_York";
+      const isAllDay = !dateTime && Boolean(row.original.start?.date);
+      const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
+
+      if (isAllDay) {
+        return (
+          <span className="text-muted-foreground italic text-xs font-medium">
+            All Day
+          </span>
+        );
+      }
+
       return (
         <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
       );
     },
     sortingFn: (rowA, rowB) => {
-      const a = rowA.original.start?.dateTime
-        ? new Date(rowA.original.start.dateTime).getTime()
-        : 0;
-      const b = rowB.original.start?.dateTime
-        ? new Date(rowB.original.start.dateTime).getTime()
-        : 0;
+      const aStr = rowA.original.start?.dateTime ?? rowA.original.start?.date;
+      const bStr = rowB.original.start?.dateTime ?? rowB.original.start?.date;
+      const a = aStr ? new Date(aStr).getTime() : 0;
+      const b = bStr ? new Date(bStr).getTime() : 0;
       return a - b;
     },
   },
@@ -129,21 +142,30 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     },
     cell: ({ row }) => {
       const dateTime = row.original.end?.dateTime;
-      const timeZone = row.original.end?.timeZone ?? "America/New_York";
+      const isAllDay = !dateTime && Boolean(row.original.end?.date);
+      const timeZone = row.original.end?.timeZone ?? "America/Los_Angeles";
+
+      if (isAllDay) {
+        return (
+          <span className="text-muted-foreground italic text-xs font-medium">
+            All Day
+          </span>
+        );
+      }
+
       return (
         <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
       );
     },
     sortingFn: (rowA, rowB) => {
-      const a = rowA.original.end?.dateTime
-        ? new Date(rowA.original.end.dateTime).getTime()
-        : 0;
-      const b = rowB.original.end?.dateTime
-        ? new Date(rowB.original.end.dateTime).getTime()
-        : 0;
+      const aStr = rowA.original.end?.dateTime ?? rowA.original.end?.date;
+      const bStr = rowB.original.end?.dateTime ?? rowB.original.end?.date;
+      const a = aStr ? new Date(aStr).getTime() : 0;
+      const b = bStr ? new Date(bStr).getTime() : 0;
       return a - b;
     },
   },
+
   {
     accessorKey: "summary",
     header: ({ column }) => {
@@ -188,7 +210,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     filterFn: eventStatusFilter,
     cell: ({ row }) => {
       const { start, end } = row.original;
-      const status = getEventStatus(start?.dateTime, end?.dateTime);
+      const status = getEventStatus(start, end);
       return (
         <Badge variant={statusVariant(status)} className="capitalize">
           {status}
@@ -196,14 +218,8 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       );
     },
     sortingFn: (rowA, rowB) => {
-      const statusA = getEventStatus(
-        rowA.original.start?.dateTime,
-        rowA.original.end?.dateTime,
-      );
-      const statusB = getEventStatus(
-        rowB.original.start?.dateTime,
-        rowB.original.end?.dateTime,
-      );
+      const statusA = getEventStatus(rowA.original.start, rowA.original.end);
+      const statusB = getEventStatus(rowB.original.start, rowB.original.end);
       const order = { completed: 0, ongoing: 1, planned: 2 };
       return order[statusA] - order[statusB];
     },

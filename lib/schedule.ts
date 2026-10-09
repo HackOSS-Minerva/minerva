@@ -38,7 +38,7 @@ export function groupEventsByDay(
   for (const event of events) {
     const dateTime = event.start?.dateTime ?? event.start?.date;
     const group = dateTime
-      ? getDayOfWeek(dateTime, event.start?.timeZone ?? "America/New_York")
+      ? getDayOfWeek(dateTime, event.start?.timeZone ?? "America/Los_Angeles")
       : "Unscheduled";
     const options = groups.get(group) ?? [];
     options.push({
@@ -76,7 +76,7 @@ export function checkEventCompleteness(
 
   // Date and Time:
   // Google Calendar timed events have start.dateTime (RFC3339 string containing date and time).
-  // All-day events have only start.date ("YYYY-MM-DD" date with no time of day).
+  // All-day events have start.date ("YYYY-MM-DD" date with no specific time of day).
   const start = event.start as
     | { dateTime?: string; date?: string; timeZone?: string }
     | undefined;
@@ -89,7 +89,7 @@ export function checkEventCompleteness(
   );
 
   const hasDate = hasValidDateTime || hasValidDateOnly;
-  const hasTime = hasValidDateTime;
+  const hasTime = hasValidDateTime || hasValidDateOnly;
 
   if (!hasDate) {
     missing.push("Date");
@@ -99,7 +99,6 @@ export function checkEventCompleteness(
     missing.push("Time");
   }
 
-  // Location: Google Calendar location
   const location = (event.location as string | undefined)?.trim();
   if (!location) {
     missing.push("Location");
@@ -108,10 +107,6 @@ export function checkEventCompleteness(
   return missing;
 }
 
-/**
- * Parses through a list of Google Calendar events and returns
- * all events that do not have all of (Title, description, date, time, location).
- */
 export function getIncompleteScheduleEvents(
   events: readonly GoogleEvent[],
 ): IncompleteScheduleEvent[] {
