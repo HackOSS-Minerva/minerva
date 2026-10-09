@@ -84,6 +84,7 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
   return (
     <div className="flex w-full flex-col justify-start gap-6">
       <ScheduleToolbar table={table} />

@@ -27,9 +27,18 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
   const [now] = useState(Date.now);
 
-  const getEventTimestamp = (point?: { dateTime?: string; date?: string }) => {
-    const val = point?.dateTime ?? point?.date;
-    return val ? new Date(val).getTime() : 0;
+  const getEventTimestamp = (
+    point?: { dateTime?: string; date?: string },
+    isEnd = false,
+  ) => {
+    if (!point) return 0;
+    if (point.dateTime) return new Date(point.dateTime).getTime();
+    if (point.date) {
+      return new Date(
+        `${point.date}T${isEnd ? "23:59:59" : "00:00:00"}`,
+      ).getTime();
+    }
+    return 0;
   };
 
   const getCurrentAndNextEvents = () => {
@@ -44,7 +53,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
     for (const event of sorted) {
       const start = getEventTimestamp(event.start);
-      const end = getEventTimestamp(event.end);
+      const end = getEventTimestamp(event.end, true);
 
       if (now >= start && now <= end) {
         current = event;
@@ -57,7 +66,11 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
   };
 
   const { current, next } = getCurrentAndNextEvents();
-  const nextStartTime = next?.start?.dateTime ?? next?.start?.date;
+  const nextStartTime = next?.start?.dateTime
+    ? next.start.dateTime
+    : next?.start?.date
+      ? `${next.start.date}T00:00:00`
+      : null;
   const nextEventCountdown = useCountdown(
     nextStartTime ? new Date(nextStartTime) : null,
   );
@@ -81,22 +94,26 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
   const getEventDayLabel = (dateTime?: string) => {
     if (!dateTime) return "Unknown";
+    const isDateOnly = !dateTime.includes("T");
     const date = new Date(dateTime);
     if (isNaN(date.getTime())) return "Unknown";
     return date.toLocaleDateString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
+      timeZone: isDateOnly ? "UTC" : undefined,
     });
   };
 
   const formatDayButtonLabel = (dateTime?: string) => {
     if (!dateTime) return "Unknown";
+    const isDateOnly = !dateTime.includes("T");
     const date = new Date(dateTime);
     if (isNaN(date.getTime())) return "Unknown";
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
+      timeZone: isDateOnly ? "UTC" : undefined,
     });
   };
 

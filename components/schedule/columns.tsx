@@ -33,8 +33,12 @@ const getEventStatus = (
   const endStr = end?.dateTime ?? end?.date;
   if (!startStr || !endStr) return "planned";
   const now = Date.now();
-  const startTime = new Date(startStr).getTime();
-  const endTime = new Date(endStr).getTime();
+  const startTime = start?.dateTime
+    ? new Date(start.dateTime).getTime()
+    : new Date(`${startStr}T00:00:00`).getTime();
+  const endTime = end?.dateTime
+    ? new Date(end.dateTime).getTime()
+    : new Date(`${endStr}T23:59:59`).getTime();
 
   if (isNaN(startTime) || isNaN(endTime)) return "planned";
   if (now > endTime) return "completed";

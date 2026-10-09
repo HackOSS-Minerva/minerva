@@ -172,7 +172,6 @@ export function IncompleteEventsAlert({
                       </div>
                     </div>
 
-                    {/* Metadata Context (what info is currently present) */}
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                       {/* Date & Time display */}
                       <span className="flex items-center gap-1">

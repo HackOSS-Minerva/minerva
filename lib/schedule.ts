@@ -52,23 +52,16 @@ export function groupEventsByDay(
   return Array.from(groups.entries());
 }
 
-/**
- * Checks if a Google Calendar event contains all required fields:
- * Title, description, date, time, and location.
- * Returns an array of any missing field names.
- */
 export function checkEventCompleteness(
   event: GoogleEvent,
 ): MissingScheduleField[] {
   const missing: MissingScheduleField[] = [];
 
-  // Title: Google Calendar uses 'summary' for the event title
   const summary = (event.summary as string | undefined)?.trim();
   if (!summary) {
     missing.push("Title");
   }
 
-  // Description: Google Calendar event description
   const description = (event.description as string | undefined)?.trim();
   if (!description) {
     missing.push("Description");

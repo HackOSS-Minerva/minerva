@@ -12,8 +12,6 @@ const ScheduleContent = () => {
   const { data, isLoading, isError, error } = useSchedule();
   const [filterIncompleteOnly, setFilterIncompleteOnly] = useState(false);
 
-  // On page load / data arrival, parse frontend events to check for:
-  // Title, description, date, time, and location
   const items = data?.items;
   const incompleteEvents = useMemo(() => {
     if (!items) return [];
