@@ -38,11 +38,3 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     retry: 2,
   });
 };
-<<<<<<< HEAD
-
-export {
-  getIncompleteScheduleEvents,
-  checkEventCompleteness,
-} from "@/lib/schedule";
-=======
->>>>>>> 2d1a751 (enhancement(schedule): user validation supports all-day events and notifies user when all events are correct)
