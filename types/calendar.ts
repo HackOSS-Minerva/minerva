@@ -7,8 +7,8 @@ export interface GoogleEvent {
   created: string;
   updated: string;
   summary: string;
-  description: string;
-  location: string;
+  description?: string;
+  location?: string;
   creator: {
     email: string;
     self: boolean;
@@ -18,12 +18,14 @@ export interface GoogleEvent {
     self: boolean;
   };
   start: {
-    dateTime: string;
-    timeZone: string;
+    dateTime?: string;
+    date?: string;
+    timeZone?: string;
   };
   end: {
-    dateTime: string;
-    timeZone: string;
+    dateTime?: string;
+    date?: string;
+    timeZone?: string;
   };
 }
 
@@ -38,6 +40,20 @@ export interface CalendarResponse {
     method: string;
     minutes: number;
   }>;
-  nextSyncToken: string;
+  nextSyncToken?: string;
   items: GoogleEvent[];
+}
+
+export type MissingScheduleField =
+  | "Title"
+  | "Description"
+  | "Date"
+  | "Time"
+  | "Location";
+
+export interface IncompleteScheduleEvent {
+  event: GoogleEvent;
+  id: string;
+  title: string;
+  missingFields: MissingScheduleField[];
 }

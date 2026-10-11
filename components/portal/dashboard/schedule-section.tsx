@@ -27,21 +27,33 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
   const [now] = useState(Date.now);
 
+  const getEventTimestamp = (
+    point?: { dateTime?: string; date?: string },
+    isEnd = false,
+  ) => {
+    if (!point) return 0;
+    if (point.dateTime) return new Date(point.dateTime).getTime();
+    if (point.date) {
+      return new Date(
+        `${point.date}T${isEnd ? "23:59:59" : "00:00:00"}`,
+      ).getTime();
+    }
+    return 0;
+  };
+
   const getCurrentAndNextEvents = () => {
     if (!data?.items) return { current: null, next: null };
 
     const sorted = [...data.items].sort(
-      (a, b) =>
-        new Date(a.start.dateTime).getTime() -
-        new Date(b.start.dateTime).getTime(),
+      (a, b) => getEventTimestamp(a.start) - getEventTimestamp(b.start),
     );
 
     let current = null;
     let next = null;
 
     for (const event of sorted) {
-      const start = new Date(event.start.dateTime).getTime();
-      const end = new Date(event.end.dateTime).getTime();
+      const start = getEventTimestamp(event.start);
+      const end = getEventTimestamp(event.end, true);
 
       if (now >= start && now <= end) {
         current = event;
@@ -54,39 +66,65 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
   };
 
   const { current, next } = getCurrentAndNextEvents();
+  const nextStartTime = next?.start?.dateTime
+    ? next.start.dateTime
+    : next?.start?.date
+      ? `${next.start.date}T00:00:00`
+      : null;
   const nextEventCountdown = useCountdown(
-    next ? new Date(next.start.dateTime) : null,
+    nextStartTime ? new Date(nextStartTime) : null,
   );
 
-  const formatTime = (dateTime: string, timeZone: string) => {
+  const formatTime = (dateTime?: string, timeZone?: string) => {
+    if (!dateTime) return "All Day";
     return new Date(dateTime).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-      timeZone,
+      timeZone: timeZone || undefined,
     });
   };
 
-  const getEventDayLabel = (dateTime: string) => {
+  const formatEventTimes = (
+    start?: { dateTime?: string; date?: string; timeZone?: string },
+    end?: { dateTime?: string; date?: string; timeZone?: string },
+  ) => {
+    if (!start?.dateTime) return "All Day";
+    return `${formatTime(start.dateTime, start.timeZone)} – ${formatTime(end?.dateTime, end?.timeZone)}`;
+  };
+
+  const getEventDayLabel = (dateTime?: string) => {
+    if (!dateTime) return "Unknown";
+    const isDateOnly = !dateTime.includes("T");
     const date = new Date(dateTime);
+    if (isNaN(date.getTime())) return "Unknown";
     return date.toLocaleDateString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
+      timeZone: isDateOnly ? "UTC" : undefined,
     });
   };
 
-  const formatDayButtonLabel = (dateTime: string) => {
+  const formatDayButtonLabel = (dateTime?: string) => {
+    if (!dateTime) return "Unknown";
+    const isDateOnly = !dateTime.includes("T");
     const date = new Date(dateTime);
+    if (isNaN(date.getTime())) return "Unknown";
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
+      timeZone: isDateOnly ? "UTC" : undefined,
     });
   };
 
   const uniqueDays = useMemo(() => {
     if (!data?.items) return [];
     const days = [
-      ...new Set(data.items.map((e) => getEventDayLabel(e.start.dateTime))),
+      ...new Set(
+        data.items.map((e) =>
+          getEventDayLabel(e.start?.dateTime ?? e.start?.date),
+        ),
+      ),
     ];
     return days;
   }, [data]);
@@ -102,7 +140,8 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
       const matchesDay =
         selectedDay === "all" ||
-        getEventDayLabel(event.start.dateTime) === selectedDay;
+        getEventDayLabel(event.start?.dateTime ?? event.start?.date) ===
+          selectedDay;
 
       return matchesSearch && matchesDay;
     });
@@ -144,12 +183,12 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
   );
 
   const pastEvents = otherEvents.filter((event) => {
-    const end = new Date(event.end.dateTime).getTime();
+    const end = getEventTimestamp(event.end);
     return now > end;
   });
 
   const upcomingEvents = otherEvents.filter((event) => {
-    const end = new Date(event.end.dateTime).getTime();
+    const end = getEventTimestamp(event.end);
     return now <= end;
   });
 
@@ -180,8 +219,17 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                 <TabsTrigger key={day} value={day} className="text-xs">
                   {formatDayButtonLabel(
                     data?.items.find(
-                      (e) => getEventDayLabel(e.start.dateTime) === day,
-                    )?.start.dateTime ?? day,
+                      (e) =>
+                        getEventDayLabel(e.start?.dateTime ?? e.start?.date) ===
+                        day,
+                    )?.start?.dateTime ??
+                      data?.items.find(
+                        (e) =>
+                          getEventDayLabel(
+                            e.start?.dateTime ?? e.start?.date,
+                          ) === day,
+                      )?.start?.date ??
+                      day,
                   )}
                 </TabsTrigger>
               ))}
@@ -199,15 +247,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
             </div>
             <h3 className="font-semibold">{filteredCurrent.summary}</h3>
             <p className="text-sm text-muted-foreground">
-              {formatTime(
-                filteredCurrent.start.dateTime,
-                filteredCurrent.start.timeZone,
-              )}{" "}
-              –{" "}
-              {formatTime(
-                filteredCurrent.end.dateTime,
-                filteredCurrent.end.timeZone,
-              )}
+              {formatEventTimes(filteredCurrent.start, filteredCurrent.end)}
             </p>
             {filteredCurrent.location && (
               <p className="mt-1 text-xs text-muted-foreground">
@@ -235,12 +275,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
             </div>
             <h3 className="font-semibold">{filteredNext.summary}</h3>
             <p className="text-sm text-muted-foreground">
-              {formatTime(
-                filteredNext.start.dateTime,
-                filteredNext.start.timeZone,
-              )}{" "}
-              –{" "}
-              {formatTime(filteredNext.end.dateTime, filteredNext.end.timeZone)}
+              {formatEventTimes(filteredNext.start, filteredNext.end)}
             </p>
             {filteredNext.location && (
               <p className="mt-1 text-xs text-muted-foreground">
@@ -261,15 +296,13 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
             {upcomingEvents
               .sort(
                 (a, b) =>
-                  new Date(a.start.dateTime).getTime() -
-                  new Date(b.start.dateTime).getTime(),
+                  getEventTimestamp(a.start) - getEventTimestamp(b.start),
               )
               .map((event) => (
                 <div key={event.id} className="rounded-lg border p-3">
                   <h4 className="text-sm font-medium">{event.summary}</h4>
                   <p className="text-xs text-muted-foreground">
-                    {formatTime(event.start.dateTime, event.start.timeZone)} –{" "}
-                    {formatTime(event.end.dateTime, event.end.timeZone)}
+                    {formatEventTimes(event.start, event.end)}
                     {event.location && ` · ${event.location}`}
                   </p>
                 </div>
@@ -294,8 +327,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                 {pastEvents
                   .sort(
                     (a, b) =>
-                      new Date(a.start.dateTime).getTime() -
-                      new Date(b.start.dateTime).getTime(),
+                      getEventTimestamp(a.start) - getEventTimestamp(b.start),
                   )
                   .map((event) => (
                     <div
@@ -309,8 +341,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {formatTime(event.start.dateTime, event.start.timeZone)}{" "}
-                        – {formatTime(event.end.dateTime, event.end.timeZone)}
+                        {formatEventTimes(event.start, event.end)}
                         {event.location && ` · ${event.location}`}
                       </p>
                     </div>

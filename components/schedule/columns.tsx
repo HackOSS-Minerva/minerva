@@ -8,21 +8,39 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getDayOfWeek } from "@/lib/schedule";
 
-const formatTime = (dateTime: string, timeZone: string) => {
-  return new Date(dateTime).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: timeZone,
-  });
+const formatTime = (dateTime?: string, timeZone?: string) => {
+  if (!dateTime) return "N/A";
+  try {
+    const date = new Date(dateTime);
+    if (isNaN(date.getTime())) return "N/A";
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: timeZone || undefined,
+    });
+  } catch {
+    return "N/A";
+  }
 };
 
 type EventStatus = "completed" | "ongoing" | "planned";
 
-const getEventStatus = (start: string, end: string): EventStatus => {
+const getEventStatus = (
+  start?: { dateTime?: string; date?: string },
+  end?: { dateTime?: string; date?: string },
+): EventStatus => {
+  const startStr = start?.dateTime ?? start?.date;
+  const endStr = end?.dateTime ?? end?.date;
+  if (!startStr || !endStr) return "planned";
   const now = Date.now();
-  const startTime = new Date(start).getTime();
-  const endTime = new Date(end).getTime();
+  const startTime = start?.dateTime
+    ? new Date(start.dateTime).getTime()
+    : new Date(`${startStr}T00:00:00`).getTime();
+  const endTime = end?.dateTime
+    ? new Date(end.dateTime).getTime()
+    : new Date(`${endStr}T23:59:59`).getTime();
 
+  if (isNaN(startTime) || isNaN(endTime)) return "planned";
   if (now > endTime) return "completed";
   if (now >= startTime && now <= endTime) return "ongoing";
   return "planned";
@@ -47,7 +65,7 @@ const eventStatusFilter = (
   filterValues: string[],
 ) => {
   const { start, end } = row.original;
-  const status = getEventStatus(start.dateTime, end.dateTime);
+  const status = getEventStatus(start, end);
   return filterValues.includes(status);
 };
 
@@ -56,7 +74,8 @@ const dayOfWeekFilter = (
   _columnId: string,
   filterValues: string[],
 ) => {
-  const { dateTime, timeZone } = row.original.start;
+  const dateTime = row.original.start?.dateTime ?? row.original.start?.date;
+  const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
   const day = getDayOfWeek(dateTime, timeZone);
   return filterValues.includes(day);
 };
@@ -69,7 +88,8 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     enableSorting: false,
     enableHiding: false,
     cell: ({ row }) => {
-      const { dateTime, timeZone } = row.original.start;
+      const dateTime = row.original.start?.dateTime ?? row.original.start?.date;
+      const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
       return <span>{getDayOfWeek(dateTime, timeZone)}</span>;
     },
   },
@@ -87,14 +107,27 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       );
     },
     cell: ({ row }) => {
-      const { dateTime, timeZone } = row.original.start;
+      const dateTime = row.original.start?.dateTime;
+      const isAllDay = !dateTime && Boolean(row.original.start?.date);
+      const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
+
+      if (isAllDay) {
+        return (
+          <span className="text-muted-foreground italic text-xs font-medium">
+            All Day
+          </span>
+        );
+      }
+
       return (
         <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
       );
     },
     sortingFn: (rowA, rowB) => {
-      const a = new Date(rowA.original.start.dateTime).getTime();
-      const b = new Date(rowB.original.start.dateTime).getTime();
+      const aStr = rowA.original.start?.dateTime ?? rowA.original.start?.date;
+      const bStr = rowB.original.start?.dateTime ?? rowB.original.start?.date;
+      const a = aStr ? new Date(aStr).getTime() : 0;
+      const b = bStr ? new Date(bStr).getTime() : 0;
       return a - b;
     },
   },
@@ -112,17 +145,31 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       );
     },
     cell: ({ row }) => {
-      const { dateTime, timeZone } = row.original.end;
+      const dateTime = row.original.end?.dateTime;
+      const isAllDay = !dateTime && Boolean(row.original.end?.date);
+      const timeZone = row.original.end?.timeZone ?? "America/Los_Angeles";
+
+      if (isAllDay) {
+        return (
+          <span className="text-muted-foreground italic text-xs font-medium">
+            All Day
+          </span>
+        );
+      }
+
       return (
         <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
       );
     },
     sortingFn: (rowA, rowB) => {
-      const a = new Date(rowA.original.end.dateTime).getTime();
-      const b = new Date(rowB.original.end.dateTime).getTime();
+      const aStr = rowA.original.end?.dateTime ?? rowA.original.end?.date;
+      const bStr = rowB.original.end?.dateTime ?? rowB.original.end?.date;
+      const a = aStr ? new Date(aStr).getTime() : 0;
+      const b = bStr ? new Date(bStr).getTime() : 0;
       return a - b;
     },
   },
+
   {
     accessorKey: "summary",
     header: ({ column }) => {
@@ -137,9 +184,12 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       );
     },
     cell: ({ row }) => {
+      const summary = row.getValue("summary") as string | undefined;
       return (
         <span className="font-medium line-clamp-1 max-w-[250px]">
-          {row.getValue("summary")}
+          {summary?.trim() || (
+            <span className="text-muted-foreground italic">Untitled Event</span>
+          )}
         </span>
       );
     },
@@ -148,10 +198,10 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     accessorKey: "location",
     header: "Location",
     cell: ({ row }) => {
-      const location = row.getValue("location") as string;
-      return location ? (
+      const location = row.getValue("location") as string | undefined;
+      return location?.trim() ? (
         <span className="text-muted-foreground line-clamp-1 max-w-[250px]">
-          {location}
+          {location.trim()}
         </span>
       ) : (
         <span className="text-muted-foreground italic">N/A</span>
@@ -164,7 +214,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     filterFn: eventStatusFilter,
     cell: ({ row }) => {
       const { start, end } = row.original;
-      const status = getEventStatus(start.dateTime, end.dateTime);
+      const status = getEventStatus(start, end);
       return (
         <Badge variant={statusVariant(status)} className="capitalize">
           {status}
@@ -172,14 +222,8 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       );
     },
     sortingFn: (rowA, rowB) => {
-      const statusA = getEventStatus(
-        rowA.original.start.dateTime,
-        rowA.original.end.dateTime,
-      );
-      const statusB = getEventStatus(
-        rowB.original.start.dateTime,
-        rowB.original.end.dateTime,
-      );
+      const statusA = getEventStatus(rowA.original.start, rowA.original.end);
+      const statusB = getEventStatus(rowB.original.start, rowB.original.end);
       const order = { completed: 0, ongoing: 1, planned: 2 };
       return order[statusA] - order[statusB];
     },
