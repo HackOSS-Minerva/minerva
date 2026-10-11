@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type {
   GoogleEvent,
   IncompleteScheduleEvent,
@@ -52,52 +53,87 @@ export function groupEventsByDay(
   return Array.from(groups.entries());
 }
 
+/**
+ * Zod schema defining the required completeness criteria for a Google Calendar event:
+ * - Date & Time (`start`): valid dateTime string (timed event) OR valid date string (all-day event)
+ */
+const nonBlankString = z.string().trim().min(1);
+
+export const scheduleEventStartSchema = z
+  .object({
+    dateTime: z.string().optional(),
+    date: z.string().optional(),
+    timeZone: z.string().optional(),
+  })
+  .optional()
+  .superRefine((start, ctx) => {
+    const hasValidDateTime = Boolean(
+      start?.dateTime && !isNaN(new Date(start.dateTime).getTime()),
+    );
+    const hasValidDateOnly = Boolean(
+      start?.date && !isNaN(new Date(start.date).getTime()),
+    );
+
+    const hasValidSchedule = hasValidDateTime || hasValidDateOnly;
+
+    if (!hasValidSchedule) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Date is required and must be valid",
+        path: ["date"],
+      });
+      ctx.addIssue({
+        code: "custom",
+        message: "Time is required (timed or all-day)",
+        path: ["time"],
+      });
+    }
+  });
+
+export const scheduleEventSchema = z.object({
+  summary: nonBlankString,
+  description: nonBlankString,
+  location: nonBlankString,
+  start: scheduleEventStartSchema,
+});
+
+export type ValidatedScheduleEvent = z.infer<typeof scheduleEventSchema>;
+
+/**
+ * Validates a Google Calendar event against `scheduleEventSchema`.
+ * Returns an array of any missing field names (Title, Description, Date, Time, Location).
+ */
 export function checkEventCompleteness(
   event: GoogleEvent,
 ): MissingScheduleField[] {
-  const missing: MissingScheduleField[] = [];
-
-  const summary = (event.summary as string | undefined)?.trim();
-  if (!summary) {
-    missing.push("Title");
+  const result = scheduleEventSchema.safeParse(event);
+  if (result.success) {
+    return [];
   }
 
-  const description = (event.description as string | undefined)?.trim();
-  if (!description) {
-    missing.push("Description");
+  const missing = new Set<MissingScheduleField>();
+
+  for (const issue of result.error.issues) {
+    const rootField = issue.path[0];
+    if (rootField === "summary") missing.add("Title");
+    else if (rootField === "description") missing.add("Description");
+    else if (rootField === "location") missing.add("Location");
+    else if (rootField === "start") {
+      const startField = issue.path[1];
+      if (startField === "date") missing.add("Date");
+      if (startField === "time") missing.add("Time");
+    }
   }
 
-  // Date and Time:
-  // Google Calendar timed events have start.dateTime (RFC3339 string containing date and time).
-  // All-day events have start.date ("YYYY-MM-DD" date with no specific time of day).
-  const start = event.start as
-    | { dateTime?: string; date?: string; timeZone?: string }
-    | undefined;
+  const orderedFields: MissingScheduleField[] = [
+    "Title",
+    "Description",
+    "Date",
+    "Time",
+    "Location",
+  ];
 
-  const hasValidDateTime = Boolean(
-    start?.dateTime && !isNaN(new Date(start.dateTime).getTime()),
-  );
-  const hasValidDateOnly = Boolean(
-    start?.date && !isNaN(new Date(start.date).getTime()),
-  );
-
-  const hasDate = hasValidDateTime || hasValidDateOnly;
-  const hasTime = hasValidDateTime || hasValidDateOnly;
-
-  if (!hasDate) {
-    missing.push("Date");
-  }
-
-  if (!hasTime) {
-    missing.push("Time");
-  }
-
-  const location = (event.location as string | undefined)?.trim();
-  if (!location) {
-    missing.push("Location");
-  }
-
-  return missing;
+  return orderedFields.filter((field) => missing.has(field));
 }
 
 export function getIncompleteScheduleEvents(
