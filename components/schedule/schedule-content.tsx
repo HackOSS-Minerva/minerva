@@ -45,7 +45,6 @@ const ScheduleContent = () => {
     : (data?.items ?? []);
   return (
     <div className="flex w-full flex-col gap-6">
-      {/* UI showing validation status on page load */}
       {incompleteEvents.length > 0 ? (
         <IncompleteEventsAlert
           incompleteEvents={incompleteEvents}
