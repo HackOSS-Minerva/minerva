@@ -54,24 +54,37 @@ export function groupEventsByDay(
 }
 
 /**
- * Zod schema defining the required completeness criteria for a Google Calendar event:
- * - Date & Time (`start`): valid dateTime string (timed event) OR valid date string (all-day event)
+ * Zod schema defining the required completeness criteria for a Google Calendar event.
+ * Custom error messages are configured directly in the schema.
  */
-const nonBlankString = z.string().trim().min(1);
+const requiredField = (label: string) =>
+  z
+    .string({
+      error: `${label} is required`,
+    })
+    .trim()
+    .min(1, `${label} cannot be blank`);
+
+const isoDateTime = z.string().datetime({
+  offset: true,
+  message: "Invalid date-time format",
+});
+
+const isoDate = z.string().date("Invalid date format");
 
 export const scheduleEventStartSchema = z
   .object({
-    dateTime: z.string().optional(),
-    date: z.string().optional(),
+    dateTime: isoDateTime.optional(),
+    date: isoDate.optional(),
     timeZone: z.string().optional(),
   })
   .optional()
   .superRefine((start, ctx) => {
     const hasValidDateTime = Boolean(
-      start?.dateTime && !isNaN(new Date(start.dateTime).getTime()),
+      start?.dateTime && isoDateTime.safeParse(start.dateTime).success,
     );
     const hasValidDateOnly = Boolean(
-      start?.date && !isNaN(new Date(start.date).getTime()),
+      start?.date && isoDate.safeParse(start.date).success,
     );
 
     const hasValidSchedule = hasValidDateTime || hasValidDateOnly;
@@ -79,7 +92,7 @@ export const scheduleEventStartSchema = z
     if (!hasValidSchedule) {
       ctx.addIssue({
         code: "custom",
-        message: "Date is required and must be valid",
+        message: "Date is required (valid ISO date or date-time)",
         path: ["date"],
       });
       ctx.addIssue({
@@ -91,9 +104,9 @@ export const scheduleEventStartSchema = z
   });
 
 export const scheduleEventSchema = z.object({
-  summary: nonBlankString,
-  description: nonBlankString,
-  location: nonBlankString,
+  summary: requiredField("Title"),
+  description: requiredField("Description"),
+  location: requiredField("Location"),
   start: scheduleEventStartSchema,
 });
 

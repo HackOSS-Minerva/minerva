@@ -1,22 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useSchedule } from "@/hooks/use-schedule";
+import { useState } from "react";
+import { useSchedule, useScheduleValidation } from "@/hooks/use-schedule";
 import { columns } from "@/components/schedule/columns";
 import { DataTable } from "@/components/schedule/data-table";
 import { IncompleteEventsAlert } from "@/components/schedule/incomplete-events-alert";
 import { ScheduleValidationSuccess } from "@/components/schedule/schedule-validation-success";
-import { getIncompleteScheduleEvents } from "@/lib/schedule";
 
 const ScheduleContent = () => {
   const { data, isLoading, isError, error } = useSchedule();
+  const { incompleteEvents, totalCount } = useScheduleValidation();
   const [filterIncompleteOnly, setFilterIncompleteOnly] = useState(false);
-
-  const items = data?.items;
-  const incompleteEvents = useMemo(() => {
-    if (!items) return [];
-    return getIncompleteScheduleEvents(items);
-  }, [items]);
 
   if (isLoading) {
     return (
@@ -59,7 +53,7 @@ const ScheduleContent = () => {
           onToggleFilter={() => setFilterIncompleteOnly((prev) => !prev)}
         />
       ) : (
-        <ScheduleValidationSuccess totalCount={items?.length ?? 0} />
+        <ScheduleValidationSuccess totalCount={totalCount} />
       )}
 
       <DataTable columns={columns} data={displayedEvents} />
