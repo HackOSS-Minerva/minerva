@@ -42,7 +42,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
   const logo = tool.logo ?? `/logos/${tool.id}.svg`;
 
   return (
-    <div className="bg-muted flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border p-1.5">
+    <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5">
       {errored ? (
         <span
           aria-hidden

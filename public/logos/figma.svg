@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="figma placeholder logo">
-  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="10" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1.5" />
-  <path d="M24 10.5 L34.5 18 L24 25.5 L13.5 18 Z" fill="#CBD5E1" />
-  <text x="24" y="38" text-anchor="middle" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#334155">FG</text>
+<svg width="400" height="600" viewBox="312 340 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M312 840C312 784.772 356.772 740 412 740H512V840C512 895.228 467.228 940 412 940C356.772 940 312 895.228 312 840Z" fill="#24CB71"/>
+<path d="M512 340V540H612C667.228 540 712 495.228 712 440C712 384.772 667.228 340 612 340H512Z" fill="#FF7237"/>
+<circle cx="611.167" cy="640" r="100" fill="#00B6FF"/>
+<path d="M312 440C312 495.228 356.772 540 412 540H512V340H412C356.772 340 312 384.772 312 440Z" fill="#FF3737"/>
+<path d="M312 640C312 695.228 356.772 740 412 740H512V540H412C356.772 540 312 584.772 312 640Z" fill="#874FFF"/>
 </svg>
