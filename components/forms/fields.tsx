@@ -1,8 +1,10 @@
 "use client";
-import { CardContent } from "@/components/ui/card";
-import { FieldGroup } from "@/components/ui/field";
+import { CardContent, CardFooter } from "@/components/ui/card";
+import { Field, FieldGroup } from "@/components/ui/field";
+import { Button } from "@/components/ui/button";
 import { useFields, type FormValues } from "@/hooks/use-fields";
 import { useForm, type DeepKeys } from "@tanstack/react-form";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useMemo, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -85,28 +87,53 @@ const Fields = () => {
   }, [identity]);
 
   return (
-    <CardContent>
-      <form
-        id={metadata.id}
-        onSubmit={(e) => {
-          e.preventDefault();
-          formInstance.handleSubmit();
-        }}
-      >
-        <FieldGroup>
+    <>
+      <CardContent>
+        <form
+          id={metadata.id}
+          onSubmit={(e) => {
+            e.preventDefault();
+            formInstance.handleSubmit();
+          }}
+        >
           <FieldGroup>
-            {fields.map(({ name, children }, key) => (
-              <formInstance.Field
-                key={key}
-                name={name as DeepKeys<typeof initialValues>}
-              >
-                {(fieldApi) => children(fieldApi)}
-              </formInstance.Field>
-            ))}
+            <FieldGroup>
+              {fields.map(({ name, children }, key) => (
+                <formInstance.Field
+                  key={key}
+                  name={name as DeepKeys<typeof initialValues>}
+                >
+                  {(fieldApi) => children(fieldApi)}
+                </formInstance.Field>
+              ))}
+            </FieldGroup>
           </FieldGroup>
-        </FieldGroup>
-      </form>
-    </CardContent>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Field orientation="horizontal" className="justify-center">
+          <formInstance.Subscribe selector={(state) => state.isSubmitting}>
+            {(isSubmitting) => (
+              <Button
+                type="submit"
+                form={metadata.id}
+                disabled={isSubmitting}
+                aria-disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit"
+                )}
+              </Button>
+            )}
+          </formInstance.Subscribe>
+        </Field>
+      </CardFooter>
+    </>
   );
 };
 

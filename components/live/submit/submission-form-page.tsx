@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -679,17 +680,34 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
 
             {/* Submit Buttons */}
             <div className="flex justify-end gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.push(`/${tenant}/live/dashboard`)}
-                disabled={form.state.isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={form.state.isSubmitting}>
-                {form.state.isSubmitting ? "Submitting..." : "Submit Project"}
-              </Button>
+              <form.Subscribe selector={(state) => state.isSubmitting}>
+                {(isSubmitting) => (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => router.push(`/${tenant}/live/dashboard`)}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      aria-disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        "Submit Project"
+                      )}
+                    </Button>
+                  </>
+                )}
+              </form.Subscribe>
             </div>
           </form>
         </CardContent>

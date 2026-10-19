@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import Footer from "@/components/forms/footer";
 import Header from "@/components/forms/header";
 import Fields from "./fields";
 import { isFormSlug, type slugs } from "@/lib/form-defs";
@@ -14,10 +13,10 @@ interface WrapperProps {
   userStatus?: "ACCEPTANCE" | "PENDING" | "REJECTION" | null;
 }
 
-// Server Component shell: logo + status branch render on the server.
 // `Fields` stays a client island — it self-resolves
-// its form def via `useFields()` (useParams + mutations). `Header`/`Footer`
-// additionally accept server-resolved props so they can SSR first.
+// its form def via `useFields()` (useParams + mutations) and renders both the
+// fields and the reactive submit footer (disabled + spinner while submitting).
+// `Header` additionally accepts server-resolved props so it can SSR first.
 const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
   const {
     config: { logo, email: tenantEmail },
@@ -45,7 +44,6 @@ const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
           <>
             <Header form={slug} tenant={tenant} />
             <Fields />
-            <Footer form={slug} tenant={tenant} />
           </>
         )}
       </Card>
