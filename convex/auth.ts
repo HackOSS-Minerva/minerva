@@ -31,10 +31,12 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
 };
 
 // Get the current authenticated user (or null if signed out).
+// Uses safeGetAuthUser so unauthenticated requests return null instead of
+// throwing ConvexError("Unauthenticated").
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
-    return authComponent.getAuthUser(ctx);
+    return authComponent.safeGetAuthUser(ctx);
   },
 });
 
