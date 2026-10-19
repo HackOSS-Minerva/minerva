@@ -7,8 +7,11 @@ import { useForm, type DeepKeys } from "@tanstack/react-form";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useMemo, useRef } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { triggerConfetti } from "@/hooks/use-confetti";
+import type { TenantSlug } from "@/hooks/get-tenant";
+import type { slugs } from "@/lib/form-defs";
 
 /** Seeds the form's identity fields from the session's `name` + `email`,
  * splitting the name into first token / rest so multi-word last names survive. */
@@ -34,6 +37,12 @@ const Fields = () => {
     onSubmit,
   } = useFields();
 
+  const router = useRouter();
+  const { form: slug, tenant } = useParams<{
+    form: slugs;
+    tenant: TenantSlug;
+  }>();
+
   const identity = useSessionIdentity();
 
   // Seed defaults with the signed-in user's identity so the name/email fields
@@ -53,16 +62,18 @@ const Fields = () => {
   const formInstance = useForm({
     defaultValues: initialValues,
     validators: {
-      onSubmit: schema,
+      // Async slot: the participant schema's async `school` refine returns a Promise, which the sync slot rejects.
+      onSubmitAsync: schema,
     },
     onSubmit: async ({ value }) => {
       toast.success(
         `Thank you for applying. We will send you an application update shortly!`,
       );
       triggerConfetti();
-      // The onSubmit validator above already narrowed `value` to this slug's
-      // zod schema; TanStack still types it from the string placeholders.
-      onSubmit(value as FormValues);
+      // Schema validator already narrowed `value`; the cast bridges TanStack's placeholder types.
+      await onSubmit(value as FormValues);
+      // Re-render the server component so the pending status screen replaces the form.
+      router.push(`/${tenant}/forms/${slug}`);
     },
   });
 

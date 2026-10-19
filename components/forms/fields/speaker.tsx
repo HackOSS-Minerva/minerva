@@ -1,10 +1,7 @@
 import * as z from "zod";
 
 import { affiliations } from "@/data/information";
-import {
-  MAX_IMAGE_FILE_LABEL,
-  MAX_IMAGE_FILE_SIZE,
-} from "@/lib/compress";
+import { MAX_IMAGE_FILE_LABEL, MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
 import {
   demographicFields,
   fileField,

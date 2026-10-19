@@ -1,10 +1,7 @@
 import type { CalendarResponse } from "@/types/calendar";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { AppError } from "@/lib/app-error";
-import {
-  buildScheduleUrl,
-  SCHEDULE_REVALIDATE_SECONDS,
-} from "@/lib/schedule";
+import { buildScheduleUrl, SCHEDULE_REVALIDATE_SECONDS } from "@/lib/schedule";
 
 /** Server-side Google Calendar fetch, so dashboards SSR the schedule instead
  * of waterfalling it client-side. Prefers a server-only key but falls back

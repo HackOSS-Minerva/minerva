@@ -182,6 +182,9 @@ export function ScheduleToolbar<TData extends RowData>({
 }: {
   table: Table<TData>;
 }) {
-  const allFilterOptions = React.useMemo(() => buildScheduleFilterOptions(), []);
+  const allFilterOptions = React.useMemo(
+    () => buildScheduleFilterOptions(),
+    [],
+  );
   return <FilterToolbar table={table} allFilterOptions={allFilterOptions} />;
 }

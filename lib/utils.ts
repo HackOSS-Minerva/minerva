@@ -56,4 +56,3 @@ export function getInitials(name: string): string {
       .join("") || GUEST_INITIALS_FALLBACK
   );
 }
-

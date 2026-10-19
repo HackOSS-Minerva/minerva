@@ -119,7 +119,9 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_NAME_LENGTH}
@@ -162,7 +164,9 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_NAME_LENGTH}
@@ -197,12 +201,14 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </FieldDescription>
                       <span
                         className={`text-xs shrink-0 ${
-                          field.state.value.length >= MAX_SUBMISSION_DESCRIPTION_LENGTH
+                          field.state.value.length >=
+                          MAX_SUBMISSION_DESCRIPTION_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {field.state.value.length}/{MAX_SUBMISSION_DESCRIPTION_LENGTH}
+                        {field.state.value.length}/
+                        {MAX_SUBMISSION_DESCRIPTION_LENGTH}
                       </span>
                     </div>
                     <Textarea
@@ -210,7 +216,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_DESCRIPTION_LENGTH))
+                        field.handleChange(
+                          e.target.value.slice(
+                            0,
+                            MAX_SUBMISSION_DESCRIPTION_LENGTH,
+                          ),
+                        )
                       }
                       onBlur={field.handleBlur}
                       placeholder="Describe your project..."
@@ -254,7 +265,9 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_URL_LENGTH}
@@ -290,7 +303,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Add at least one repository link (up to{" "}
-                          {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH} characters each).
+                          {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH}{" "}
+                          characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -321,7 +335,10 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH);
+                            newLinks[idx] = e.target.value.slice(
+                              0,
+                              MAX_SUBMISSION_URL_LENGTH,
+                            );
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -385,7 +402,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Include links to your Figma design files or prototypes
-                          (up to {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH} characters each).
+                          (up to {MAX_LINKS_PER_TYPE}, max{" "}
+                          {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -416,7 +434,10 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH);
+                            newLinks[idx] = e.target.value.slice(
+                              0,
+                              MAX_SUBMISSION_URL_LENGTH,
+                            );
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -480,7 +501,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Include links to your Canva presentations or designs
-                          (up to {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH} characters each).
+                          (up to {MAX_LINKS_PER_TYPE}, max{" "}
+                          {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -511,7 +533,10 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH);
+                            newLinks[idx] = e.target.value.slice(
+                              0,
+                              MAX_SUBMISSION_URL_LENGTH,
+                            );
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -584,7 +609,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </span>
                     </div>
                     <FieldDescription>
-                      Optional link to slides or demo video (max {MAX_SUBMISSION_URL_LENGTH}
+                      Optional link to slides or demo video (max{" "}
+                      {MAX_SUBMISSION_URL_LENGTH}
                       characters).
                     </FieldDescription>
                     <Input
@@ -592,7 +618,9 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_URL_LENGTH}

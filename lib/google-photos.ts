@@ -92,7 +92,9 @@ const getCredentials = (): GoogleCredentials => {
     clientId,
     clientSecret,
     refreshToken,
-    cacheKey: [clientId, clientSecret, refreshToken].join(CREDENTIAL_CACHE_SEPARATOR),
+    cacheKey: [clientId, clientSecret, refreshToken].join(
+      CREDENTIAL_CACHE_SEPARATOR,
+    ),
   };
 };
 

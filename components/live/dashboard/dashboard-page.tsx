@@ -32,6 +32,10 @@ export function DashboardPage({
   const { config } = getTenant(tenant);
   const live = config?.event ?? null;
 
+  // Check-in QR and project submission are participant-only perks: anyone who
+  // isn't accepted (pending, rejected, or no application) never sees the cards.
+  const isAccepted = participantStatus === "ACCEPTANCE";
+
   if (!live) {
     return (
       <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
@@ -60,16 +64,20 @@ export function DashboardPage({
       />
 
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
-      <Separator className="my-6" />
+      {isAccepted && (
+        <>
+          <Separator className="my-6" />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <CheckinSection user={checkinUser ?? null} />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <CheckinSection user={checkinUser ?? null} />
 
-        <SubmissionSection
-          tenant={tenant}
-          submissionDeadline={new Date(live.deadline).getTime()}
-        />
-      </div>
+            <SubmissionSection
+              tenant={tenant}
+              submissionDeadline={new Date(live.deadline).getTime()}
+            />
+          </div>
+        </>
+      )}
 
       <Separator className="my-6" />
 
