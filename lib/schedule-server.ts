@@ -1,6 +1,10 @@
 import type { CalendarResponse } from "@/types/calendar";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { AppError } from "@/lib/app-error";
+import {
+  buildScheduleUrl,
+  SCHEDULE_REVALIDATE_SECONDS,
+} from "@/lib/schedule";
 
 /** Server-side Google Calendar fetch, so dashboards SSR the schedule instead
  * of waterfalling it client-side. Prefers a server-only key but falls back
@@ -25,14 +29,11 @@ export async function fetchScheduleServer(
     });
   }
 
-  const response = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${config.calendarid}/events?key=${apiKey}&singleEvents=true&orderBy=startTime`,
-    {
-      method: "GET",
-      // Calendar changes slowly; revalidate server-side every 5 minutes.
-      next: { revalidate: 300 },
-    },
-  );
+  const response = await fetch(buildScheduleUrl(config.calendarid, apiKey), {
+    method: "GET",
+    // Calendar changes slowly; revalidate server-side every 5 minutes.
+    next: { revalidate: SCHEDULE_REVALIDATE_SECONDS },
+  });
 
   if (!response.ok) {
     throw new AppError("CALENDAR_UNAVAILABLE");

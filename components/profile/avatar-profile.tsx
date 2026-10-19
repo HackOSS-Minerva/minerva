@@ -13,6 +13,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { authClient } from "@/lib/auth-client";
+import {
+  PLACEHOLDER_DISPLAY_EMAIL,
+  PLACEHOLDER_DISPLAY_NAME,
+} from "@/lib/checkin";
+import { getInitials } from "@/lib/utils";
 
 export function AvatarProfile() {
   const { tenant } = useParams<{ tenant: TenantSlug }>();
@@ -20,16 +25,10 @@ export function AvatarProfile() {
   const { domain } = config;
   const { data: session } = authClient.useSession();
 
-  const name = session?.user?.name ?? "Guest User";
-  const email = session?.user?.email ?? "guest@example.com";
-  const initials =
-    name
-      .split(" ")
-      .map((part) => part[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() || "GU";
+  // Display-only while the session loads; check-in QRs never use these.
+  const name = session?.user?.name ?? PLACEHOLDER_DISPLAY_NAME;
+  const email = session?.user?.email ?? PLACEHOLDER_DISPLAY_EMAIL;
+  const initials = getInitials(name);
 
   return (
     <DropdownMenu>

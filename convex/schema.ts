@@ -14,7 +14,9 @@ import {
   shirts as Shirts,
 } from "../data/information";
 import { countries as Countries } from "../data/countries";
-import { schools as Schools } from "../data/schools";
+// JSON keeps the 2k-entry list out of the TS module graph; the cast restores
+// the non-empty tuple type `union()` needs. Runtime validation is unchanged.
+import Schools from "../data/schools.json";
 import { statuses as Statuses } from "../data/status";
 
 export const union = <const T extends readonly [string, ...string[]]>(
@@ -31,7 +33,9 @@ export const grades = union(Grades);
 export const majors = union(Majors);
 export const teams = union(Teams);
 export const countries = union(Countries);
-export const schools = union(Schools);
+export const schools = union(
+  Schools as unknown as readonly [string, ...string[]],
+);
 export const ages = union(Ages);
 export const dietrestrictions = union(DietRestrictions);
 export const availabilities = union(Availabilities);

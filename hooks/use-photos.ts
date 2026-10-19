@@ -2,15 +2,20 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { compress, MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
+import {
+  compress,
+  MAX_IMAGE_FILE_SIZE,
+  PHOTO_COMPRESS_DIMENSION,
+  PHOTO_COMPRESS_QUALITY,
+} from "@/lib/compress";
 import { AppError, getUserMessage, parseAppError } from "@/lib/app-error";
 import type { PhotoItem, PhotoPage } from "@/lib/google-photos";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 const PHOTO_COMPRESSION_OPTIONS = {
-  maxWidth: 1920,
-  maxHeight: 1920,
-  quality: 0.82,
+  maxWidth: PHOTO_COMPRESS_DIMENSION,
+  maxHeight: PHOTO_COMPRESS_DIMENSION,
+  quality: PHOTO_COMPRESS_QUALITY,
   mimeType: "image/jpeg",
   acceptedTypes: ["image/jpeg", "image/png", "image/webp"],
   maxFileSize: MAX_IMAGE_FILE_SIZE,

@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { triggerConfetti } from "@/hooks/use-confetti";
+import { feedbackFindOptions } from "@/data/information";
+import { toWordsTitleCase } from "@/lib/utils";
 import { toast } from "sonner";
 import { logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
@@ -118,24 +120,9 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
                   <SelectValue placeholder="Select an option..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {[
-                    "instagram",
-                    "discord",
-                    "website",
-                    "class announcement",
-                    "devpost",
-                    "tabling",
-                    "student organization",
-                    "email",
-                  ].map((option) => (
+                  {feedbackFindOptions.map((option) => (
                     <SelectItem key={option} value={option}>
-                      {option
-                        .split(" ")
-                        .map(
-                          (word) =>
-                            word.charAt(0).toUpperCase() + word.slice(1),
-                        )
-                        .join(" ")}
+                      {toWordsTitleCase(option)}
                     </SelectItem>
                   ))}
                 </SelectContent>

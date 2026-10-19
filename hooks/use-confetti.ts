@@ -8,8 +8,11 @@ declare global {
   }
 }
 
-const TOKEN_KEY = "__confetti_trigger__";
+export const CONFETTI_EVENT_KEY = "__confetti_trigger__";
+/** How long the burst stays mounted. */
+export const CONFETTI_DURATION_MS = 3000;
+export const CONFETTI_PIECE_COUNT = 150;
 
 export const triggerConfetti: ConfettiTrigger = () => {
-  window.dispatchEvent(new Event(TOKEN_KEY));
+  window.dispatchEvent(new Event(CONFETTI_EVENT_KEY));
 };

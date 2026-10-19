@@ -6,12 +6,15 @@ import { Separator } from "@/components/ui/separator";
 import { ApplicationStatusBadge } from "@/components/portal/dashboard/application-status-badge";
 import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
 import type { CalendarResponse } from "@/types/calendar";
+import type { CheckinQrIdentity } from "@/lib/checkin";
 
 interface JudgeDashboardPageProps {
   tenant: TenantSlug;
   judgeStatus: ApplicationStatus;
   /** Display name from the server session. */
   userName?: string;
+  /** Real session identity for the check-in QR; null when signed out. */
+  checkinUser?: CheckinQrIdentity | null;
   /** SSR'd calendar payload; forwarded as the schedule island's initialData. */
   initialSchedule?: CalendarResponse;
 }
@@ -22,6 +25,7 @@ export function JudgeDashboardPage({
   tenant,
   judgeStatus,
   userName,
+  checkinUser,
   initialSchedule,
 }: JudgeDashboardPageProps) {
   const { config } = getTenant(tenant);
@@ -57,7 +61,7 @@ export function JudgeDashboardPage({
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
       <Separator className="my-6" />
 
-      <CheckinSection />
+      <CheckinSection user={checkinUser ?? null} />
       <Separator className="my-6" />
 
       <ScheduleSection initialData={initialSchedule} />

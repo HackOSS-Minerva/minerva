@@ -7,12 +7,15 @@ import { Separator } from "@/components/ui/separator";
 import { ApplicationStatusBadge } from "@/components/portal/dashboard/application-status-badge";
 import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
 import type { CalendarResponse } from "@/types/calendar";
+import type { CheckinQrIdentity } from "@/lib/checkin";
 
 interface DashboardPageProps {
   tenant: TenantSlug;
   participantStatus?: ApplicationStatus;
   /** Display name from the server session. */
   userName?: string;
+  /** Real session identity for the check-in QR; null when signed out. */
+  checkinUser?: CheckinQrIdentity | null;
   /** SSR'd calendar payload; forwarded as the schedule island's initialData. */
   initialSchedule?: CalendarResponse;
 }
@@ -23,6 +26,7 @@ export function DashboardPage({
   tenant,
   participantStatus,
   userName,
+  checkinUser,
   initialSchedule,
 }: DashboardPageProps) {
   const { config } = getTenant(tenant);
@@ -59,7 +63,7 @@ export function DashboardPage({
       <Separator className="my-6" />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <CheckinSection />
+        <CheckinSection user={checkinUser ?? null} />
 
         <SubmissionSection
           tenant={tenant}

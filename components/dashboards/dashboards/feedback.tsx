@@ -20,7 +20,6 @@ import { IconDotsVertical, IconX } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Star,
   Calendar,
@@ -29,6 +28,9 @@ import {
   HelpCircle,
 } from "lucide-react";
 import DetailRow from "../row";
+import { useDrawerDirection } from "../profile-drawer";
+import { feedbackMaxRating } from "@/data/information";
+import { toWordsTitleCase } from "@/lib/utils";
 
 type FeedbackRecord = Doc<"feedback">;
 
@@ -58,16 +60,13 @@ function formatTimestamp(ts: number): string {
 }
 
 function formatLabel(str: string): string {
-  return str
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  return toWordsTitleCase(str);
 }
 
 function RatingBadge({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-1">
-      {Array.from({ length: 10 }, (_, i) => (
+      {Array.from({ length: feedbackMaxRating }, (_, i) => (
         <Star
           key={i}
           className={`h-3 w-3 ${
@@ -77,16 +76,18 @@ function RatingBadge({ rating }: { rating: number }) {
           }`}
         />
       ))}
-      <span className="ml-1 text-xs text-muted-foreground">({rating}/10)</span>
+      <span className="ml-1 text-xs text-muted-foreground">
+        ({rating}/{feedbackMaxRating})
+      </span>
     </div>
   );
 }
 
 function TableCellViewer({ item }: { item: FeedbackRecord }) {
-  const isMobile = useIsMobile();
+  const direction = useDrawerDirection();
 
   return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
+    <Drawer direction={direction}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
           {formatLabel(item.find)}

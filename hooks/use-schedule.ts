@@ -5,6 +5,11 @@ import type { CalendarResponse } from "@/types/calendar";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError } from "@/lib/app-error";
+import {
+  buildScheduleUrl,
+  SCHEDULE_RETRY_COUNT,
+  SCHEDULE_STALE_MS,
+} from "@/lib/schedule";
 
 export const useSchedule = (initialData?: CalendarResponse) => {
   const { tenant } = useParams<{ tenant: TenantSlug }>();
@@ -16,7 +21,10 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     }
 
     const response = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${config.calendarid}/events?key=${process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY}&singleEvents=true&orderBy=startTime`,
+      buildScheduleUrl(
+        config.calendarid,
+        process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY ?? "",
+      ),
       { method: "GET" },
     );
 
@@ -34,7 +42,7 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     // SSR'd payload from the server page: first paint without a waterfall,
     // then React Query revalidates in the background.
     initialData,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: 2,
+    staleTime: SCHEDULE_STALE_MS, // 5 minutes
+    retry: SCHEDULE_RETRY_COUNT,
   });
 };

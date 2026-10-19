@@ -6,6 +6,15 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_PHOTOS_URL = "https://photoslibrary.googleapis.com/v1";
 const TOKEN_EXPIRY_BUFFER_MS = 60_000;
+/** Media-item page size for `mediaItems:search` (API max is 100). */
+const PHOTO_PAGE_SIZE = 100;
+/** Google Photos `baseUrl` resize suffixes: square thumb vs large viewer. */
+const PHOTO_THUMBNAIL_SUFFIX = "=w640-h640-c";
+const PHOTO_VIEWER_SUFFIX = "=w1920-h1920";
+/** Reads the first 12 bytes — enough for both the JPEG and WebP signatures. */
+const FILE_SIGNATURE_BYTES = 12;
+/** NUL separator keeps the composite cache key collision-free. */
+const CREDENTIAL_CACHE_SEPARATOR = "\u0000";
 
 export interface PhotoEvent {
   tenant: TenantSlug;
@@ -45,31 +54,28 @@ interface GoogleMediaItem {
 
 let accessTokenCache: AccessTokenCache | null = null;
 
-/** @deprecated Use `new AppError(code)` from `@/lib/app-error` instead. */
-const photoError = (code: ErrorCode): AppError => new AppError(code);
-
 const readJson = async <T>(response: Response, code: ErrorCode): Promise<T> => {
   try {
     return (await response.json()) as T;
   } catch {
-    throw photoError(code);
+    throw new AppError(code);
   }
 };
 
 const configuredOrigin = (): string => {
   const value = process.env.PHOTO_APP_ORIGIN;
-  if (!value) throw photoError("PHOTO_CONFIGURATION_INVALID");
+  if (!value) throw new AppError("PHOTO_CONFIGURATION_INVALID");
 
   try {
     return new URL(value).origin;
   } catch {
-    throw photoError("PHOTO_CONFIGURATION_INVALID");
+    throw new AppError("PHOTO_CONFIGURATION_INVALID");
   }
 };
 
 export const assertPhotoOrigin = (request: Request): void => {
   if (request.headers.get("origin") !== configuredOrigin()) {
-    throw photoError("PHOTO_ORIGIN_FORBIDDEN");
+    throw new AppError("PHOTO_ORIGIN_FORBIDDEN");
   }
 };
 
@@ -79,14 +85,14 @@ const getCredentials = (): GoogleCredentials => {
   const refreshToken = process.env.GOOGLE_PHOTOS_REFRESH_TOKEN;
 
   if (!clientId || !clientSecret || !refreshToken) {
-    throw photoError("PHOTO_CONFIGURATION_INVALID");
+    throw new AppError("PHOTO_CONFIGURATION_INVALID");
   }
 
   return {
     clientId,
     clientSecret,
     refreshToken,
-    cacheKey: `${clientId}\u0000${clientSecret}\u0000${refreshToken}`,
+    cacheKey: [clientId, clientSecret, refreshToken].join(CREDENTIAL_CACHE_SEPARATOR),
   };
 };
 
@@ -115,10 +121,10 @@ const getAccessToken = async (forceRefresh = false): Promise<string> => {
       }),
     });
   } catch {
-    throw photoError("PHOTO_GOOGLE_UNAVAILABLE");
+    throw new AppError("PHOTO_GOOGLE_UNAVAILABLE");
   }
 
-  if (!response.ok) throw photoError("PHOTO_GOOGLE_UNAVAILABLE");
+  if (!response.ok) throw new AppError("PHOTO_GOOGLE_UNAVAILABLE");
 
   const body = await readJson<{
     access_token?: unknown;
@@ -129,7 +135,7 @@ const getAccessToken = async (forceRefresh = false): Promise<string> => {
     typeof body.access_token !== "string" ||
     typeof body.expires_in !== "number"
   ) {
-    throw photoError("PHOTO_GOOGLE_UNAVAILABLE");
+    throw new AppError("PHOTO_GOOGLE_UNAVAILABLE");
   }
 
   accessTokenCache = {
@@ -157,7 +163,7 @@ const googleRequest = async (
         },
       });
     } catch {
-      throw photoError("PHOTO_GOOGLE_UNAVAILABLE");
+      throw new AppError("PHOTO_GOOGLE_UNAVAILABLE");
     }
   };
 
@@ -174,7 +180,7 @@ const requireOk = async (
   response: Response,
   code: ErrorCode,
 ): Promise<Response> => {
-  if (!response.ok) throw photoError(code);
+  if (!response.ok) throw new AppError(code);
   return response;
 };
 
@@ -183,7 +189,7 @@ const getConfiguredAlbumId = (event: PhotoEvent): string => {
     event.tenant === "designverse"
       ? process.env.GOOGLE_PHOTOS_ALBUM_ID?.trim()
       : undefined;
-  if (!albumId) throw photoError("PHOTO_CONFIGURATION_INVALID");
+  if (!albumId) throw new AppError("PHOTO_CONFIGURATION_INVALID");
   return albumId;
 };
 
@@ -199,13 +205,13 @@ const toPhotoItem = (item: GoogleMediaItem): PhotoItem | null => {
   return {
     id: item.id,
     filename: item.filename,
-    thumbnailUrl: `${item.baseUrl}=w640-h640-c`,
-    viewerUrl: `${item.baseUrl}=w1920-h1920`,
+    thumbnailUrl: `${item.baseUrl}${PHOTO_THUMBNAIL_SUFFIX}`,
+    viewerUrl: `${item.baseUrl}${PHOTO_VIEWER_SUFFIX}`,
   };
 };
 
 export const getConfiguredPhotoEvent = (tenant: string): PhotoEvent => {
-  if (tenant !== "designverse") throw photoError("PHOTO_EVENT_NOT_FOUND");
+  if (tenant !== "designverse") throw new AppError("PHOTO_EVENT_NOT_FOUND");
 
   return {
     tenant,
@@ -219,10 +225,12 @@ const validateServerPhoto = async (file: File): Promise<void> => {
     file.size > MAX_IMAGE_FILE_SIZE ||
     (file.type !== "image/jpeg" && file.type !== "image/webp")
   ) {
-    throw photoError("PHOTO_FILE_INVALID");
+    throw new AppError("PHOTO_FILE_INVALID");
   }
 
-  const signature = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  const signature = new Uint8Array(
+    await file.slice(0, FILE_SIGNATURE_BYTES).arrayBuffer(),
+  );
   const isJpeg =
     signature.length >= 3 &&
     signature[0] === 0xff &&
@@ -236,7 +244,7 @@ const validateServerPhoto = async (file: File): Promise<void> => {
   const signatureMatchesType =
     (file.type === "image/jpeg" && isJpeg) ||
     (file.type === "image/webp" && isWebp);
-  if (!signatureMatchesType) throw photoError("PHOTO_FILE_INVALID");
+  if (!signatureMatchesType) throw new AppError("PHOTO_FILE_INVALID");
 };
 
 export const listEventPhotos = async (
@@ -250,14 +258,14 @@ export const listEventPhotos = async (
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       albumId,
-      pageSize: 100,
+      pageSize: PHOTO_PAGE_SIZE,
       ...(pageToken ? { pageToken } : {}),
     }),
   });
   await requireOk(response, "PHOTO_LIST_FAILED");
   const body = await readJson<unknown>(response, "PHOTO_LIST_FAILED");
   if (!body || typeof body !== "object") {
-    throw photoError("PHOTO_LIST_FAILED");
+    throw new AppError("PHOTO_LIST_FAILED");
   }
 
   const data = body as {
@@ -271,7 +279,7 @@ export const listEventPhotos = async (
         data.mediaItems.some((item) => !item || typeof item !== "object"))) ||
     (data.nextPageToken !== undefined && typeof data.nextPageToken !== "string")
   ) {
-    throw photoError("PHOTO_LIST_FAILED");
+    throw new AppError("PHOTO_LIST_FAILED");
   }
 
   return {
@@ -315,7 +323,7 @@ export const uploadEventPhoto = async (
   });
   await requireOk(uploadResponse, "PHOTO_UPLOAD_FAILED");
   const uploadToken = await uploadResponse.text();
-  if (!uploadToken) throw photoError("PHOTO_UPLOAD_FAILED");
+  if (!uploadToken) throw new AppError("PHOTO_UPLOAD_FAILED");
 
   const createResponse = await googleRequest("/mediaItems:batchCreate", {
     method: "POST",
@@ -340,6 +348,6 @@ export const uploadEventPhoto = async (
   const photo = body.newMediaItemResults?.[0]?.mediaItem;
   const result = photo ? toPhotoItem(photo) : null;
 
-  if (!result) throw photoError("PHOTO_UPLOAD_FAILED");
+  if (!result) throw new AppError("PHOTO_UPLOAD_FAILED");
   return result;
 };

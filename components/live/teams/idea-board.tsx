@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useIdeas } from "@/hooks/use-tenant-query";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,7 +27,7 @@ interface IdeaBoardProps {
 }
 
 export function IdeaBoard({ tenant }: IdeaBoardProps) {
-  const ideas = useIdeas(tenant);
+  const ideas = useQuery(api.ideas.list, { tenant });
   const addIdea = useMutation(api.ideas.add);
   const removeIdea = useMutation(api.ideas.remove);
 

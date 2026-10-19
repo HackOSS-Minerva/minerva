@@ -2,6 +2,11 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import Confetti from "react-confetti";
+import {
+  CONFETTI_DURATION_MS,
+  CONFETTI_EVENT_KEY,
+  CONFETTI_PIECE_COUNT,
+} from "@/hooks/use-confetti";
 
 const ConfettiOverlay = () => {
   const [width, setWidth] = useState<number>(() =>
@@ -25,12 +30,12 @@ const ConfettiOverlay = () => {
   useEffect(() => {
     const trigger = () => {
       setActive(true);
-      setTimeout(() => setActive(false), 3000);
+      setTimeout(() => setActive(false), CONFETTI_DURATION_MS);
     };
 
-    const token = "__confetti_trigger__";
-    window.addEventListener(token, trigger as EventListener);
-    return () => window.removeEventListener(token, trigger as EventListener);
+    window.addEventListener(CONFETTI_EVENT_KEY, trigger as EventListener);
+    return () =>
+      window.removeEventListener(CONFETTI_EVENT_KEY, trigger as EventListener);
   }, []);
 
   if (!active) return null;
@@ -40,7 +45,7 @@ const ConfettiOverlay = () => {
       width={width}
       height={height}
       recycle={false}
-      numberOfPieces={150}
+      numberOfPieces={CONFETTI_PIECE_COUNT}
     />
   );
 };

@@ -3,49 +3,23 @@
 import * as React from "react";
 import type { RowData, Table } from "@tanstack/react-table";
 import {
-  Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxItem,
-  ComboboxGroup,
-  ComboboxLabel,
-  ComboboxList,
-  ComboboxValue,
-  useComboboxAnchor,
-} from "@/components/ui/combobox";
+  FilterToolbar,
+  type FilterOption,
+} from "@/components/schedule/toolbar";
 import { statuses } from "@/data/status";
 import {
-  shirts,
   affiliations,
-  teams,
-  genders,
-  grades,
   ages,
   dietrestrictions,
+  feedbackFindOptions,
+  feedbackMaxRating,
+  genders,
+  grades,
+  roles,
+  shirts,
+  teams,
 } from "@/data/information";
-import { formatShirtSize } from "@/lib/utils";
-
-const roles = [
-  "participant",
-  "judge",
-  "speaker",
-  "superadmin",
-  "volunteer",
-] as const;
-
-interface FilterOption {
-  value: string; // e.g. "status:ACCEPTANCE"
-  label: string;
-  group: string;
-  columnId: string;
-}
-
-function toTitleCase(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
+import { formatShirtSize, toTitleCase } from "@/lib/utils";
 
 function buildFilterOptions(slug: string): FilterOption[] {
   const options: FilterOption[] = [];
@@ -123,17 +97,7 @@ function buildFilterOptions(slug: string): FilterOption[] {
   }
 
   if (slug === "feedback") {
-    const findOptions = [
-      "instagram",
-      "discord",
-      "website",
-      "class announcement",
-      "devpost",
-      "tabling",
-      "student organization",
-      "email",
-    ];
-    findOptions.forEach((f) =>
+    feedbackFindOptions.forEach((f) =>
       options.push({
         value: `find:${f}`,
         label: toTitleCase(f),
@@ -142,17 +106,17 @@ function buildFilterOptions(slug: string): FilterOption[] {
       }),
     );
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= feedbackMaxRating; i++) {
       options.push({
         value: `rating:${i}`,
-        label: `${i} ${i === 1 ? "(Worst)" : i === 10 ? "(Best)" : ""}`,
+        label: `${i} ${i === 1 ? "(Worst)" : i === feedbackMaxRating ? "(Best)" : ""}`,
         group: "Rating",
         columnId: "rating",
       });
     }
   }
 
-  if (slug === "participants" || slug === "superadmins") {
+  if (slug === "participants") {
     grades.forEach((g) =>
       options.push({
         value: `grade:${g}`,
@@ -161,6 +125,7 @@ function buildFilterOptions(slug: string): FilterOption[] {
         columnId: "grade",
       }),
     );
+
     ages.forEach((a) =>
       options.push({
         value: `age:${a}`,
@@ -174,14 +139,6 @@ function buildFilterOptions(slug: string): FilterOption[] {
   return options;
 }
 
-function getColumnId(value: string): string {
-  return value.split(":")[0];
-}
-
-function getColumnValue(value: string): string {
-  return value.split(":").slice(1).join(":");
-}
-
 export function TableToolbar<TData extends RowData>({
   table,
   slug,
@@ -189,111 +146,9 @@ export function TableToolbar<TData extends RowData>({
   table: Table<TData>;
   slug: string;
 }) {
-  const anchor = useComboboxAnchor();
   const allFilterOptions = React.useMemo(
     () => buildFilterOptions(slug),
     [slug],
   );
-
-  // Only include filter options whose column actually exists in the table
-  const filterOptions = React.useMemo(() => {
-    const columnIds = new Set(table.getAllColumns().map((col) => col.id));
-    return allFilterOptions.filter((opt) => columnIds.has(opt.columnId));
-  }, [allFilterOptions, table]);
-
-  const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
-  const [inputValue, setInputValue] = React.useState("");
-
-  const handleValueChange = (values: string[]) => {
-    setSelectedValues(values);
-
-    // Build column filters from selected values
-    const filterMap = new Map<string, string[]>();
-    for (const composite of values) {
-      const colId = getColumnId(composite);
-      const colVal = getColumnValue(composite);
-      const existing = filterMap.get(colId) ?? [];
-      existing.push(colVal);
-      filterMap.set(colId, existing);
-    }
-
-    const columnFilters = Array.from(filterMap.entries()).map(
-      ([id, filterValues]) => ({
-        id,
-        value: filterValues,
-      }),
-    );
-
-    table.setColumnFilters(columnFilters);
-  };
-
-  // Filter options based on input value
-  const filteredOptions = React.useMemo(() => {
-    if (!inputValue) return filterOptions;
-    const q = inputValue.toLowerCase();
-    return filterOptions.filter(
-      (opt) =>
-        opt.label.toLowerCase().includes(q) ||
-        opt.group.toLowerCase().includes(q),
-    );
-  }, [inputValue, filterOptions]);
-
-  // Group filtered options for rendering
-  const groupedFiltered = React.useMemo(() => {
-    const map = new Map<string, FilterOption[]>();
-    for (const opt of filteredOptions) {
-      const group = map.get(opt.group) ?? [];
-      group.push(opt);
-      map.set(opt.group, group);
-    }
-    return Array.from(map.entries());
-  }, [filteredOptions]);
-
-  return (
-    <div className="flex items-center gap-2 w-full">
-      <Combobox
-        multiple
-        autoHighlight
-        value={selectedValues}
-        onValueChange={handleValueChange}
-        onInputValueChange={setInputValue}
-        filteredItems={filteredOptions}
-      >
-        <ComboboxChips ref={anchor} className="w-full min-w-0">
-          <ComboboxValue>
-            {(values: string[]) => (
-              <>
-                {values.map((value: string) => {
-                  const option = filterOptions.find((o) => o.value === value);
-                  const label = option?.label ?? value;
-                  const group = option?.group ?? "";
-                  return (
-                    <ComboboxChip key={value}>
-                      {group ? `${group}: ${label}` : label}
-                    </ComboboxChip>
-                  );
-                })}
-              </>
-            )}
-          </ComboboxValue>
-          <ComboboxChipsInput placeholder="Filter by..." />
-        </ComboboxChips>
-        <ComboboxContent anchor={anchor}>
-          <ComboboxEmpty>No items found.</ComboboxEmpty>
-          <ComboboxList>
-            {groupedFiltered.map(([groupLabel, options]) => (
-              <ComboboxGroup key={groupLabel}>
-                <ComboboxLabel>{groupLabel}</ComboboxLabel>
-                {options.map((opt) => (
-                  <ComboboxItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </ComboboxItem>
-                ))}
-              </ComboboxGroup>
-            ))}
-          </ComboboxList>
-        </ComboboxContent>
-      </Combobox>
-    </div>
-  );
+  return <FilterToolbar table={table} allFilterOptions={allFilterOptions} />;
 }

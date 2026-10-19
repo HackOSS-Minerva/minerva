@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
   Drawer,
@@ -11,8 +10,6 @@ import {
 import { IconX } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { schema as superadminSchema } from "@/components/forms/fields/superadmin";
 import { StatusIcon } from "../status-icon";
 import {
@@ -26,6 +23,8 @@ import {
   Calendar,
 } from "lucide-react";
 import DetailRow from "../row";
+import { selectColumn, useDrawerDirection } from "../profile-drawer";
+import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { formatShirtSize } from "@/lib/utils";
 
 export const metadata = {
@@ -53,17 +52,15 @@ export const csvFields = [
 ];
 
 function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
-  const isMobile = useIsMobile();
-  const [copied, setCopied] = useState(false);
+  const { copied, copy: copyText } = useCopyWithTimeout();
+  const direction = useDrawerDirection();
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(item.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    copyText(item.email);
   };
 
   return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
+    <Drawer direction={direction}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
           {item.firstname + " " + item.lastname}
@@ -158,32 +155,7 @@ function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
 }
 
 export const columns: ColumnDef<Doc<"superadmins">>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  selectColumn(),
   {
     accessorKey: "firstname",
     header: "Name",

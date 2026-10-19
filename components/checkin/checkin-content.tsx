@@ -22,19 +22,16 @@ import { captureAnalyticsEvent } from "@/lib/posthog";
 import { getUserMessage } from "@/lib/app-error";
 import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
 import { groupEventsByDay } from "@/lib/schedule";
+import { parseCheckinQr, type CheckinQrPayload } from "@/lib/checkin";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
-interface DecodedQR {
-  id: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-}
+/** How long the success toast + QR preview stay on screen after a scan. */
+const SCAN_RESULT_RESET_MS = 3000;
 
 const CheckinContent = () => {
   const params = useParams<{ tenant: TenantSlug }>();
   const [selectedEventId, setSelectedEventId] = useState<string>("");
-  const [lastScan, setLastScan] = useState<DecodedQR | null>(null);
+  const [lastScan, setLastScan] = useState<CheckinQrPayload | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
   const [, setIsCheckingIn] = useState(false);
 
@@ -56,10 +53,21 @@ const CheckinContent = () => {
     async (result: { getText: () => string }) => {
       try {
         const raw = result.getText();
-        const parsed: DecodedQR = JSON.parse(raw);
+        const decoded = parseCheckinQr(raw);
 
-        if (!parsed.id || !parsed.firstname || !parsed.lastname) {
-          toast.error("Invalid QR code format");
+        if (!decoded.ok) {
+          if (decoded.reason === "legacy-placeholder") {
+            // Old builds shipped a hardcoded guest QR; reject it explicitly
+            // instead of writing a junk shared `visitor` check-in.
+            toast.error("Placeholder QR code", {
+              description:
+                "Ask the attendee to reopen their live check-in page for a valid code.",
+            });
+            setScanError("Placeholder QR code");
+          } else {
+            toast.error("Invalid QR code format");
+            setScanError("Invalid QR code format");
+          }
           return;
         }
 
@@ -70,42 +78,47 @@ const CheckinContent = () => {
           return;
         }
 
-        setLastScan(parsed);
+        const scan = decoded.payload;
+        const scanName = [scan.firstname, scan.lastname]
+          .filter(Boolean)
+          .join(" ");
+
+        setLastScan(scan);
         setScanError(null);
         setIsCheckingIn(true);
 
         try {
           const checkin = await doCheckin({
-            userid: parsed.id,
+            userid: scan.id,
             eventid: selectedEventId,
-            firstname: parsed.firstname,
-            lastname: parsed.lastname,
-            email: parsed.email,
+            firstname: scan.firstname,
+            lastname: scan.lastname,
+            email: scan.email,
             tenant,
           });
 
           captureAnalyticsEvent("checkin_created", {
             tenant,
             entity_id: String(checkin.id),
-            user_id: String(parsed.id),
+            user_id: scan.id,
             event_id: selectedEventId,
           });
 
-          toast.success(`Checked in: ${parsed.firstname} ${parsed.lastname}`, {
-            description: parsed.email,
+          toast.success(`Checked in: ${scanName}`, {
+            description: scan.email,
             icon: <UserCheck className="h-4 w-4" />,
           });
 
-          // Auto-reset after 3 seconds (only on success)
+          // Auto-reset after the scan window (only on success)
           setTimeout(() => {
             setLastScan(null);
-          }, 3000);
+          }, SCAN_RESULT_RESET_MS);
         } catch (err) {
           const code = resolveAppErrorCode(err);
           const message = getUserMessage(code);
           if (code === "VALIDATION_FAILED") {
             toast("Note: User is already checked in", {
-              description: `${parsed.firstname} ${parsed.lastname}`,
+              description: scanName,
               icon: <UserCheck className="h-4 w-4" />,
             });
           } else {
