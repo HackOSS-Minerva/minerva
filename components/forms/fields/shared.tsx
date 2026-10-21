@@ -12,6 +12,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { LazySelectFieldBody } from "./lazy-select";
 import { resources, terms } from "@/data/terms";
 import { genders, shirts, dietrestrictions } from "@/data/information";
 import { statuses } from "@/data/status";
@@ -204,6 +205,29 @@ export function selectField({
         </Field>
       );
     },
+  };
+}
+
+/** Same as {@link selectField} but loads its options on mount instead of
+ * shipping them in the bundle. */
+export function lazySelectField({
+  name,
+  label,
+  loadOptions,
+}: {
+  name: string;
+  label: string;
+  loadOptions: () => Promise<readonly string[]>;
+}): FieldDef {
+  return {
+    name,
+    children: (field: AnyFieldApi) => (
+      <LazySelectFieldBody
+        field={field}
+        label={label}
+        loadOptions={loadOptions}
+      />
+    ),
   };
 }
 

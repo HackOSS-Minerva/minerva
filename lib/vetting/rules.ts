@@ -13,6 +13,14 @@ export const MAX_TEAM_SIZE = 4;
 export const MAX_LINKS_PER_TYPE = 3;
 export const MAX_VETTING_BATCH_SIZE = 10;
 export const GIT_COMMIT_GRACE_WINDOW_MINUTES = 15;
+/** Grace window in ms (derived — keep minutes as the source of truth). */
+export const GIT_COMMIT_GRACE_WINDOW_MS =
+  GIT_COMMIT_GRACE_WINDOW_MINUTES * 60_000;
+/** Max length for URL-ish submission fields (devpost, links, presentation). */
+export const MAX_SUBMISSION_URL_LENGTH = 100;
+/** Max length for short submission names (team + project). */
+export const MAX_SUBMISSION_NAME_LENGTH = 50;
+export const MAX_SUBMISSION_DESCRIPTION_LENGTH = 300;
 export const TEAM_SIZE_ERROR =
   "Teams can include at most 4 people including the submitter.";
 

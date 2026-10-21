@@ -16,19 +16,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IconSearch, IconExternalLink, IconX } from "@tabler/icons-react";
 
 const ALL = "All";
+const MAX_VISIBLE_TAGS = 3;
 
 // Up to two initials for the logo fallback tile; single-word names use the first
 // two characters ("Cline" -> "CL") so the tile is never a lone letter.
-function initialsOf(name: string) {
-  const words = name.split(/\s+/).filter((word) => /^[a-z0-9]/i.test(word[0]));
-  if (words.length === 1) {
-    return words[0].slice(0, 2).toUpperCase();
-  }
-  return words
-    .slice(0, 2)
-    .map((word) => word[0].toUpperCase())
-    .join("");
-}
+import { getInitials as initialsOf } from "@/lib/utils";
 
 function matchesSearch(tool: DevTool, query: string) {
   const haystack = [tool.name, tool.description, tool.category, ...tool.tags]
@@ -42,7 +34,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
   const logo = tool.logo ?? `/logos/${tool.id}.svg`;
 
   return (
-    <div className="bg-muted flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border p-1.5">
+    <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5">
       {errored ? (
         <span
           aria-hidden
@@ -187,7 +179,7 @@ function DevToolCard({ tool }: { tool: DevTool }) {
       <CardContent className="flex flex-1 flex-col gap-4 px-5">
         <p className="text-sm">{tool.description}</p>
         <div className="mt-auto flex flex-wrap items-center gap-1.5">
-          {tool.tags.slice(0, 3).map((tag) => (
+          {tool.tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
             <Badge key={tag} variant="secondary" className="text-[10px]">
               {tag}
             </Badge>

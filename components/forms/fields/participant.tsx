@@ -2,12 +2,12 @@ import * as z from "zod";
 
 import { ages, grades, majors } from "@/data/information";
 import { countries } from "@/data/countries";
-import { schools } from "@/data/schools";
 import {
   consentField,
   demographicFields,
   fileField,
   identityFields,
+  lazySelectField,
   selectField,
   textField,
   termsField,
@@ -24,6 +24,13 @@ import {
   telephoneSchema,
   termsSchema,
 } from "./shared";
+
+// The ~2k-entry school list ships as a separate chunk, fetched on mount by the
+// select and again (cached) by the async zod refine below.
+const loadSchools = async (): Promise<readonly string[]> => {
+  const { default: schools } = await import("@/data/schools.json");
+  return schools;
+};
 
 export const metadata = {
   id: "register-form",
@@ -48,7 +55,12 @@ export const schema = z.object({
 
   country: z.enum(countries, "Please select a valid country."),
 
-  school: z.enum(schools, "Please select a valid school."),
+  school: z
+    .string()
+    .refine(
+      async (value) => (await loadSchools()).includes(value),
+      "Please select a valid school.",
+    ),
 
   grade: z.enum(grades, "Please select a valid grade."),
 
@@ -78,7 +90,11 @@ export const fields: FieldDef[] = [
   selectField({ name: "major", label: "Major", options: majors }),
   selectField({ name: "age", label: "Age", options: ages }),
   selectField({ name: "country", label: "Country", options: countries }),
-  selectField({ name: "school", label: "School", options: schools }),
+  lazySelectField({
+    name: "school",
+    label: "School",
+    loadOptions: loadSchools,
+  }),
   selectField({ name: "grade", label: "Grade", options: grades }),
   ...demographicFields(),
   fileField({ name: "resume", label: "Resume (Optional)", accept: ".pdf" }),

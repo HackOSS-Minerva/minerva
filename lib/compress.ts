@@ -2,6 +2,14 @@ import Compressor from "compressorjs";
 import { AppError } from "@/lib/app-error";
 
 export const MAX_IMAGE_FILE_SIZE = 800_000;
+/** Human label kept next to the byte limit so copy never drifts. */
+export const MAX_IMAGE_FILE_LABEL = "800KB";
+/** Default downscale for form uploads (resumes/pictures via `uploadFile`). */
+export const DEFAULT_COMPRESS_DIMENSION = 800;
+export const DEFAULT_COMPRESS_QUALITY = 0.8;
+/** Gallery uploads keep more detail (see `PHOTO_COMPRESSION_OPTIONS`). */
+export const PHOTO_COMPRESS_DIMENSION = 1920;
+export const PHOTO_COMPRESS_QUALITY = 0.82;
 
 export interface CompressOptions {
   maxWidth?: number;
@@ -20,9 +28,9 @@ const jpegFilename = (filename: string) => {
 export const compress = async (
   file: File,
   {
-    maxWidth = 800,
-    maxHeight = 800,
-    quality = 0.8,
+    maxWidth = DEFAULT_COMPRESS_DIMENSION,
+    maxHeight = DEFAULT_COMPRESS_DIMENSION,
+    quality = DEFAULT_COMPRESS_QUALITY,
     mimeType,
     acceptedTypes,
     maxFileSize,

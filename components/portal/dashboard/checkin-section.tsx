@@ -1,19 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IconCheck } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
-import { CheckinQR } from "@/components/portal/dashboard/checkin-qr";
+import { QRCodeSVG } from "qrcode.react";
+import { buildCheckinQrPayload, type CheckinQrIdentity } from "@/lib/checkin";
 
-// Hardcoded guest QR payload matching the /checkin page
-const guestQR = JSON.stringify({
-  id: "visitor",
-  firstname: "Guest",
-  lastname: "User",
-  email: "guest@example.com",
-});
+interface CheckinSectionProps {
+  /**
+   * The signed-in user's real identity, fetched server-side from the session.
+   * `null` when signed out — the card then shows a sign-in prompt instead of
+   * a placeholder QR, so every code shown here scans to a real attendee.
+   */
+  user: CheckinQrIdentity | null;
+}
 
-// Server Component: static card + copy. Only the QR svg is a client island.
-export function CheckinSection() {
+// Server Component: static card + copy; the QR is built from the server
+// session props so no hardcoded guest identity can ever leak into a code.
+export function CheckinSection({ user }: CheckinSectionProps) {
   const hasCheckedIn = false; // TODO: wire up real check-in status
+  const qrValue = user ? buildCheckinQrPayload(user) : null;
 
   return (
     <Card>
@@ -35,11 +39,17 @@ export function CheckinSection() {
           attendance.
         </p>
 
-        <div className="flex justify-center">
-          <div className="rounded-lg bg-white p-4 shadow-sm">
-            <CheckinQR value={guestQR} />
+        {qrValue ? (
+          <div className="flex justify-center">
+            <div className="rounded-lg bg-white p-4 shadow-sm">
+              <QRCodeSVG value={qrValue} size={180} />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex min-h-[180px] items-center justify-center rounded-lg border border-dashed px-6 text-center text-sm text-muted-foreground">
+            Sign in to view your check-in QR code.
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -21,6 +21,13 @@ const JudgeDashboardRoute = async ({ params }: JudgeDashboardRouteProps) => {
   const authUser = await fetchAuthQuery(api.auth.getCurrentUser, {});
   const userName = authUser?.name ?? undefined;
 
+  // Real session identity for the dashboard's check-in QR. `null` when signed
+  // out (e.g. dev auth bypass) so the card prompts to sign in instead of ever
+  // rendering a hardcoded placeholder code.
+  const checkinUser = authUser
+    ? { id: authUser._id, name: authUser.name, email: authUser.email }
+    : null;
+
   // SSR the calendar server-side (cached 5 min); the client island uses it
   // as React Query `initialData`, so first paint has no client waterfall.
   // A calendar outage must not take down the whole dashboard.
@@ -31,6 +38,7 @@ const JudgeDashboardRoute = async ({ params }: JudgeDashboardRouteProps) => {
       tenant={tenant}
       judgeStatus={access.status}
       userName={userName}
+      checkinUser={checkinUser}
       initialSchedule={schedule ?? undefined}
     />
   );

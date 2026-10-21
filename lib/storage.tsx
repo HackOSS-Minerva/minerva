@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase.config";
+import { storage } from "@/firebase.config";
 import { compress } from "@/lib/compress";
 
 export const uploadFile = async (path: string, file: File): Promise<string> => {

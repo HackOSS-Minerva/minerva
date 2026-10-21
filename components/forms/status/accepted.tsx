@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import { toTitleCase } from "@/lib/utils";
 
 interface AcceptedProps {
   form: string;
@@ -18,7 +19,7 @@ const ACCEPTED_DASHBOARDS: Record<string, string> = {
 
 const Accepted = ({ form, tenant }: AcceptedProps) => {
   const dashboardHref = ACCEPTED_DASHBOARDS[form];
-  const roleLabel = form.charAt(0).toUpperCase() + form.slice(1);
+  const roleLabel = toTitleCase(form);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">

@@ -1,11 +1,5 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { IconLock } from "@tabler/icons-react";
 import { SubmissionFormPage } from "@/components/live/submit/submission-form-page";
-import { Button } from "@/components/ui/button";
-import { fetchAuthQuery } from "@/lib/auth-server";
-import { api } from "@/convex/_generated/api";
-import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
+import { guardParticipantPage } from "@/lib/require-participant";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmitRouteProps {
@@ -19,46 +13,9 @@ const SubmitRoute = async ({ params }: SubmitRouteProps) => {
 
   // Secure check (the proxy only does an optimistic cookie redirect): requires
   // a signed-in accepted participant. Unlocked in dev.
-  if (BYPASS_AUTH_IN_DEV) {
-    return <SubmissionFormPage tenant={tenant} />;
-  }
-
-  const access = await fetchAuthQuery(api.auth.getParticipantAccess, {
-    tenant,
-  });
-
-  if (!access.authenticated) {
-    redirect(`/${tenant}/sign-in?redirect=/${tenant}/live/submit`);
-  }
-
-  if (!access.authorized) {
-    // Signed in but not an accepted participant: show a locked state with
-    // status-specific messaging instead of the form.
-    const message =
-      access.status === "PENDING"
-        ? "Your participant registration is still pending approval. Once accepted, you will be able to submit your project."
-        : access.status === "REJECTION"
-          ? "Your participant application was not accepted, so you cannot submit a project for this event."
-          : `You are not a registered participant for ${tenant}.`;
-
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center p-6">
-        <div className="max-w-md space-y-4 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-            <IconLock className="h-6 w-6 text-muted-foreground" />
-          </div>
-          <h1 className="text-2xl font-semibold">Access Restricted</h1>
-          <p className="text-muted-foreground">{message}</p>
-          {!access.status ? (
-            <Button asChild>
-              <Link href={`/${tenant}/forms/participant`}>
-                Apply to be a Participant
-              </Link>
-            </Button>
-          ) : null}
-        </div>
-      </div>
-    );
+  const locked = await guardParticipantPage(tenant, `/${tenant}/live/submit`);
+  if (locked) {
+    return locked;
   }
 
   return <SubmissionFormPage tenant={tenant} />;

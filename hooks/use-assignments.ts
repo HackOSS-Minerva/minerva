@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import { toSpacedTitleCase } from "@/lib/utils";
 
 // ── Public types ──────────────────────────────────────────────────────────────
 
@@ -93,10 +94,7 @@ export function getStatusBadgeVariant(
 
 export function formatStatus(status?: string): string {
   if (!status) return "Assigned";
-  return status
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  return toSpacedTitleCase(status);
 }
 
 // ── React hook ────────────────────────────────────────────────────────────────

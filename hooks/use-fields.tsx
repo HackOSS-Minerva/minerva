@@ -11,7 +11,8 @@ import {
 } from "@/lib/form-defs";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { useEmail } from "./use-email";
-import { uploadFile } from "../lib/storage";
+import { uploadFile } from "@/lib/storage";
+import { newUploadId } from "@/lib/checkin";
 import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRecipient, EmailRole } from "@/types/email";
@@ -102,7 +103,7 @@ export const useFields = () => {
         if (v.resume) {
           const file = v.resume;
           url = await uploadFile(
-            `${tenant}/participants/resumes/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}.pdf`,
+            `${tenant}/participants/resumes/${newUploadId()}.pdf`,
             file,
           );
         }
@@ -162,7 +163,7 @@ export const useFields = () => {
         let url = "";
         const file = v.picture;
         url = await uploadFile(
-          `${tenant}/judges/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`,
+          `${tenant}/judges/pictures/${newUploadId()}`,
           file,
         );
 
@@ -202,7 +203,7 @@ export const useFields = () => {
         let url = "";
         const file = v.picture;
         url = await uploadFile(
-          `${tenant}/speakers/pictures/${crypto.randomUUID ? crypto.randomUUID() : Date.now()}`,
+          `${tenant}/speakers/pictures/${newUploadId()}`,
           file,
         );
 

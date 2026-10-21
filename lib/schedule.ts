@@ -12,7 +12,19 @@ export interface ScheduleEventOption {
   group: string;
 }
 
-/** Weekday label in the event's own time zone (defaults to Eastern if absent). */
+/** Fallback when a calendar event has no explicit time zone (tenants are UCR). */
+export const FALLBACK_EVENT_TIME_ZONE = "America/Los_Angeles";
+/** Calendar refetch cadence, shared by the server fetch + client query. */
+export const SCHEDULE_STALE_MS = 1000 * 60 * 5;
+export const SCHEDULE_REVALIDATE_SECONDS = 300;
+export const SCHEDULE_RETRY_COUNT = 2;
+
+/** Single builder for the Google Calendar list URL used server + client side. */
+export function buildScheduleUrl(calendarId: string, apiKey: string): string {
+  return `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&singleEvents=true&orderBy=startTime`;
+}
+
+/** Weekday label in the event's own time zone (defaults to Pacific if absent). */
 export function getDayOfWeek(dateTime?: string, timeZone?: string): string {
   if (!dateTime) return "N/A";
   try {
@@ -23,7 +35,7 @@ export function getDayOfWeek(dateTime?: string, timeZone?: string): string {
     if (isNaN(date.getTime())) return "N/A";
     return date.toLocaleDateString("en-US", {
       weekday: "long",
-      timeZone: isDateOnly ? "UTC" : timeZone || undefined,
+      timeZone: isDateOnly ? "UTC" : timeZone || FALLBACK_EVENT_TIME_ZONE,
     });
   } catch {
     return "N/A";
@@ -39,7 +51,10 @@ export function groupEventsByDay(
   for (const event of events) {
     const dateTime = event.start?.dateTime ?? event.start?.date;
     const group = dateTime
-      ? getDayOfWeek(dateTime, event.start?.timeZone ?? "America/Los_Angeles")
+      ? getDayOfWeek(
+          dateTime,
+          event.start?.timeZone ?? FALLBACK_EVENT_TIME_ZONE,
+        )
       : "Unscheduled";
     const options = groups.get(group) ?? [];
     options.push({

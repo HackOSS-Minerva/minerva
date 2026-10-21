@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -36,7 +37,12 @@ import {
 } from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator";
 import { useSubmissions } from "@/hooks/use-submissions";
-import { MAX_LINKS_PER_TYPE } from "@/lib/vetting/rules";
+import {
+  MAX_LINKS_PER_TYPE,
+  MAX_SUBMISSION_DESCRIPTION_LENGTH,
+  MAX_SUBMISSION_NAME_LENGTH,
+  MAX_SUBMISSION_URL_LENGTH,
+} from "@/lib/vetting/rules";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface SubmissionFormPageProps {
@@ -100,12 +106,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </FieldLabel>
                       <span
                         className={`text-xs shrink-0 ${
-                          field.state.value.length >= 50
+                          field.state.value.length >= MAX_SUBMISSION_NAME_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {field.state.value.length}/50
+                        {field.state.value.length}/{MAX_SUBMISSION_NAME_LENGTH}
                       </span>
                     </div>
                     <Input
@@ -113,10 +119,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, 50))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
-                      maxLength={50}
+                      maxLength={MAX_SUBMISSION_NAME_LENGTH}
                       placeholder="Enter your team name"
                       disabled={form.state.isSubmitting}
                       autoComplete="off"
@@ -143,12 +151,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </FieldLabel>
                       <span
                         className={`text-xs shrink-0 ${
-                          field.state.value.length >= 50
+                          field.state.value.length >= MAX_SUBMISSION_NAME_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {field.state.value.length}/50
+                        {field.state.value.length}/{MAX_SUBMISSION_NAME_LENGTH}
                       </span>
                     </div>
                     <Input
@@ -156,10 +164,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, 50))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
-                      maxLength={50}
+                      maxLength={MAX_SUBMISSION_NAME_LENGTH}
                       placeholder="Enter your project name"
                       disabled={form.state.isSubmitting}
                       autoComplete="off"
@@ -191,12 +201,14 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </FieldDescription>
                       <span
                         className={`text-xs shrink-0 ${
-                          field.state.value.length >= 300
+                          field.state.value.length >=
+                          MAX_SUBMISSION_DESCRIPTION_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {field.state.value.length}/300
+                        {field.state.value.length}/
+                        {MAX_SUBMISSION_DESCRIPTION_LENGTH}
                       </span>
                     </div>
                     <Textarea
@@ -204,7 +216,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, 300))
+                        field.handleChange(
+                          e.target.value.slice(
+                            0,
+                            MAX_SUBMISSION_DESCRIPTION_LENGTH,
+                          ),
+                        )
                       }
                       onBlur={field.handleBlur}
                       placeholder="Describe your project..."
@@ -235,12 +252,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </FieldLabel>
                       <span
                         className={`text-xs shrink-0 ${
-                          field.state.value.length >= 100
+                          field.state.value.length >= MAX_SUBMISSION_URL_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {field.state.value.length}/100
+                        {field.state.value.length}/{MAX_SUBMISSION_URL_LENGTH}
                       </span>
                     </div>
                     <Input
@@ -248,10 +265,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, 100))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
-                      maxLength={100}
+                      maxLength={MAX_SUBMISSION_URL_LENGTH}
                       placeholder="https://devpost.com/..."
                       disabled={form.state.isSubmitting}
                       autoComplete="off"
@@ -284,7 +303,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Add at least one repository link (up to{" "}
-                          {MAX_LINKS_PER_TYPE}, max 100 characters each).
+                          {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH}{" "}
+                          characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -315,7 +335,10 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(0, 100);
+                            newLinks[idx] = e.target.value.slice(
+                              0,
+                              MAX_SUBMISSION_URL_LENGTH,
+                            );
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -323,16 +346,16 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="text-primary text-sm"
                           disabled={form.state.isSubmitting}
                           autoComplete="off"
-                          maxLength={100}
+                          maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
                         <span
                           className={`text-xs shrink-0 w-14 text-right ${
-                            link.length >= 100
+                            link.length >= MAX_SUBMISSION_URL_LENGTH
                               ? "text-destructive font-medium"
                               : "text-muted-foreground"
                           }`}
                         >
-                          {link.length}/100
+                          {link.length}/{MAX_SUBMISSION_URL_LENGTH}
                         </span>
                         {links.length > 1 && (
                           <Button
@@ -379,7 +402,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Include links to your Figma design files or prototypes
-                          (up to {MAX_LINKS_PER_TYPE}, max 100 characters each).
+                          (up to {MAX_LINKS_PER_TYPE}, max{" "}
+                          {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -410,7 +434,10 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(0, 100);
+                            newLinks[idx] = e.target.value.slice(
+                              0,
+                              MAX_SUBMISSION_URL_LENGTH,
+                            );
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -418,16 +445,16 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="text-primary text-sm"
                           disabled={form.state.isSubmitting}
                           autoComplete="off"
-                          maxLength={100}
+                          maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
                         <span
                           className={`text-xs shrink-0 w-14 text-right ${
-                            link.length >= 100
+                            link.length >= MAX_SUBMISSION_URL_LENGTH
                               ? "text-destructive font-medium"
                               : "text-muted-foreground"
                           }`}
                         >
-                          {link.length}/100
+                          {link.length}/{MAX_SUBMISSION_URL_LENGTH}
                         </span>
                         {links.length > 1 && (
                           <Button
@@ -474,7 +501,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Include links to your Canva presentations or designs
-                          (up to {MAX_LINKS_PER_TYPE}, max 100 characters each).
+                          (up to {MAX_LINKS_PER_TYPE}, max{" "}
+                          {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -505,7 +533,10 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(0, 100);
+                            newLinks[idx] = e.target.value.slice(
+                              0,
+                              MAX_SUBMISSION_URL_LENGTH,
+                            );
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -513,16 +544,16 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           className="text-primary text-sm"
                           disabled={form.state.isSubmitting}
                           autoComplete="off"
-                          maxLength={100}
+                          maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
                         <span
                           className={`text-xs shrink-0 w-14 text-right ${
-                            link.length >= 100
+                            link.length >= MAX_SUBMISSION_URL_LENGTH
                               ? "text-destructive font-medium"
                               : "text-muted-foreground"
                           }`}
                         >
-                          {link.length}/100
+                          {link.length}/{MAX_SUBMISSION_URL_LENGTH}
                         </span>
                         {links.length > 1 && (
                           <Button
@@ -569,16 +600,17 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </FieldLabel>
                       <span
                         className={`text-xs shrink-0 ${
-                          field.state.value.length >= 100
+                          field.state.value.length >= MAX_SUBMISSION_URL_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {field.state.value.length}/100
+                        {field.state.value.length}/{MAX_SUBMISSION_URL_LENGTH}
                       </span>
                     </div>
                     <FieldDescription>
-                      Optional link to slides or demo video (max 100
+                      Optional link to slides or demo video (max{" "}
+                      {MAX_SUBMISSION_URL_LENGTH}
                       characters).
                     </FieldDescription>
                     <Input
@@ -586,10 +618,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(e.target.value.slice(0, 100))
+                        field.handleChange(
+                          e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH),
+                        )
                       }
                       onBlur={field.handleBlur}
-                      maxLength={100}
+                      maxLength={MAX_SUBMISSION_URL_LENGTH}
                       placeholder="https://slides.com/..."
                       className="text-primary mt-1"
                       disabled={form.state.isSubmitting}
@@ -679,17 +713,34 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
 
             {/* Submit Buttons */}
             <div className="flex justify-end gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.push(`/${tenant}/live/dashboard`)}
-                disabled={form.state.isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={form.state.isSubmitting}>
-                {form.state.isSubmitting ? "Submitting..." : "Submit Project"}
-              </Button>
+              <form.Subscribe selector={(state) => state.isSubmitting}>
+                {(isSubmitting) => (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => router.push(`/${tenant}/live/dashboard`)}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      aria-disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        "Submit Project"
+                      )}
+                    </Button>
+                  </>
+                )}
+              </form.Subscribe>
             </div>
           </form>
         </CardContent>

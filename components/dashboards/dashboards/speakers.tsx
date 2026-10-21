@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
   Drawer,
@@ -17,11 +16,11 @@ import {
 import { IconCopy, IconCheck } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { schema as speakerSchema } from "@/components/forms/fields/speaker";
 import { StatusIcon } from "../status-icon";
 import { formatShirtSize } from "@/lib/utils";
+import { selectColumn, useDrawerDirection } from "../profile-drawer";
 
 export const metadata = {
   title: "Speakers",
@@ -47,24 +46,20 @@ export const csvFields = [
 ];
 
 function TableCellViewer({ item }: { item: Doc<"speakers"> }) {
-  const isMobile = useIsMobile();
-  const [copied, setCopied] = useState(false);
-  const [pictureCopied, setPictureCopied] = useState(false);
+  const { copied, copy: copyText } = useCopyWithTimeout();
+  const { copied: pictureCopied, copy: copyPicture } = useCopyWithTimeout();
+  const direction = useDrawerDirection();
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText(item.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    copyText(item.email);
   };
 
   const handleCopyPicture = () => {
-    navigator.clipboard.writeText(item.picture);
-    setPictureCopied(true);
-    setTimeout(() => setPictureCopied(false), 2000);
+    copyPicture(item.picture);
   };
 
   return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
+    <Drawer direction={direction}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
           {item.firstname + " " + item.lastname}
@@ -167,32 +162,7 @@ function TableCellViewer({ item }: { item: Doc<"speakers"> }) {
 }
 
 export const columns: ColumnDef<Doc<"speakers">>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  selectColumn(),
   {
     accessorKey: "firstname",
     header: "Name",

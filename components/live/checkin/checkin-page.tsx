@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QRCodeSVG } from "qrcode.react";
 import { authClient } from "@/lib/auth-client";
+import { buildCheckinQrPayload } from "@/lib/checkin";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface CheckinPageProps {
@@ -18,19 +19,19 @@ interface CheckinPageProps {
 }
 
 export function CheckinPage({ tenant }: CheckinPageProps) {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
 
-  const name = session?.user?.name ?? "hacker";
-  const nameParts = name.split(" ");
-  const firstname = nameParts[0] ?? "";
-  const lastname = nameParts.slice(1).join(" ");
-
-  const qrcode = JSON.stringify({
-    id: session?.user?.id ?? "visitor",
-    firstname,
-    lastname,
-    email: session?.user?.email ?? "guest@example.com",
-  });
+  // Real identity only: until the session resolves (and when signed out) we
+  // show a loading/prompt state instead of ever rendering a placeholder QR.
+  const qrValue = user
+    ? buildCheckinQrPayload({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      })
+    : null;
+  const displayName = user?.name ?? user?.email ?? null;
 
   return (
     <div className="space-y-6">
@@ -62,13 +63,28 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
       </div>
       <Card className="border-none">
         <CardHeader>
-          <CardTitle className="text-center text-primary">{name}</CardTitle>
+          <CardTitle className="text-center text-primary">
+            {isPending ? "\u00A0" : (displayName ?? "Check-in")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex justify-center">
-            <div className="rounded-lg bg-white p-4 shadow-sm">
-              {qrcode ? <QRCodeSVG value={qrcode} /> : <div>Loading...</div>}
-            </div>
+            {isPending ? (
+              <div className="h-40 w-40 animate-pulse rounded-lg bg-muted" />
+            ) : qrValue ? (
+              <div className="rounded-lg bg-white p-4 shadow-sm">
+                <QRCodeSVG value={qrValue} />
+              </div>
+            ) : user ? (
+              <p className="max-w-xs text-center text-sm text-muted-foreground">
+                Your account is missing the email or id needed to build a
+                check-in code. Sign out and back in, or contact an organizer.
+              </p>
+            ) : (
+              <p className="max-w-xs text-center text-sm text-muted-foreground">
+                Sign in to view your check-in QR code.
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

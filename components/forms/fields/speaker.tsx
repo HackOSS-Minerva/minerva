@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 import { affiliations } from "@/data/information";
+import { MAX_IMAGE_FILE_LABEL, MAX_IMAGE_FILE_SIZE } from "@/lib/compress";
 import {
   demographicFields,
   fileField,
@@ -54,7 +55,12 @@ export const schema = z.object({
 
   dietrestriction: dietrestrictionSchema,
 
-  picture: z.file().max(800_000, "Profile picture must be less than 800KB."),
+  picture: z
+    .file()
+    .max(
+      MAX_IMAGE_FILE_SIZE,
+      `Profile picture must be less than ${MAX_IMAGE_FILE_LABEL}.`,
+    ),
 
   terms: termsSchema,
 

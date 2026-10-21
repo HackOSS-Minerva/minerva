@@ -49,6 +49,28 @@ export const genders = ["Female", "Male", "Nonbinary", "Other"] as const;
 
 export const ages = ["18", "19", "20", "21", "22", "23+"] as const;
 
+export const roles = [
+  "participant",
+  "judge",
+  "speaker",
+  "superadmin",
+  "volunteer",
+] as const;
+
+export const feedbackFindOptions = [
+  "instagram",
+  "discord",
+  "website",
+  "class announcement",
+  "devpost",
+  "tabling",
+  "student organization",
+  "email",
+] as const;
+
+/** 1..10 star scale used by the feedback form + dashboard filter. */
+export const feedbackMaxRating = 10;
+
 export const majors = [
   "Accounting",
   "Africana Studies",
