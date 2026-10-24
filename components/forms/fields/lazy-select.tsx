@@ -29,7 +29,6 @@ export function LazySelectFieldBody({
       cancelled = true;
     };
     // `loadOptions` is a stable module-level importer passed at field build.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;

@@ -91,7 +91,6 @@ const Fields = () => {
       didPrefill.current = true;
     }
     // Deps intentionally exclude `formInstance` (stable) and `initialValues`.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identity]);
 
   return (

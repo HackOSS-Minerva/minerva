@@ -11,7 +11,6 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       const item = window.localStorage.getItem(key);
       if (item) {
         // Reading localStorage is intentionally done after mount (SSR-safe).
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setStoredValue(JSON.parse(item));
       }
     } catch (error) {

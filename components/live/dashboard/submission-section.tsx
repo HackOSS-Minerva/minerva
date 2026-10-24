@@ -16,7 +16,6 @@ interface SubmissionSectionProps {
 export function SubmissionSection({ tenant, submissionDeadline }: SubmissionSectionProps) {
   // Per-request "now" on the server (matches the previous `useState(Date.now)`
   // mount-frozen semantics). Impure by design — evaluated once per request.
-  // eslint-disable-next-line react-hooks/purity
   const isPastDeadline = Date.now() > submissionDeadline;
 
   const hasSubmitted = false;
