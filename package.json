@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "@react-email/preview-server": "5.2.5",
+    "@shadcn/lint": "^0.2.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
