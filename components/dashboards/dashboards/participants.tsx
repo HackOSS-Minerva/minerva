@@ -83,11 +83,7 @@ function TableCellViewer({ item }: { item: Doc<"participants"> }) {
                 </DrawerTitle>
 
                 <DrawerClose asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Close profile"
-                  >
+                  <Button variant="ghost" size="icon" aria-label="Close profile">
                     <IconX className="h-4 w-4" />
                   </Button>
                 </DrawerClose>
@@ -111,42 +107,20 @@ function TableCellViewer({ item }: { item: Doc<"participants"> }) {
                   copied={copied}
                 />
                 <DetailRow icon={Phone} label="Phone" value={item.telephone} />
-                <DetailRow
-                  icon={MessagesSquare}
-                  label="Discord"
-                  value={item.discord}
-                />
-                <DetailRow
-                  icon={UserRound}
-                  label="Gender"
-                  value={item.gender}
-                />
-                <DetailRow
-                  icon={Shirt}
-                  label="Shirt Size"
-                  value={formatShirtSize(item.shirt)}
-                />
+                <DetailRow icon={MessagesSquare} label="Discord" value={item.discord} />
+                <DetailRow icon={UserRound} label="Gender" value={item.gender} />
+                <DetailRow icon={Shirt} label="Shirt Size" value={formatShirtSize(item.shirt)} />
               </div>
             </div>
 
             <hr />
 
             <div className="space-y-3">
-              <p className="text-sm font-semibold text-foreground">
-                Application
-              </p>
+              <p className="text-sm font-semibold text-foreground">Application</p>
               <div className="grid gap-3">
-                <DetailRow
-                  icon={GraduationCap}
-                  label="School"
-                  value={item.school}
-                />
+                <DetailRow icon={GraduationCap} label="School" value={item.school} />
                 <DetailRow icon={ScrollText} label="Grade" value={item.grade} />
-                <DetailRow
-                  icon={BriefcaseBusiness}
-                  label="Major"
-                  value={item.major}
-                />
+                <DetailRow icon={BriefcaseBusiness} label="Major" value={item.major} />
                 <DetailRow icon={Cake} label="Age" value={item.age} />
                 <DetailRow icon={Globe} label="Country" value={item.country} />
                 <DetailRow
@@ -183,9 +157,7 @@ export const columns: ColumnDef<Doc<"participants">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">
-          {row.original.email}
-        </Label>
+        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
       </div>
     ),
   },
@@ -193,18 +165,14 @@ export const columns: ColumnDef<Doc<"participants">>[] = [
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.discord}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
     ),
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {formatShirtSize(row.original.shirt)}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {

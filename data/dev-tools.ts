@@ -195,12 +195,6 @@ export const devTools: DevTool[] = [
     description:
       "An open-source platform for product analytics, session replay, funnels, and feature flags.",
     category: "Analytics",
-    tags: [
-      "Product Analytics",
-      "Funnels",
-      "Feature Flags",
-      "Replay",
-      "Open Source",
-    ],
+    tags: ["Product Analytics", "Funnels", "Feature Flags", "Replay", "Open Source"],
   },
 ];

@@ -71,9 +71,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
   return (
     <main className="w-full space-y-6">
       <header>
-        <h1 className="text-2xl font-bold md:text-3xl">
-          {event.eventName} Photos
-        </h1>
+        <h1 className="text-2xl font-bold md:text-3xl">{event.eventName} Photos</h1>
         <p className="mt-1 text-muted-foreground">
           Upload photos and see what everyone is sharing.
         </p>
@@ -92,9 +90,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
             accept="image/jpeg,image/png,image/webp"
             multiple
             disabled={uploading}
-            onChange={(event) =>
-              setFiles(Array.from(event.currentTarget.files ?? []))
-            }
+            onChange={(event) => setFiles(Array.from(event.currentTarget.files ?? []))}
           />
           <div className="flex min-h-9 items-center gap-3">
             <Button
@@ -107,17 +103,12 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
             </Button>
             {files.length > 0 ? (
               <p className="text-xs text-muted-foreground" aria-live="polite">
-                {files.length} {files.length === 1 ? "photo" : "photos"}{" "}
-                selected
+                {files.length} {files.length === 1 ? "photo" : "photos"} selected
               </p>
             ) : null}
           </div>
         </div>
-        <Button
-          type="button"
-          disabled={uploading || files.length === 0}
-          onClick={handleUpload}
-        >
+        <Button type="button" disabled={uploading || files.length === 0} onClick={handleUpload}>
           {uploading ? "Uploading…" : "Upload"}
         </Button>
       </div>
@@ -130,8 +121,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
 
       {loading ? (
         <p className="text-sm text-muted-foreground">Loading photos…</p>
-      ) : !hasLoadedGallery && photos.length === 0 ? null : photos.length ===
-        0 ? (
+      ) : !hasLoadedGallery && photos.length === 0 ? null : photos.length === 0 ? (
         <div className="rounded-lg border border-dashed px-6 py-16 text-center">
           <p className="font-medium">No photos yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -203,9 +193,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
       >
         <DialogContent className="max-w-5xl border-0 bg-black p-2 [&>button]:text-white sm:max-w-5xl">
           <DialogHeader className="sr-only">
-            <DialogTitle>
-              {selectedPhoto?.filename ?? "Event photo"}
-            </DialogTitle>
+            <DialogTitle>{selectedPhoto?.filename ?? "Event photo"}</DialogTitle>
             <DialogDescription>Full-size event photo</DialogDescription>
           </DialogHeader>
           {selectedPhoto ? (
@@ -235,9 +223,8 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove photo from album?</AlertDialogTitle>
             <AlertDialogDescription>
-              This removes {photoToRemove?.filename ?? "this photo"} from the
-              event album. It does not permanently delete the photo from Google
-              Photos.
+              This removes {photoToRemove?.filename ?? "this photo"} from the event album. It does
+              not permanently delete the photo from Google Photos.
             </AlertDialogDescription>
           </AlertDialogHeader>
           {removeError && photoToRemove ? (
@@ -246,9 +233,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
             </p>
           ) : null}
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={removingPhotoId !== null}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={removingPhotoId !== null}>Cancel</AlertDialogCancel>
             <Button
               type="button"
               variant="destructive"

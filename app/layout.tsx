@@ -28,9 +28,7 @@ export default async function RootLayout({ children }: LayoutProps) {
   const initialToken = await getToken();
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers initialToken={initialToken}>
           {children}
           <Toaster />

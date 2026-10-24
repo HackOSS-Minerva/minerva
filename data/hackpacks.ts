@@ -28,8 +28,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/nextjs-hackpack",
     category: ["Web Development"],
     featured: true,
-    instructions:
-      "Use This Template → npm i → npm run dev (Node 20.10+, localhost:3000).",
+    instructions: "Use This Template → npm i → npm run dev (Node 20.10+, localhost:3000).",
   },
   {
     id: "firebase-nextjs-hackpack",
@@ -40,8 +39,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/firebase-nextjs-hackpack",
     category: ["Web Development"],
     featured: true,
-    instructions:
-      "Use This Template → add NEXT_PUBLIC_FIREBASE_* env vars → npm i → npm run dev.",
+    instructions: "Use This Template → add NEXT_PUBLIC_FIREBASE_* env vars → npm i → npm run dev.",
   },
   {
     id: "nextjs-auth-hackpack",
@@ -75,8 +73,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/expo-tailwind-hackpack",
     category: ["Mobile"],
     featured: true,
-    instructions:
-      "Use This Template → npm i → npm run start → scan QR with Expo Go.",
+    instructions: "Use This Template → npm i → npm run start → scan QR with Expo Go.",
   },
   {
     id: "discord-typescript-hackpack",
@@ -87,8 +84,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/discord-typescript-hackpack",
     category: ["Bots"],
     featured: false,
-    instructions:
-      "Use This Template → set DISCORD_TOKEN → npm i → npm run bot.",
+    instructions: "Use This Template → set DISCORD_TOKEN → npm i → npm run bot.",
   },
   {
     id: "discord-python-hackpack",
@@ -99,8 +95,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/discord-python-hackpack",
     category: ["Bots"],
     featured: false,
-    instructions:
-      "Use This Template → set DISCORD_BOT_TOKEN → poetry install → poetry run bot.",
+    instructions: "Use This Template → set DISCORD_BOT_TOKEN → poetry install → poetry run bot.",
   },
   {
     id: "mongodb-python-hackpack",
@@ -111,8 +106,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/mongodb-python-hackpack",
     category: ["Backend & Database"],
     featured: false,
-    instructions:
-      "Use This Template → set MONGODB_URI → poetry install → poetry run app.",
+    instructions: "Use This Template → set MONGODB_URI → poetry install → poetry run app.",
   },
   {
     id: "machine-learning-hackpack",
@@ -123,8 +117,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/machine-learning-hackpack",
     category: ["AI/ML"],
     featured: true,
-    instructions:
-      "Open machine-learning-hackpack.ipynb in VS Code or Google Colab (Python 3.8+).",
+    instructions: "Open machine-learning-hackpack.ipynb in VS Code or Google Colab (Python 3.8+).",
   },
   {
     id: "computer-vision-hackpack",
@@ -168,7 +161,6 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/acm-ucr/python-hackpack",
     category: ["General"],
     featured: true,
-    instructions:
-      "Use This Template → poetry install → poetry run app (Python 3.8+).",
+    instructions: "Use This Template → poetry install → poetry run app (Python 3.8+).",
   },
 ];

@@ -1,9 +1,5 @@
 import { Check, Clock, X, type LucideIcon } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 export type ApplicantStatus = "ACCEPTANCE" | "PENDING" | "REJECTION";
@@ -33,13 +29,7 @@ export function normalizeApplicantStatus(status: unknown): ApplicantStatus {
   return status === "ACCEPTANCE" || status === "REJECTION" ? status : "PENDING";
 }
 
-export function StatusIcon({
-  status,
-  className,
-}: {
-  status: ApplicantStatus;
-  className?: string;
-}) {
+export function StatusIcon({ status, className }: { status: ApplicantStatus; className?: string }) {
   const normalized = normalizeApplicantStatus(status);
   const meta = statusIconMeta[normalized];
   const Icon = meta.icon;

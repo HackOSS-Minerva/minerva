@@ -2,12 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import {
-  devTools,
-  devToolCategories,
-  type DevTool,
-  type DevToolCategory,
-} from "@/data/dev-tools";
+import { devTools, devToolCategories, type DevTool, type DevToolCategory } from "@/data/dev-tools";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,10 +31,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
   return (
     <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5">
       {errored ? (
-        <span
-          aria-hidden
-          className="text-muted-foreground text-[11px] leading-none font-semibold"
-        >
+        <span aria-hidden className="text-muted-foreground text-[11px] leading-none font-semibold">
           {initialsOf(tool.name)}
         </span>
       ) : (
@@ -59,15 +51,12 @@ function ToolLogo({ tool }: { tool: DevTool }) {
 
 export function DevToolsContent() {
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState<
-    DevToolCategory | typeof ALL
-  >(ALL);
+  const [activeCategory, setActiveCategory] = useState<DevToolCategory | typeof ALL>(ALL);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return devTools.filter((tool) => {
-      if (activeCategory !== ALL && tool.category !== activeCategory)
-        return false;
+      if (activeCategory !== ALL && tool.category !== activeCategory) return false;
       return query ? matchesSearch(tool, query) : true;
     });
   }, [search, activeCategory]);
@@ -106,9 +95,7 @@ export function DevToolsContent() {
 
       <Tabs
         value={activeCategory}
-        onValueChange={(value) =>
-          setActiveCategory(value as DevToolCategory | typeof ALL)
-        }
+        onValueChange={(value) => setActiveCategory(value as DevToolCategory | typeof ALL)}
       >
         <TabsList className="h-auto flex-wrap">
           {[ALL, ...devToolCategories].map((category) => (
@@ -142,9 +129,7 @@ export function DevToolsContent() {
           {grouped.map(({ category, tools }) => (
             <section key={category} className="space-y-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold tracking-wide uppercase">
-                  {category}
-                </h2>
+                <h2 className="text-sm font-semibold tracking-wide uppercase">{category}</h2>
                 <Badge variant="outline" className="text-[10px]">
                   {tools.length}
                 </Badge>
@@ -170,9 +155,7 @@ function DevToolCard({ tool }: { tool: DevTool }) {
           <ToolLogo tool={tool} />
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-base">{tool.name}</CardTitle>
-            <p className="text-muted-foreground mt-0.5 text-xs">
-              {tool.category}
-            </p>
+            <p className="text-muted-foreground mt-0.5 text-xs">{tool.category}</p>
           </div>
         </div>
       </CardHeader>

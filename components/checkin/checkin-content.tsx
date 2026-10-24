@@ -40,10 +40,7 @@ const CheckinContent = () => {
 
   const tenant = params.tenant;
 
-  const events = useMemo(
-    () => schedule?.items?.filter((event) => event.summary) ?? [],
-    [schedule],
-  );
+  const events = useMemo(() => schedule?.items?.filter((event) => event.summary) ?? [], [schedule]);
   const isPaused = !selectedEventId;
 
   // Grouped options for the event selector
@@ -60,8 +57,7 @@ const CheckinContent = () => {
             // Old builds shipped a hardcoded guest QR; reject it explicitly
             // instead of writing a junk shared `visitor` check-in.
             toast.error("Placeholder QR code", {
-              description:
-                "Ask the attendee to reopen their live check-in page for a valid code.",
+              description: "Ask the attendee to reopen their live check-in page for a valid code.",
             });
             setScanError("Placeholder QR code");
           } else {
@@ -79,9 +75,7 @@ const CheckinContent = () => {
         }
 
         const scan = decoded.payload;
-        const scanName = [scan.firstname, scan.lastname]
-          .filter(Boolean)
-          .join(" ");
+        const scanName = [scan.firstname, scan.lastname].filter(Boolean).join(" ");
 
         setLastScan(scan);
         setScanError(null);
@@ -175,9 +169,7 @@ const CheckinContent = () => {
       <div className="flex h-full flex-col gap-6">
         <span className="text-2xl font-bold">Checkin</span>
         <div className="rounded-lg border border-destructive/50 p-4">
-          <p className="text-lg font-semibold text-destructive">
-            Failed to load events
-          </p>
+          <p className="text-lg font-semibold text-destructive">Failed to load events</p>
           <p className="text-sm text-muted-foreground">
             {(error as Error)?.message ?? "Unknown error"}
           </p>
@@ -189,15 +181,10 @@ const CheckinContent = () => {
   return (
     <div className="flex h-full flex-col gap-6">
       {/* Event selector */}
-      <Select
-        value={selectedEventId || undefined}
-        onValueChange={setSelectedEventId}
-      >
+      <Select value={selectedEventId || undefined} onValueChange={setSelectedEventId}>
         <SelectTrigger className="w-full">
           <SelectValue
-            placeholder={
-              events.length > 0 ? "Select an event..." : "No events available"
-            }
+            placeholder={events.length > 0 ? "Select an event..." : "No events available"}
           />
         </SelectTrigger>
         <SelectContent>
@@ -222,10 +209,7 @@ const CheckinContent = () => {
             <span className="text-xs">Select an event to start scanning</span>
           </div>
         ) : (
-          <video
-            ref={ref}
-            className="aspect-[4/3] w-full object-cover -scale-x-100"
-          />
+          <video ref={ref} className="aspect-[4/3] w-full object-cover -scale-x-100" />
         )}
       </div>
 
@@ -250,9 +234,7 @@ const CheckinContent = () => {
         </div>
       )}
 
-      {scanError && !lastScan && (
-        <p className="text-sm text-destructive">{scanError}</p>
-      )}
+      {scanError && !lastScan && <p className="text-sm text-destructive">{scanError}</p>}
     </div>
   );
 };

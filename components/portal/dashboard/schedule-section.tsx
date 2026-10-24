@@ -31,9 +31,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
     if (!data?.items) return { current: null, next: null };
 
     const sorted = [...data.items].sort(
-      (a, b) =>
-        new Date(a.start.dateTime).getTime() -
-        new Date(b.start.dateTime).getTime(),
+      (a, b) => new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime(),
     );
 
     let current = null;
@@ -54,9 +52,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
   };
 
   const { current, next } = getCurrentAndNextEvents();
-  const nextEventCountdown = useCountdown(
-    next ? new Date(next.start.dateTime) : null,
-  );
+  const nextEventCountdown = useCountdown(next ? new Date(next.start.dateTime) : null);
 
   const formatTime = (dateTime: string, timeZone: string) => {
     return new Date(dateTime).toLocaleTimeString("en-US", {
@@ -85,9 +81,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
   const uniqueDays = useMemo(() => {
     if (!data?.items) return [];
-    const days = [
-      ...new Set(data.items.map((e) => getEventDayLabel(e.start.dateTime))),
-    ];
+    const days = [...new Set(data.items.map((e) => getEventDayLabel(e.start.dateTime)))];
     return days;
   }, [data]);
 
@@ -97,23 +91,17 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
       const matchesSearch =
         searchQuery.trim() === "" ||
         event.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ??
-          false);
+        (event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
 
       const matchesDay =
-        selectedDay === "all" ||
-        getEventDayLabel(event.start.dateTime) === selectedDay;
+        selectedDay === "all" || getEventDayLabel(event.start.dateTime) === selectedDay;
 
       return matchesSearch && matchesDay;
     });
   }, [data, searchQuery, selectedDay]);
 
-  const filteredCurrent = current
-    ? filteredItems.find((e) => e.id === current.id) || null
-    : null;
-  const filteredNext = next
-    ? filteredItems.find((e) => e.id === next.id) || null
-    : null;
+  const filteredCurrent = current ? filteredItems.find((e) => e.id === current.id) || null : null;
+  const filteredNext = next ? filteredItems.find((e) => e.id === next.id) || null : null;
 
   if (isLoading) {
     return (
@@ -132,8 +120,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
       <div>
         <h2 className="mb-4 text-lg font-semibold">Schedule</h2>
         <p className="text-sm text-destructive">
-          Failed to load schedule:{" "}
-          {(error as Error)?.message ?? "Unknown error"}
+          Failed to load schedule: {(error as Error)?.message ?? "Unknown error"}
         </p>
       </div>
     );
@@ -179,9 +166,8 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
               {uniqueDays.map((day) => (
                 <TabsTrigger key={day} value={day} className="text-xs">
                   {formatDayButtonLabel(
-                    data?.items.find(
-                      (e) => getEventDayLabel(e.start.dateTime) === day,
-                    )?.start.dateTime ?? day,
+                    data?.items.find((e) => getEventDayLabel(e.start.dateTime) === day)?.start
+                      .dateTime ?? day,
                   )}
                 </TabsTrigger>
               ))}
@@ -199,20 +185,11 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
             </div>
             <h3 className="font-semibold">{filteredCurrent.summary}</h3>
             <p className="text-sm text-muted-foreground">
-              {formatTime(
-                filteredCurrent.start.dateTime,
-                filteredCurrent.start.timeZone,
-              )}{" "}
-              –{" "}
-              {formatTime(
-                filteredCurrent.end.dateTime,
-                filteredCurrent.end.timeZone,
-              )}
+              {formatTime(filteredCurrent.start.dateTime, filteredCurrent.start.timeZone)} –{" "}
+              {formatTime(filteredCurrent.end.dateTime, filteredCurrent.end.timeZone)}
             </p>
             {filteredCurrent.location && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                📍 {filteredCurrent.location}
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">📍 {filteredCurrent.location}</p>
             )}
           </div>
         )}
@@ -226,34 +203,24 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
               </span>
               {nextEventCountdown && (
                 <Badge variant="secondary" className="ml-auto text-[10px]">
-                  {nextEventCountdown.hours > 0
-                    ? `${nextEventCountdown.hours}h `
-                    : ""}
+                  {nextEventCountdown.hours > 0 ? `${nextEventCountdown.hours}h ` : ""}
                   {nextEventCountdown.minutes}m {nextEventCountdown.seconds}s
                 </Badge>
               )}
             </div>
             <h3 className="font-semibold">{filteredNext.summary}</h3>
             <p className="text-sm text-muted-foreground">
-              {formatTime(
-                filteredNext.start.dateTime,
-                filteredNext.start.timeZone,
-              )}{" "}
-              –{" "}
+              {formatTime(filteredNext.start.dateTime, filteredNext.start.timeZone)} –{" "}
               {formatTime(filteredNext.end.dateTime, filteredNext.end.timeZone)}
             </p>
             {filteredNext.location && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                📍 {filteredNext.location}
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">📍 {filteredNext.location}</p>
             )}
           </div>
         )}
 
         {!filteredCurrent && !filteredNext && upcomingEvents.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground">
-            No upcoming events.
-          </p>
+          <p className="text-center text-sm text-muted-foreground">No upcoming events.</p>
         )}
 
         {upcomingEvents.length > 0 && (
@@ -261,8 +228,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
             {upcomingEvents
               .sort(
                 (a, b) =>
-                  new Date(a.start.dateTime).getTime() -
-                  new Date(b.start.dateTime).getTime(),
+                  new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime(),
               )
               .map((event) => (
                 <div key={event.id} className="rounded-lg border p-3">
@@ -294,14 +260,10 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                 {pastEvents
                   .sort(
                     (a, b) =>
-                      new Date(a.start.dateTime).getTime() -
-                      new Date(b.start.dateTime).getTime(),
+                      new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime(),
                   )
                   .map((event) => (
-                    <div
-                      key={event.id}
-                      className="rounded-lg border p-3 opacity-50"
-                    >
+                    <div key={event.id} className="rounded-lg border p-3 opacity-50">
                       <div className="flex items-center justify-between">
                         <h4 className="text-sm font-medium">{event.summary}</h4>
                         <Badge variant="outline" className="text-[10px]">
@@ -309,8 +271,8 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {formatTime(event.start.dateTime, event.start.timeZone)}{" "}
-                        – {formatTime(event.end.dateTime, event.end.timeZone)}
+                        {formatTime(event.start.dateTime, event.start.timeZone)} –{" "}
+                        {formatTime(event.end.dateTime, event.end.timeZone)}
                         {event.location && ` · ${event.location}`}
                       </p>
                     </div>

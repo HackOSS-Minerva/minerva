@@ -60,9 +60,7 @@ export function ParticipantLocked({ status, tenant }: ParticipantLockedProps) {
         <p className="text-muted-foreground">{message}</p>
         {!status ? (
           <Button asChild>
-            <Link href={`/${tenant}/forms/participant`}>
-              Apply to be a Participant
-            </Link>
+            <Link href={`/${tenant}/forms/participant`}>Apply to be a Participant</Link>
           </Button>
         ) : null}
       </div>

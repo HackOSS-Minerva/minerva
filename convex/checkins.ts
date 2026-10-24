@@ -16,16 +16,11 @@ export const checkin = mutation({
 
     const existing = await ctx.db
       .query("checkins")
-      .withIndex("by_user_event", (q) =>
-        q.eq("userid", userid).eq("eventid", eventid),
-      )
+      .withIndex("by_user_event", (q) => q.eq("userid", userid).eq("eventid", eventid))
       .first();
 
     if (existing) {
-      throw convexError(
-        "VALIDATION_FAILED",
-        "User already checked into this event",
-      );
+      throw convexError("VALIDATION_FAILED", "User already checked into this event");
     }
 
     const id = await ctx.db.insert("checkins", {
@@ -60,9 +55,7 @@ export const getByEvent = query({
 
     const allCheckins = await ctx.db
       .query("checkins")
-      .withIndex("by_event_tenant", (q) =>
-        q.eq("eventid", eventid).eq("tenant", tenant),
-      )
+      .withIndex("by_event_tenant", (q) => q.eq("eventid", eventid).eq("tenant", tenant))
       .collect();
 
     return allCheckins;

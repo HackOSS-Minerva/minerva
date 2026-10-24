@@ -88,9 +88,7 @@ const AllAvailabilities = ({ selected }: { selected: string[] }) => {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-muted-foreground">
-          Saturday
-        </span>
+        <span className="text-sm font-medium text-muted-foreground">Saturday</span>
         <div className="flex flex-wrap gap-1">
           {saturday.map((availability) => (
             <AvailabilityIcon
@@ -102,9 +100,7 @@ const AllAvailabilities = ({ selected }: { selected: string[] }) => {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-muted-foreground">
-          Sunday
-        </span>
+        <span className="text-sm font-medium text-muted-foreground">Sunday</span>
         <div className="flex flex-wrap gap-1">
           {sunday.map((availability) => (
             <AvailabilityIcon
@@ -141,17 +137,8 @@ function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
           </DrawerTitle>
           <DrawerDescription className="flex items-center gap-2">
             {item.email}
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-5 w-5 p-0"
-              onClick={handleCopyEmail}
-            >
-              {copied ? (
-                <IconCheck className="h-4 w-4" />
-              ) : (
-                <IconCopy className="h-4 w-4" />
-              )}
+            <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={handleCopyEmail}>
+              {copied ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
             </Button>
           </DrawerDescription>
         </DrawerHeader>
@@ -214,9 +201,7 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">
-          {row.original.email}
-        </Label>
+        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
       </div>
     ),
   },
@@ -224,43 +209,33 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.discord}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
     ),
   },
   {
     accessorKey: "telephone",
     header: "Telephone",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.telephone}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
     ),
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {formatShirtSize(row.original.shirt)}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {
     accessorKey: "availabilities",
     header: () => <div>Availabilities</div>,
-    cell: ({ row }) => (
-      <AllAvailabilities selected={row.original.availabilities} />
-    ),
+    cell: ({ row }) => <AllAvailabilities selected={row.original.availabilities} />,
   },
   {
     accessorKey: "dietrestriction",
     header: () => <div>Diet Restrictions</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.dietrestriction}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.dietrestriction}</Label>
     ),
   },
   {

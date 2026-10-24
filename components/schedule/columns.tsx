@@ -41,21 +41,13 @@ const statusVariant = (
   }
 };
 
-const eventStatusFilter = (
-  row: Row<GoogleEvent>,
-  _columnId: string,
-  filterValues: string[],
-) => {
+const eventStatusFilter = (row: Row<GoogleEvent>, _columnId: string, filterValues: string[]) => {
   const { start, end } = row.original;
   const status = getEventStatus(start.dateTime, end.dateTime);
   return filterValues.includes(status);
 };
 
-const dayOfWeekFilter = (
-  row: Row<GoogleEvent>,
-  _columnId: string,
-  filterValues: string[],
-) => {
+const dayOfWeekFilter = (row: Row<GoogleEvent>, _columnId: string, filterValues: string[]) => {
   const { dateTime, timeZone } = row.original.start;
   const day = getDayOfWeek(dateTime, timeZone);
   return filterValues.includes(day);
@@ -88,9 +80,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     },
     cell: ({ row }) => {
       const { dateTime, timeZone } = row.original.start;
-      return (
-        <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
-      );
+      return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
     },
     sortingFn: (rowA, rowB) => {
       const a = new Date(rowA.original.start.dateTime).getTime();
@@ -113,9 +103,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     },
     cell: ({ row }) => {
       const { dateTime, timeZone } = row.original.end;
-      return (
-        <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
-      );
+      return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
     },
     sortingFn: (rowA, rowB) => {
       const a = new Date(rowA.original.end.dateTime).getTime();
@@ -138,9 +126,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     },
     cell: ({ row }) => {
       return (
-        <span className="font-medium line-clamp-1 max-w-[250px]">
-          {row.getValue("summary")}
-        </span>
+        <span className="font-medium line-clamp-1 max-w-[250px]">{row.getValue("summary")}</span>
       );
     },
   },
@@ -150,9 +136,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const location = row.getValue("location") as string;
       return location ? (
-        <span className="text-muted-foreground line-clamp-1 max-w-[250px]">
-          {location}
-        </span>
+        <span className="text-muted-foreground line-clamp-1 max-w-[250px]">{location}</span>
       ) : (
         <span className="text-muted-foreground italic">N/A</span>
       );
@@ -172,14 +156,8 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       );
     },
     sortingFn: (rowA, rowB) => {
-      const statusA = getEventStatus(
-        rowA.original.start.dateTime,
-        rowA.original.end.dateTime,
-      );
-      const statusB = getEventStatus(
-        rowB.original.start.dateTime,
-        rowB.original.end.dateTime,
-      );
+      const statusA = getEventStatus(rowA.original.start.dateTime, rowA.original.end.dateTime);
+      const statusB = getEventStatus(rowB.original.start.dateTime, rowB.original.end.dateTime);
       const order = { completed: 0, ongoing: 1, planned: 2 };
       return order[statusA] - order[statusB];
     },

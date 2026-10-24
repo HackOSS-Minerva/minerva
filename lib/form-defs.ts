@@ -10,12 +10,7 @@ import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { api } from "@/convex/_generated/api";
 import type { z } from "zod";
 
-export type slugs =
-  | "participant"
-  | "judge"
-  | "speaker"
-  | "superadmin"
-  | "volunteer";
+export type slugs = "participant" | "judge" | "speaker" | "superadmin" | "volunteer";
 
 export const FIELDS = {
   participant,

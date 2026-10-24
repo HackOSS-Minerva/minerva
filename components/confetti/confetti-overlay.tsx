@@ -34,19 +34,13 @@ const ConfettiOverlay = () => {
     };
 
     window.addEventListener(CONFETTI_EVENT_KEY, trigger as EventListener);
-    return () =>
-      window.removeEventListener(CONFETTI_EVENT_KEY, trigger as EventListener);
+    return () => window.removeEventListener(CONFETTI_EVENT_KEY, trigger as EventListener);
   }, []);
 
   if (!active) return null;
 
   return (
-    <Confetti
-      width={width}
-      height={height}
-      recycle={false}
-      numberOfPieces={CONFETTI_PIECE_COUNT}
-    />
+    <Confetti width={width} height={height} recycle={false} numberOfPieces={CONFETTI_PIECE_COUNT} />
   );
 };
 

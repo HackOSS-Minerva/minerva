@@ -94,10 +94,7 @@ async function githubJson(url: string): Promise<GithubJsonResult> {
 }
 
 function isRateLimited(result: GithubJsonResult): boolean {
-  return (
-    result.status === 429 ||
-    (result.status === 403 && result.rateLimitRemaining === 0)
-  );
+  return result.status === 429 || (result.status === 403 && result.rateLimitRemaining === 0);
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -140,36 +137,20 @@ function normalizeCommits(data: unknown): GithubCommitAuthor[] {
       if (!authorDate) return null;
 
       return {
-        sha:
-          typeof entry.sha === "string" ? entry.sha : `unknown-commit-${index}`,
-        githubUserId:
-          typeof githubAuthor.id === "number"
-            ? String(githubAuthor.id)
-            : undefined,
-        githubUsername:
-          typeof githubAuthor.login === "string"
-            ? githubAuthor.login
-            : undefined,
-        authorEmail:
-          typeof author.email === "string"
-            ? author.email.toLowerCase()
-            : undefined,
+        sha: typeof entry.sha === "string" ? entry.sha : `unknown-commit-${index}`,
+        githubUserId: typeof githubAuthor.id === "number" ? String(githubAuthor.id) : undefined,
+        githubUsername: typeof githubAuthor.login === "string" ? githubAuthor.login : undefined,
+        authorEmail: typeof author.email === "string" ? author.email.toLowerCase() : undefined,
         authorName: typeof author.name === "string" ? author.name : undefined,
         authorDate,
         committerEmail:
-          typeof committer.email === "string"
-            ? committer.email.toLowerCase()
-            : undefined,
+          typeof committer.email === "string" ? committer.email.toLowerCase() : undefined,
       };
     })
     .filter((commit): commit is GithubCommitAuthor => commit !== null);
 }
 
-function finding(
-  code: FindingCode,
-  message: string,
-  repoUrl?: string,
-): VettingFinding {
+function finding(code: FindingCode, message: string, repoUrl?: string): VettingFinding {
   return { code, message, repoUrl };
 }
 
@@ -260,11 +241,7 @@ function apiFailure(
   }
 
   return {
-    finding: finding(
-      "github_api_error",
-      "GitHub could not complete repository vetting.",
-      repoUrl,
-    ),
+    finding: finding("github_api_error", "GitHub could not complete repository vetting.", repoUrl),
     errorCode: "UPSTREAM_UNAVAILABLE",
     errorDetails: `GitHub API request failed with status ${result.status}`,
   };
@@ -286,8 +263,7 @@ export async function runSubmissionVetting(
   const contributors: VettingContributor[] = [];
   const projectCommits: GithubCommitAuthor[] = [];
   const declaredEmails = uniqueNormalizedEmails(input.declaredEmails);
-  const graceUntil =
-    input.event.submissionDeadlineAt + GIT_COMMIT_GRACE_WINDOW_MS;
+  const graceUntil = input.event.submissionDeadlineAt + GIT_COMMIT_GRACE_WINDOW_MS;
 
   if (input.declaredTeamCount > MAX_TEAM_SIZE) {
     findings.push(
@@ -299,12 +275,7 @@ export async function runSubmissionVetting(
   }
 
   if (input.repositoryUrls.length === 0) {
-    findings.push(
-      finding(
-        "repo_missing",
-        "Submission does not include a GitHub repository.",
-      ),
-    );
+    findings.push(finding("repo_missing", "Submission does not include a GitHub repository."));
   }
 
   const uniqueRepositories: ParsedGithubRepo[] = [];
@@ -319,11 +290,7 @@ export async function runSubmissionVetting(
       if (seenInvalidUrls.has(invalidUrl)) continue;
       seenInvalidUrls.add(invalidUrl);
       findings.push(
-        finding(
-          "repo_invalid_url",
-          "Submitted GitHub URL is not a repository URL.",
-          submittedUrl,
-        ),
+        finding("repo_invalid_url", "Submitted GitHub URL is not a repository URL.", submittedUrl),
       );
       continue;
     }
@@ -362,13 +329,7 @@ export async function runSubmissionVetting(
 
         const failure = apiFailure(repoResult, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(
-          failure.errorCode,
-          failure.errorDetails,
-          findings,
-          repos,
-          contributors,
-        );
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
       const repo = normalizeRepo(repoResult.data);
@@ -381,11 +342,7 @@ export async function runSubmissionVetting(
 
       if (repo.isPrivate) {
         findings.push(
-          finding(
-            "repo_private_or_inaccessible",
-            "Repository is private.",
-            parsed.canonicalUrl,
-          ),
+          finding("repo_private_or_inaccessible", "Repository is private.", parsed.canonicalUrl),
         );
         continue;
       }
@@ -410,17 +367,10 @@ export async function runSubmissionVetting(
       if (!eventCommitsResult.ok && eventCommitsResult.status !== 409) {
         const failure = apiFailure(eventCommitsResult, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(
-          failure.errorCode,
-          failure.errorDetails,
-          findings,
-          repos,
-          contributors,
-        );
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
-      const eventCommits =
-        eventCommitsResult.status === 409 ? [] : eventCommitsResult.commits;
+      const eventCommits = eventCommitsResult.status === 409 ? [] : eventCommitsResult.commits;
       projectCommits.push(...eventCommits);
 
       if (eventCommitsResult.reachedPageLimit) {
@@ -453,13 +403,7 @@ export async function runSubmissionVetting(
       if (!beforeStart.ok && beforeStart.status !== 409) {
         const failure = apiFailure(beforeStart, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(
-          failure.errorCode,
-          failure.errorDetails,
-          findings,
-          repos,
-          contributors,
-        );
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
       const earlyCommitCount = normalizeCommits(beforeStart.data).length;
@@ -483,13 +427,7 @@ export async function runSubmissionVetting(
       if (!afterGrace.ok && afterGrace.status !== 409) {
         const failure = apiFailure(afterGrace, parsed.canonicalUrl);
         findings.push(failure.finding);
-        return failedResult(
-          failure.errorCode,
-          failure.errorDetails,
-          findings,
-          repos,
-          contributors,
-        );
+        return failedResult(failure.errorCode, failure.errorDetails, findings, repos, contributors);
       }
 
       const lateCommitCount = normalizeCommits(afterGrace.data).length;
@@ -519,8 +457,7 @@ export async function runSubmissionVetting(
       ...extractedContributors.map((contributor) => ({
         ...contributor,
         mappingSource:
-          contributor.authorEmail &&
-          declaredEmailSet.has(contributor.authorEmail)
+          contributor.authorEmail && declaredEmailSet.has(contributor.authorEmail)
             ? ("email" as const)
             : ("unmapped" as const),
       })),
@@ -556,17 +493,8 @@ export async function runSubmissionVetting(
       contributors,
     };
   } catch (error) {
-    const details =
-      error instanceof Error ? error.message : "Unknown GitHub API failure";
-    findings.push(
-      finding("github_api_error", "GitHub could not complete project vetting."),
-    );
-    return failedResult(
-      "UPSTREAM_UNAVAILABLE",
-      details,
-      findings,
-      repos,
-      contributors,
-    );
+    const details = error instanceof Error ? error.message : "Unknown GitHub API failure";
+    findings.push(finding("github_api_error", "GitHub could not complete project vetting."));
+    return failedResult("UPSTREAM_UNAVAILABLE", details, findings, repos, contributors);
   }
 }

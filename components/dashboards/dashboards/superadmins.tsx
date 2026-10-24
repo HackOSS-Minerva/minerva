@@ -101,45 +101,25 @@ function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
                   copied={copied}
                 />
                 <DetailRow icon={Phone} label="Phone" value={item.telephone} />
-                <DetailRow
-                  icon={MessageSquare}
-                  label="Discord"
-                  value={item.discord}
-                />
+                <DetailRow icon={MessageSquare} label="Discord" value={item.discord} />
               </div>
             </div>
             <hr />
             <div>
-              <p className="text-sm font-semibold text-foreground">
-                Admin Information
-              </p>
+              <p className="text-sm font-semibold text-foreground">Admin Information</p>
               <div className="mt-2 space-y-2">
-                <DetailRow
-                  icon={GraduationCap}
-                  label="Major"
-                  value={item.major}
-                />
+                <DetailRow icon={GraduationCap} label="Major" value={item.major} />
                 <DetailRow icon={Users} label="Team" value={item.team} />
                 <DetailRow icon={Calendar} label="Grade" value={item.grade} />
                 <DetailRow label="Age" value={item.age} icon={UserRound} />
-                <DetailRow
-                  label="Gender"
-                  value={item.gender}
-                  icon={UserRound}
-                />
+                <DetailRow label="Gender" value={item.gender} icon={UserRound} />
               </div>
             </div>
             <hr />
             <div>
-              <p className="text-sm font-semibold text-foreground">
-                Preferences
-              </p>
+              <p className="text-sm font-semibold text-foreground">Preferences</p>
               <div className="mt-2 space-y-2">
-                <DetailRow
-                  icon={Shirt}
-                  label="Shirt Size"
-                  value={formatShirtSize(item.shirt)}
-                />
+                <DetailRow icon={Shirt} label="Shirt Size" value={formatShirtSize(item.shirt)} />
                 <DetailRow
                   icon={Utensils}
                   label="Dietary Restrictions"
@@ -169,9 +149,7 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">
-          {row.original.email}
-        </Label>
+        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
       </div>
     ),
   },
@@ -179,36 +157,26 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     accessorKey: "telephone",
     header: "Phone",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.telephone}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
     ),
   },
   {
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.discord}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
     ),
   },
   {
     accessorKey: "team",
     header: () => <div>Team</div>,
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.team}
-      </Label>
-    ),
+    cell: ({ row }) => <Label className="text-muted-foreground px-1.5">{row.original.team}</Label>,
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {formatShirtSize(row.original.shirt)}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {

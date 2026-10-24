@@ -71,10 +71,7 @@ const refreshLatestPhotoPage = async (
 
   const refreshedIds = new Set(page.photos.map(({ id }) => id));
   return {
-    photos: [
-      ...page.photos,
-      ...currentPhotos.filter(({ id }) => !refreshedIds.has(id)),
-    ],
+    photos: [...page.photos, ...currentPhotos.filter(({ id }) => !refreshedIds.has(id))],
     ...(currentNextPageToken ? { nextPageToken: currentNextPageToken } : {}),
   };
 };
@@ -147,8 +144,7 @@ export const usePhotos = (tenant: TenantSlug): UsePhotosResult => {
       const response = await fetch(`/api/photos?${searchParams.toString()}`, {
         cache: "no-store",
       });
-      if (!response.ok)
-        throw await parseAppError(response, "PHOTO_LIST_FAILED");
+      if (!response.ok) throw await parseAppError(response, "PHOTO_LIST_FAILED");
 
       const body = (await response.json()) as {
         photos?: unknown;
@@ -157,8 +153,7 @@ export const usePhotos = (tenant: TenantSlug): UsePhotosResult => {
       if (
         !Array.isArray(body.photos) ||
         !body.photos.every(isPhoto) ||
-        (body.nextPageToken !== undefined &&
-          typeof body.nextPageToken !== "string")
+        (body.nextPageToken !== undefined && typeof body.nextPageToken !== "string")
       ) {
         throw new AppError("PHOTO_LIST_FAILED");
       }
@@ -254,8 +249,7 @@ export const usePhotos = (tenant: TenantSlug): UsePhotosResult => {
             method: "POST",
             body: formData,
           });
-          if (!response.ok)
-            throw await parseAppError(response, "PHOTO_UPLOAD_FAILED");
+          if (!response.ok) throw await parseAppError(response, "PHOTO_UPLOAD_FAILED");
         });
 
         if (result.uploadedCount > 0) {
@@ -290,12 +284,9 @@ export const usePhotos = (tenant: TenantSlug): UsePhotosResult => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ tenant, mediaItemId }),
         });
-        if (!response.ok)
-          throw await parseAppError(response, "PHOTO_REMOVE_FAILED");
+        if (!response.ok) throw await parseAppError(response, "PHOTO_REMOVE_FAILED");
 
-        const remaining = photosRef.current.filter(
-          (photo) => photo.id !== mediaItemId,
-        );
+        const remaining = photosRef.current.filter((photo) => photo.id !== mediaItemId);
         photosRef.current = remaining;
         setPhotos(remaining);
         await runRefresh(true);

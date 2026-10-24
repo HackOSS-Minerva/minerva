@@ -23,23 +23,12 @@ const DetailRow = ({
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          {label}
-        </p>
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
         <div className="wrap-break-words text-sm text-foreground">{value}</div>
       </div>
       {copyable && onCopy ? (
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-5 w-5 shrink-0 p-0"
-          onClick={onCopy}
-        >
-          {copied ? (
-            <IconCheck className="h-4 w-4" />
-          ) : (
-            <IconCopy className="h-4 w-4" />
-          )}
+        <Button size="sm" variant="ghost" className="h-5 w-5 shrink-0 p-0" onClick={onCopy}>
+          {copied ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
         </Button>
       ) : null}
     </div>

@@ -53,14 +53,10 @@ export const compress = async (
         }
 
         resolve(
-          new File(
-            [result],
-            mimeType === "image/jpeg" ? jpegFilename(file.name) : file.name,
-            {
-              type: result.type,
-              lastModified: file.lastModified,
-            },
-          ),
+          new File([result], mimeType === "image/jpeg" ? jpegFilename(file.name) : file.name, {
+            type: result.type,
+            lastModified: file.lastModified,
+          }),
         );
       },
       error: (error) => reject(error),

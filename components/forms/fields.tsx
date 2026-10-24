@@ -66,9 +66,7 @@ const Fields = () => {
       onSubmitAsync: schema,
     },
     onSubmit: async ({ value }) => {
-      toast.success(
-        `Thank you for applying. We will send you an application update shortly!`,
-      );
+      toast.success(`Thank you for applying. We will send you an application update shortly!`);
       triggerConfetti();
       // Schema validator already narrowed `value`; the cast bridges TanStack's placeholder types.
       await onSubmit(value as FormValues);
@@ -86,8 +84,7 @@ const Fields = () => {
     if (!identity.firstname && !identity.lastname && !identity.email) return;
 
     const current = formInstance.state.values;
-    const needsPrefill =
-      !current.firstname && !current.lastname && !current.email;
+    const needsPrefill = !current.firstname && !current.lastname && !current.email;
 
     if (needsPrefill) {
       formInstance.reset(initialValues);
@@ -110,10 +107,7 @@ const Fields = () => {
           <FieldGroup>
             <FieldGroup>
               {fields.map(({ name, children }, key) => (
-                <formInstance.Field
-                  key={key}
-                  name={name as DeepKeys<typeof initialValues>}
-                >
+                <formInstance.Field key={key} name={name as DeepKeys<typeof initialValues>}>
                   {(fieldApi) => children(fieldApi)}
                 </formInstance.Field>
               ))}

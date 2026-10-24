@@ -38,10 +38,7 @@ interface FeatureGateModalProps {
   open?: boolean;
 }
 
-export function FeatureGateModal({
-  reason,
-  open = true,
-}: FeatureGateModalProps) {
+export function FeatureGateModal({ reason, open = true }: FeatureGateModalProps) {
   const copy = COPY[reason];
   const Icon = copy.icon;
 

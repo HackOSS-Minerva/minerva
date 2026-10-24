@@ -13,12 +13,10 @@ const Rejected = ({ tenantEmail }: RejectedProps) => {
         <X className="h-12 w-12 text-primary" />
       </div>
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold text-primary">
-          Application Rejected
-        </h2>
+        <h2 className="text-2xl font-bold text-primary">Application Rejected</h2>
         <p className="text-primary">
-          Thank you for your interest. Unfortunately, your application was not
-          selected at this time.
+          Thank you for your interest. Unfortunately, your application was not selected at this
+          time.
         </p>
         <p className="text-sm text-muted-foreground">
           If you believe this is a mistake, please contact{" "}

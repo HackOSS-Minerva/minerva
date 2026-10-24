@@ -92,9 +92,7 @@ const getCredentials = (): GoogleCredentials => {
     clientId,
     clientSecret,
     refreshToken,
-    cacheKey: [clientId, clientSecret, refreshToken].join(
-      CREDENTIAL_CACHE_SEPARATOR,
-    ),
+    cacheKey: [clientId, clientSecret, refreshToken].join(CREDENTIAL_CACHE_SEPARATOR),
   };
 };
 
@@ -133,10 +131,7 @@ const getAccessToken = async (forceRefresh = false): Promise<string> => {
     expires_in?: unknown;
   }>(response, "PHOTO_GOOGLE_UNAVAILABLE");
 
-  if (
-    typeof body.access_token !== "string" ||
-    typeof body.expires_in !== "number"
-  ) {
+  if (typeof body.access_token !== "string" || typeof body.expires_in !== "number") {
     throw new AppError("PHOTO_GOOGLE_UNAVAILABLE");
   }
 
@@ -149,10 +144,7 @@ const getAccessToken = async (forceRefresh = false): Promise<string> => {
   return body.access_token;
 };
 
-const googleRequest = async (
-  path: string,
-  init: RequestInit = {},
-): Promise<Response> => {
+const googleRequest = async (path: string, init: RequestInit = {}): Promise<Response> => {
   const request = async (forceRefresh: boolean): Promise<Response> => {
     const token = await getAccessToken(forceRefresh);
 
@@ -178,19 +170,14 @@ const googleRequest = async (
   return response;
 };
 
-const requireOk = async (
-  response: Response,
-  code: ErrorCode,
-): Promise<Response> => {
+const requireOk = async (response: Response, code: ErrorCode): Promise<Response> => {
   if (!response.ok) throw new AppError(code);
   return response;
 };
 
 const getConfiguredAlbumId = (event: PhotoEvent): string => {
   const albumId =
-    event.tenant === "designverse"
-      ? process.env.GOOGLE_PHOTOS_ALBUM_ID?.trim()
-      : undefined;
+    event.tenant === "designverse" ? process.env.GOOGLE_PHOTOS_ALBUM_ID?.trim() : undefined;
   if (!albumId) throw new AppError("PHOTO_CONFIGURATION_INVALID");
   return albumId;
 };
@@ -230,9 +217,7 @@ const validateServerPhoto = async (file: File): Promise<void> => {
     throw new AppError("PHOTO_FILE_INVALID");
   }
 
-  const signature = new Uint8Array(
-    await file.slice(0, FILE_SIGNATURE_BYTES).arrayBuffer(),
-  );
+  const signature = new Uint8Array(await file.slice(0, FILE_SIGNATURE_BYTES).arrayBuffer());
   const isJpeg =
     signature.length >= 3 &&
     signature[0] === 0xff &&
@@ -244,8 +229,7 @@ const validateServerPhoto = async (file: File): Promise<void> => {
     new TextDecoder().decode(signature.slice(8, 12)) === "WEBP";
 
   const signatureMatchesType =
-    (file.type === "image/jpeg" && isJpeg) ||
-    (file.type === "image/webp" && isWebp);
+    (file.type === "image/jpeg" && isJpeg) || (file.type === "image/webp" && isWebp);
   if (!signatureMatchesType) throw new AppError("PHOTO_FILE_INVALID");
 };
 
@@ -292,10 +276,7 @@ export const listEventPhotos = async (
   };
 };
 
-export const removeEventPhoto = async (
-  event: PhotoEvent,
-  mediaItemId: string,
-): Promise<void> => {
+export const removeEventPhoto = async (event: PhotoEvent, mediaItemId: string): Promise<void> => {
   const albumId = getConfiguredAlbumId(event);
   const response = await googleRequest(
     `/albums/${encodeURIComponent(albumId)}:batchRemoveMediaItems`,
@@ -308,10 +289,7 @@ export const removeEventPhoto = async (
   await requireOk(response, "PHOTO_REMOVE_FAILED");
 };
 
-export const uploadEventPhoto = async (
-  event: PhotoEvent,
-  file: File,
-): Promise<PhotoItem> => {
+export const uploadEventPhoto = async (event: PhotoEvent, file: File): Promise<PhotoItem> => {
   await validateServerPhoto(file);
   const albumId = getConfiguredAlbumId(event);
   const uploadResponse = await googleRequest("/uploads", {

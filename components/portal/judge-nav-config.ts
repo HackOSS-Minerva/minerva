@@ -1,9 +1,7 @@
 import type { NavItem, DropdownConfig } from "./portal-nav";
 import type { FeatureFlagKey } from "@/lib/feature-flags";
 
-export const judgeNavItems: NavItem[] = [
-  { href: "/judge/dashboard", label: "Dashboard" },
-];
+export const judgeNavItems: NavItem[] = [{ href: "/judge/dashboard", label: "Dashboard" }];
 
 export const judgeDropdowns: DropdownConfig[] = [
   {

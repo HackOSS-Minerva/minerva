@@ -1,8 +1,4 @@
-import {
-  assertPhotoOrigin,
-  getConfiguredPhotoEvent,
-  uploadEventPhoto,
-} from "@/lib/google-photos";
+import { assertPhotoOrigin, getConfiguredPhotoEvent, uploadEventPhoto } from "@/lib/google-photos";
 import { AppError, requireFeature, withFetchHandler } from "@/lib/app-error";
 import { getFeatureFlag } from "@/lib/feature-flags";
 

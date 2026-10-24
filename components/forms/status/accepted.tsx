@@ -27,14 +27,11 @@ const Accepted = ({ form, tenant }: AcceptedProps) => {
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-primary">Congratulations!</h2>
         <p className="text-primary">
-          Your {roleLabel} application has been accepted. We&apos;re excited to
-          have you join us!
+          Your {roleLabel} application has been accepted. We&apos;re excited to have you join us!
         </p>
         {dashboardHref && (
           <Button asChild className="mt-4">
-            <Link href={`/${tenant}${dashboardHref}`}>
-              Go to {roleLabel} Dashboard
-            </Link>
+            <Link href={`/${tenant}${dashboardHref}`}>Go to {roleLabel} Dashboard</Link>
           </Button>
         )}
       </div>

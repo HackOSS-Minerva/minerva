@@ -35,8 +35,7 @@ export function CheckinSection({ user }: CheckinSectionProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Show this QR code at the event check-in desk to verify your
-          attendance.
+          Show this QR code at the event check-in desk to verify your attendance.
         </p>
 
         {qrValue ? (

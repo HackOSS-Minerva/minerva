@@ -100,9 +100,7 @@ function TableCellViewer({ item }: { item: Doc<"judges"> }) {
               <p className="text-lg font-semibold text-foreground">
                 {item.firstname} {item.lastname}
               </p>
-              <p className="text-sm text-muted-foreground">
-                {item.organization}
-              </p>
+              <p className="text-sm text-muted-foreground">{item.organization}</p>
               <p className="text-sm text-muted-foreground">{item.title}</p>
             </div>
           </div>
@@ -128,14 +126,8 @@ function TableCellViewer({ item }: { item: Doc<"judges"> }) {
             <hr />
             <div>
               <div className="mt-2 space-y-2">
-                <p className="text-sm font-semibold text-foreground">
-                  Application
-                </p>
-                <DetailRow
-                  icon={Shirt}
-                  label="Shirt Size"
-                  value={formatShirtSize(item.shirt)}
-                />
+                <p className="text-sm font-semibold text-foreground">Application</p>
+                <DetailRow icon={Shirt} label="Shirt Size" value={formatShirtSize(item.shirt)} />
                 <DetailRow
                   icon={Utensils}
                   label="Dietary Restrictions"
@@ -165,9 +157,7 @@ export const columns: ColumnDef<Doc<"judges">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">
-          {row.original.email}
-        </Label>
+        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
       </div>
     ),
   },
@@ -175,27 +165,21 @@ export const columns: ColumnDef<Doc<"judges">>[] = [
     accessorKey: "telephone",
     header: "Phone",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.telephone}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
     ),
   },
   {
     accessorKey: "affiliation",
     header: () => <div>Affiliation</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.affiliation}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.affiliation}</Label>
     ),
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {formatShirtSize(row.original.shirt)}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {

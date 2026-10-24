@@ -142,15 +142,9 @@ export function useAssignments(tenant: TenantSlug) {
   );
 
   // Lookup maps
-  const judgesById = useMemo(
-    () => new Map(judges.map((j) => [j._id, j])),
-    [judges],
-  );
+  const judgesById = useMemo(() => new Map(judges.map((j) => [j._id, j])), [judges]);
 
-  const submissionsById = useMemo(
-    () => new Map(submissions.map((s) => [s._id, s])),
-    [submissions],
-  );
+  const submissionsById = useMemo(() => new Map(submissions.map((s) => [s._id, s])), [submissions]);
 
   // Groupings
   const teamsByJudge = useMemo(() => {
@@ -194,9 +188,7 @@ export function useAssignments(tenant: TenantSlug) {
   }, [rawAssignments, rawSubmissions, rawJudges, submissionsById, judgesById]);
 
   const isLoading =
-    rawSubmissions === undefined ||
-    rawJudges === undefined ||
-    rawAssignments === undefined;
+    rawSubmissions === undefined || rawJudges === undefined || rawAssignments === undefined;
 
   const hasAssignments = assignments.length > 0;
 

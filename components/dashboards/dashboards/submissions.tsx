@@ -10,32 +10,16 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { IconX } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Users,
-  Link as LinkIcon,
-  Github,
-  Figma,
-  PanelRightOpen,
-  Presentation,
-} from "lucide-react";
+import { Users, Link as LinkIcon, Github, Figma, PanelRightOpen, Presentation } from "lucide-react";
 import DetailRow from "../row";
 import { VettingSummary } from "../vetting-summary";
-import {
-  normalizeVettingStatus,
-  reviewStatusMeta,
-  visibleVettingStatus,
-} from "../vetting-status";
+import { normalizeVettingStatus, reviewStatusMeta, visibleVettingStatus } from "../vetting-status";
 
 type SubmissionRecord = Doc<"submissions">;
 
@@ -83,13 +67,7 @@ function formatCompactTimestamp(ts: number): string {
   });
 }
 
-function LinkList({
-  links,
-  fallback = "None",
-}: {
-  links: string[];
-  fallback?: string;
-}) {
+function LinkList({ links, fallback = "None" }: { links: string[]; fallback?: string }) {
   if (!links || links.length === 0) return <span>{fallback}</span>;
   return (
     <div className="flex flex-col gap-1">
@@ -118,9 +96,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
           variant="ghost"
           className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
         >
-          <span className="min-w-0 truncate font-medium text-foreground">
-            {item.teamName}
-          </span>
+          <span className="min-w-0 truncate font-medium text-foreground">{item.teamName}</span>
           <PanelRightOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
         </Button>
       </DrawerTrigger>
@@ -130,19 +106,11 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
             <DrawerHeader className="gap-1 p-0 w-full">
               <div className="flex items-start justify-between gap-3 w-full">
                 <div className="min-w-0">
-                  <p className="text-xs font-medium uppercase text-muted-foreground">
-                    Team Name
-                  </p>
-                  <DrawerTitle className="break-words">
-                    {item.teamName}
-                  </DrawerTitle>
+                  <p className="text-xs font-medium uppercase text-muted-foreground">Team Name</p>
+                  <DrawerTitle className="break-words">{item.teamName}</DrawerTitle>
                 </div>
                 <DrawerClose asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Close submission"
-                  >
+                  <Button variant="ghost" size="icon" aria-label="Close submission">
                     <IconX className="h-4 w-4" />
                   </Button>
                 </DrawerClose>
@@ -260,10 +228,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
   );
 }
 
-function truncateDescription(
-  description: string,
-  maxLength: number = 52,
-): string {
+function truncateDescription(description: string, maxLength: number = 52): string {
   if (description.length <= maxLength) {
     return description;
   }
@@ -282,19 +247,13 @@ function ReviewCell({ item }: { item: SubmissionRecord }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <span className="ml-auto inline-flex max-w-full items-center justify-end gap-1.5 px-1.5 text-sm">
-            <VisibleIcon
-              className={`h-4 w-4 shrink-0 ${visibleStatus.iconClass}`}
-            />
-            <span className="truncate whitespace-nowrap">
-              {visibleStatus.label}
-            </span>
+            <VisibleIcon className={`h-4 w-4 shrink-0 ${visibleStatus.iconClass}`} />
+            <span className="truncate whitespace-nowrap">{visibleStatus.label}</span>
           </span>
         </TooltipTrigger>
         <TooltipContent side="top">
           <p>
-            {runStatus === "completed"
-              ? review.label
-              : `${visibleStatus.label} / ${review.label}`}
+            {runStatus === "completed" ? review.label : `${visibleStatus.label} / ${review.label}`}
           </p>
         </TooltipContent>
       </Tooltip>

@@ -24,11 +24,7 @@ export function ProfileDrawerTrigger({ name }: { name: string }) {
   );
 }
 
-export function ProfileDrawerCloseButton({
-  label = "Close profile",
-}: {
-  label?: string;
-}) {
+export function ProfileDrawerCloseButton({ label = "Close profile" }: { label?: string }) {
   return (
     <DrawerClose asChild>
       <Button variant="ghost" size="icon" aria-label={label}>

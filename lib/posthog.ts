@@ -2,12 +2,7 @@ import posthog from "posthog-js";
 import { AppError } from "@/lib/app-error";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
-export type AnalyticsRole =
-  | "participant"
-  | "judge"
-  | "speaker"
-  | "superadmin"
-  | "volunteer";
+export type AnalyticsRole = "participant" | "judge" | "speaker" | "superadmin" | "volunteer";
 
 export type ApplicationStatus = "PENDING" | "ACCEPTANCE" | "REJECTION";
 
@@ -120,10 +115,7 @@ const emptyParticipantDemographics = (): ParticipantDemographics => ({
   grade: [],
 });
 
-export function captureAnalyticsEvent(
-  event: AnalyticsEvent,
-  properties: AnalyticsEventProperties,
-) {
+export function captureAnalyticsEvent(event: AnalyticsEvent, properties: AnalyticsEventProperties) {
   if (typeof window === "undefined") return;
   posthog.capture(event, properties);
 }
@@ -131,9 +123,7 @@ export function captureAnalyticsEvent(
 async function queryPostHog(query: string): Promise<HogQLResponse> {
   const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
   const projectId = process.env.POSTHOG_PROJECT_ID;
-  const host = (
-    process.env.POSTHOG_API_HOST ?? "https://us.posthog.com"
-  ).replace(/\/$/, "");
+  const host = (process.env.POSTHOG_API_HOST ?? "https://us.posthog.com").replace(/\/$/, "");
 
   if (!apiKey || !projectId) {
     throw new AppError("CONFIG_ERROR", {
@@ -165,9 +155,7 @@ const toCount = (value: HogQLScalar) => {
   return Number.isFinite(count) ? count : 0;
 };
 
-export async function getPostHogAnalytics(
-  tenant: string,
-): Promise<AnalyticsData> {
+export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData> {
   if (!/^[a-z0-9-]+$/.test(tenant)) {
     throw new AppError("TENANT_INVALID");
   }
@@ -287,15 +275,12 @@ export async function getPostHogAnalytics(
     ORDER BY dimension, count() DESC, value
   `;
 
-  const [
-    applicationResponse,
-    activityResponse,
-    participantDemographicsResponse,
-  ] = await Promise.all([
-    queryPostHog(applicationQuery),
-    queryPostHog(activityQuery),
-    queryPostHog(participantDemographicsQuery),
-  ]);
+  const [applicationResponse, activityResponse, participantDemographicsResponse] =
+    await Promise.all([
+      queryPostHog(applicationQuery),
+      queryPostHog(activityQuery),
+      queryPostHog(participantDemographicsQuery),
+    ]);
 
   const byRole = Object.fromEntries(
     analyticsRoles.map((role) => [role, emptyStatusCounts()]),
@@ -333,15 +318,11 @@ export async function getPostHogAnalytics(
     const value = typeof row[1] === "string" ? row[1].trim() : "";
     const count = toCount(row[2]);
 
-    if (
-      !participantDemographicKeys.includes(key as ParticipantDemographicKey) ||
-      !value
-    ) {
+    if (!participantDemographicKeys.includes(key as ParticipantDemographicKey) || !value) {
       continue;
     }
 
-    const counts =
-      participantDemographicCounts[key as ParticipantDemographicKey];
+    const counts = participantDemographicCounts[key as ParticipantDemographicKey];
     counts.set(value, count);
   }
 
@@ -349,22 +330,15 @@ export async function getPostHogAnalytics(
 
   for (const key of participantDemographicKeys) {
     const counts = participantDemographicCounts[key];
-    const total = Array.from(counts.values()).reduce(
-      (sum, count) => sum + count,
-      0,
-    );
+    const total = Array.from(counts.values()).reduce((sum, count) => sum + count, 0);
 
     participantDemographics[key] = Array.from(counts.entries())
       .map(([value, count]) => ({
         value,
         count,
-        percentage:
-          total === 0 ? 0 : Number(((count / total) * 100).toFixed(1)),
+        percentage: total === 0 ? 0 : Number(((count / total) * 100).toFixed(1)),
       }))
-      .sort(
-        (left, right) =>
-          right.count - left.count || left.value.localeCompare(right.value),
-      );
+      .sort((left, right) => right.count - left.count || left.value.localeCompare(right.value));
   }
 
   let activeParticipants = 0;

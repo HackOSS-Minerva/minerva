@@ -20,13 +20,7 @@ import { IconDotsVertical, IconX } from "@tabler/icons-react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
-import {
-  Star,
-  Calendar,
-  MessageSquare,
-  ThumbsDown,
-  HelpCircle,
-} from "lucide-react";
+import { Star, Calendar, MessageSquare, ThumbsDown, HelpCircle } from "lucide-react";
 import DetailRow from "../row";
 import { useDrawerDirection } from "../profile-drawer";
 import { feedbackMaxRating } from "@/data/information";
@@ -70,9 +64,7 @@ function RatingBadge({ rating }: { rating: number }) {
         <Star
           key={i}
           className={`h-3 w-3 ${
-            i < rating
-              ? "fill-yellow-400 text-yellow-400"
-              : "text-muted-foreground/30"
+            i < rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"
           }`}
         />
       ))}
@@ -100,11 +92,7 @@ function TableCellViewer({ item }: { item: FeedbackRecord }) {
               <div className="flex items-center justify-between w-full">
                 <DrawerTitle>Feedback Details</DrawerTitle>
                 <DrawerClose asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Close feedback"
-                  >
+                  <Button variant="ghost" size="icon" aria-label="Close feedback">
                     <IconX className="h-4 w-4" />
                   </Button>
                 </DrawerClose>
@@ -115,11 +103,7 @@ function TableCellViewer({ item }: { item: FeedbackRecord }) {
             <div className="space-y-3">
               <p className="text-sm font-semibold text-foreground">Summary</p>
               <div className="grid gap-3">
-                <DetailRow
-                  icon={HelpCircle}
-                  label="Found Via"
-                  value={formatLabel(item.find)}
-                />
+                <DetailRow icon={HelpCircle} label="Found Via" value={formatLabel(item.find)} />
                 <DetailRow
                   icon={Star}
                   label="Rating"
@@ -138,16 +122,8 @@ function TableCellViewer({ item }: { item: FeedbackRecord }) {
             <div className="space-y-3">
               <p className="text-sm font-semibold text-foreground">Responses</p>
               <div className="grid gap-3">
-                <DetailRow
-                  icon={MessageSquare}
-                  label="Liked to See"
-                  value={item.liked_to_see}
-                />
-                <DetailRow
-                  icon={ThumbsDown}
-                  label="Not Beneficial"
-                  value={item.not_beneficial}
-                />
+                <DetailRow icon={MessageSquare} label="Liked to See" value={item.liked_to_see} />
+                <DetailRow icon={ThumbsDown} label="Not Beneficial" value={item.not_beneficial} />
                 <DetailRow
                   icon={MessageSquare}
                   label="Anything Else"

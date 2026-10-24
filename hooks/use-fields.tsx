@@ -29,11 +29,7 @@ export const useFields = () => {
   const add = useMutation(FORM_MUTATIONS[slug]);
   const { sendEmail } = useEmail();
 
-  const sendConfirmationEmail = async (
-    role: EmailRole,
-    user: EmailRecipient,
-    id: string,
-  ) => {
+  const sendConfirmationEmail = async (role: EmailRole, user: EmailRecipient, id: string) => {
     try {
       await sendEmail({
         role,
@@ -47,10 +43,7 @@ export const useFields = () => {
         error,
         requestId: "client",
       });
-      toastAppError(
-        error,
-        "Registration submitted, but the confirmation email could not be sent.",
-      );
+      toastAppError(error, "Registration submitted, but the confirmation email could not be sent.");
     }
   };
 
@@ -87,11 +80,7 @@ export const useFields = () => {
         });
 
         if (result.user) {
-          await sendConfirmationEmail(
-            "volunteer",
-            result.user,
-            String(result.id),
-          );
+          await sendConfirmationEmail("volunteer", result.user, String(result.id));
         }
 
         return result;
@@ -102,10 +91,7 @@ export const useFields = () => {
         let url = "";
         if (v.resume) {
           const file = v.resume;
-          url = await uploadFile(
-            `${tenant}/participants/resumes/${newUploadId()}.pdf`,
-            file,
-          );
+          url = await uploadFile(`${tenant}/participants/resumes/${newUploadId()}.pdf`, file);
         }
 
         const result = await add({
@@ -125,9 +111,7 @@ export const useFields = () => {
             grade: v.grade,
             // The form schema names this consent field `mlh`; `mlh_marketing`
             // has never existed on the value, so this stays `false` as before.
-            mlh_marketing: Boolean(
-              (value as { mlh_marketing?: unknown }).mlh_marketing,
-            ),
+            mlh_marketing: Boolean((value as { mlh_marketing?: unknown }).mlh_marketing),
             dietrestriction: v.dietrestriction,
             resume: url || undefined,
           },
@@ -148,11 +132,7 @@ export const useFields = () => {
         });
 
         if (result.user) {
-          await sendConfirmationEmail(
-            "participant",
-            result.user,
-            String(result.id),
-          );
+          await sendConfirmationEmail("participant", result.user, String(result.id));
         }
 
         return result;
@@ -162,10 +142,7 @@ export const useFields = () => {
         const v = value as FormValuesMap["judge"];
         let url = "";
         const file = v.picture;
-        url = await uploadFile(
-          `${tenant}/judges/pictures/${newUploadId()}`,
-          file,
-        );
+        url = await uploadFile(`${tenant}/judges/pictures/${newUploadId()}`, file);
 
         const result = await add({
           tenant,
@@ -202,10 +179,7 @@ export const useFields = () => {
         const v = value as FormValuesMap["speaker"];
         let url = "";
         const file = v.picture;
-        url = await uploadFile(
-          `${tenant}/speakers/pictures/${newUploadId()}`,
-          file,
-        );
+        url = await uploadFile(`${tenant}/speakers/pictures/${newUploadId()}`, file);
 
         const result = await add({
           tenant,
@@ -232,11 +206,7 @@ export const useFields = () => {
         });
 
         if (result.user) {
-          await sendConfirmationEmail(
-            "speaker",
-            result.user,
-            String(result.id),
-          );
+          await sendConfirmationEmail("speaker", result.user, String(result.id));
         }
 
         return result;
@@ -270,11 +240,7 @@ export const useFields = () => {
         });
 
         if (result.user) {
-          await sendConfirmationEmail(
-            "superadmin",
-            result.user,
-            String(result.id),
-          );
+          await sendConfirmationEmail("superadmin", result.user, String(result.id));
         }
 
         return result;

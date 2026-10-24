@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  FEATURE_FLAGS,
-  getFeatureFlag,
-  type FeatureFlagKey,
-} from "@/lib/feature-flags";
+import { FEATURE_FLAGS, getFeatureFlag, type FeatureFlagKey } from "@/lib/feature-flags";
 
 export type { FeatureFlagKey } from "@/lib/feature-flags";
 
@@ -17,9 +13,7 @@ export interface UseFeatureFlagResult<K extends FeatureFlagKey> {
 
 // Resolve one feature flag. `flag` is compile-time checked against the registry
 // in `@/lib/feature-flags`; server components/routes use `getFeatureFlag` instead.
-export function useFeatureFlag<K extends FeatureFlagKey>(
-  flag: K,
-): UseFeatureFlagResult<K> {
+export function useFeatureFlag<K extends FeatureFlagKey>(flag: K): UseFeatureFlagResult<K> {
   return { flag, isEnabled: getFeatureFlag(flag) };
 }
 
@@ -28,9 +22,6 @@ export function useFeatureFlag<K extends FeatureFlagKey>(
 // render, so a loop over dynamic content is unsafe.
 export function useFeatureFlags(): Record<FeatureFlagKey, boolean> {
   return Object.fromEntries(
-    (Object.keys(FEATURE_FLAGS) as FeatureFlagKey[]).map((key) => [
-      key,
-      getFeatureFlag(key),
-    ]),
+    (Object.keys(FEATURE_FLAGS) as FeatureFlagKey[]).map((key) => [key, getFeatureFlag(key)]),
   ) as Record<FeatureFlagKey, boolean>;
 }

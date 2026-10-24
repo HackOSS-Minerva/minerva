@@ -17,8 +17,8 @@ const Acceptance = ({ name, position, preview, tenant }: AcceptanceProps) => {
         <strong>{position ?? "Insert Position"}</strong>
       </Text>
       <Text>
-        We will be using Discord as our primary communication platform regarding
-        announcements, events, workshops, activities, and more!
+        We will be using Discord as our primary communication platform regarding announcements,
+        events, workshops, activities, and more!
       </Text>
       <Section className="text-center">
         <Button

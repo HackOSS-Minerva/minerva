@@ -20,13 +20,11 @@ const STATUS_CONFIG: Record<
 > = {
   ACCEPTANCE: {
     label: "Accepted",
-    className:
-      "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+    className: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
   },
   PENDING: {
     label: "Pending Acceptance",
-    className:
-      "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+    className: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
   },
   REJECTION: {
     label: "Rejected",
@@ -57,10 +55,7 @@ export function ApplicationStatusBadge({
             </Button>
           )
         ) : (
-          <Badge
-            variant="outline"
-            className={`font-semibold ${config?.className ?? ""}`}
-          >
+          <Badge variant="outline" className={`font-semibold ${config?.className ?? ""}`}>
             {config?.label}
           </Badge>
         )}

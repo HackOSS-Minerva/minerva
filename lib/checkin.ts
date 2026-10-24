@@ -92,8 +92,7 @@ export function parseCheckinQr(raw: string): ParseCheckinQrResult {
     return { ok: false, reason: "invalid" };
   }
 
-  const { id, firstname, lastname, email } =
-    parsed as Partial<CheckinQrPayload>;
+  const { id, firstname, lastname, email } = parsed as Partial<CheckinQrPayload>;
 
   if (typeof id !== "string" || !id) {
     return { ok: false, reason: "invalid" };

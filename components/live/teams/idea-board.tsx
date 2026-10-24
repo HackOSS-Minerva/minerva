@@ -33,9 +33,7 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
 
   const [newIdeaOpen, setNewIdeaOpen] = useState(false);
   const [deleteIdeaOpen, setDeleteIdeaOpen] = useState(false);
-  const [selectedIdeaId, setSelectedIdeaId] = useState<Id<"ideas"> | null>(
-    null,
-  );
+  const [selectedIdeaId, setSelectedIdeaId] = useState<Id<"ideas"> | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedRolesInput, setSelectedRolesInput] = useState<string[]>([]);
@@ -173,33 +171,20 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
         )}
 
         {filteredIdeas.map((idea) => (
-          <div
-            key={idea._id}
-            className="flex flex-col rounded-lg border bg-card p-3"
-          >
+          <div key={idea._id} className="flex flex-col rounded-lg border bg-card p-3">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <h3 className="font-semibold">{idea.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {idea.description}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  by {idea.author}
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{idea.description}</p>
+                <p className="mt-1 text-xs text-muted-foreground">by {idea.author}</p>
               </div>
             </div>
 
             {(idea as Idea).skills?.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1">
-                <span className="text-xs text-muted-foreground">
-                  Looking for:
-                </span>
+                <span className="text-xs text-muted-foreground">Looking for:</span>
                 {(idea as Idea).skills.map((skill: string) => (
-                  <Badge
-                    key={skill}
-                    variant="secondary"
-                    className="text-[10px]"
-                  >
+                  <Badge key={skill} variant="secondary" className="text-[10px]">
                     {skill}
                   </Badge>
                 ))}
@@ -215,8 +200,7 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
             <DialogTitle>Delete Idea</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Are you sure you want to delete this idea? This action cannot be
-            undone.
+            Are you sure you want to delete this idea? This action cannot be undone.
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteIdeaOpen(false)}>

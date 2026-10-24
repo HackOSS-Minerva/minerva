@@ -1,15 +1,7 @@
 import { query, mutation } from "./_generated/server";
 import { convexError } from "./app_error";
 import { v } from "convex/values";
-import {
-  dietrestrictions,
-  genders,
-  grades,
-  majors,
-  shirts,
-  teams,
-  ages,
-} from "./schema";
+import { dietrestrictions, genders, grades, majors, shirts, teams, ages } from "./schema";
 import { statuses } from "../data/status";
 import { authComponent } from "./auth";
 
@@ -28,9 +20,7 @@ export const getstatus = query({
   handler: async (ctx, { tenant, userId }) => {
     const superadmin = await ctx.db
       .query("superadmins")
-      .withIndex("by_tenant_user", (q) =>
-        q.eq("tenant", tenant).eq("userId", userId),
-      )
+      .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", userId))
       .first();
 
     if (!superadmin) return null;
@@ -113,8 +103,7 @@ export const setStatusMany = mutation({
   handler: async (ctx, { ids, status }) => {
     for (const id of ids) {
       const superadmin = await ctx.db.get("superadmins", id);
-      if (!superadmin)
-        throw convexError("NOT_FOUND", `Superadmin ${id} not found`);
+      if (!superadmin) throw convexError("NOT_FOUND", `Superadmin ${id} not found`);
 
       if (superadmin.status === status) continue;
 

@@ -12,8 +12,7 @@ interface CatalogEntry {
   retryable: boolean;
 }
 
-const defineCatalog = <T extends string>(catalog: Record<T, CatalogEntry>) =>
-  catalog;
+const defineCatalog = <T extends string>(catalog: Record<T, CatalogEntry>) => catalog;
 
 export const ERROR_CATALOG = defineCatalog({
   BAD_REQUEST: { status: 400, message: "Invalid request.", retryable: false },
@@ -184,8 +183,7 @@ export class AppError extends Error {
 
 const resolveCode = (error: unknown): ErrorCode => {
   if (error instanceof AppError) return error.code;
-  if (error instanceof Error && isErrorCode(error.message))
-    return error.message;
+  if (error instanceof Error && isErrorCode(error.message)) return error.message;
   return "INTERNAL";
 };
 
@@ -217,11 +215,7 @@ export interface LogAppErrorParams {
   requestId: string;
 }
 
-export const logAppError = ({
-  route,
-  error,
-  requestId,
-}: LogAppErrorParams): void => {
+export const logAppError = ({ route, error, requestId }: LogAppErrorParams): void => {
   const code = resolveCode(error);
   const entry = ERROR_CATALOG[code];
   const cause =
@@ -244,10 +238,7 @@ export const logAppError = ({
   );
 };
 
-export const toErrorResponse = (
-  error: unknown,
-  requestId?: string,
-): Response => {
+export const toErrorResponse = (error: unknown, requestId?: string): Response => {
   const rid = requestId ?? randomRequestId();
   const code = resolveCode(error);
   const entry = ERROR_CATALOG[code];
@@ -257,18 +248,12 @@ export const toErrorResponse = (
   );
 };
 
-export const requireFeature = (
-  enabled: boolean,
-  code: ErrorCode = "FEATURE_DISABLED",
-): void => {
+export const requireFeature = (enabled: boolean, code: ErrorCode = "FEATURE_DISABLED"): void => {
   if (!enabled) throw new AppError(code);
 };
 
 export type FetchHandlerContext = { requestId: string };
-export type FetchHandler = (
-  request: Request,
-  ctx: FetchHandlerContext,
-) => Promise<Response>;
+export type FetchHandler = (request: Request, ctx: FetchHandlerContext) => Promise<Response>;
 
 export const withFetchHandler =
   (routeName: string, handler: FetchHandler) =>

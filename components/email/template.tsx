@@ -66,9 +66,9 @@ const Template = ({ children, name, preview, tenant }: TemplateProps) => {
             </Text>
             <Text className="text-xs leading-6 text-[#666666]">
               This invitation was intended for{" "}
-              <span className="text-black">{name ?? "Insert Name"}</span>. If
-              you were not expecting this email, you can ignore this email. If
-              you are concerned about your account&apos;s safety, please contact{" "}
+              <span className="text-black">{name ?? "Insert Name"}</span>. If you were not expecting
+              this email, you can ignore this email. If you are concerned about your account&apos;s
+              safety, please contact{" "}
               <Link href={`mailto:${tenant.email}`} className="text-blue-600">
                 {tenant.email}
               </Link>{" "}

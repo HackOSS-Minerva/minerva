@@ -91,10 +91,7 @@ export interface DashboardProps<T extends ApplicantRow> {
   };
   onDelete?(args: { id: string }): Promise<unknown>;
   onDeleteMany?(args: { ids: string[] }): Promise<unknown>;
-  setStatusMany?(args: {
-    ids: string[];
-    status: ApplicationStatus;
-  }): Promise<unknown>;
+  setStatusMany?(args: { ids: string[]; status: ApplicationStatus }): Promise<unknown>;
   runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
 
@@ -193,17 +190,13 @@ export const DataTable = <T extends ApplicantRow>({
     },
   });
 
-  const selectedIds = table
-    .getSelectedRowModel()
-    .rows.map((row) => row.original._id);
+  const selectedIds = table.getSelectedRowModel().rows.map((row) => row.original._id);
 
   const handleRunVetting = async () => {
     if (!runVettingMany || selectedIds.length === 0) return;
 
     if (selectedIds.length > MAX_VETTING_BATCH_SIZE) {
-      toast.error(
-        `At most ${MAX_VETTING_BATCH_SIZE} projects can be vetted at once.`,
-      );
+      toast.error(`At most ${MAX_VETTING_BATCH_SIZE} projects can be vetted at once.`);
       return;
     }
 
@@ -215,18 +208,14 @@ export const DataTable = <T extends ApplicantRow>({
       setRowSelection({});
 
       if (failed === 0) {
-        toast.success(
-          `Vetted ${results.length} project${results.length === 1 ? "" : "s"}`,
-        );
+        toast.success(`Vetted ${results.length} project${results.length === 1 ? "" : "s"}`);
       } else if (succeeded === 0) {
         logAppError({
           route: "datatable-vetting",
           error: results[0]?.errorDetails,
           requestId: "client",
         });
-        toast.warning(
-          `Failed to vet ${failed} project${failed === 1 ? "" : "s"}`,
-        );
+        toast.warning(`Failed to vet ${failed} project${failed === 1 ? "" : "s"}`);
       } else {
         logAppError({
           route: "datatable-vetting",
@@ -268,20 +257,12 @@ export const DataTable = <T extends ApplicantRow>({
     <Tabs defaultValue="outline">
       <div className="flex items-start gap-2">
         {emailRole && (
-          <StatusActions
-            table={table}
-            role={emailRole}
-            onSuccess={() => setRowSelection({})}
-          />
+          <StatusActions table={table} role={emailRole} onSuccess={() => setRowSelection({})} />
         )}
         <TableToolbar table={table} slug={slug} />
         <div className="ml-auto flex items-center gap-2">
           <Select defaultValue="accepted">
-            <SelectTrigger
-              className="flex w-fit @4xl/main:hidden"
-              size="sm"
-              id="view-selector"
-            >
+            <SelectTrigger className="flex w-fit @4xl/main:hidden" size="sm" id="view-selector">
               <SelectValue placeholder="Select a view" />
             </SelectTrigger>
             <SelectContent>
@@ -314,9 +295,7 @@ export const DataTable = <T extends ApplicantRow>({
                     const emails = rows.map((row) => row.original.email);
                     const csv = emails.join(",");
                     navigator.clipboard.writeText(csv);
-                    toast.success(
-                      `Copied ${emails.length} emails to clipboard`,
-                    );
+                    toast.success(`Copied ${emails.length} emails to clipboard`);
                   }}
                   disabled={table.getFilteredRowModel().rows.length === 0}
                 >
@@ -330,9 +309,7 @@ export const DataTable = <T extends ApplicantRow>({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const rows = table
-                    .getFilteredRowModel()
-                    .rows.map((row) => row.original);
+                  const rows = table.getFilteredRowModel().rows.map((row) => row.original);
                   const blob = convertToCSV(rows, csvFields);
                   const now = new Date();
                   const pad = (n: number) => String(n).padStart(2, "0");
@@ -365,9 +342,7 @@ export const DataTable = <T extends ApplicantRow>({
                 {table
                   .getAllColumns()
                   .filter(
-                    (column) =>
-                      typeof column.accessorFn !== "undefined" &&
-                      column.getCanHide(),
+                    (column) => typeof column.accessorFn !== "undefined" && column.getCanHide(),
                   )
                   .map((column) => {
                     return (
@@ -375,9 +350,7 @@ export const DataTable = <T extends ApplicantRow>({
                         key={column.id}
                         className="capitalize"
                         checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
+                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
                       >
                         {column.id}
                       </DropdownMenuCheckboxItem>
@@ -391,9 +364,7 @@ export const DataTable = <T extends ApplicantRow>({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const ids = table
-                    .getSelectedRowModel()
-                    .rows.map((row) => row.original._id);
+                  const ids = table.getSelectedRowModel().rows.map((row) => row.original._id);
                   setDeleteTarget({ type: "many", ids });
                   setDeleteDialogOpen(true);
                 }}
@@ -407,10 +378,7 @@ export const DataTable = <T extends ApplicantRow>({
           </div>
         </div>
       </div>
-      <TabsContent
-        value="outline"
-        className="relative flex flex-col gap-4 overflow-auto"
-      >
+      <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
         <div className="overflow-hidden rounded-lg border">
           <Table className={isSubmissions ? "table-fixed" : undefined}>
             <TableHeader className="bg-muted sticky top-0 z-10">
@@ -428,21 +396,14 @@ export const DataTable = <T extends ApplicantRow>({
                       >
                         {header.isPlaceholder
                           ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                          : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     );
                   })}
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody
-              className={
-                readOnly ? undefined : "**:data-[slot=table-cell]:first:w-8"
-              }
-            >
+            <TableBody className={readOnly ? undefined : "**:data-[slot=table-cell]:first:w-8"}>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
@@ -458,20 +419,14 @@ export const DataTable = <T extends ApplicantRow>({
                           isSubmissions && "overflow-hidden",
                         )}
                       >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={visibleColumns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={visibleColumns.length} className="h-24 text-center">
                     No results.
                   </TableCell>
                 </TableRow>
@@ -496,9 +451,7 @@ export const DataTable = <T extends ApplicantRow>({
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
+                  <SelectValue placeholder={table.getState().pagination.pageSize} />
                 </SelectTrigger>
                 <SelectContent side="top">
                   {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -510,8 +463,7 @@ export const DataTable = <T extends ApplicantRow>({
               </Select>
             </div>
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               <Button

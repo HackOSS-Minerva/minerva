@@ -9,8 +9,7 @@ const Pending = () => {
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-primary">Application Pending</h2>
         <p className="text-primary">
-          Your application is being reviewed. We&apos;ll get back to you soon
-          with a decision.
+          Your application is being reviewed. We&apos;ll get back to you soon with a decision.
         </p>
       </div>
     </div>

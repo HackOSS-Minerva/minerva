@@ -7,9 +7,7 @@ import { buildScheduleUrl, SCHEDULE_REVALIDATE_SECONDS } from "@/lib/schedule";
  * of waterfalling it client-side. Prefers a server-only key but falls back
  * to the (already public) `NEXT_PUBLIC_*` key — zero env changes required;
  * to fully un-expose the key, set `GOOGLE_CALENDAR_API_KEY` server-side. */
-export async function fetchScheduleServer(
-  tenant: TenantSlug,
-): Promise<CalendarResponse> {
+export async function fetchScheduleServer(tenant: TenantSlug): Promise<CalendarResponse> {
   const { config } = getTenant(tenant);
   if (!config) {
     throw new AppError("TENANT_INVALID");
@@ -18,8 +16,7 @@ export async function fetchScheduleServer(
   // Prefer the server-only key; fall back to the public key (already exposed
   // client-side by `useSchedule`) so SSR works with zero env changes.
   const apiKey =
-    process.env.GOOGLE_CALENDAR_API_KEY ??
-    process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY;
+    process.env.GOOGLE_CALENDAR_API_KEY ?? process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY;
   if (!apiKey) {
     throw new AppError("CALENDAR_UNAVAILABLE", {
       details: "Missing GOOGLE_CALENDAR_API_KEY",

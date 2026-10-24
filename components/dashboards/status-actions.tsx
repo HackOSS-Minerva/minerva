@@ -4,11 +4,7 @@ import { useState } from "react";
 import { Check, Clock, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useEmail } from "@/hooks/use-email";
 import { logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
@@ -68,9 +64,7 @@ export function StatusActions<T extends ApplicantRow>({
       });
 
       if (status === "PENDING") {
-        toast.success(
-          `Updated ${selectedUsers.length} applicant(s) to pending.`,
-        );
+        toast.success(`Updated ${selectedUsers.length} applicant(s) to pending.`);
       } else {
         const emailResults = await Promise.allSettled(
           selectedUsers.map((user) =>
@@ -86,18 +80,12 @@ export function StatusActions<T extends ApplicantRow>({
             }),
           ),
         );
-        const failedCount = emailResults.filter(
-          (result) => result.status === "rejected",
-        ).length;
+        const failedCount = emailResults.filter((result) => result.status === "rejected").length;
 
         if (failedCount > 0) {
-          toast.warning(
-            `Statuses updated, but ${failedCount} email(s) could not be sent.`,
-          );
+          toast.warning(`Statuses updated, but ${failedCount} email(s) could not be sent.`);
         } else {
-          toast.success(
-            `Updated ${selectedUsers.length} applicant(s) and sent their emails.`,
-          );
+          toast.success(`Updated ${selectedUsers.length} applicant(s) and sent their emails.`);
         }
       }
 

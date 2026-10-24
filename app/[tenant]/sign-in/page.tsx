@@ -55,37 +55,24 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold">Sign In</h1>
           <p className="text-muted-foreground text-sm">
-            Sign in with Google to continue with{" "}
-            <span className="font-medium">{tenant}</span>.
+            Sign in with Google to continue with <span className="font-medium">{tenant}</span>.
           </p>
         </div>
 
         {session?.session ? (
           <div className="space-y-3">
             <p className="text-muted-foreground text-center text-sm">
-              Signed in as{" "}
-              <span className="font-medium">{session.user.email}</span>.
+              Signed in as <span className="font-medium">{session.user.email}</span>.
             </p>
-            <Button
-              className="w-full"
-              onClick={() => router.push(redirectTarget)}
-            >
+            <Button className="w-full" onClick={() => router.push(redirectTarget)}>
               Continue
             </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleSignOut}
-            >
+            <Button variant="outline" className="w-full" onClick={handleSignOut}>
               Sign out
             </Button>
           </div>
         ) : (
-          <Button
-            className="w-full"
-            onClick={handleGoogleSignIn}
-            disabled={signingIn || isPending}
-          >
+          <Button className="w-full" onClick={handleGoogleSignIn} disabled={signingIn || isPending}>
             {signingIn ? "Redirecting to Google…" : "Sign in with Google"}
           </Button>
         )}

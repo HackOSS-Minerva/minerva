@@ -9,21 +9,15 @@ interface ConfirmationProps {
   tenant: TenantConfig;
 }
 
-const Confirmation = ({
-  name,
-  position,
-  preview,
-  tenant,
-}: ConfirmationProps) => {
+const Confirmation = ({ name, position, preview, tenant }: ConfirmationProps) => {
   return (
     <Template name={name} preview={preview} tenant={tenant}>
       <Text>
-        Thank you for applying as a{" "}
-        <strong>{position ?? "Insert Position"}</strong>!
+        Thank you for applying as a <strong>{position ?? "Insert Position"}</strong>!
       </Text>
       <Text>
-        We appreciate your support towards {tenant.name}. Please keep an eye out
-        for future {tenant.name} emails regarding updates and announcements.
+        We appreciate your support towards {tenant.name}. Please keep an eye out for future{" "}
+        {tenant.name} emails regarding updates and announcements.
       </Text>
     </Template>
   );

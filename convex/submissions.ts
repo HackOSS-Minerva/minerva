@@ -50,18 +50,13 @@ export const add = mutation({
     const user = await authComponent.safeGetAuthUser(ctx);
     const submitterEmail = user?.email?.trim().toLowerCase();
     if (!submitterEmail) {
-      throw convexError(
-        "UNAUTHORIZED",
-        "An authenticated submitter email is required.",
-      );
+      throw convexError("UNAUTHORIZED", "An authenticated submitter email is required.");
     }
 
     const team = getSubmissionTeam(submitterEmail, invites);
-    if (team.memberCount > MAX_TEAM_SIZE)
-      throw convexError("VALIDATION_FAILED", TEAM_SIZE_ERROR);
+    if (team.memberCount > MAX_TEAM_SIZE) throw convexError("VALIDATION_FAILED", TEAM_SIZE_ERROR);
 
-    const nonEmpty = (links: string[]) =>
-      links.filter((link) => link.trim() !== "");
+    const nonEmpty = (links: string[]) => links.filter((link) => link.trim() !== "");
     if (
       github.length > MAX_LINKS_PER_TYPE ||
       figma.length > MAX_LINKS_PER_TYPE ||

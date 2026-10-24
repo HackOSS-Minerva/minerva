@@ -6,10 +6,7 @@ interface TenantLayoutProps {
   params: Promise<{ tenant: string }>;
 }
 
-export default async function TenantLayout({
-  children,
-  params,
-}: TenantLayoutProps) {
+export default async function TenantLayout({ children, params }: TenantLayoutProps) {
   const { tenant } = await params;
 
   if (!isTenantSlug(tenant)) notFound();

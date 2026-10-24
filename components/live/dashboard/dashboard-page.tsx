@@ -47,9 +47,7 @@ export function DashboardPage({
             applyLabel="Apply to be a Participant"
           />
         </div>
-        <p className="mt-4 text-muted-foreground">
-          Live event information is not available yet.
-        </p>
+        <p className="mt-4 text-muted-foreground">Live event information is not available yet.</p>
       </div>
     );
   }

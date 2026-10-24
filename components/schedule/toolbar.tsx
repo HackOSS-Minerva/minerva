@@ -63,12 +63,10 @@ export function FilterToolbar<TData extends RowData>({
       filterMap.set(colId, existing);
     }
 
-    const columnFilters = Array.from(filterMap.entries()).map(
-      ([id, filterValues]) => ({
-        id,
-        value: filterValues,
-      }),
-    );
+    const columnFilters = Array.from(filterMap.entries()).map(([id, filterValues]) => ({
+      id,
+      value: filterValues,
+    }));
 
     table.setColumnFilters(columnFilters);
   };
@@ -78,9 +76,7 @@ export function FilterToolbar<TData extends RowData>({
     if (!inputValue) return filterOptions;
     const q = inputValue.toLowerCase();
     return filterOptions.filter(
-      (opt) =>
-        opt.label.toLowerCase().includes(q) ||
-        opt.group.toLowerCase().includes(q),
+      (opt) => opt.label.toLowerCase().includes(q) || opt.group.toLowerCase().includes(q),
     );
   }, [inputValue, filterOptions]);
 
@@ -114,9 +110,7 @@ export function FilterToolbar<TData extends RowData>({
                   const label = option?.label ?? value;
                   const group = option?.group ?? "";
                   return (
-                    <ComboboxChip key={value}>
-                      {group ? `${group}: ${label}` : label}
-                    </ComboboxChip>
+                    <ComboboxChip key={value}>{group ? `${group}: ${label}` : label}</ComboboxChip>
                   );
                 })}
               </>
@@ -144,15 +138,7 @@ export function FilterToolbar<TData extends RowData>({
   );
 }
 
-const DAYS_OF_WEEK = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+const DAYS_OF_WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const SCHEDULE_STATUS_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "completed", label: "Completed" },
@@ -177,14 +163,7 @@ export function buildScheduleFilterOptions(): FilterOption[] {
   ];
 }
 
-export function ScheduleToolbar<TData extends RowData>({
-  table,
-}: {
-  table: Table<TData>;
-}) {
-  const allFilterOptions = React.useMemo(
-    () => buildScheduleFilterOptions(),
-    [],
-  );
+export function ScheduleToolbar<TData extends RowData>({ table }: { table: Table<TData> }) {
+  const allFilterOptions = React.useMemo(() => buildScheduleFilterOptions(), []);
   return <FilterToolbar table={table} allFilterOptions={allFilterOptions} />;
 }

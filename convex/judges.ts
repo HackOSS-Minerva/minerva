@@ -10,9 +10,7 @@ export const getstatus = query({
   handler: async (ctx, { tenant, userId }) => {
     const judge = await ctx.db
       .query("judges")
-      .withIndex("by_tenant_user", (q) =>
-        q.eq("tenant", tenant).eq("userId", userId),
-      )
+      .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", userId))
       .first();
 
     if (!judge) return null;

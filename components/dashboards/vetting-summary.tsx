@@ -29,9 +29,7 @@ import type {
 } from "@/lib/vetting/types";
 import { reviewStatusMeta } from "./vetting-status";
 
-const peopleFindingMeta: Partial<
-  Record<FindingCode, { label: string; icon: typeof UserRound }>
-> = {
+const peopleFindingMeta: Partial<Record<FindingCode, { label: string; icon: typeof UserRound }>> = {
   declared_team_size_exceeds_limit: {
     label: "Declared team size exceeds limit",
     icon: UsersRound,
@@ -58,9 +56,7 @@ const unavailableRepositoryFindingCodes = new Set<FindingCode>([
   "github_api_error",
 ]);
 
-export function repositoryEvidenceExplanation(
-  findings: VettingFinding[],
-): string | null {
+export function repositoryEvidenceExplanation(findings: VettingFinding[]): string | null {
   const messages = Array.from(
     new Set(
       findings
@@ -69,9 +65,7 @@ export function repositoryEvidenceExplanation(
     ),
   );
 
-  return messages.length > 0
-    ? `Repository evidence unavailable: ${messages.join(" ")}`
-    : null;
+  return messages.length > 0 ? `Repository evidence unavailable: ${messages.join(" ")}` : null;
 }
 
 function formatDate(timestamp?: number) {
@@ -120,17 +114,14 @@ export function VettingSummary({
 
   const peopleFindings = useMemo(
     () =>
-      (result?.findings ?? []).filter(
-        (finding) => peopleFindingMeta[finding.code] !== undefined,
-      ),
+      (result?.findings ?? []).filter((finding) => peopleFindingMeta[finding.code] !== undefined),
     [result?.findings],
   );
   const repositoryExplanation = useMemo(
     () => repositoryEvidenceExplanation(result?.findings ?? []),
     [result?.findings],
   );
-  const isBusy =
-    isRunning || vettingStatus === "queued" || vettingStatus === "running";
+  const isBusy = isRunning || vettingStatus === "queued" || vettingStatus === "running";
   const reviewStatus = result?.storedVetted ?? currentStatus;
   const status = reviewStatusMeta[reviewStatus];
   const StatusIcon = status.icon;
@@ -164,13 +155,9 @@ export function VettingSummary({
           </div>
         </div>
         {repositoryExplanation ? (
-          <p className="text-xs text-amber-700 dark:text-amber-300">
-            {repositoryExplanation}
-          </p>
+          <p className="text-xs text-amber-700 dark:text-amber-300">{repositoryExplanation}</p>
         ) : result?.errorCode ? (
-          <p className="text-xs text-red-600">
-            {getUserMessage(result.errorCode)}
-          </p>
+          <p className="text-xs text-red-600">{getUserMessage(result.errorCode)}</p>
         ) : null}
       </div>
 
@@ -254,9 +241,7 @@ export function VettingSummary({
                 })}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                No repository evidence was recorded.
-              </p>
+              <p className="text-sm text-muted-foreground">No repository evidence was recorded.</p>
             )}
           </div>
 
@@ -282,9 +267,7 @@ export function VettingSummary({
                       <FindingIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                       <div className="min-w-0">
                         <p className="font-medium leading-5">{meta.label}</p>
-                        <p className="text-xs leading-5 opacity-80">
-                          {finding.message}
-                        </p>
+                        <p className="text-xs leading-5 opacity-80">{finding.message}</p>
                       </div>
                     </div>
                   );
@@ -308,9 +291,7 @@ export function VettingSummary({
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 text-sm font-medium">
                           <UserRound className="h-4 w-4 text-muted-foreground" />
-                          <span className="break-all">
-                            {contributorLabel(contributor)}
-                          </span>
+                          <span className="break-all">{contributorLabel(contributor)}</span>
                         </div>
                         <div className="mt-1 grid gap-0.5 text-xs text-muted-foreground">
                           <span>{contributor.commitCount} commits</span>
@@ -321,11 +302,7 @@ export function VettingSummary({
                         </div>
                       </div>
                       <Badge
-                        variant={
-                          contributor.mappingSource === "unmapped"
-                            ? "outline"
-                            : "secondary"
-                        }
+                        variant={contributor.mappingSource === "unmapped" ? "outline" : "secondary"}
                         className={cn(
                           "capitalize",
                           contributor.mappingSource === "unmapped" &&

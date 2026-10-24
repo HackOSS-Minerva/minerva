@@ -4,12 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -46,8 +41,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   const Header = headers.feedback;
   const eventName = config.event.name;
 
-  const canSubmit =
-    find.trim() && likedToSee.trim() && notBeneficial.trim() && rating !== "";
+  const canSubmit = find.trim() && likedToSee.trim() && notBeneficial.trim() && rating !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,14 +73,12 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
     return (
       <Card className="w-full sm:max-w-md border-none">
         <CardHeader>
-          <h2 className="text-2xl font-bold text-center">
-            Thank You for Your Feedback!
-          </h2>
+          <h2 className="text-2xl font-bold text-center">Thank You for Your Feedback!</h2>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground">
-            Your anonymous feedback has been received. We appreciate you taking
-            the time to help us improve the event.
+            Your anonymous feedback has been received. We appreciate you taking the time to help us
+            improve the event.
           </p>
         </CardContent>
       </Card>
@@ -103,19 +95,11 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          <form
-            id="feedback-form"
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-6"
-          >
+          <form id="feedback-form" onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* Question 1 */}
             <Field>
               <FieldLabel>How did you find {eventName}?</FieldLabel>
-              <Select
-                value={find}
-                onValueChange={setFind}
-                disabled={submitting}
-              >
+              <Select value={find} onValueChange={setFind} disabled={submitting}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select an option..." />
                 </SelectTrigger>
@@ -165,14 +149,8 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
 
             {/* Question 4 - Rating */}
             <Field>
-              <FieldLabel>
-                Please rate {eventName} on a scale of 1 - 10
-              </FieldLabel>
-              <Select
-                value={rating}
-                onValueChange={setRating}
-                disabled={submitting}
-              >
+              <FieldLabel>Please rate {eventName} on a scale of 1 - 10</FieldLabel>
+              <Select value={rating} onValueChange={setRating} disabled={submitting}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a rating..." />
                 </SelectTrigger>
@@ -205,11 +183,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
         </CardContent>
         <CardFooter className="flex justify-center">
           <Field orientation="horizontal" className="justify-center">
-            <Button
-              type="submit"
-              form="feedback-form"
-              disabled={submitting || !canSubmit}
-            >
+            <Button type="submit" form="feedback-form" disabled={submitting || !canSubmit}>
               {submitting ? "Submitting..." : "Submit"}
             </Button>
           </Field>

@@ -31,9 +31,7 @@ export type { VettingBatchResult } from "@/lib/vetting/types";
 
 const optionalUrl = z.union([
   z.literal(""),
-  z
-    .url("Please enter a valid URL.")
-    .max(100, "URL must be 100 characters or less."),
+  z.url("Please enter a valid URL.").max(100, "URL must be 100 characters or less."),
 ]);
 
 export const submissionSchema = z.object({
@@ -52,24 +50,14 @@ export const submissionSchema = z.object({
   devpost: z
     .url("Please enter a valid URL (e.g., https://devpost.com/...)")
     .max(100, "URL must be 100 characters or less."),
-  github: z
-    .array(optionalUrl)
-    .max(MAX_LINKS_PER_TYPE, "You can add at most 3 GitHub links."),
-  figma: z
-    .array(optionalUrl)
-    .max(MAX_LINKS_PER_TYPE, "You can add at most 3 Figma links."),
-  canva: z
-    .array(optionalUrl)
-    .max(MAX_LINKS_PER_TYPE, "You can add at most 3 Canva links."),
+  github: z.array(optionalUrl).max(MAX_LINKS_PER_TYPE, "You can add at most 3 GitHub links."),
+  figma: z.array(optionalUrl).max(MAX_LINKS_PER_TYPE, "You can add at most 3 Figma links."),
+  canva: z.array(optionalUrl).max(MAX_LINKS_PER_TYPE, "You can add at most 3 Canva links."),
   presentation: z.union([
     z.literal(""),
-    z
-      .url("Please enter a valid presentation URL.")
-      .max(100, "URL must be 100 characters or less."),
+    z.url("Please enter a valid presentation URL.").max(100, "URL must be 100 characters or less."),
   ]),
-  invites: z.array(
-    z.union([z.literal(""), z.email("Invalid email address format.")]),
-  ),
+  invites: z.array(z.union([z.literal(""), z.email("Invalid email address format.")])),
 });
 
 export type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -112,13 +100,7 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
         toast.error("You can add at most 3 links per type.");
         return;
       }
-      if (
-        !(
-          cleanGithub.length > 0 ||
-          cleanFigma.length > 0 ||
-          cleanCanva.length > 0
-        )
-      ) {
+      if (!(cleanGithub.length > 0 || cleanFigma.length > 0 || cleanCanva.length > 0)) {
         toast.error("At least one GitHub, Figma, or Canva link is required.");
         return;
       }

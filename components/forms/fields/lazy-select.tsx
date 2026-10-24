@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 
 /** Client body for `lazySelectField`: loads options on mount, then renders the
  * same select as `selectField`. Keeps big lists (schools) out of the initial

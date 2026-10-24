@@ -99,9 +99,7 @@ export function DownloadCertificateButton({
         iframe.srcdoc = certHTML;
       });
 
-      const certElement = iframe.contentDocument!.getElementById(
-        "cert",
-      ) as HTMLElement;
+      const certElement = iframe.contentDocument!.getElementById("cert") as HTMLElement;
 
       // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
       // getComputedStyle and replace any unsupported color values with a safe fallback
@@ -111,10 +109,7 @@ export function DownloadCertificateButton({
         return new Proxy(styles, {
           get(target, prop) {
             const val: unknown = Reflect.get(target, prop);
-            if (
-              typeof val === "string" &&
-              (val.includes("lab(") || val.includes("oklch("))
-            ) {
+            if (typeof val === "string" && (val.includes("lab(") || val.includes("oklch("))) {
               return "rgba(0,0,0,0)";
             }
             if (typeof val === "function") return val.bind(target);

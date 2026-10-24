@@ -1,15 +1,6 @@
 import type { LucideIcon } from "lucide-react";
-import {
-  AlertTriangle,
-  CheckCircle2,
-  CircleDashed,
-  LoaderCircle,
-  XCircle,
-} from "lucide-react";
-import type {
-  SubmissionReviewStatus,
-  VettingStatus,
-} from "@/lib/vetting/types";
+import { AlertTriangle, CheckCircle2, CircleDashed, LoaderCircle, XCircle } from "lucide-react";
+import type { SubmissionReviewStatus, VettingStatus } from "@/lib/vetting/types";
 
 type StatusMeta = {
   label: string;
@@ -21,10 +12,7 @@ type ReviewStatusMeta = StatusMeta & {
   badgeClass: string;
 };
 
-export const reviewStatusMeta: Record<
-  SubmissionReviewStatus,
-  ReviewStatusMeta
-> = {
+export const reviewStatusMeta: Record<SubmissionReviewStatus, ReviewStatusMeta> = {
   verified: {
     label: "Verified",
     icon: CheckCircle2,
@@ -85,8 +73,7 @@ const VETTING_STATUSES = new Set<VettingStatus>([
 ]);
 
 export function normalizeVettingStatus(value: unknown): VettingStatus {
-  return typeof value === "string" &&
-    VETTING_STATUSES.has(value as VettingStatus)
+  return typeof value === "string" && VETTING_STATUSES.has(value as VettingStatus)
     ? (value as VettingStatus)
     : "not_started";
 }

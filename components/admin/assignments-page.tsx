@@ -24,11 +24,7 @@ import {
   IconArrowsShuffle,
 } from "@tabler/icons-react";
 import { useParams } from "next/navigation";
-import {
-  useAssignments,
-  generateAssignments,
-  getJudgeName,
-} from "@/hooks/use-assignments";
+import { useAssignments, generateAssignments, getJudgeName } from "@/hooks/use-assignments";
 import type { ViewMode } from "@/hooks/use-assignments";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
@@ -65,9 +61,7 @@ export default function AssignmentsContent() {
         .get(judge._id)
         ?.map((sid) => submissionsById.get(sid)?.teamName ?? "")
         .join(" ") ?? "";
-    return (
-      name.includes(lowerQuery) || teamNames.toLowerCase().includes(lowerQuery)
-    );
+    return name.includes(lowerQuery) || teamNames.toLowerCase().includes(lowerQuery);
   });
 
   // Filter submissions based on search
@@ -117,9 +111,7 @@ export default function AssignmentsContent() {
             variant="default"
             size="sm"
             onClick={handleAssign}
-            disabled={
-              isSaving || judges.length === 0 || submissions.length === 0
-            }
+            disabled={isSaving || judges.length === 0 || submissions.length === 0}
           >
             <IconArrowsShuffle className="mr-1 h-4 w-4" />
             {isSaving ? "Saving..." : "Assign"}
@@ -186,9 +178,7 @@ export default function AssignmentsContent() {
       {judges.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <IconUsers className="mb-4 h-12 w-12 text-muted-foreground/40" />
-          <h3 className="text-lg font-semibold text-muted-foreground">
-            No judges found
-          </h3>
+          <h3 className="text-lg font-semibold text-muted-foreground">No judges found</h3>
           <p className="mt-1 text-sm text-muted-foreground/60">
             Register judges before creating assignments.
           </p>
@@ -198,9 +188,7 @@ export default function AssignmentsContent() {
       {judges.length > 0 && submissions.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <IconUsers className="mb-4 h-12 w-12 text-muted-foreground/40" />
-          <h3 className="text-lg font-semibold text-muted-foreground">
-            No submissions found
-          </h3>
+          <h3 className="text-lg font-semibold text-muted-foreground">No submissions found</h3>
           <p className="mt-1 text-sm text-muted-foreground/60">
             Teams must submit projects before creating assignments.
           </p>
@@ -209,8 +197,8 @@ export default function AssignmentsContent() {
 
       {!hasAssignments && judges.length > 0 && submissions.length > 0 && (
         <div className="rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
-          No assignments have been created yet. Click the Assign button above to
-          generate judge assignments.
+          No assignments have been created yet. Click the Assign button above to generate judge
+          assignments.
         </div>
       )}
 
@@ -241,9 +229,7 @@ export default function AssignmentsContent() {
                     </CardHeader>
                     <CardContent className="px-4 py-3">
                       {teamIds.length === 0 ? (
-                        <p className="text-sm text-muted-foreground italic">
-                          No teams assigned
-                        </p>
+                        <p className="text-sm text-muted-foreground italic">No teams assigned</p>
                       ) : (
                         <ul className="space-y-2">
                           {teamIds.map((submissionId) => {
@@ -255,9 +241,7 @@ export default function AssignmentsContent() {
                                 className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
                               >
                                 <IconClipboardList className="h-4 w-4 shrink-0 text-muted-foreground" />
-                                <span className="truncate font-medium">
-                                  {sub.teamName}
-                                </span>
+                                <span className="truncate font-medium">{sub.teamName}</span>
                               </li>
                             );
                           })}
@@ -278,10 +262,7 @@ export default function AssignmentsContent() {
               {filteredSubmissions.map((submission) => {
                 const judgeIds = judgesByTeam.get(submission._id) ?? [];
                 return (
-                  <Card
-                    key={submission._id}
-                    className="gap-0 overflow-hidden py-0"
-                  >
+                  <Card key={submission._id} className="gap-0 overflow-hidden py-0">
                     <CardHeader className="border-b bg-muted/30 px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/30 pr-2">
@@ -300,9 +281,7 @@ export default function AssignmentsContent() {
                     </CardHeader>
                     <CardContent className="px-4 py-3">
                       {judgeIds.length === 0 ? (
-                        <p className="text-sm text-muted-foreground italic">
-                          No judges assigned
-                        </p>
+                        <p className="text-sm text-muted-foreground italic">No judges assigned</p>
                       ) : (
                         <ul className="space-y-2">
                           {judgeIds.map((judgeId) => {
@@ -314,9 +293,7 @@ export default function AssignmentsContent() {
                                 className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
                               >
                                 <IconUser className="h-4 w-4 shrink-0 text-muted-foreground" />
-                                <span className="truncate font-medium">
-                                  {getJudgeName(judge)}
-                                </span>
+                                <span className="truncate font-medium">{getJudgeName(judge)}</span>
                               </li>
                             );
                           })}
@@ -343,8 +320,7 @@ export default function AssignmentsContent() {
             <AlertDialogTitle>Clear all assignments?</AlertDialogTitle>
             <AlertDialogDescription>
               This will remove all {assignments.length} assignment
-              {assignments.length !== 1 ? "s" : ""}. This action cannot be
-              undone.
+              {assignments.length !== 1 ? "s" : ""}. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

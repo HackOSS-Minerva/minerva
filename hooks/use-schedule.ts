@@ -5,11 +5,7 @@ import type { CalendarResponse } from "@/types/calendar";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError } from "@/lib/app-error";
-import {
-  buildScheduleUrl,
-  SCHEDULE_RETRY_COUNT,
-  SCHEDULE_STALE_MS,
-} from "@/lib/schedule";
+import { buildScheduleUrl, SCHEDULE_RETRY_COUNT, SCHEDULE_STALE_MS } from "@/lib/schedule";
 
 export const useSchedule = (initialData?: CalendarResponse) => {
   const { tenant } = useParams<{ tenant: TenantSlug }>();
@@ -21,10 +17,7 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     }
 
     const response = await fetch(
-      buildScheduleUrl(
-        config.calendarid,
-        process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY ?? "",
-      ),
+      buildScheduleUrl(config.calendarid, process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY ?? ""),
       { method: "GET" },
     );
 

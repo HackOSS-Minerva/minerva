@@ -1,19 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldLabel,
-  FieldDescription,
-  FieldError,
-} from "@/components/ui/field";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -58,9 +47,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
+            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>Participate</BreadcrumbItem>
@@ -72,17 +59,13 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
       </Breadcrumb>
       <div>
         <h1 className="text-2xl font-bold md:text-3xl">Submit Project</h1>
-        <p className="mt-1 text-muted-foreground">
-          Submit your hackathon project details below.
-        </p>
+        <p className="mt-1 text-muted-foreground">Submit your hackathon project details below.</p>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle>Project Details</CardTitle>
-          <CardDescription>
-            Provide your team and project information.
-          </CardDescription>
+          <CardDescription>Provide your team and project information.</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -96,8 +79,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             {/* Team Name */}
             <form.Field name="teamName">
               {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <div className="flex justify-between items-center">
@@ -119,9 +101,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(
-                          e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH),
-                        )
+                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH))
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_NAME_LENGTH}
@@ -130,9 +110,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -141,8 +119,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             {/* Project Name */}
             <form.Field name="projectName">
               {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <div className="flex justify-between items-center">
@@ -164,9 +141,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(
-                          e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH),
-                        )
+                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_NAME_LENGTH))
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_NAME_LENGTH}
@@ -175,9 +150,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -186,8 +159,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             {/* Description */}
             <form.Field name="description">
               {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name} className="text-primary">
@@ -196,19 +168,16 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                     </FieldLabel>
                     <div className="flex justify-between items-end gap-4">
                       <FieldDescription>
-                        Briefly describe what your project does and what problem
-                        it solves.
+                        Briefly describe what your project does and what problem it solves.
                       </FieldDescription>
                       <span
                         className={`text-xs shrink-0 ${
-                          field.state.value.length >=
-                          MAX_SUBMISSION_DESCRIPTION_LENGTH
+                          field.state.value.length >= MAX_SUBMISSION_DESCRIPTION_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         }`}
                       >
-                        {field.state.value.length}/
-                        {MAX_SUBMISSION_DESCRIPTION_LENGTH}
+                        {field.state.value.length}/{MAX_SUBMISSION_DESCRIPTION_LENGTH}
                       </span>
                     </div>
                     <Textarea
@@ -217,10 +186,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       value={field.state.value}
                       onChange={(e) =>
                         field.handleChange(
-                          e.target.value.slice(
-                            0,
-                            MAX_SUBMISSION_DESCRIPTION_LENGTH,
-                          ),
+                          e.target.value.slice(0, MAX_SUBMISSION_DESCRIPTION_LENGTH),
                         )
                       }
                       onBlur={field.handleBlur}
@@ -231,9 +197,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       className="w-full"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -242,8 +206,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             {/* Devpost */}
             <form.Field name="devpost">
               {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <div className="flex justify-between items-center">
@@ -265,9 +228,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(
-                          e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH),
-                        )
+                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH))
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_URL_LENGTH}
@@ -276,9 +237,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -290,8 +249,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             <form.Field name="github">
               {(field) => {
                 const links = field.state.value;
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
@@ -302,9 +260,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           GitHub Repositories
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Add at least one repository link (up to{" "}
-                          {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH}{" "}
-                          characters each).
+                          Add at least one repository link (up to {MAX_LINKS_PER_TYPE}, max{" "}
+                          {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -335,10 +292,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(
-                              0,
-                              MAX_SUBMISSION_URL_LENGTH,
-                            );
+                            newLinks[idx] = e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH);
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -364,9 +318,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(
-                                links.filter((_, i) => i !== idx),
-                              );
+                              field.handleChange(links.filter((_, i) => i !== idx));
                             }}
                             disabled={form.state.isSubmitting}
                           >
@@ -375,9 +327,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         )}
                       </div>
                     ))}
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </div>
                 );
               }}
@@ -389,8 +339,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             <form.Field name="figma">
               {(field) => {
                 const links = field.state.value;
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
@@ -401,9 +350,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           Figma Designs
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Include links to your Figma design files or prototypes
-                          (up to {MAX_LINKS_PER_TYPE}, max{" "}
-                          {MAX_SUBMISSION_URL_LENGTH} characters each).
+                          Include links to your Figma design files or prototypes (up to{" "}
+                          {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -418,9 +366,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           onClick={() => field.handleChange([...links, ""])}
                           disabled={!canAddMore || form.state.isSubmitting}
                           title={
-                            canAddMore
-                              ? "Add design link"
-                              : `Maximum ${MAX_LINKS_PER_TYPE} links`
+                            canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
                           <IconPlus className="h-3 w-3 mr-1" /> Add Design
@@ -434,10 +380,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(
-                              0,
-                              MAX_SUBMISSION_URL_LENGTH,
-                            );
+                            newLinks[idx] = e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH);
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -463,9 +406,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(
-                                links.filter((_, i) => i !== idx),
-                              );
+                              field.handleChange(links.filter((_, i) => i !== idx));
                             }}
                             disabled={form.state.isSubmitting}
                           >
@@ -474,9 +415,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         )}
                       </div>
                     ))}
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </div>
                 );
               }}
@@ -488,8 +427,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             <form.Field name="canva">
               {(field) => {
                 const links = field.state.value;
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
@@ -500,9 +438,8 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           Canva Designs
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Include links to your Canva presentations or designs
-                          (up to {MAX_LINKS_PER_TYPE}, max{" "}
-                          {MAX_SUBMISSION_URL_LENGTH} characters each).
+                          Include links to your Canva presentations or designs (up to{" "}
+                          {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -517,9 +454,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           onClick={() => field.handleChange([...links, ""])}
                           disabled={!canAddMore || form.state.isSubmitting}
                           title={
-                            canAddMore
-                              ? "Add design link"
-                              : `Maximum ${MAX_LINKS_PER_TYPE} links`
+                            canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
                           <IconPlus className="h-3 w-3 mr-1" /> Add Design
@@ -533,10 +468,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           value={link}
                           onChange={(e) => {
                             const newLinks = [...links];
-                            newLinks[idx] = e.target.value.slice(
-                              0,
-                              MAX_SUBMISSION_URL_LENGTH,
-                            );
+                            newLinks[idx] = e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH);
                             field.handleChange(newLinks);
                           }}
                           onBlur={field.handleBlur}
@@ -562,9 +494,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(
-                                links.filter((_, i) => i !== idx),
-                              );
+                              field.handleChange(links.filter((_, i) => i !== idx));
                             }}
                             disabled={form.state.isSubmitting}
                           >
@@ -573,9 +503,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         )}
                       </div>
                     ))}
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </div>
                 );
               }}
@@ -586,8 +514,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             {/* Presentation */}
             <form.Field name="presentation">
               {(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <div className="flex justify-between items-center">
@@ -609,8 +536,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       </span>
                     </div>
                     <FieldDescription>
-                      Optional link to slides or demo video (max{" "}
-                      {MAX_SUBMISSION_URL_LENGTH}
+                      Optional link to slides or demo video (max {MAX_SUBMISSION_URL_LENGTH}
                       characters).
                     </FieldDescription>
                     <Input
@@ -618,9 +544,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       name={field.name}
                       value={field.state.value}
                       onChange={(e) =>
-                        field.handleChange(
-                          e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH),
-                        )
+                        field.handleChange(e.target.value.slice(0, MAX_SUBMISSION_URL_LENGTH))
                       }
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_URL_LENGTH}
@@ -630,9 +554,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 );
               }}
@@ -644,8 +566,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
             <form.Field name="invites">
               {(field) => {
                 const emails = field.state.value;
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -692,9 +613,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             size="icon"
                             className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
                             onClick={() => {
-                              field.handleChange(
-                                emails.filter((_, i) => i !== idx),
-                              );
+                              field.handleChange(emails.filter((_, i) => i !== idx));
                             }}
                             disabled={form.state.isSubmitting}
                           >
@@ -703,9 +622,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         )}
                       </div>
                     ))}
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
+                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </div>
                 );
               }}
@@ -724,11 +641,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      aria-disabled={isSubmitting}
-                    >
+                    <Button type="submit" disabled={isSubmitting} aria-disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           <Loader2 className="size-4 animate-spin" />

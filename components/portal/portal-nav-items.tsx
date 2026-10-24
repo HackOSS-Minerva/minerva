@@ -100,13 +100,9 @@ export function PortalNavItems({
                     >
                       <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
                         {item.label}
-                        {item.external && (
-                          <ExternalLink className="text-muted-foreground" />
-                        )}
+                        {item.external && <ExternalLink className="text-muted-foreground" />}
                       </span>
-                      <span className="text-xs text-muted-foreground">
-                        {item.description}
-                      </span>
+                      <span className="text-xs text-muted-foreground">{item.description}</span>
                     </Link>
                   </DropdownMenuItem>
                 ))
@@ -118,15 +114,11 @@ export function PortalNavItems({
                       className="flex flex-col items-start gap-0.5 px-2 py-1.5 opacity-50"
                     >
                       <span className="text-sm font-medium">{item.label}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {item.description}
-                      </span>
+                      <span className="text-xs text-muted-foreground">{item.description}</span>
                     </div>
                   ))}
                   <div className="flex items-center justify-between gap-2 border-t px-2 py-2">
-                    <span className="text-xs text-muted-foreground">
-                      Register to get access
-                    </span>
+                    <span className="text-xs text-muted-foreground">Register to get access</span>
                     <Button asChild size="sm" variant="outline">
                       <Link href={`/${tenant}${registerHref}`}>Register</Link>
                     </Button>

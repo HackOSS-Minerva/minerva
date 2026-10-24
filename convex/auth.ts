@@ -63,9 +63,7 @@ export const getAdminAccess = query({
 
     const superadmin = await ctx.db
       .query("superadmins")
-      .withIndex("by_tenant_user", (q) =>
-        q.eq("tenant", tenant).eq("userId", user._id),
-      )
+      .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", user._id))
       .first();
 
     const authorized = superadmin?.status === "ACCEPTANCE";
@@ -90,9 +88,7 @@ export const getJudgeAccess = query({
 
     const judge = await ctx.db
       .query("judges")
-      .withIndex("by_tenant_user", (q) =>
-        q.eq("tenant", tenant).eq("userId", user._id),
-      )
+      .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", user._id))
       .first();
 
     const authorized = judge?.status === "ACCEPTANCE";
@@ -117,9 +113,7 @@ export const getParticipantAccess = query({
 
     const participant = await ctx.db
       .query("participants")
-      .withIndex("by_tenant_user", (q) =>
-        q.eq("tenant", tenant).eq("userId", user._id),
-      )
+      .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", user._id))
       .first();
 
     const authorized = participant?.status === "ACCEPTANCE";

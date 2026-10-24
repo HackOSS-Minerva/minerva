@@ -1,13 +1,7 @@
 "use client";
 
 import { Loader2Icon } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -45,16 +39,15 @@ const roleLabels: Record<AnalyticsRole, string> = {
 
 const roles = Object.keys(roleLabels) as AnalyticsRole[];
 
-const participantDemographicLabels: Record<ParticipantDemographicKey, string> =
-  {
-    gender: "Gender",
-    dietrestriction: "Dietary restrictions",
-    shirt: "Shirt size",
-    school: "School",
-    major: "Major",
-    age: "Age",
-    grade: "Grade",
-  };
+const participantDemographicLabels: Record<ParticipantDemographicKey, string> = {
+  gender: "Gender",
+  dietrestriction: "Dietary restrictions",
+  shirt: "Shirt size",
+  school: "School",
+  major: "Major",
+  age: "Age",
+  grade: "Grade",
+};
 
 const participantDemographicKeys: ParticipantDemographicKey[] = [
   "gender",
@@ -74,9 +67,7 @@ function MetricCard({ label, value, description }: MetricCardProps) {
         {description ? <CardDescription>{description}</CardDescription> : null}
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold tabular-nums">
-          {value.toLocaleString()}
-        </div>
+        <div className="text-2xl font-bold tabular-nums">{value.toLocaleString()}</div>
       </CardContent>
     </Card>
   );
@@ -87,10 +78,7 @@ type ParticipantDemographicCardProps = {
   breakdown: ParticipantDemographicBreakdown[];
 };
 
-function ParticipantDemographicCard({
-  label,
-  breakdown,
-}: ParticipantDemographicCardProps) {
+function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographicCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -107,8 +95,7 @@ function ParticipantDemographicCard({
                   <div className="flex items-start justify-between gap-4 text-sm">
                     <span className="break-words">{item.value}</span>
                     <span className="shrink-0 tabular-nums">
-                      {item.count.toLocaleString()} (
-                      {item.percentage.toLocaleString()}%)
+                      {item.count.toLocaleString()} ({item.percentage.toLocaleString()}%)
                     </span>
                   </div>
                   <div className="bg-muted h-2 overflow-hidden rounded-full">
@@ -122,9 +109,7 @@ function ParticipantDemographicCard({
             })}
           </div>
         ) : (
-          <span className="text-muted-foreground text-sm">
-            No PostHog data yet
-          </span>
+          <span className="text-muted-foreground text-sm">No PostHog data yet</span>
         )}
       </CardContent>
     </Card>
@@ -144,11 +129,7 @@ export function AnalyticsPage({ tenant, scope }: AnalyticsPageProps) {
   }
 
   if (isError || !data) {
-    return (
-      <p className="py-12 text-center text-sm text-muted-foreground">
-        No analytics found.
-      </p>
-    );
+    return <p className="py-12 text-center text-sm text-muted-foreground">No analytics found.</p>;
   }
 
   const sharedMetrics: MetricCardProps[] = [
@@ -206,9 +187,7 @@ export function AnalyticsPage({ tenant, scope }: AnalyticsPageProps) {
 
                     return (
                       <TableRow key={role}>
-                        <TableCell className="font-medium">
-                          {roleLabels[role]}
-                        </TableCell>
+                        <TableCell className="font-medium">{roleLabels[role]}</TableCell>
                         <TableCell className="text-right tabular-nums">
                           {counts.total.toLocaleString()}
                         </TableCell>

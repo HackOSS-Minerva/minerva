@@ -2,12 +2,7 @@ export type AutomatedVettingResult = "verified" | "needs_review";
 
 export type SubmissionReviewStatus = AutomatedVettingResult | "disqualified";
 
-export type VettingStatus =
-  | "not_started"
-  | "queued"
-  | "running"
-  | "completed"
-  | "failed";
+export type VettingStatus = "not_started" | "queued" | "running" | "completed" | "failed";
 
 export type FindingCode =
   | "declared_team_size_exceeds_limit"
