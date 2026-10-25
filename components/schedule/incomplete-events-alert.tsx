@@ -129,20 +129,6 @@ export function IncompleteEventsAlert({ incompleteEvents }: IncompleteEventsAler
                           {title}
                         </span>
                       )}
-
-                      {/* Badges for each missing field */}
-                      <div className="flex flex-wrap gap-1">
-                        {missingFields.map((field) => (
-                          <Badge
-                            key={field}
-                            variant="destructive"
-                            className="h-5 gap-1 px-1.5 text-xs font-medium"
-                          >
-                            {FIELD_ICONS[field]}
-                            Missing {field}
-                          </Badge>
-                        ))}
-                      </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
