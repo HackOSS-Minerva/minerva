@@ -23,7 +23,7 @@ const STATUS_CONFIG: Record<
     className: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
   },
   PENDING: {
-    label: "Pending Acceptance",
+    label: "Pending",
     className: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
   },
   REJECTION: {
