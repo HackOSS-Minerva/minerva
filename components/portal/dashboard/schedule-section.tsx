@@ -27,16 +27,11 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
   const [now] = useState(Date.now);
 
-  const getEventTimestamp = (
-    point?: { dateTime?: string; date?: string },
-    isEnd = false,
-  ) => {
+  const getEventTimestamp = (point?: { dateTime?: string; date?: string }, isEnd = false) => {
     if (!point) return 0;
     if (point.dateTime) return new Date(point.dateTime).getTime();
     if (point.date) {
-      return new Date(
-        `${point.date}T${isEnd ? "23:59:59" : "00:00:00"}`,
-      ).getTime();
+      return new Date(`${point.date}T${isEnd ? "23:59:59" : "00:00:00"}`).getTime();
     }
     return 0;
   };
@@ -71,9 +66,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
     : next?.start?.date
       ? `${next.start.date}T00:00:00`
       : null;
-  const nextEventCountdown = useCountdown(
-    nextStartTime ? new Date(nextStartTime) : null,
-  );
+  const nextEventCountdown = useCountdown(nextStartTime ? new Date(nextStartTime) : null);
 
   const formatTime = (dateTime?: string, timeZone?: string) => {
     if (!dateTime) return "All Day";
@@ -120,11 +113,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
   const uniqueDays = useMemo(() => {
     if (!data?.items) return [];
     const days = [
-      ...new Set(
-        data.items.map((e) =>
-          getEventDayLabel(e.start?.dateTime ?? e.start?.date),
-        ),
-      ),
+      ...new Set(data.items.map((e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date))),
     ];
     return days;
   }, [data]);
@@ -139,8 +128,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
       const matchesDay =
         selectedDay === "all" ||
-        getEventDayLabel(event.start?.dateTime ?? event.start?.date) ===
-          selectedDay;
+        getEventDayLabel(event.start?.dateTime ?? event.start?.date) === selectedDay;
 
       return matchesSearch && matchesDay;
     });
@@ -213,15 +201,10 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                 <TabsTrigger key={day} value={day} className="text-xs">
                   {formatDayButtonLabel(
                     data?.items.find(
-                      (e) =>
-                        getEventDayLabel(e.start?.dateTime ?? e.start?.date) ===
-                        day,
+                      (e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date) === day,
                     )?.start?.dateTime ??
                       data?.items.find(
-                        (e) =>
-                          getEventDayLabel(
-                            e.start?.dateTime ?? e.start?.date,
-                          ) === day,
+                        (e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date) === day,
                       )?.start?.date ??
                       day,
                   )}
@@ -280,10 +263,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
         {upcomingEvents.length > 0 && (
           <div className="mt-3 space-y-2">
             {upcomingEvents
-              .sort(
-                (a, b) =>
-                  getEventTimestamp(a.start) - getEventTimestamp(b.start),
-              )
+              .sort((a, b) => getEventTimestamp(a.start) - getEventTimestamp(b.start))
               .map((event) => (
                 <div key={event.id} className="rounded-lg border p-3">
                   <h4 className="text-sm font-medium">{event.summary}</h4>
@@ -311,10 +291,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
             {showPastEvents && (
               <div className="space-y-2">
                 {pastEvents
-                  .sort(
-                    (a, b) =>
-                      getEventTimestamp(a.start) - getEventTimestamp(b.start),
-                  )
+                  .sort((a, b) => getEventTimestamp(a.start) - getEventTimestamp(b.start))
                   .map((event) => (
                     <div key={event.id} className="rounded-lg border p-3 opacity-50">
                       <div className="flex items-center justify-between">

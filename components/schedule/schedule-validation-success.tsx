@@ -9,9 +9,7 @@ interface ScheduleValidationSuccessProps {
   totalCount: number;
 }
 
-export function ScheduleValidationSuccess({
-  totalCount,
-}: ScheduleValidationSuccessProps) {
+export function ScheduleValidationSuccess({ totalCount }: ScheduleValidationSuccessProps) {
   const [dismissed, setDismissed] = useState(false);
 
   if (dismissed) {
@@ -31,9 +29,7 @@ export function ScheduleValidationSuccess({
                 Schedule Validation Passed
               </h3>
               <Badge className="border-emerald-500/30 bg-emerald-500/10 font-semibold text-emerald-700 text-xs hover:bg-emerald-500/15 dark:text-emerald-300">
-                {totalCount > 0
-                  ? `All ${totalCount} Events Valid`
-                  : "Validation Complete"}
+                {totalCount > 0 ? `All ${totalCount} Events Valid` : "Validation Complete"}
               </Badge>
             </div>
             <p className="mt-1 text-muted-foreground text-sm">

@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type {
-  IncompleteScheduleEvent,
-  MissingScheduleField,
-} from "@/types/calendar";
+import type { IncompleteScheduleEvent, MissingScheduleField } from "@/types/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,9 +71,8 @@ export function IncompleteEventsAlert({
                 Incomplete Events Detected
               </h3>
               <Badge variant="destructive" className="font-semibold text-xs">
-                {incompleteEvents.length}{" "}
-                {incompleteEvents.length === 1 ? "Event" : "Events"} Missing
-                Fields
+                {incompleteEvents.length} {incompleteEvents.length === 1 ? "Event" : "Events"}{" "}
+                Missing Fields
               </Badge>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -85,8 +81,8 @@ export function IncompleteEventsAlert({
               <span className="font-medium text-foreground">description</span>,{" "}
               <span className="font-medium text-foreground">date</span>,{" "}
               <span className="font-medium text-foreground">time</span>, and{" "}
-              <span className="font-medium text-foreground">location</span>. The
-              events below are missing one or more of these fields.
+              <span className="font-medium text-foreground">location</span>. The events below are
+              missing one or more of these fields.
             </p>
           </div>
         </div>
@@ -135,10 +131,7 @@ export function IncompleteEventsAlert({
               const startDate = event.start?.date;
               const timeZone = event.start?.timeZone ?? "America/Los_Angeles";
               const formattedTime = formatEventTime(startDateTime, timeZone);
-              const dayLabel = getDayOfWeek(
-                startDateTime ?? startDate,
-                timeZone,
-              );
+              const dayLabel = getDayOfWeek(startDateTime ?? startDate, timeZone);
 
               return (
                 <div
@@ -149,9 +142,7 @@ export function IncompleteEventsAlert({
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-semibold text-foreground truncate">
                         {missingFields.includes("Title") ? (
-                          <span className="italic text-muted-foreground">
-                            (Untitled Event)
-                          </span>
+                          <span className="italic text-muted-foreground">(Untitled Event)</span>
                         ) : (
                           title
                         )}
@@ -188,13 +179,9 @@ export function IncompleteEventsAlert({
                       <span className="flex items-center gap-1">
                         <MapPin className="size-3 text-muted-foreground/70" />
                         {event.location?.trim() ? (
-                          <span className="truncate max-w-[200px]">
-                            {event.location.trim()}
-                          </span>
+                          <span className="truncate max-w-[200px]">{event.location.trim()}</span>
                         ) : (
-                          <span className="italic text-destructive/80">
-                            No location
-                          </span>
+                          <span className="italic text-destructive/80">No location</span>
                         )}
                       </span>
 
@@ -202,13 +189,9 @@ export function IncompleteEventsAlert({
                       <span className="flex items-center gap-1">
                         <FileText className="size-3 text-muted-foreground/70" />
                         {event.description?.trim() ? (
-                          <span className="truncate max-w-[200px]">
-                            {event.description.trim()}
-                          </span>
+                          <span className="truncate max-w-[200px]">{event.description.trim()}</span>
                         ) : (
-                          <span className="italic text-destructive/80">
-                            No description
-                          </span>
+                          <span className="italic text-destructive/80">No description</span>
                         )}
                       </span>
                     </div>
@@ -217,17 +200,8 @@ export function IncompleteEventsAlert({
                   {/* Open in Google Calendar */}
                   {event.htmlLink && (
                     <div className="shrink-0 self-end sm:self-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 gap-1 text-xs"
-                        asChild
-                      >
-                        <a
-                          href={event.htmlLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
+                      <Button variant="outline" size="sm" className="h-7 gap-1 text-xs" asChild>
+                        <a href={event.htmlLink} target="_blank" rel="noopener noreferrer">
                           <span>Edit in GCal</span>
                           <ExternalLink className="size-3" />
                         </a>

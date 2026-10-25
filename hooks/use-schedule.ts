@@ -2,10 +2,7 @@
 
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type {
-  CalendarResponse,
-  IncompleteScheduleEvent,
-} from "@/types/calendar";
+import type { CalendarResponse, IncompleteScheduleEvent } from "@/types/calendar";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError } from "@/lib/app-error";

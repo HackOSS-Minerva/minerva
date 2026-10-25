@@ -44,12 +44,7 @@ export interface CalendarResponse {
   items: GoogleEvent[];
 }
 
-export type MissingScheduleField =
-  | "Title"
-  | "Description"
-  | "Date"
-  | "Time"
-  | "Location";
+export type MissingScheduleField = "Title" | "Description" | "Date" | "Time" | "Location";
 
 export interface IncompleteScheduleEvent {
   event: GoogleEvent;
