@@ -2,6 +2,9 @@ import posthog from "posthog-js";
 import { AppError } from "@/lib/app-error";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
+// Shared PostHog host constant (used by both client SDK and server API queries)
+export const POSTHOG_HOST = "https://us.posthog.com";
+
 export type AnalyticsRole = "participant" | "judge" | "speaker" | "superadmin" | "volunteer";
 
 export type ApplicationStatus = "PENDING" | "ACCEPTANCE" | "REJECTION";
@@ -123,7 +126,7 @@ export function captureAnalyticsEvent(event: AnalyticsEvent, properties: Analyti
 async function queryPostHog(query: string): Promise<HogQLResponse> {
   const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
   const projectId = process.env.POSTHOG_PROJECT_ID;
-  const host = (process.env.POSTHOG_API_HOST ?? "https://us.posthog.com").replace(/\/$/, "");
+  const host = POSTHOG_HOST.replace(/\\$/, "");
 
   if (!apiKey || !projectId) {
     throw new AppError("CONFIG_ERROR", {
