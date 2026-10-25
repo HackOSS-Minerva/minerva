@@ -166,7 +166,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const summary = row.getValue("summary") as string | undefined;
       return (
-        <span className="font-medium line-clamp-1 max-w-[250px]">
+        <span className="font-medium line-clamp-1 max-w-(--size-250px)">
           {summary?.trim() || <span className="text-muted-foreground italic">Untitled Event</span>}
         </span>
       );
@@ -178,7 +178,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const location = row.getValue("location") as string | undefined;
       return location?.trim() ? (
-        <span className="text-muted-foreground line-clamp-1 max-w-[250px]">{location.trim()}</span>
+        <span className="text-muted-foreground line-clamp-1 max-w-(--size-250px)">{location.trim()}</span>
       ) : (
         <span className="text-muted-foreground italic">N/A</span>
       );

@@ -58,6 +58,39 @@
   --transition-width-height: width, height;
   --size-header-height: var(--header-height);
   --font-heading: var(--font-sans);
+  --ring-width-3: 3px;
+  --color-canvas: Canvas;
+  --color-canvas-text: CanvasText;
+  --color-secondary-hover: color-mix(in oklch, var(--secondary), var(--foreground) 5%);
+  --font-size-0-8rem: 0.8rem;
+  --radius-xs: 2px;
+  --radius-4px: 4px;
+  --transition-width: width;
+  --transition-left-right-width: left, right, width;
+  --transition-margin-opacity: margin, opacity;
+  --shadow-sidebar-inner: 0 0 0 1px var(--sidebar-border);
+  --shadow-sidebar-inner-accent: 0 0 0 1px var(--sidebar-accent);
+  --grid-cols-1fr-auto: 1fr auto;
+  --grid-rows-auto-auto: auto auto;
+  --grid-rows-auto-1fr: auto 1fr;
+  --grid-rows-auto-auto-1fr: auto auto 1fr;
+  --combobox-min-w: calc(var(--anchor-width) + calc(var(--spacing) * 7));
+  --combobox-list-max-h: min(calc(var(--spacing) * 63), calc(var(--available-height) - calc(var(--spacing) * 9)));
+  --spacing-5-25: calc(var(--spacing) * 5.25);
+  --dialog-max-w: calc(100% - 2rem);
+  --sidebar-width-neg: calc(var(--sidebar-width) * -1);
+  --sidebar-width-icon-plus-4: calc(var(--sidebar-width-icon) + calc(var(--spacing) * 4));
+  --sidebar-width-icon-plus-4-2px: calc(var(--sidebar-width-icon) + calc(var(--spacing) * 4) + 2px);
+  --translate-y-half-minus-2px: calc(-50% - 2px);
+  --input-kbd-radius: calc(var(--radius) - 5px);
+  --input-addon-ml-neg: -0.3rem;
+  --input-kbd-ml-neg: -0.15rem;
+  --input-addon-mr-neg: -0.3rem;
+  --input-kbd-mr-neg: -0.15rem;
+  --input-button-radius: calc(var(--radius) - 3px);
+  --size-100p-minus-1px: calc(100% - 1px);
+  --size--5px: -5px;
+  --toggle-gap: calc(var(--spacing) * var(--gap));
 }
 
 :root {

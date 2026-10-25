@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useSchedule, useScheduleValidation } from "@/hooks/use-schedule";
 import { columns } from "@/components/schedule/columns";
 import { DataTable } from "@/components/schedule/data-table";
@@ -10,7 +9,6 @@ import { ScheduleValidationSuccess } from "@/components/schedule/schedule-valida
 const ScheduleContent = () => {
   const { data, isLoading, isError, error } = useSchedule();
   const { incompleteEvents, totalCount } = useScheduleValidation();
-  const [filterIncompleteOnly, setFilterIncompleteOnly] = useState(false);
 
   if (isLoading) {
     return (
@@ -36,17 +34,11 @@ const ScheduleContent = () => {
     );
   }
 
-  const displayedEvents = filterIncompleteOnly
-    ? incompleteEvents.map((issue) => issue.event)
-    : (data?.items ?? []);
+  const displayedEvents = data?.items ?? [];
   return (
     <div className="flex w-full flex-col gap-6">
       {incompleteEvents.length > 0 ? (
-        <IncompleteEventsAlert
-          incompleteEvents={incompleteEvents}
-          filterActive={filterIncompleteOnly}
-          onToggleFilter={() => setFilterIncompleteOnly((prev) => !prev)}
-        />
+        <IncompleteEventsAlert incompleteEvents={incompleteEvents} />
       ) : (
         <ScheduleValidationSuccess totalCount={totalCount} />
       )}
