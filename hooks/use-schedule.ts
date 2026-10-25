@@ -1,11 +1,20 @@
 "use client";
 
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { CalendarResponse } from "@/types/calendar";
+import type {
+  CalendarResponse,
+  IncompleteScheduleEvent,
+} from "@/types/calendar";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError } from "@/lib/app-error";
-import { buildScheduleUrl, SCHEDULE_RETRY_COUNT, SCHEDULE_STALE_MS } from "@/lib/schedule";
+import {
+  buildScheduleUrl,
+  getIncompleteScheduleEvents,
+  SCHEDULE_RETRY_COUNT,
+  SCHEDULE_STALE_MS,
+} from "@/lib/schedule";
 
 export const useSchedule = (initialData?: CalendarResponse) => {
   const { tenant } = useParams<{ tenant: TenantSlug }>();
@@ -38,4 +47,30 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     staleTime: SCHEDULE_STALE_MS, // 5 minutes
     retry: SCHEDULE_RETRY_COUNT,
   });
+};
+
+export const useScheduleValidation = (
+  initialData?: CalendarResponse,
+): {
+  incompleteEvents: IncompleteScheduleEvent[];
+  isLoading: boolean;
+  isError: boolean;
+  error: unknown;
+  totalCount: number;
+} => {
+  const { data, isLoading, isError, error } = useSchedule(initialData);
+
+  const items = data?.items;
+  const incompleteEvents = useMemo(() => {
+    if (!items) return [];
+    return getIncompleteScheduleEvents(items);
+  }, [items]);
+
+  return {
+    incompleteEvents,
+    isLoading,
+    isError,
+    error,
+    totalCount: data?.items?.length ?? 0,
+  };
 };

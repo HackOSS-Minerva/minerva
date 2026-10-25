@@ -39,6 +39,8 @@
           "[&>kbd]:rounded-[calc(var(--radius)-5px)]",
           "max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))]",
           "max-w-[calc(100%-2rem)]",
+          "max-w-[200px]",
+          "max-w-[250px]",
           "min-w-[96px]",
           "min-w-[calc(var(--anchor-width)+--spacing(7))]",
           "p-[3px]",
