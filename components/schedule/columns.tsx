@@ -178,7 +178,9 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const location = row.getValue("location") as string | undefined;
       return location?.trim() ? (
-        <span className="text-muted-foreground line-clamp-1 max-w-(--size-250px)">{location.trim()}</span>
+        <span className="text-muted-foreground line-clamp-1 max-w-(--size-250px)">
+          {location.trim()}
+        </span>
       ) : (
         <span className="text-muted-foreground italic">N/A</span>
       );

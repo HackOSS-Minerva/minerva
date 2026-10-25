@@ -75,7 +75,10 @@
   --grid-rows-auto-1fr: auto 1fr;
   --grid-rows-auto-auto-1fr: auto auto 1fr;
   --combobox-min-w: calc(var(--anchor-width) + calc(var(--spacing) * 7));
-  --combobox-list-max-h: min(calc(var(--spacing) * 63), calc(var(--available-height) - calc(var(--spacing) * 9)));
+  --combobox-list-max-h: min(
+    calc(var(--spacing) * 63),
+    calc(var(--available-height) - calc(var(--spacing) * 9))
+  );
   --spacing-5-25: calc(var(--spacing) * 5.25);
   --dialog-max-w: calc(100% - 2rem);
   --sidebar-width-neg: calc(var(--sidebar-width) * -1);
