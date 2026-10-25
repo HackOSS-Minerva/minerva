@@ -1,10 +1,10 @@
-import { Clock } from "lucide-react";
+import { RiTimeLine } from "@remixicon/react";
 
 const Pending = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
       <div className="rounded-full p-2">
-        <Clock className="h-12 w-12 text-primary" />
+        <RiTimeLine className="h-12 w-12 text-primary" />
       </div>
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-primary">Application Pending</h2>

@@ -28,7 +28,7 @@ const Template = ({ children, name, preview, tenant }: TemplateProps) => {
       <Preview>{preview}</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white px-2 font-sans">
-          <Container className="mx-auto my-4 max-w-116.25 rounded border border-solid border-[#eaeaea] p-5">
+          <Container className="mx-auto my-4 max-w-116.25 rounded border border-solid border-border p-5">
             <Section className="">
               <Img
                 src={tenant.logo}
@@ -48,7 +48,7 @@ const Template = ({ children, name, preview, tenant }: TemplateProps) => {
             <Text>
               - {tenant.name} Team {tenant.heart}
             </Text>
-            <Hr className="mx-0 my-6.5 w-full border border-solid border-[#eaeaea]" />
+            <Hr className="mx-0 my-6.5 w-full border border-solid border-border" />
             <Text>
               Visit{" "}
               <Link href={tenant.domain} className="text-blue-600">
@@ -64,7 +64,7 @@ const Template = ({ children, name, preview, tenant }: TemplateProps) => {
               </Link>{" "}
               for up to date information and announcements.
             </Text>
-            <Text className="text-xs leading-6 text-[#666666]">
+            <Text className="text-xs leading-6 text-muted-foreground">
               This invitation was intended for{" "}
               <span className="text-black">{name ?? "Insert Name"}</span>. If you were not expecting
               this email, you can ignore this email. If you are concerned about your account&apos;s

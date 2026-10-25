@@ -8,7 +8,7 @@ import { LazySelectFieldBody } from "./lazy-select";
 import { resources, terms } from "@/data/terms";
 import { genders, shirts, dietrestrictions } from "@/data/information";
 import { statuses } from "@/data/status";
-import { SquareArrowOutUpRight, X } from "lucide-react";
+import { RiExternalLinkLine, RiCloseLine } from "@remixicon/react";
 import Link from "next/link";
 import * as z from "zod";
 
@@ -262,7 +262,7 @@ export function fileField({
                   onClick={() => field.handleChange(null)}
                   className="text-primary"
                 >
-                  <X size={16} />
+                  <RiCloseLine size={16} />
                 </button>
               </div>
             )}
@@ -306,7 +306,7 @@ export function termsField({
             {resources.map(({ name, url }) => (
               <Link href={url} key={name} className="flex gap-2 items-center text-primary">
                 {name}
-                <SquareArrowOutUpRight size={16} />
+                <RiExternalLinkLine size={16} />
               </Link>
             ))}
           </div>

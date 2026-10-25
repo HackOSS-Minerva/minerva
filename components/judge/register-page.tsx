@@ -1,8 +1,9 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import type { TenantSlug } from "@/hooks/get-tenant";
 
-export function RegisterPage() {
+export function RegisterPage({ tenant }: { tenant: TenantSlug }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">

@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
 import { ConvexClientProvider } from "@/lib/convex-provider";
 import { ThemeProvider } from "@/lib/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const client = new QueryClient();
 
@@ -17,7 +18,9 @@ export function Providers({
   return (
     <ThemeProvider>
       <ConvexClientProvider initialToken={initialToken}>
-        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+        <QueryClientProvider client={client}>
+          <TooltipProvider>{children}</TooltipProvider>
+        </QueryClientProvider>
       </ConvexClientProvider>
     </ThemeProvider>
   );

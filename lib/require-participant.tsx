@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { IconLock } from "@tabler/icons-react";
+import { RiLockLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
@@ -51,10 +51,10 @@ export function ParticipantLocked({ status, tenant }: ParticipantLockedProps) {
         : `You are not a registered participant for ${tenant}.`;
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center p-6">
+    <div className="flex min-h-60vh items-center justify-center p-6">
       <div className="max-w-md space-y-4 text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-          <IconLock className="h-6 w-6 text-muted-foreground" />
+          <RiLockLine className="h-6 w-6 text-muted-foreground" />
         </div>
         <h1 className="text-2xl font-semibold">Access Restricted</h1>
         <p className="text-muted-foreground">{message}</p>

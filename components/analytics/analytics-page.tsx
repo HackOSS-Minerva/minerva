@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2Icon } from "lucide-react";
+import { RiLoaderLine } from "@remixicon/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -122,7 +122,7 @@ export function AnalyticsPage({ tenant, scope }: AnalyticsPageProps) {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-12 text-muted-foreground">
-        <Loader2Icon className="size-6 animate-spin" />
+        <RiLoaderLine className="size-6 animate-spin" />
         <span className="text-sm">Loading analytics...</span>
       </div>
     );

@@ -15,11 +15,11 @@ import {
 } from "@tanstack/react-table";
 import { ScheduleToolbar } from "@/components/schedule/toolbar";
 import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-} from "@tabler/icons-react";
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiArrowLeftDoubleLine,
+  RiArrowRightDoubleLine,
+} from "@remixicon/react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -162,7 +162,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to first page</span>
-              <IconChevronsLeft />
+              <RiArrowLeftDoubleLine />
             </Button>
             <Button
               variant="outline"
@@ -172,7 +172,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to previous page</span>
-              <IconChevronLeft />
+              <RiArrowLeftLine />
             </Button>
             <Button
               variant="outline"
@@ -182,7 +182,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to next page</span>
-              <IconChevronRight />
+              <RiArrowRightLine />
             </Button>
             <Button
               variant="outline"
@@ -192,7 +192,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to last page</span>
-              <IconChevronsRight />
+              <RiArrowRightDoubleLine />
             </Button>
           </div>
         </div>

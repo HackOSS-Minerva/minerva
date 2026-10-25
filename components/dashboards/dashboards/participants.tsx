@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { IconX } from "@tabler/icons-react";
+import { RiCloseLine } from "@remixicon/react";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,18 +14,18 @@ import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as participantSchema } from "@/components/forms/fields/participant";
 import {
-  BriefcaseBusiness,
-  Cake,
-  Globe,
-  GraduationCap,
-  Phone,
-  ScrollText,
-  Shirt,
-  UserRound,
-  MessagesSquare,
-  FileText,
-  Utensils,
-} from "lucide-react";
+  RiBriefcaseLine,
+  RiCakeLine,
+  RiGlobeLine,
+  RiGraduationCapLine,
+  RiPhoneLine,
+  RiScrollToBottomLine,
+  RiShirtLine,
+  RiUserLine,
+  RiMessageLine,
+  RiFileTextLine,
+  RiTableLine,
+} from "@remixicon/react";
 import { StatusIcon } from "../status-icon";
 import DetailRow from "../row";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
@@ -84,7 +84,7 @@ function TableCellViewer({ item }: { item: Doc<"participants"> }) {
 
                 <DrawerClose asChild>
                   <Button variant="ghost" size="icon" aria-label="Close profile">
-                    <IconX className="h-4 w-4" />
+                    <RiCloseLine className="h-4 w-4" />
                   </Button>
                 </DrawerClose>
               </div>
@@ -99,17 +99,21 @@ function TableCellViewer({ item }: { item: Doc<"participants"> }) {
               <p className="text-sm font-semibold text-foreground">Contact</p>
               <div className="grid gap-3">
                 <DetailRow
-                  icon={UserRound}
+                  icon={RiUserLine}
                   label="Email"
                   value={item.email}
                   copyable
                   onCopy={handleCopyEmail}
                   copied={copied}
                 />
-                <DetailRow icon={Phone} label="Phone" value={item.telephone} />
-                <DetailRow icon={MessagesSquare} label="Discord" value={item.discord} />
-                <DetailRow icon={UserRound} label="Gender" value={item.gender} />
-                <DetailRow icon={Shirt} label="Shirt Size" value={formatShirtSize(item.shirt)} />
+                <DetailRow icon={RiPhoneLine} label="Phone" value={item.telephone} />
+                <DetailRow icon={RiMessageLine} label="Discord" value={item.discord} />
+                <DetailRow icon={RiUserLine} label="Gender" value={item.gender} />
+                <DetailRow
+                  icon={RiShirtLine}
+                  label="Shirt Size"
+                  value={formatShirtSize(item.shirt)}
+                />
               </div>
             </div>
 
@@ -118,18 +122,18 @@ function TableCellViewer({ item }: { item: Doc<"participants"> }) {
             <div className="space-y-3">
               <p className="text-sm font-semibold text-foreground">Application</p>
               <div className="grid gap-3">
-                <DetailRow icon={GraduationCap} label="School" value={item.school} />
-                <DetailRow icon={ScrollText} label="Grade" value={item.grade} />
-                <DetailRow icon={BriefcaseBusiness} label="Major" value={item.major} />
-                <DetailRow icon={Cake} label="Age" value={item.age} />
-                <DetailRow icon={Globe} label="Country" value={item.country} />
+                <DetailRow icon={RiGraduationCapLine} label="School" value={item.school} />
+                <DetailRow icon={RiScrollToBottomLine} label="Grade" value={item.grade} />
+                <DetailRow icon={RiBriefcaseLine} label="Major" value={item.major} />
+                <DetailRow icon={RiCakeLine} label="Age" value={item.age} />
+                <DetailRow icon={RiGlobeLine} label="Country" value={item.country} />
                 <DetailRow
-                  icon={Utensils}
+                  icon={RiTableLine}
                   label="Dietary Restrictions"
                   value={item.dietrestriction || "None"}
                 />
                 <DetailRow
-                  icon={FileText}
+                  icon={RiFileTextLine}
                   label="Resume"
                   value={item.resume ? item.resume : "Not Attached"}
                 />

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IconCheck } from "@tabler/icons-react";
+import { RiCheckLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import { QRCodeSVG } from "qrcode.react";
 import { buildCheckinQrPayload, type CheckinQrIdentity } from "@/lib/checkin";
@@ -28,7 +28,7 @@ export function CheckinSection({ user }: CheckinSectionProps) {
             variant="secondary"
             className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 flex items-center gap-1 font-semibold"
           >
-            <IconCheck className="h-3 w-3" />
+            <RiCheckLine className="h-3 w-3" />
             Checked in
           </Badge>
         )}
@@ -45,7 +45,7 @@ export function CheckinSection({ user }: CheckinSectionProps) {
             </div>
           </div>
         ) : (
-          <div className="flex min-h-[180px] items-center justify-center rounded-lg border border-dashed px-6 text-center text-sm text-muted-foreground">
+          <div className="flex min-h-45 items-center justify-center rounded-lg border border-dashed px-6 text-center text-sm text-muted-foreground">
             Sign in to view your check-in QR code.
           </div>
         )}

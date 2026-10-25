@@ -16,13 +16,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
-  IconUsers,
-  IconUser,
-  IconClipboardList,
-  IconSearch,
-  IconRefresh,
-  IconArrowsShuffle,
-} from "@tabler/icons-react";
+  RiUser2Line,
+  RiUserLine,
+  RiClipboardLine,
+  RiSearchLine,
+  RiRefreshLine,
+  RiShuffleLine,
+} from "@remixicon/react";
 import { useParams } from "next/navigation";
 import { useAssignments, generateAssignments, getJudgeName } from "@/hooks/use-assignments";
 import type { ViewMode } from "@/hooks/use-assignments";
@@ -113,7 +113,7 @@ export default function AssignmentsContent() {
             onClick={handleAssign}
             disabled={isSaving || judges.length === 0 || submissions.length === 0}
           >
-            <IconArrowsShuffle className="mr-1 h-4 w-4" />
+            <RiShuffleLine className="mr-1 h-4 w-4" />
             {isSaving ? "Saving..." : "Assign"}
           </Button>
           {hasAssignments && (
@@ -123,14 +123,14 @@ export default function AssignmentsContent() {
               onClick={() => setClearDialogOpen(true)}
               disabled={isSaving}
             >
-              <IconRefresh className="mr-1 h-4 w-4" />
+              <RiRefreshLine className="mr-1 h-4 w-4" />
               Clear
             </Button>
           )}
         </div>
 
         <div className="relative min-w-40 flex-1">
-          <IconSearch className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <RiSearchLine className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search..."
             className="w-full pl-8"
@@ -151,11 +151,11 @@ export default function AssignmentsContent() {
           aria-label="Change view"
         >
           <ToggleGroupItem value="teams-by-judge" aria-label="View by judge">
-            <IconUser className="h-4 w-4" />
+            <RiUserLine className="h-4 w-4" />
             By Judge
           </ToggleGroupItem>
           <ToggleGroupItem value="judges-by-team" aria-label="View by team">
-            <IconUsers className="h-4 w-4" />
+            <RiUser2Line className="h-4 w-4" />
             By Team
           </ToggleGroupItem>
         </ToggleGroup>
@@ -177,7 +177,7 @@ export default function AssignmentsContent() {
       {/* Empty states */}
       {judges.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <IconUsers className="mb-4 h-12 w-12 text-muted-foreground/40" />
+          <RiUser2Line className="mb-4 h-12 w-12 text-muted-foreground/40" />
           <h3 className="text-lg font-semibold text-muted-foreground">No judges found</h3>
           <p className="mt-1 text-sm text-muted-foreground/60">
             Register judges before creating assignments.
@@ -187,7 +187,7 @@ export default function AssignmentsContent() {
 
       {judges.length > 0 && submissions.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <IconUsers className="mb-4 h-12 w-12 text-muted-foreground/40" />
+          <RiUser2Line className="mb-4 h-12 w-12 text-muted-foreground/40" />
           <h3 className="text-lg font-semibold text-muted-foreground">No submissions found</h3>
           <p className="mt-1 text-sm text-muted-foreground/60">
             Teams must submit projects before creating assignments.
@@ -214,12 +214,10 @@ export default function AssignmentsContent() {
                     <CardHeader className="border-b bg-muted/30 px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/30 pr-2">
-                          <IconUser className="h-5 w-5 text-secondary-foreground" />
+                          <RiUserLine className="h-5 w-5 text-secondary-foreground" />
                         </div>
                         <div className="min-w-0">
-                          <CardTitle className="truncate text-[15px]">
-                            {getJudgeName(judge)}
-                          </CardTitle>
+                          <CardTitle className="truncate text-sm">{getJudgeName(judge)}</CardTitle>
                           <p className="text-xs text-muted-foreground">
                             {teamIds.length} team
                             {teamIds.length !== 1 ? "s" : ""}
@@ -240,7 +238,7 @@ export default function AssignmentsContent() {
                                 key={submissionId}
                                 className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
                               >
-                                <IconClipboardList className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                <RiClipboardLine className="h-4 w-4 shrink-0 text-muted-foreground" />
                                 <span className="truncate font-medium">{sub.teamName}</span>
                               </li>
                             );
@@ -266,12 +264,10 @@ export default function AssignmentsContent() {
                     <CardHeader className="border-b bg-muted/30 px-4 py-3">
                       <div className="flex items-center gap-2.5">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary/30 pr-2">
-                          <IconUsers className="h-5 w-5 text-secondary-foreground" />
+                          <RiUser2Line className="h-5 w-5 text-secondary-foreground" />
                         </div>
                         <div className="min-w-0">
-                          <CardTitle className="truncate text-[15px]">
-                            {submission.teamName}
-                          </CardTitle>
+                          <CardTitle className="truncate text-sm">{submission.teamName}</CardTitle>
                           <p className="text-xs text-muted-foreground">
                             {judgeIds.length} judge
                             {judgeIds.length !== 1 ? "s" : ""} assigned
@@ -292,7 +288,7 @@ export default function AssignmentsContent() {
                                 key={judgeId}
                                 className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
                               >
-                                <IconUser className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                <RiUserLine className="h-4 w-4 shrink-0 text-muted-foreground" />
                                 <span className="truncate font-medium">{getJudgeName(judge)}</span>
                               </li>
                             );

@@ -1,5 +1,5 @@
 "use client";
-import { LinkIcon, CheckIcon } from "lucide-react";
+import { RiExternalLinkLine, RiCheckLine } from "@remixicon/react";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
   };
 
   return (
-    <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+    <header className="flex h-header-height shrink-0 items-center gap-2 border-b transition-width-height ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-header-height">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
@@ -32,9 +32,9 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon-sm" onClick={copyToClipboard} className="relative">
                 {copied ? (
-                  <CheckIcon className="size-4 text-green-600 dark:text-green-400" />
+                  <RiCheckLine className="size-4 text-green-600 dark:text-green-400" />
                 ) : (
-                  <LinkIcon className="size-4" />
+                  <RiExternalLinkLine className="size-4" />
                 )}
               </Button>
             </TooltipTrigger>

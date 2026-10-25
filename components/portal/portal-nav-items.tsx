@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDownIcon, ExternalLink, Lock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { RiArrowDownSLine, RiExternalLinkLine, RiLockLine } from "@remixicon/react";
+import { cn } from "cn";
 import type { TenantSlug } from "@/hooks/get-tenant";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -83,9 +83,9 @@ export function PortalNavItems({
                   !isAuthorized && "opacity-60",
                 )}
               >
-                {!isAuthorized && <Lock className="size-3.5" />}
+                {!isAuthorized && <RiLockLine className="size-3.5" />}
                 {dropdown.label}
-                <ChevronDownIcon className="size-3 opacity-60" />
+                <RiArrowDownSLine className="size-3 opacity-60" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center">
@@ -100,14 +100,14 @@ export function PortalNavItems({
                     >
                       <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
                         {item.label}
-                        {item.external && <ExternalLink className="text-muted-foreground" />}
+                        {item.external && <RiExternalLinkLine className="text-muted-foreground" />}
                       </span>
                       <span className="text-xs text-muted-foreground">{item.description}</span>
                     </Link>
                   </DropdownMenuItem>
                 ))
               ) : (
-                <div className="min-w-[220px]">
+                <div className="min-w-55">
                   {dropdown.items.map((item) => (
                     <div
                       key={item.href}

@@ -4,7 +4,7 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { useFields, type FormValues } from "@/hooks/use-fields";
 import { useForm, type DeepKeys } from "@tanstack/react-form";
-import { Loader2 } from "lucide-react";
+import { RiLoaderLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { useEffect, useMemo, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -126,7 +126,7 @@ const Fields = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="size-4 animate-spin" />
+                    <RiLoaderLine className="size-4 animate-spin" />
                     Submitting...
                   </>
                 ) : (

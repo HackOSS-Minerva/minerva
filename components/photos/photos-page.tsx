@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { IconPhotoMinus } from "@tabler/icons-react";
+import { RiImageLine } from "@remixicon/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -139,7 +139,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
                 <button
                   type="button"
                   aria-label={`View ${photo.filename}`}
-                  className="absolute inset-0 outline-none focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
+                  className="absolute inset-0 outline-none focus-visible:outline-2 focus-visible:-outline-offset-2px focus-visible:outline-ring"
                   onClick={() => setSelectedPhoto(photo)}
                 >
                   <Image
@@ -147,7 +147,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
                     alt={photo.filename}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                    className="object-cover transition-transform hover:scale-[1.02]"
+                    className="object-cover transition-transform hover:scale-102"
                   />
                 </button>
                 {canManage ? (
@@ -164,7 +164,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
                       setPhotoToRemove(photo);
                     }}
                   >
-                    <IconPhotoMinus />
+                    <RiImageLine />
                   </Button>
                 ) : null}
               </div>
@@ -197,7 +197,7 @@ export const PhotosPage = ({ event, canManage = false }: PhotosPageProps) => {
             <DialogDescription>Full-size event photo</DialogDescription>
           </DialogHeader>
           {selectedPhoto ? (
-            <div className="relative h-[80vh] w-full">
+            <div className="relative h-80vh w-full">
               <Image
                 src={selectedPhoto.viewerUrl}
                 alt={selectedPhoto.filename}

@@ -1,17 +1,17 @@
 "use client";
 
 import {
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-  IconCopy,
-  IconDownload,
-  IconLayoutColumns,
-  IconSwords,
-  IconTrash,
-} from "@tabler/icons-react";
+  RiArrowDownLine,
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiArrowLeftDoubleLine,
+  RiArrowRightDoubleLine,
+  RiFileCopyLine,
+  RiDownloadLine,
+  RiLayout2Line,
+  RiSwordLine,
+  RiDeleteBinLine,
+} from "@remixicon/react";
 import {
   flexRender,
   getCoreRowModel,
@@ -71,7 +71,7 @@ import { AppError, logAppError } from "@/lib/app-error";
 import type { ApplicationStatus } from "@/lib/posthog";
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { MAX_VETTING_BATCH_SIZE } from "@/lib/vetting/rules";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 import { TableToolbar } from "./toolbar";
 import { StatusActions, type ApplicantRow } from "./status-actions";
 
@@ -281,7 +281,7 @@ export const DataTable = <T extends ApplicantRow>({
                   onClick={handleRunVetting}
                   disabled={selectedIds.length === 0 || vetting}
                 >
-                  <IconSwords />
+                  <RiSwordLine />
                   <span className="hidden lg:inline ml-1">
                     {vetting ? "Vetting..." : "Vet Projects"}
                   </span>
@@ -299,7 +299,7 @@ export const DataTable = <T extends ApplicantRow>({
                   }}
                   disabled={table.getFilteredRowModel().rows.length === 0}
                 >
-                  <IconCopy />
+                  <RiFileCopyLine />
                   <span className="hidden lg:inline ml-1">Copy Emails</span>
                 </Button>
               ))}
@@ -325,7 +325,7 @@ export const DataTable = <T extends ApplicantRow>({
                 }}
                 disabled={table.getFilteredRowModel().rows.length === 0}
               >
-                <IconDownload />
+                <RiDownloadLine />
                 <span className="hidden lg:inline ml-1">Download CSV</span>
               </Button>
             )}
@@ -333,9 +333,9 @@ export const DataTable = <T extends ApplicantRow>({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
-                  <IconLayoutColumns />
+                  <RiLayout2Line />
                   <span>Columns</span>
-                  <IconChevronDown />
+                  <RiArrowDownLine />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -371,7 +371,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={table.getSelectedRowModel().rows.length === 0}
                 className="hover:bg-red-500 hover:text-white"
               >
-                <IconTrash />
+                <RiDeleteBinLine />
                 <span className="hidden lg:inline ml-1">Delete</span>
               </Button>
             )}
@@ -473,7 +473,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
+                <RiArrowLeftDoubleLine />
               </Button>
               <Button
                 variant="outline"
@@ -483,7 +483,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to previous page</span>
-                <IconChevronLeft />
+                <RiArrowLeftLine />
               </Button>
               <Button
                 variant="outline"
@@ -493,7 +493,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to next page</span>
-                <IconChevronRight />
+                <RiArrowRightLine />
               </Button>
               <Button
                 variant="outline"
@@ -503,7 +503,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
+                <RiArrowRightDoubleLine />
               </Button>
             </div>
           </div>

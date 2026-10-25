@@ -1,26 +1,31 @@
-import { Check, Clock, X, type LucideIcon } from "lucide-react";
+import {
+  RiCheckLine,
+  RiTimeLine,
+  RiCloseLine,
+  type RemixiconComponentType,
+} from "@remixicon/react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 export type ApplicantStatus = "ACCEPTANCE" | "PENDING" | "REJECTION";
 
 export const statusIconMeta: Record<
   ApplicantStatus,
-  { label: string; icon: LucideIcon; iconClass: string }
+  { label: string; icon: RemixiconComponentType; iconClass: string }
 > = {
   ACCEPTANCE: {
     label: "Accepted",
-    icon: Check,
+    icon: RiCheckLine,
     iconClass: "text-green-500",
   },
   PENDING: {
     label: "Pending",
-    icon: Clock,
+    icon: RiTimeLine,
     iconClass: "text-yellow-500",
   },
   REJECTION: {
     label: "Rejected",
-    icon: X,
+    icon: RiCloseLine,
     iconClass: "text-red-500",
   },
 };

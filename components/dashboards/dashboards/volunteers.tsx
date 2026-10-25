@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { IconCopy, IconCheck } from "@tabler/icons-react";
+import { RiFileCopyLine, RiCheckLine } from "@remixicon/react";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { StatusIcon } from "../status-icon";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as volunteerSchema } from "@/components/forms/fields/volunteer";
-import { Sun, Moon, CloudSun, Sunset } from "lucide-react";
+import { RiSunLine, RiMoonLine, RiSunCloudyLine } from "@remixicon/react";
 import { availabilities } from "@/data/information";
 import { formatShirtSize } from "@/lib/utils";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
@@ -47,15 +47,15 @@ const getAvailabilityIcon = (availability: string) => {
 
   switch (time) {
     case "morning":
-      return CloudSun;
+      return RiSunCloudyLine;
     case "afternoon":
-      return Sun;
+      return RiSunLine;
     case "evening":
-      return Sunset;
+      return RiSunLine;
     case "night":
-      return Moon;
+      return RiMoonLine;
     default:
-      return Sun;
+      return RiSunLine;
   }
 };
 
@@ -138,7 +138,11 @@ function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
           <DrawerDescription className="flex items-center gap-2">
             {item.email}
             <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={handleCopyEmail}>
-              {copied ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+              {copied ? (
+                <RiCheckLine className="h-4 w-4" />
+              ) : (
+                <RiFileCopyLine className="h-4 w-4" />
+              )}
             </Button>
           </DrawerDescription>
         </DrawerHeader>

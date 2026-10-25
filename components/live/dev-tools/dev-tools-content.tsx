@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IconSearch, IconExternalLink, IconX } from "@tabler/icons-react";
+import { RiSearchLine, RiExternalLinkLine, RiCloseLine } from "@remixicon/react";
 
 const ALL = "All";
 const MAX_VISIBLE_TAGS = 3;
@@ -31,7 +31,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
   return (
     <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5">
       {errored ? (
-        <span aria-hidden className="text-muted-foreground text-[11px] leading-none font-semibold">
+        <span aria-hidden className="text-muted-foreground text-xs leading-none font-semibold">
           {initialsOf(tool.name)}
         </span>
       ) : (
@@ -79,7 +79,7 @@ export function DevToolsContent() {
     <div className="space-y-4">
       <div className="flex gap-3 items-center justify-center">
         <div className="relative flex-1">
-          <IconSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <RiSearchLine className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search tools by name, category, or keyword..."
@@ -115,7 +115,7 @@ export function DevToolsContent() {
             setActiveCategory(ALL);
           }}
         >
-          <IconX className="h-3.5 w-3.5" />
+          <RiCloseLine className="h-3.5 w-3.5" />
           Clear filters
         </Button>
       )}
@@ -130,7 +130,7 @@ export function DevToolsContent() {
             <section key={category} className="space-y-3">
               <div className="flex items-center gap-2">
                 <h2 className="text-sm font-semibold tracking-wide uppercase">{category}</h2>
-                <Badge variant="outline" className="text-[10px]">
+                <Badge variant="outline" className="text-xs">
                   {tools.length}
                 </Badge>
               </div>
@@ -163,7 +163,7 @@ function DevToolCard({ tool }: { tool: DevTool }) {
         <p className="text-sm">{tool.description}</p>
         <div className="mt-auto flex flex-wrap items-center gap-1.5">
           {tool.tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-[10px]">
+            <Badge key={tag} variant="secondary" className="text-xs">
               {tag}
             </Badge>
           ))}
@@ -171,7 +171,7 @@ function DevToolCard({ tool }: { tool: DevTool }) {
         <Button variant="outline" size="sm" asChild className="w-full">
           <a href={tool.url} target="_blank" rel="noopener noreferrer">
             Visit {tool.name}
-            <IconExternalLink className="h-3 w-3" />
+            <RiExternalLinkLine className="h-3 w-3" />
           </a>
         </Button>
       </CardContent>

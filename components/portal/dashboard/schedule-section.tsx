@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
-import { IconClock, IconSearch } from "@tabler/icons-react";
+import { RiTimeLine, RiSearchLine } from "@remixicon/react";
 
 interface ScheduleSectionProps {
   /** SSR'd calendar payload from the server page — used as React Query
@@ -146,7 +146,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <IconSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <RiSearchLine className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Search events..."
@@ -197,12 +197,12 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
         {filteredNext && (
           <div className="rounded-lg border p-4">
             <div className="mb-1 flex items-center gap-2">
-              <IconClock className="h-3 w-3 text-muted-foreground" />
+              <RiTimeLine className="h-3 w-3 text-muted-foreground" />
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Up Next
               </span>
               {nextEventCountdown && (
-                <Badge variant="secondary" className="ml-auto text-[10px]">
+                <Badge variant="secondary" className="ml-auto text-xs">
                   {nextEventCountdown.hours > 0 ? `${nextEventCountdown.hours}h ` : ""}
                   {nextEventCountdown.minutes}m {nextEventCountdown.seconds}s
                 </Badge>
@@ -266,7 +266,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                     <div key={event.id} className="rounded-lg border p-3 opacity-50">
                       <div className="flex items-center justify-between">
                         <h4 className="text-sm font-medium">{event.summary}</h4>
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-xs">
                           Past
                         </Badge>
                       </div>

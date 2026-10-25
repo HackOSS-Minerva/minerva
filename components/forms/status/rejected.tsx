@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { RiCloseLine } from "@remixicon/react";
 
 interface RejectedProps {
   tenantEmail: string;
@@ -10,7 +10,7 @@ const Rejected = ({ tenantEmail }: RejectedProps) => {
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
       <div className="rounded-full p-2">
-        <X className="h-12 w-12 text-primary" />
+        <RiCloseLine className="h-12 w-12 text-primary" />
       </div>
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-primary">Application Rejected</h2>

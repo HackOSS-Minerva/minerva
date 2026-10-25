@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { UserCheck } from "lucide-react";
+import { RiUserLine } from "@remixicon/react";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { getUserMessage } from "@/lib/app-error";
 import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
@@ -100,7 +100,7 @@ const CheckinContent = () => {
 
           toast.success(`Checked in: ${scanName}`, {
             description: scan.email,
-            icon: <UserCheck className="h-4 w-4" />,
+            icon: <RiUserLine className="h-4 w-4" />,
           });
 
           // Auto-reset after the scan window (only on success)
@@ -113,7 +113,7 @@ const CheckinContent = () => {
           if (code === "VALIDATION_FAILED") {
             toast("Note: User is already checked in", {
               description: scanName,
-              icon: <UserCheck className="h-4 w-4" />,
+              icon: <RiUserLine className="h-4 w-4" />,
             });
           } else {
             toastAppError(err, message);
@@ -158,7 +158,7 @@ const CheckinContent = () => {
       <div className="flex h-full flex-col gap-6">
         <div className="h-9 w-32 animate-pulse rounded bg-muted" />
         <div className="h-10 w-full animate-pulse rounded-lg bg-muted" />
-        <div className="aspect-[4/3] w-full animate-pulse rounded-lg bg-muted" />
+        <div className="aspect-4-3 w-full animate-pulse rounded-lg bg-muted" />
       </div>
     );
   }
@@ -204,19 +204,19 @@ const CheckinContent = () => {
       {/* QR Scanner */}
       <div className="rounded-lg border bg-muted p-3">
         {isPaused ? (
-          <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 text-muted-foreground">
+          <div className="flex aspect-4-3 flex-col items-center justify-center gap-3 text-muted-foreground">
             <span className="text-sm font-medium">Scanner paused</span>
             <span className="text-xs">Select an event to start scanning</span>
           </div>
         ) : (
-          <video ref={ref} className="aspect-[4/3] w-full object-cover -scale-x-100" />
+          <video ref={ref} className="aspect-4-3 w-full object-cover -scale-100" />
         )}
       </div>
 
       {/* Scan result */}
       {lastScan && (
         <div className="flex items-center gap-3 rounded-lg border border-green-500/50 bg-green-50 p-4 dark:bg-green-950/20">
-          <UserCheck className="h-6 w-6 shrink-0 text-green-600" />
+          <RiUserLine className="h-6 w-6 shrink-0 text-green-600" />
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium text-green-700 dark:text-green-400">
               {lastScan.firstname} {lastScan.lastname}

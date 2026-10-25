@@ -58,7 +58,7 @@ export default function QRCodeGenerator() {
       <div className="flex flex-col items-center gap-4">
         <div className="rounded-lg border bg-white p-4">
           {isEmpty ? (
-            <div className="flex h-[180px] w-[180px] items-center justify-center text-muted-foreground">
+            <div className="flex h-45 w-45 items-center justify-center text-muted-foreground">
               Enter text to preview
             </div>
           ) : (

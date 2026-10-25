@@ -1,7 +1,6 @@
 import * as React from "react";
 
-/** Matches Tailwind's `md:` breakpoint so JS and CSS agree at exactly 768px. */
-export const MOBILE_BREAKPOINT = 768;
+const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);

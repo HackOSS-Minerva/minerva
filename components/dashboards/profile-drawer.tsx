@@ -9,7 +9,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconX } from "@tabler/icons-react";
+import { RiCloseLine } from "@remixicon/react";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -28,7 +28,7 @@ export function ProfileDrawerCloseButton({ label = "Close profile" }: { label?: 
   return (
     <DrawerClose asChild>
       <Button variant="ghost" size="icon" aria-label={label}>
-        <IconX className="h-4 w-4" />
+        <RiCloseLine className="h-4 w-4" />
       </Button>
     </DrawerClose>
   );

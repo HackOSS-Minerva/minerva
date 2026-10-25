@@ -13,7 +13,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconCopy, IconCheck } from "@tabler/icons-react";
+import { RiFileCopyLine, RiCheckLine } from "@remixicon/react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
@@ -73,7 +73,11 @@ function TableCellViewer({ item }: { item: Doc<"speakers"> }) {
           <DrawerDescription className="flex items-center gap-2">
             {item.email}
             <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={handleCopyEmail}>
-              {copied ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+              {copied ? (
+                <RiCheckLine className="h-4 w-4" />
+              ) : (
+                <RiFileCopyLine className="h-4 w-4" />
+              )}
             </Button>
           </DrawerDescription>
         </DrawerHeader>
@@ -127,9 +131,9 @@ function TableCellViewer({ item }: { item: Doc<"speakers"> }) {
                   onClick={handleCopyPicture}
                 >
                   {pictureCopied ? (
-                    <IconCheck className="h-4 w-4" />
+                    <RiCheckLine className="h-4 w-4" />
                   ) : (
-                    <IconCopy className="h-4 w-4" />
+                    <RiFileCopyLine className="h-4 w-4" />
                   )}
                 </Button>
               </div>

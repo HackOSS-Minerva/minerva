@@ -30,7 +30,7 @@ const Layout = async ({ children, params }: AdminLayoutProps) => {
   if (!access.authorized) {
     // Signed in with Google, but not an approved superadmin for this tenant.
     return (
-      <div className="flex min-h-[60vh] items-center justify-center p-6">
+      <div className="flex min-h-60vh items-center justify-center p-6">
         <div className="max-w-md space-y-3 text-center">
           <h1 className="text-2xl font-semibold">Unauthorized</h1>
           <p className="text-muted-foreground">

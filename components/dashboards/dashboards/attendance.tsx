@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import { IconDotsVertical } from "@tabler/icons-react";
+import { RiMoreLine } from "@remixicon/react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 
@@ -101,7 +101,7 @@ export const columns: ColumnDef<CheckinRecord>[] = [
             className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
             size="icon"
           >
-            <IconDotsVertical />
+            <RiMoreLine />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>

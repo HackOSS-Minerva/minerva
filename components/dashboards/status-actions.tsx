@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Clock, X } from "lucide-react";
+import { RiCheckLine, RiTimeLine, RiCloseLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -110,7 +110,7 @@ export function StatusActions<T extends ApplicantRow>({
             disabled={selectedCount === 0 || isUpdating}
             className="cursor-pointer border-green-500 text-green-500 transition-all hover:scale-105 hover:bg-green-500 hover:text-white hover:shadow-md hover:shadow-green-500/25 active:scale-95"
           >
-            <Check />
+            <RiCheckLine />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -127,7 +127,7 @@ export function StatusActions<T extends ApplicantRow>({
             disabled={selectedCount === 0 || isUpdating}
             className="cursor-pointer border-yellow-500 text-yellow-500 transition-all hover:scale-105 hover:bg-yellow-500 hover:text-white hover:shadow-md hover:shadow-yellow-500/25 active:scale-95"
           >
-            <Clock />
+            <RiTimeLine />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -144,7 +144,7 @@ export function StatusActions<T extends ApplicantRow>({
             disabled={selectedCount === 0 || isUpdating}
             className="cursor-pointer border-red-500 text-red-500 transition-all hover:scale-105 hover:bg-red-500 hover:text-white hover:shadow-md hover:shadow-red-500/25 active:scale-95"
           >
-            <X />
+            <RiCloseLine />
           </Button>
         </TooltipTrigger>
         <TooltipContent>

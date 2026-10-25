@@ -11,12 +11,19 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { IconX } from "@tabler/icons-react";
+import { RiCloseLine } from "@remixicon/react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Users, Link as LinkIcon, Github, Figma, PanelRightOpen, Presentation } from "lucide-react";
+import {
+  RiUser2Line,
+  RiExternalLinkLine as LinkIcon,
+  RiGithubLine,
+  RiFigmaLine,
+  RiArrowRightSFill,
+  RiPresentationLine,
+} from "@remixicon/react";
 import DetailRow from "../row";
 import { VettingSummary } from "../vetting-summary";
 import { normalizeVettingStatus, reviewStatusMeta, visibleVettingStatus } from "../vetting-status";
@@ -97,7 +104,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
           className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
         >
           <span className="min-w-0 truncate font-medium text-foreground">{item.teamName}</span>
-          <PanelRightOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
+          <RiArrowRightSFill className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-xl">
@@ -111,7 +118,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 </div>
                 <DrawerClose asChild>
                   <Button variant="ghost" size="icon" aria-label="Close submission">
-                    <IconX className="h-4 w-4" />
+                    <RiCloseLine className="h-4 w-4" />
                   </Button>
                 </DrawerClose>
               </div>
@@ -121,7 +128,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
             </DrawerHeader>
           </div>
 
-          <div className="flex-1 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:theme(colors.border)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border">
+          <div className="flex-1 overflow-y-auto scrollbar-thin-custom">
             <div className="grid gap-5">
               <VettingSummary
                 submissionId={item._id}
@@ -160,7 +167,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Github}
+                  icon={RiGithubLine}
                   label="GitHub"
                   value={
                     item.github && item.github.length > 0 ? (
@@ -172,7 +179,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Figma}
+                  icon={RiFigmaLine}
                   label="Figma"
                   value={
                     item.figma && item.figma.length > 0 ? (
@@ -184,7 +191,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Presentation}
+                  icon={RiPresentationLine}
                   label="Canva / Presentation"
                   value={
                     item.canva && item.canva.length > 0 ? (
@@ -205,7 +212,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Users}
+                  icon={RiUser2Line}
                   label="Team Members"
                   value={
                     item.submitterEmail || item.invites.length > 0

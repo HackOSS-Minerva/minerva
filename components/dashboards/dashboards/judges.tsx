@@ -10,13 +10,13 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconCopy, IconCheck, IconX } from "@tabler/icons-react";
+import { RiFileCopyLine, RiCheckLine, RiCloseLine } from "@remixicon/react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { schema as judgeSchema } from "@/components/forms/fields/judge";
 import { StatusIcon } from "../status-icon";
-import { Phone, Shirt, UserRound, Utensils } from "lucide-react";
+import { RiPhoneLine, RiShirtLine, RiUserLine, RiTableLine } from "@remixicon/react";
 import DetailRow from "../row";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
 import { formatShirtSize } from "@/lib/utils";
@@ -70,7 +70,7 @@ function TableCellViewer({ item }: { item: Doc<"judges"> }) {
             <DrawerTitle>Profile</DrawerTitle>
             <DrawerClose asChild>
               <Button variant="ghost" size="icon" aria-label="Close profile">
-                <IconX className="h-4 w-4" />
+                <RiCloseLine className="h-4 w-4" />
               </Button>
             </DrawerClose>
           </div>
@@ -90,9 +90,9 @@ function TableCellViewer({ item }: { item: Doc<"judges"> }) {
                 onClick={handleCopyPicture}
               >
                 {pictureCopied ? (
-                  <IconCheck className="h-4 w-4" />
+                  <RiCheckLine className="h-4 w-4" />
                 ) : (
-                  <IconCopy className="h-4 w-4" />
+                  <RiFileCopyLine className="h-4 w-4" />
                 )}
               </button>
             </div>
@@ -113,23 +113,27 @@ function TableCellViewer({ item }: { item: Doc<"judges"> }) {
               <p className="text-sm font-semibold text-foreground">Contact</p>
               <div className="mt-2 space-y-2">
                 <DetailRow
-                  icon={UserRound}
+                  icon={RiUserLine}
                   label="Email"
                   value={item.email}
                   copyable
                   onCopy={handleCopyEmail}
                   copied={copied}
                 />
-                <DetailRow icon={Phone} label="Phone" value={item.telephone} />
+                <DetailRow icon={RiPhoneLine} label="Phone" value={item.telephone} />
               </div>
             </div>
             <hr />
             <div>
               <div className="mt-2 space-y-2">
                 <p className="text-sm font-semibold text-foreground">Application</p>
-                <DetailRow icon={Shirt} label="Shirt Size" value={formatShirtSize(item.shirt)} />
                 <DetailRow
-                  icon={Utensils}
+                  icon={RiShirtLine}
+                  label="Shirt Size"
+                  value={formatShirtSize(item.shirt)}
+                />
+                <DetailRow
+                  icon={RiTableLine}
                   label="Dietary Restrictions"
                   value={item.dietrestriction || "None"}
                 />

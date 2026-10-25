@@ -6,9 +6,62 @@
     "correctness": "error"
   },
   "rules": {
-    "shadcn/no-arbitrary-values": "error"
+    "shadcn/no-arbitrary-values": [
+      "error",
+      {
+        "allow": [
+          "after:w-[2px]",
+          "bg-[Canvas]",
+          "data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]",
+          "data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+          "data-[size=sm]:[--card-spacing:--spacing(3)]",
+          "data-[size=sm]:rounded-[min(var(--radius-md),10px)]",
+          "data-[vaul-drawer-direction=bottom]:max-h-[80vh]",
+          "data-[vaul-drawer-direction=top]:max-h-[80vh]",
+          "focus-visible:ring-[3px]",
+          "gap-[--spacing(var(--gap))]",
+          "grid-rows-[auto_1fr]",
+          "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]",
+          "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]",
+          "group-data-horizontal/tabs:after:bottom-[-5px]",
+          "has-[>button]:ml-[-0.3rem]",
+          "has-[>button]:mr-[-0.3rem]",
+          "has-[>kbd]:ml-[-0.15rem]",
+          "has-[>kbd]:mr-[-0.15rem]",
+          "has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr]",
+          "has-data-[slot=card-action]:grid-cols-[1fr_auto]",
+          "has-data-[slot=card-description]:grid-rows-[auto_auto]",
+          "hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)]",
+          "hover:shadow-[0_0_0_1px_var(--sidebar-accent)]",
+          "h-[calc(--spacing(5.25))]",
+          "h-[calc(100%-1px)]",
+          "[--card-spacing:--spacing(4)]",
+          "[&>kbd]:rounded-[calc(var(--radius)-5px)]",
+          "max-h-[min(calc(--spacing(72)---spacing(9)),calc(var(--available-height)---spacing(9)))]",
+          "max-w-[calc(100%-2rem)]",
+          "min-w-[96px]",
+          "min-w-[calc(var(--anchor-width)+--spacing(7))]",
+          "p-[3px]",
+          "rounded-[2px]",
+          "rounded-[4px]",
+          "rounded-[calc(var(--radius)-3px)]",
+          "rounded-[min(var(--radius-md),10px)]",
+          "rounded-[min(var(--radius-md),12px)]",
+          "shadow-[0_0_0_1px_var(--sidebar-border)]",
+          "sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]",
+          "text-[0.8rem]",
+          "text-[CanvasText]",
+          "transition-[left,right,width]",
+          "transition-[margin,opacity]",
+          "transition-[width]",
+          "transition-[width,height,padding]",
+          "translate-y-[calc(-50%_-_2px)]",
+          "w-[100px]"
+        ]
+      }
+    ]
   },
   "env": {
     "builtin": true
-  },
+  }
 }

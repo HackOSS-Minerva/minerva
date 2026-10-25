@@ -7,21 +7,21 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconX } from "@tabler/icons-react";
+import { RiCloseLine } from "@remixicon/react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as superadminSchema } from "@/components/forms/fields/superadmin";
 import { StatusIcon } from "../status-icon";
 import {
-  Phone,
-  UserRound,
-  Shirt,
-  Utensils,
-  MessageSquare,
-  GraduationCap,
-  Users,
-  Calendar,
-} from "lucide-react";
+  RiPhoneLine,
+  RiUserLine,
+  RiShirtLine,
+  RiTableLine,
+  RiMessageLine,
+  RiGraduationCapLine,
+  RiUser2Line,
+  RiCalendarLine,
+} from "@remixicon/react";
 import DetailRow from "../row";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
@@ -72,7 +72,7 @@ function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
             <DrawerTitle>Profile</DrawerTitle>
             <DrawerClose asChild>
               <Button variant="ghost" size="icon" aria-label="Close profile">
-                <IconX className="h-4 w-4" />
+                <RiCloseLine className="h-4 w-4" />
               </Button>
             </DrawerClose>
           </div>
@@ -93,35 +93,39 @@ function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
               <p className="text-sm font-semibold text-foreground">Contact</p>
               <div className="mt-2 space-y-2">
                 <DetailRow
-                  icon={UserRound}
+                  icon={RiUserLine}
                   label="Email"
                   value={item.email}
                   copyable
                   onCopy={handleCopyEmail}
                   copied={copied}
                 />
-                <DetailRow icon={Phone} label="Phone" value={item.telephone} />
-                <DetailRow icon={MessageSquare} label="Discord" value={item.discord} />
+                <DetailRow icon={RiPhoneLine} label="Phone" value={item.telephone} />
+                <DetailRow icon={RiMessageLine} label="Discord" value={item.discord} />
               </div>
             </div>
             <hr />
             <div>
               <p className="text-sm font-semibold text-foreground">Admin Information</p>
               <div className="mt-2 space-y-2">
-                <DetailRow icon={GraduationCap} label="Major" value={item.major} />
-                <DetailRow icon={Users} label="Team" value={item.team} />
-                <DetailRow icon={Calendar} label="Grade" value={item.grade} />
-                <DetailRow label="Age" value={item.age} icon={UserRound} />
-                <DetailRow label="Gender" value={item.gender} icon={UserRound} />
+                <DetailRow icon={RiGraduationCapLine} label="Major" value={item.major} />
+                <DetailRow icon={RiUser2Line} label="Team" value={item.team} />
+                <DetailRow icon={RiCalendarLine} label="Grade" value={item.grade} />
+                <DetailRow label="Age" value={item.age} icon={RiUserLine} />
+                <DetailRow label="Gender" value={item.gender} icon={RiUserLine} />
               </div>
             </div>
             <hr />
             <div>
               <p className="text-sm font-semibold text-foreground">Preferences</p>
               <div className="mt-2 space-y-2">
-                <DetailRow icon={Shirt} label="Shirt Size" value={formatShirtSize(item.shirt)} />
                 <DetailRow
-                  icon={Utensils}
+                  icon={RiShirtLine}
+                  label="Shirt Size"
+                  value={formatShirtSize(item.shirt)}
+                />
+                <DetailRow
+                  icon={RiTableLine}
                   label="Dietary Restrictions"
                   value={item.dietrestriction || "None"}
                 />

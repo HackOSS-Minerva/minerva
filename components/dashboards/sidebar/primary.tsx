@@ -1,6 +1,6 @@
 "use client";
 
-import { type Icon } from "@tabler/icons-react";
+import { type RemixiconComponentType } from "@remixicon/react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -22,7 +22,7 @@ export function NavMain({
     title: string;
     url: string;
     slug?: string;
-    icon?: Icon;
+    icon?: RemixiconComponentType;
   }[];
 }) {
   const { tenant } = useParams<{ tenant: TenantSlug }>();

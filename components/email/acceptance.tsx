@@ -23,7 +23,7 @@ const Acceptance = ({ name, position, preview, tenant }: AcceptanceProps) => {
       <Section className="text-center">
         <Button
           href={tenant.discord}
-          className="rounded bg-[#7289da] px-5 py-3 text-center text-xs font-semibold text-white no-underline"
+          className="rounded bg-discord px-5 py-3 text-center text-xs font-semibold text-white no-underline"
         >
           Join Discord
         </Button>

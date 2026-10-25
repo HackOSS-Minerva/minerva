@@ -1,4 +1,4 @@
-import { IconCheck, IconCopy } from "@tabler/icons-react";
+import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { Button } from "../ui/button";
 import type { ComponentType, ReactNode } from "react";
 
@@ -28,7 +28,7 @@ const DetailRow = ({
       </div>
       {copyable && onCopy ? (
         <Button size="sm" variant="ghost" className="h-5 w-5 shrink-0 p-0" onClick={onCopy}>
-          {copied ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+          {copied ? <RiCheckLine className="h-4 w-4" /> : <RiFileCopyLine className="h-4 w-4" />}
         </Button>
       ) : null}
     </div>

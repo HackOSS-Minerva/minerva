@@ -17,7 +17,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IconPlus } from "@tabler/icons-react";
+import { RiAddLine } from "@remixicon/react";
 import { roles } from "@/data/roles";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { TenantSlug } from "@/hooks/get-tenant";
@@ -106,7 +106,7 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
         <Dialog open={newIdeaOpen} onOpenChange={setNewIdeaOpen}>
           <DialogTrigger asChild>
             <Button className="shrink-0">
-              <IconPlus className="mr-2 h-4 w-4" />
+              <RiAddLine className="mr-2 h-4 w-4" />
               New Idea
             </Button>
           </DialogTrigger>
@@ -184,7 +184,7 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
               <div className="mt-2 flex flex-wrap gap-1">
                 <span className="text-xs text-muted-foreground">Looking for:</span>
                 {(idea as Idea).skills.map((skill: string) => (
-                  <Badge key={skill} variant="secondary" className="text-[10px]">
+                  <Badge key={skill} variant="secondary" className="text-xs">
                     {skill}
                   </Badge>
                 ))}

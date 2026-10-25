@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { IconExternalLink, IconCheck } from "@tabler/icons-react";
+import { RiExternalLinkLine, RiCheckLine } from "@remixicon/react";
 import Link from "next/link";
 import { DeadlineBadge } from "@/components/live/dashboard/deadline-badge";
 import type { TenantSlug } from "@/hooks/get-tenant";
@@ -29,7 +29,7 @@ export function SubmissionSection({ tenant, submissionDeadline }: SubmissionSect
             variant="secondary"
             className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 flex items-center gap-1 font-semibold"
           >
-            <IconCheck className="h-3 w-3" />
+            <RiCheckLine className="h-3 w-3" />
             Submitted
           </Badge>
         )}
@@ -58,7 +58,7 @@ export function SubmissionSection({ tenant, submissionDeadline }: SubmissionSect
             <Button asChild>
               <Link href={`/${tenant}/live/submit`}>
                 Submit Project
-                <IconExternalLink className="ml-1 h-4 w-4" />
+                <RiExternalLinkLine className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>

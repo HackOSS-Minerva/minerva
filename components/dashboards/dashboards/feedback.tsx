@@ -16,11 +16,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { IconDotsVertical, IconX } from "@tabler/icons-react";
+import { RiMoreLine, RiCloseLine } from "@remixicon/react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { Star, Calendar, MessageSquare, ThumbsDown, HelpCircle } from "lucide-react";
+import {
+  RiStarLine,
+  RiCalendarLine,
+  RiMessageLine,
+  RiThumbDownLine,
+  RiQuestionLine,
+} from "@remixicon/react";
 import DetailRow from "../row";
 import { useDrawerDirection } from "../profile-drawer";
 import { feedbackMaxRating } from "@/data/information";
@@ -61,7 +67,7 @@ function RatingBadge({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-1">
       {Array.from({ length: feedbackMaxRating }, (_, i) => (
-        <Star
+        <RiStarLine
           key={i}
           className={`h-3 w-3 ${
             i < rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"
@@ -93,7 +99,7 @@ function TableCellViewer({ item }: { item: FeedbackRecord }) {
                 <DrawerTitle>Feedback Details</DrawerTitle>
                 <DrawerClose asChild>
                   <Button variant="ghost" size="icon" aria-label="Close feedback">
-                    <IconX className="h-4 w-4" />
+                    <RiCloseLine className="h-4 w-4" />
                   </Button>
                 </DrawerClose>
               </div>
@@ -103,14 +109,14 @@ function TableCellViewer({ item }: { item: FeedbackRecord }) {
             <div className="space-y-3">
               <p className="text-sm font-semibold text-foreground">Summary</p>
               <div className="grid gap-3">
-                <DetailRow icon={HelpCircle} label="Found Via" value={formatLabel(item.find)} />
+                <DetailRow icon={RiQuestionLine} label="Found Via" value={formatLabel(item.find)} />
                 <DetailRow
-                  icon={Star}
+                  icon={RiStarLine}
                   label="Rating"
                   value={<RatingBadge rating={item.rating} />}
                 />
                 <DetailRow
-                  icon={Calendar}
+                  icon={RiCalendarLine}
                   label="Submitted"
                   value={formatTimestamp(item.timestamp)}
                 />
@@ -122,10 +128,14 @@ function TableCellViewer({ item }: { item: FeedbackRecord }) {
             <div className="space-y-3">
               <p className="text-sm font-semibold text-foreground">Responses</p>
               <div className="grid gap-3">
-                <DetailRow icon={MessageSquare} label="Liked to See" value={item.liked_to_see} />
-                <DetailRow icon={ThumbsDown} label="Not Beneficial" value={item.not_beneficial} />
+                <DetailRow icon={RiMessageLine} label="Liked to See" value={item.liked_to_see} />
                 <DetailRow
-                  icon={MessageSquare}
+                  icon={RiThumbDownLine}
+                  label="Not Beneficial"
+                  value={item.not_beneficial}
+                />
+                <DetailRow
+                  icon={RiMessageLine}
                   label="Anything Else"
                   value={item.anything_else || "No additional comments"}
                 />
@@ -223,7 +233,7 @@ export const columns: ColumnDef<FeedbackRecord>[] = [
             className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
             size="icon"
           >
-            <IconDotsVertical />
+            <RiMoreLine />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>

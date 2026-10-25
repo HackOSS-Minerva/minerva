@@ -6,7 +6,7 @@ import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { RiLoaderLine } from "@remixicon/react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,14 +16,14 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-  IconPlus,
-  IconTrash,
-  IconBrandGithub,
-  IconBrandFigma,
-  IconLink,
-  IconMail,
-  IconFileText,
-} from "@tabler/icons-react";
+  RiAddLine,
+  RiDeleteBinLine,
+  RiGithubLine,
+  RiFigmaLine,
+  RiExternalLinkLine,
+  RiMailLine,
+  RiFileTextLine,
+} from "@remixicon/react";
 import { Separator } from "@/components/ui/separator";
 import { useSubmissions } from "@/hooks/use-submissions";
 import {
@@ -256,7 +256,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                     <div className="flex justify-between items-center">
                       <div>
                         <FieldLabel className="text-primary font-medium flex items-center gap-1">
-                          <IconBrandGithub className="h-4 w-4" />
+                          <RiGithubLine className="h-4 w-4" />
                           GitHub Repositories
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -281,7 +281,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                               : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
-                          <IconPlus className="h-3 w-3 mr-1" /> Add Repo
+                          <RiAddLine className="h-3 w-3 mr-1" /> Add Repo
                         </Button>
                       </div>
                     </div>
@@ -322,7 +322,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             }}
                             disabled={form.state.isSubmitting}
                           >
-                            <IconTrash className="h-4 w-4" />
+                            <RiDeleteBinLine className="h-4 w-4" />
                           </Button>
                         )}
                       </div>
@@ -346,7 +346,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                     <div className="flex justify-between items-center">
                       <div>
                         <FieldLabel className="text-primary font-medium flex items-center gap-1">
-                          <IconBrandFigma className="h-4 w-4" />
+                          <RiFigmaLine className="h-4 w-4" />
                           Figma Designs
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -369,7 +369,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
-                          <IconPlus className="h-3 w-3 mr-1" /> Add Design
+                          <RiAddLine className="h-3 w-3 mr-1" /> Add Design
                         </Button>
                       </div>
                     </div>
@@ -410,7 +410,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             }}
                             disabled={form.state.isSubmitting}
                           >
-                            <IconTrash className="h-4 w-4" />
+                            <RiDeleteBinLine className="h-4 w-4" />
                           </Button>
                         )}
                       </div>
@@ -434,7 +434,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                     <div className="flex justify-between items-center">
                       <div>
                         <FieldLabel className="text-primary font-medium flex items-center gap-1">
-                          <IconFileText className="h-4 w-4" />
+                          <RiFileTextLine className="h-4 w-4" />
                           Canva Designs
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -457,7 +457,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
-                          <IconPlus className="h-3 w-3 mr-1" /> Add Design
+                          <RiAddLine className="h-3 w-3 mr-1" /> Add Design
                         </Button>
                       </div>
                     </div>
@@ -498,7 +498,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             }}
                             disabled={form.state.isSubmitting}
                           >
-                            <IconTrash className="h-4 w-4" />
+                            <RiDeleteBinLine className="h-4 w-4" />
                           </Button>
                         )}
                       </div>
@@ -522,7 +522,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         htmlFor={field.name}
                         className="text-primary flex items-center gap-1"
                       >
-                        <IconLink className="h-4 w-4" />
+                        <RiExternalLinkLine className="h-4 w-4" />
                         Presentation / Demo Video
                       </FieldLabel>
                       <span
@@ -572,7 +572,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                     <div className="flex justify-between items-center">
                       <div>
                         <FieldLabel className="text-primary font-medium flex items-center gap-1">
-                          <IconMail className="h-4 w-4" />
+                          <RiMailLine className="h-4 w-4" />
                           Invite Teammates by Email
                         </FieldLabel>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -587,7 +587,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         onClick={() => field.handleChange([...emails, ""])}
                         disabled={form.state.isSubmitting}
                       >
-                        <IconPlus className="h-3 w-3 mr-1" /> Add Member
+                        <RiAddLine className="h-3 w-3 mr-1" /> Add Member
                       </Button>
                     </div>
                     {emails.map((email, idx) => (
@@ -617,7 +617,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             }}
                             disabled={form.state.isSubmitting}
                           >
-                            <IconTrash className="h-4 w-4" />
+                            <RiDeleteBinLine className="h-4 w-4" />
                           </Button>
                         )}
                       </div>
@@ -644,7 +644,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                     <Button type="submit" disabled={isSubmitting} aria-disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
-                          <Loader2 className="size-4 animate-spin" />
+                          <RiLoaderLine className="size-4 animate-spin" />
                           Submitting...
                         </>
                       ) : (

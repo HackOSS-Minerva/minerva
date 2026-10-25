@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { IconSearch, IconExternalLink, IconStarFilled } from "@tabler/icons-react";
+import { RiSearchLine, RiExternalLinkLine, RiStarFill } from "@remixicon/react";
 import type { Hackpack } from "@/data/hackpacks";
 
 const CATEGORIES = [
@@ -45,7 +45,7 @@ export function HackpacksContent() {
   return (
     <div className="space-y-4">
       <div className="relative">
-        <IconSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <RiSearchLine className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search hackpacks..."
           value={search}
@@ -72,10 +72,10 @@ export function HackpacksContent() {
                 <div key={hackpack.id} className="flex flex-col rounded-lg border bg-card p-3">
                   <div className="flex flex-1 flex-col gap-2">
                     <div className="mb-1 flex items-center gap-2">
-                      <Badge variant="outline" className="text-[10px]">
+                      <Badge variant="outline" className="text-xs">
                         {hackpack.category.join(", ")}
                       </Badge>
-                      {hackpack.featured && <IconStarFilled className="h-3 w-3 text-yellow-500" />}
+                      {hackpack.featured && <RiStarFill className="h-3 w-3 text-yellow-500" />}
                     </div>
                     <h3 className="font-semibold">{hackpack.name}</h3>
                     <p className="text-xs text-muted-foreground">by {hackpack.sponsor}</p>
@@ -87,7 +87,7 @@ export function HackpacksContent() {
                       <Button variant="outline" size="sm" asChild className="w-full">
                         <a href={hackpack.link} target="_blank" rel="noopener noreferrer">
                           Get Started
-                          <IconExternalLink className="ml-1 h-3 w-3" />
+                          <RiExternalLinkLine className="ml-1 h-3 w-3" />
                         </a>
                       </Button>
                     </div>

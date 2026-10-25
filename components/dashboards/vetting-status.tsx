@@ -1,10 +1,16 @@
-import type { LucideIcon } from "lucide-react";
-import { AlertTriangle, CheckCircle2, CircleDashed, LoaderCircle, XCircle } from "lucide-react";
+import type { RemixiconComponentType } from "@remixicon/react";
+import {
+  RiAlertLine,
+  RiCheckLine,
+  RiMoreLine,
+  RiLoaderLine,
+  RiCloseCircleLine,
+} from "@remixicon/react";
 import type { SubmissionReviewStatus, VettingStatus } from "@/lib/vetting/types";
 
 type StatusMeta = {
   label: string;
-  icon: LucideIcon;
+  icon: RemixiconComponentType;
   iconClass: string;
 };
 
@@ -15,21 +21,21 @@ type ReviewStatusMeta = StatusMeta & {
 export const reviewStatusMeta: Record<SubmissionReviewStatus, ReviewStatusMeta> = {
   verified: {
     label: "Verified",
-    icon: CheckCircle2,
+    icon: RiCheckLine,
     iconClass: "text-emerald-500",
     badgeClass:
       "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/20 dark:text-emerald-300",
   },
   needs_review: {
     label: "Needs Review",
-    icon: AlertTriangle,
+    icon: RiAlertLine,
     iconClass: "text-amber-500",
     badgeClass:
       "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-300",
   },
   disqualified: {
     label: "Disqualified",
-    icon: XCircle,
+    icon: RiCloseCircleLine,
     iconClass: "text-red-500",
     badgeClass:
       "border-red-200 bg-red-50 text-red-700 dark:border-red-900/70 dark:bg-red-950/20 dark:text-red-300",
@@ -39,27 +45,27 @@ export const reviewStatusMeta: Record<SubmissionReviewStatus, ReviewStatusMeta> 
 const vettingRunStatusMeta: Record<VettingStatus, StatusMeta> = {
   not_started: {
     label: "Not Started",
-    icon: CircleDashed,
+    icon: RiMoreLine,
     iconClass: "text-muted-foreground",
   },
   queued: {
     label: "Queued",
-    icon: CircleDashed,
+    icon: RiMoreLine,
     iconClass: "text-blue-500",
   },
   running: {
     label: "Running",
-    icon: LoaderCircle,
+    icon: RiLoaderLine,
     iconClass: "animate-spin text-blue-500",
   },
   completed: {
     label: "Completed",
-    icon: CheckCircle2,
+    icon: RiCheckLine,
     iconClass: "text-emerald-500",
   },
   failed: {
     label: "Failed",
-    icon: XCircle,
+    icon: RiCloseCircleLine,
     iconClass: "text-red-500",
   },
 };

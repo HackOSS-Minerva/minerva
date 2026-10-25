@@ -2,7 +2,7 @@
 
 import type { GoogleEvent } from "@/types/calendar";
 import type { ColumnDef, Row } from "@tanstack/react-table";
-import { ArrowUpDown, ExternalLink } from "lucide-react";
+import { RiArrowUpDownLine, RiExternalLinkLine } from "@remixicon/react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +74,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Start
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <RiArrowUpDownLine className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -97,7 +97,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           End
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <RiArrowUpDownLine className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -120,13 +120,13 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Event
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <RiArrowUpDownLine className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
       return (
-        <span className="font-medium line-clamp-1 max-w-[250px]">{row.getValue("summary")}</span>
+        <span className="font-medium line-clamp-1 max-w-250px">{row.getValue("summary")}</span>
       );
     },
   },
@@ -136,7 +136,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const location = row.getValue("location") as string;
       return location ? (
-        <span className="text-muted-foreground line-clamp-1 max-w-[250px]">{location}</span>
+        <span className="text-muted-foreground line-clamp-1 max-w-250px">{location}</span>
       ) : (
         <span className="text-muted-foreground italic">N/A</span>
       );
@@ -175,7 +175,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => window.open(event.htmlLink, "_blank")}
         >
           <span className="sr-only">Open in Google Calendar</span>
-          <ExternalLink className="h-4 w-4" />
+          <RiExternalLinkLine className="h-4 w-4" />
         </Button>
       );
     },

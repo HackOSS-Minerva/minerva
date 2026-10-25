@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { RiDownloadLine } from "@remixicon/react";
 import { toast } from "sonner";
 
 interface DownloadCertificateButtonProps {
@@ -142,7 +142,7 @@ export function DownloadCertificateButton({
 
   return (
     <Button onClick={handleDownload} className="w-full" disabled={downloading}>
-      <Download className="mr-2 h-4 w-4" />
+      <RiDownloadLine className="mr-2 h-4 w-4" />
       {downloading ? "Preparing PDF…" : "Download Certificate"}
     </Button>
   );

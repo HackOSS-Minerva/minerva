@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
+import { RiMoreLine, RiLogoutBoxLine } from "@remixicon/react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -51,7 +51,7 @@ export function NavUser() {
                 <span className="truncate font-medium">{name}</span>
                 <span className="text-muted-foreground truncate text-xs">{email}</span>
               </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              <RiMoreLine className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -61,7 +61,7 @@ export function NavUser() {
             sideOffset={4}
           >
             <DropdownMenuItem onClick={handleSignOut}>
-              <IconLogout />
+              <RiLogoutBoxLine />
               Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
