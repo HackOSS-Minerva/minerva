@@ -1,3 +1,4 @@
+import { scheduleAnalyticsEvent } from "./posthog";
 import { mutation, query } from "./_generated/server";
 import { convexError } from "./app_error";
 import { v } from "convex/values";
@@ -37,6 +38,13 @@ export const checkin = mutation({
     const created = await ctx.db.get("checkins", id);
     if (!created) throw convexError("INTERNAL", "Failed to create checkin");
 
+    await scheduleAnalyticsEvent(ctx, "checkin_created", {
+      tenant: created.tenant,
+      entity_id: id,
+      user_id: created.userid,
+      event_id: created.eventid,
+    });
+
     return { id, checkin: created };
   },
 });
@@ -65,7 +73,15 @@ export const getByEvent = query({
 export const remove = mutation({
   args: { id: v.id("checkins") },
   handler: async (ctx, { id }) => {
+    const record = await ctx.db.get(id);
+    if (!record) return { success: true };
     await ctx.db.delete(id);
+    await scheduleAnalyticsEvent(ctx, "checkin_deleted", {
+      tenant: record.tenant,
+      entity_id: id,
+      user_id: record.userid,
+      event_id: record.eventid,
+    });
     return { success: true };
   },
 });
@@ -74,7 +90,15 @@ export const deleteMany = mutation({
   args: { ids: v.array(v.id("checkins")) },
   handler: async (ctx, { ids }) => {
     for (const id of ids) {
+      const record = await ctx.db.get(id);
+      if (!record) continue;
       await ctx.db.delete(id);
+      await scheduleAnalyticsEvent(ctx, "checkin_deleted", {
+        tenant: record.tenant,
+        entity_id: id,
+        user_id: record.userid,
+        event_id: record.eventid,
+      });
     }
     return { success: true };
   },

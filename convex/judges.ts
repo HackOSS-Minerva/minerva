@@ -1,3 +1,4 @@
+import { scheduleAnalyticsEvent } from "./posthog";
 import { query, mutation } from "./_generated/server";
 import { convexError } from "./app_error";
 import { v } from "convex/values";
@@ -71,6 +72,13 @@ export const add = mutation({
     const created = await ctx.db.get("judges", id);
     if (!created) throw convexError("INTERNAL", "Failed to create judge");
 
+    await scheduleAnalyticsEvent(ctx, "application_created", {
+      tenant: created.tenant,
+      entity_id: id,
+      role: "judge",
+      status: created.status,
+    });
+
     return { id, user: created };
   },
 });
@@ -78,7 +86,15 @@ export const add = mutation({
 export const remove = mutation({
   args: { id: v.id("judges") },
   handler: async (ctx, { id }) => {
+    const record = await ctx.db.get(id);
+    if (!record) return { success: true };
     await ctx.db.delete(id);
+    await scheduleAnalyticsEvent(ctx, "application_deleted", {
+      tenant: record.tenant,
+      entity_id: id,
+      role: "judge",
+      status: record.status,
+    });
     return { success: true };
   },
 });
@@ -87,7 +103,15 @@ export const deleteMany = mutation({
   args: { ids: v.array(v.id("judges")) },
   handler: async (ctx, { ids }) => {
     for (const id of ids) {
+      const record = await ctx.db.get(id);
+      if (!record) continue;
       await ctx.db.delete(id);
+      await scheduleAnalyticsEvent(ctx, "application_deleted", {
+        tenant: record.tenant,
+        entity_id: id,
+        role: "judge",
+        status: record.status,
+      });
     }
     return { success: true };
   },
@@ -106,6 +130,12 @@ export const setStatusMany = mutation({
       if (judge.status === status) continue;
 
       await ctx.db.patch(id, { status });
+      await scheduleAnalyticsEvent(ctx, "application_status_changed", {
+        tenant: judge.tenant,
+        entity_id: id,
+        role: "judge",
+        status,
+      });
     }
 
     return { status: "success" };

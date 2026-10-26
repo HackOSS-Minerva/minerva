@@ -1,5 +1,5 @@
 import type { RowData } from "@tanstack/react-table";
-import type { ApplicationStatus } from "@/lib/posthog";
+import type { ApplicationStatus } from "@/lib/analytics";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {

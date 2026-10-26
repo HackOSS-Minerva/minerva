@@ -13,7 +13,7 @@ import * as volunteers from "@/components/dashboards/dashboards/volunteers";
 import * as attendance from "@/components/dashboards/dashboards/attendance";
 import * as feedback from "@/components/dashboards/dashboards/feedback";
 import * as submissions from "@/components/dashboards/dashboards/submissions";
-import { captureAnalyticsEvent, type AnalyticsRole, type ApplicationStatus } from "@/lib/posthog";
+import type { ApplicationStatus } from "@/lib/analytics";
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { useSubmissionVetting } from "./use-submissions";
 
@@ -77,20 +77,6 @@ const DASHBOARDS: DashboardModules = {
   submissions,
 };
 
-// Convex mutations take branded `Id<Table>` args (plain strings at runtime),
-// but callbacks get row ids as strings. This is the single conversion point.
-const adaptMutationArgs = <TArgs extends object>(
-  mutation: (args: never) => unknown,
-): ((args: TArgs) => Promise<unknown>) => mutation as unknown as (args: TArgs) => Promise<unknown>;
-
-const applicationRoleByDashboard = {
-  participants: "participant",
-  judges: "judge",
-  speakers: "speaker",
-  superadmins: "superadmin",
-  volunteers: "volunteer",
-} as const satisfies Partial<Record<slugs, AnalyticsRole>>;
-
 const QUERIES = {
   participants: api.participants.get,
   judges: api.judges.get,
@@ -151,79 +137,15 @@ export const useDashboard = (eventid?: string) => {
   const onDeleteMany = allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
   const setStatusMany = allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
-  const role = applicationRoleByDashboard[slug as keyof typeof applicationRoleByDashboard];
-  const shouldCaptureDeletion = Boolean(role) || slug === "attendance" || slug === "submissions";
-
-  const captureDeletion = (id: string) => {
-    if (role) {
-      captureAnalyticsEvent("application_deleted", {
-        tenant: tenantName,
-        entity_id: id,
-        role,
-      });
-    } else if (slug === "attendance") {
-      captureAnalyticsEvent("checkin_deleted", {
-        tenant: tenantName,
-        entity_id: id,
-      });
-    } else if (slug === "submissions") {
-      captureAnalyticsEvent("submission_deleted", {
-        tenant: tenantName,
-        entity_id: id,
-      });
-    }
-  };
-
-  const onDeleteWithAnalytics = async ({ id }: { id: string }) => {
-    const callDelete = adaptMutationArgs<{ id: string }>(onDelete);
-    const result = await callDelete({ id });
-    captureDeletion(id);
-    return result;
-  };
-
-  const onDeleteManyWithAnalytics = async ({ ids }: { ids: string[] }) => {
-    const callDeleteMany = adaptMutationArgs<{ ids: string[] }>(onDeleteMany);
-    const result = await callDeleteMany({ ids });
-    ids.forEach(captureDeletion);
-    return result;
-  };
-
-  const setStatusManyWithAnalytics = async ({
-    ids,
-    status,
-  }: {
-    ids: string[];
-    status: ApplicationStatus;
-  }) => {
-    const callSetStatusMany = adaptMutationArgs<{
-      ids: string[];
-      status: ApplicationStatus;
-    }>(setStatusMany);
-    const result = await callSetStatusMany({ ids, status });
-
-    if (role) {
-      for (const id of ids) {
-        captureAnalyticsEvent("application_status_changed", {
-          tenant: tenantName,
-          entity_id: id,
-          role,
-          status,
-        });
-      }
-    }
-
-    return result;
-  };
-
   // Single correlation cast: the runtime `slug` picks the `DashboardBundle`
   // member — a relationship TypeScript can't verify across dynamic key lookups.
   return {
     slug,
     dashboard: DASHBOARDS[slug],
     data: data ?? [],
-    onDelete: shouldCaptureDeletion ? onDeleteWithAnalytics : onDelete,
-    onDeleteMany: shouldCaptureDeletion ? onDeleteManyWithAnalytics : onDeleteMany,
-    setStatusMany: role ? setStatusManyWithAnalytics : setStatusMany,
+    onDelete,
+    onDeleteMany,
+    setStatusMany,
     runVettingMany: slug === "submissions" ? runVettingMany : undefined,
   } as DashboardBundle;
 };

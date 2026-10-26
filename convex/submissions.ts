@@ -1,3 +1,4 @@
+import { scheduleAnalyticsEvent } from "./posthog";
 import { query, mutation } from "./_generated/server";
 import { convexError } from "./app_error";
 import { v } from "convex/values";
@@ -87,6 +88,10 @@ export const add = mutation({
       vetted: "needs_review",
       vettingStatus: "not_started",
     });
+    await scheduleAnalyticsEvent(ctx, "submission_created", {
+      tenant,
+      entity_id: id,
+    });
     return { success: true, id };
   },
 });
@@ -94,7 +99,13 @@ export const add = mutation({
 export const remove = mutation({
   args: { id: v.id("submissions") },
   handler: async (ctx, { id }) => {
+    const record = await ctx.db.get(id);
+    if (!record) return { success: true };
     await ctx.db.delete(id);
+    await scheduleAnalyticsEvent(ctx, "submission_deleted", {
+      tenant: record.tenant,
+      entity_id: id,
+    });
     return { success: true };
   },
 });
@@ -103,7 +114,13 @@ export const deleteMany = mutation({
   args: { ids: v.array(v.id("submissions")) },
   handler: async (ctx, { ids }) => {
     for (const id of ids) {
+      const record = await ctx.db.get(id);
+      if (!record) continue;
       await ctx.db.delete(id);
+      await scheduleAnalyticsEvent(ctx, "submission_deleted", {
+        tenant: record.tenant,
+        entity_id: id,
+      });
     }
     return { success: true };
   },

@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { z } from "zod";
-import { captureAnalyticsEvent } from "@/lib/posthog";
 import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
 import { triggerConfetti } from "./use-confetti";
@@ -112,7 +111,7 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
       }
 
       try {
-        const result = await addSubmission({
+        await addSubmission({
           tenant,
           teamName: value.teamName,
           projectName: value.projectName,
@@ -123,11 +122,6 @@ export function useSubmissions({ tenant }: UseSubmissionsOptions) {
           canva: cleanCanva,
           presentation: value.presentation || undefined,
           invites: team.normalizedInvites,
-        });
-
-        captureAnalyticsEvent("submission_created", {
-          tenant,
-          entity_id: String(result.id),
         });
 
         toast.success("Project submitted successfully!");
