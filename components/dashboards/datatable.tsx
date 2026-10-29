@@ -68,7 +68,7 @@ import { convertToCSV } from "@/lib/csv";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { toastAppError } from "@/hooks/use-app-error";
 import { AppError, logAppError } from "@/lib/app-error";
-import type { ApplicationStatus } from "@/lib/posthog";
+import type { ApplicationStatus } from "@/lib/analytics";
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { MAX_VETTING_BATCH_SIZE } from "@/lib/vetting/rules";
 import { cn } from "cn";

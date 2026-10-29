@@ -15,7 +15,7 @@ import type {
   AnalyticsRole,
   ParticipantDemographicBreakdown,
   ParticipantDemographicKey,
-} from "@/lib/posthog";
+} from "@/lib/analytics";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 type AnalyticsPageProps = {

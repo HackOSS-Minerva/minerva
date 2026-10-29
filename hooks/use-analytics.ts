@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import type { AnalyticsData } from "@/lib/posthog";
+import type { AnalyticsData } from "@/lib/analytics";
 import { parseAppError } from "@/lib/app-error";
 import type { TenantSlug } from "@/hooks/get-tenant";
 

@@ -9,7 +9,6 @@ import {
   type FormValuesMap,
   type slugs,
 } from "@/lib/form-defs";
-import { captureAnalyticsEvent } from "@/lib/posthog";
 import { useEmail } from "./use-email";
 import { uploadFile } from "@/lib/storage";
 import { newUploadId } from "@/lib/checkin";
@@ -72,13 +71,6 @@ export const useFields = () => {
           },
         });
 
-        captureAnalyticsEvent("application_created", {
-          tenant,
-          entity_id: String(result.id),
-          role: "volunteer",
-          status: "PENDING",
-        });
-
         if (result.user) {
           await sendConfirmationEmail("volunteer", result.user, String(result.id));
         }
@@ -117,20 +109,6 @@ export const useFields = () => {
           },
         });
 
-        captureAnalyticsEvent("application_created", {
-          tenant,
-          entity_id: String(result.id),
-          role: "participant",
-          status: "PENDING",
-          gender: v.gender,
-          dietrestriction: v.dietrestriction,
-          shirt: v.shirt,
-          school: v.school,
-          major: v.major,
-          age: v.age,
-          grade: v.grade,
-        });
-
         if (result.user) {
           await sendConfirmationEmail("participant", result.user, String(result.id));
         }
@@ -159,13 +137,6 @@ export const useFields = () => {
             dietrestriction: v.dietrestriction,
             picture: url,
           },
-        });
-
-        captureAnalyticsEvent("application_created", {
-          tenant,
-          entity_id: String(result.id),
-          role: "judge",
-          status: "PENDING",
         });
 
         if (result.user) {
@@ -198,13 +169,6 @@ export const useFields = () => {
           },
         });
 
-        captureAnalyticsEvent("application_created", {
-          tenant,
-          entity_id: String(result.id),
-          role: "speaker",
-          status: "PENDING",
-        });
-
         if (result.user) {
           await sendConfirmationEmail("speaker", result.user, String(result.id));
         }
@@ -230,13 +194,6 @@ export const useFields = () => {
             team: v.team,
             dietrestriction: v.dietrestriction,
           },
-        });
-
-        captureAnalyticsEvent("application_created", {
-          tenant,
-          entity_id: String(result.id),
-          role: "superadmin",
-          status: "PENDING",
         });
 
         if (result.user) {
