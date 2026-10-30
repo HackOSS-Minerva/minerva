@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { use } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import { tenantConfigs } from "@/tenants/generated";
 
 interface SignInPageProps {
   params: Promise<{
@@ -23,14 +25,12 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
   const { data: session, isPending } = authClient.useSession();
   const [signingIn, setSigningIn] = useState(false);
 
-  const redirectTarget = searchParams.get("redirect") ?? `/${tenant}/admin`;
+  const tenantConfig = tenantConfigs[tenant];
+  const tenantName = tenantConfig?.name || tenant;
+  const logoUrl = tenantConfig?.logo;
+  const tenantDomain = tenantConfig?.domain;
 
-  // If already signed in, send them to their redirect target.
-  useEffect(() => {
-    if (!isPending && session?.session) {
-      router.push(redirectTarget);
-    }
-  }, [isPending, session, redirectTarget, router]);
+  const redirectTarget = searchParams.get("redirect") ?? `/${tenant}/admin`;
 
   const handleGoogleSignIn = async () => {
     setSigningIn(true);
@@ -49,33 +49,49 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
     router.refresh();
   };
 
+  const handleBackToTenant = () => {
+    router.push(tenantDomain);
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold">Sign In</h1>
-          <p className="text-muted-foreground text-sm">
-            Sign in with Google to continue with <span className="font-medium">{tenant}</span>.
-          </p>
+      <div className="w-full max-w-sm space-y-2">
+        {/* Large, centered logo at the top */}
+        <div className="flex justify-center">
+          {logoUrl && (
+            <Image
+              src={logoUrl}
+              alt="Logo"
+              width={120}
+              height={120}
+              className="w-28 h-28"
+            />
+          )}
         </div>
 
-        {session?.session ? (
-          <div className="space-y-3">
-            <p className="text-muted-foreground text-center text-sm">
-              Signed in as <span className="font-medium">{session.user.email}</span>.
-            </p>
-            <Button className="w-full" onClick={() => router.push(redirectTarget)}>
-              Continue
-            </Button>
-            <Button variant="outline" className="w-full" onClick={handleSignOut}>
+        <div className="space-y-6 text-center">
+          <h1 className="text-2xl font-semibold">
+            {session?.session ? `Welcome, ${session.user.name || session.user.email}` : "Sign In"}
+          </h1>
+          {session?.session ? (
+            <Button className="w-full" variant="outline" onClick={handleSignOut}>
               Sign out
             </Button>
-          </div>
-        ) : (
-          <Button className="w-full" onClick={handleGoogleSignIn} disabled={signingIn || isPending}>
-            {signingIn ? "Redirecting to Google…" : "Sign in with Google"}
-          </Button>
-        )}
+          ) : (
+            <Button className="w-full" onClick={handleGoogleSignIn} disabled={signingIn || isPending}>
+              {signingIn ? "Redirecting to Google…" : "Sign in with Google"}
+            </Button>
+          )}
+        </div>
+
+        {/* Back to main tenant page button */}
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={handleBackToTenant}
+        >
+          Back to {tenantName}
+        </Button>
       </div>
     </div>
   );
