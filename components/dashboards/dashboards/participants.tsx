@@ -29,7 +29,7 @@ import {
 import { StatusIcon } from "../status-icon";
 import DetailRow from "../row";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
-import { formatShirtSize } from "@/lib/utils";
+import { formatShirtSize } from "@/lib/localization";
 
 export const metadata = {
   title: "Participants",

@@ -25,7 +25,7 @@ import {
 import DetailRow from "../row";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
-import { formatShirtSize } from "@/lib/utils";
+import { formatShirtSize } from "@/lib/localization";
 
 export const metadata = {
   title: "Superadmins",

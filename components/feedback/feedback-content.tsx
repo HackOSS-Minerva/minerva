@@ -18,7 +18,7 @@ import {
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { triggerConfetti } from "@/hooks/use-confetti";
 import { feedbackFindOptions } from "@/data/information";
-import { toWordsTitleCase } from "@/lib/utils";
+import { toWordsTitleCase } from "@/lib/localization";
 import { toast } from "sonner";
 import { logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";

@@ -5,7 +5,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { TenantSlug } from "@/hooks/get-tenant";
-import { toSpacedTitleCase } from "@/lib/utils";
+import { toSpacedTitleCase } from "@/lib/localization";
 
 // ── Public types ──────────────────────────────────────────────────────────────
 

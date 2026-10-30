@@ -30,7 +30,7 @@ import {
 import DetailRow from "../row";
 import { useDrawerDirection } from "../profile-drawer";
 import { feedbackMaxRating } from "@/data/information";
-import { toWordsTitleCase } from "@/lib/utils";
+import { toWordsTitleCase } from "@/lib/localization";
 
 type FeedbackRecord = Doc<"feedback">;
 
