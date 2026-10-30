@@ -14,7 +14,7 @@
     "deploy": "bunx convex deploy"
   },
   "dependencies": {
-    "@base-ui/react": "^1.4.1",
+    "@base-ui/react": "^1.9.0",
     "@convex-dev/better-auth": "^0.12.5",
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
