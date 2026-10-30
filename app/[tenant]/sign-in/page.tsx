@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -59,13 +59,7 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
         {/* Large, centered logo at the top */}
         <div className="flex justify-center">
           {logoUrl && (
-            <Image
-              src={logoUrl}
-              alt="Logo"
-              width={120}
-              height={120}
-              className="w-28 h-28"
-            />
+            <Image src={logoUrl} alt="Logo" width={120} height={120} className="w-28 h-28" />
           )}
         </div>
 
@@ -78,18 +72,18 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
               Sign out
             </Button>
           ) : (
-            <Button className="w-full" onClick={handleGoogleSignIn} disabled={signingIn || isPending}>
+            <Button
+              className="w-full"
+              onClick={handleGoogleSignIn}
+              disabled={signingIn || isPending}
+            >
               {signingIn ? "Redirecting to Google…" : "Sign in with Google"}
             </Button>
           )}
         </div>
 
         {/* Back to main tenant page button */}
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={handleBackToTenant}
-        >
+        <Button variant="outline" className="w-full" onClick={handleBackToTenant}>
           Back to {tenantName}
         </Button>
       </div>
