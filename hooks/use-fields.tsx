@@ -43,7 +43,7 @@ export const useFields = () => {
         error,
         requestId: "client",
       });
-      toastAppError(error, "Registration submitted, but the confirmation email could not be sent.");
+      toastAppError(error, "Registration submitted.");
     }
   };
 
