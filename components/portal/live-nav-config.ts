@@ -3,11 +3,6 @@ import type { FeatureFlagKey } from "@/lib/feature-flags";
 
 export const liveNavItems: NavItem[] = [
   { href: "/live/dashboard", label: "Dashboard" },
-  {
-    href: "/live/photos",
-    label: "Photos",
-    featureFlagKey: "photos" as FeatureFlagKey,
-  },
 ];
 
 export const liveDropdowns: DropdownConfig[] = [
