@@ -30,7 +30,7 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
   const logoUrl = tenantConfig?.logo;
   const tenantDomain = tenantConfig?.domain;
 
-  const redirectTarget = searchParams.get("redirect") ?? `/${tenant}/admin`;
+  const redirectTarget = searchParams.get("redirect") ?? `/${tenant}/admin/dashboards/superadmins`;
 
   const handleGoogleSignIn = async () => {
     setSigningIn(true);
