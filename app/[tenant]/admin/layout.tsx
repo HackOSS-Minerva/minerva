@@ -29,7 +29,13 @@ const Layout = async ({ children, params }: AdminLayoutProps) => {
       <div className="flex min-h-screen items-center justify-center p-6">
         <div className="w-full max-w-md space-y-4 text-center">
           <div className="flex justify-center">
-            <Image src={tenantConfigs[tenant].logo} alt="Logo" width={120} height={120} className="w-28 h-28" />
+            <Image
+              src={tenantConfigs[tenant].logo}
+              alt="Logo"
+              width={120}
+              height={120}
+              className="w-28 h-28"
+            />
           </div>
           <div className="space-y-3">
             <h1 className="text-2xl font-semibold">Unauthorized</h1>

@@ -109,7 +109,6 @@ export default function AssignmentsContent() {
         <div className="flex shrink-0 items-center gap-2">
           <Button
             variant="default"
-            size="sm"
             onClick={handleAssign}
             disabled={isSaving || judges.length === 0 || submissions.length === 0}
           >
@@ -164,13 +163,13 @@ export default function AssignmentsContent() {
       {/* Summary stats — always visible */}
       <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
         <span>
-          <strong>{judges.length}</strong> judges
+          <strong>{judges.length}</strong> Judges
         </span>
         <span>
-          <strong>{submissions.length}</strong> submissions
+          <strong>{submissions.length}</strong> Submissions
         </span>
         <span>
-          <strong>{assignments.length}</strong> assignments
+          <strong>{assignments.length}</strong> Assignments
         </span>
       </div>
 

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
-import { triggerConfetti } from "@/hooks/use-confetti";
+import { useTriggerConfetti } from "@/components/confetti/confetti-overlay";
 import { feedbackFindOptions } from "@/data/information";
 import { toWordsTitleCase } from "@/lib/localization";
 import { toast } from "sonner";
@@ -35,6 +35,8 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   const [anythingElse, setAnythingElse] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const { triggerConfetti } = useTriggerConfetti();
 
   const addFeedback = useMutation(api.feedback.add);
   const { headers, config } = getTenant(tenant);

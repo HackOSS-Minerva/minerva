@@ -41,6 +41,7 @@
     "react": "19.2.3",
     "react-confetti": "^6.4.0",
     "react-dom": "19.2.3",
+    "react-use": "^17.6.1",
     "react-zxing": "^2.1.0",
     "resend": "^6.9.2",
     "shadcn": "^4.23.0",
