@@ -80,7 +80,7 @@ export function PortalNavItems({
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 {isAuthorized ? (
-                  <ul className="grid w-[320px] gap-1 p-2">
+                  <ul className="grid w-80 gap-1 p-2">
                     {dropdown.items.map((item) => (
                       <li key={item.href}>
                         <NavigationMenuLink asChild>
@@ -92,16 +92,20 @@ export function PortalNavItems({
                           >
                             <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
                               {item.label}
-                              {item.external && <RiExternalLinkLine className="text-muted-foreground" />}
+                              {item.external && (
+                                <RiExternalLinkLine className="text-muted-foreground" />
+                              )}
                             </span>
-                            <span className="text-xs text-muted-foreground">{item.description}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {item.description}
+                            </span>
                           </Link>
                         </NavigationMenuLink>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <div className="min-w-[220px] p-2">
+                  <div className="min-w-55 p-2">
                     {dropdown.items.map((item) => (
                       <div
                         key={item.href}

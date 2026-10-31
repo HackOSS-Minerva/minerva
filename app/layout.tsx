@@ -8,7 +8,7 @@ import ConfettiOverlay from "@/components/confetti/confetti-overlay";
 import "./globals.css";
 import { cn } from "cn";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
