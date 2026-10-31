@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { RiArrowDownSLine, RiExternalLinkLine, RiLockLine } from "@remixicon/react";
+import { RiExternalLinkLine, RiLockLine } from "@remixicon/react";
 import { cn } from "cn";
 import type { TenantSlug } from "@/hooks/get-tenant";
-import { Button, buttonVariants } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import type { DropdownConfig, NavItem } from "@/components/portal/portal-nav";
 
 interface PortalNavItemsProps {
@@ -33,9 +34,6 @@ function isActiveDropdown(pathname: string, dropdown: DropdownConfig): boolean {
   return dropdown.items.some((item) => pathname.includes(item.href));
 }
 
-// Client island: only `usePathname()` (active-link highlighting) and the
-// Radix dropdown interaction need to run in the browser. Receives
-// already-filtered nav config from the server `PortalNav` shell.
 export function PortalNavItems({
   tenant,
   navItems,
@@ -46,35 +44,29 @@ export function PortalNavItems({
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-1">
-      {/* Top-level nav items */}
-      {navItems.map((item) => {
-        const isActive = pathname.includes(item.href);
-        return (
-          <Link
-            key={item.href}
-            href={resolveHref(tenant, item.href)}
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              isActive ? "bg-background" : "",
-              "text-foreground",
-              "transition-all",
-            )}
-          >
-            {item.label}
-          </Link>
-        );
-      })}
+    <NavigationMenu>
+      <NavigationMenuList>
+        {navItems.map((item) => {
+          const isActive = pathname.includes(item.href);
+          return (
+            <NavigationMenuItem key={item.href}>
+              <NavigationMenuLink asChild active={isActive}>
+                <Link
+                  href={resolveHref(tenant, item.href)}
+                  className={cn(isActive ? "bg-background" : "", "text-foreground")}
+                >
+                  {item.label}
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          );
+        })}
 
-      {/* Dropdown menus */}
-      {dropdowns.map((dropdown) => {
-        const isActive = isActiveDropdown(pathname, dropdown);
-        return (
-          <DropdownMenu key={dropdown.label}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
+        {dropdowns.map((dropdown) => {
+          const isActive = isActiveDropdown(pathname, dropdown);
+          return (
+            <NavigationMenuItem key={dropdown.label}>
+              <NavigationMenuTrigger
                 aria-disabled={!isAuthorized}
                 className={cn(
                   "gap-1 transition-all",
@@ -85,50 +77,56 @@ export function PortalNavItems({
               >
                 {!isAuthorized && <RiLockLine className="size-3.5" />}
                 {dropdown.label}
-                <RiArrowDownSLine className="size-3 opacity-60" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center">
-              {isAuthorized ? (
-                dropdown.items.map((item) => (
-                  <DropdownMenuItem key={item.href} asChild>
-                    <Link
-                      href={resolveHref(tenant, item.href)}
-                      target={item.external ? "_blank" : undefined}
-                      rel={item.external ? "noopener noreferrer" : undefined}
-                      className="flex flex-col items-start gap-0.5"
-                    >
-                      <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
-                        {item.label}
-                        {item.external && <RiExternalLinkLine className="text-muted-foreground" />}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{item.description}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ))
-              ) : (
-                <div className="min-w-55">
-                  {dropdown.items.map((item) => (
-                    <div
-                      key={item.href}
-                      className="flex flex-col items-start gap-0.5 px-2 py-1.5 opacity-50"
-                    >
-                      <span className="text-sm font-medium">{item.label}</span>
-                      <span className="text-xs text-muted-foreground">{item.description}</span>
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                {isAuthorized ? (
+                  <ul className="grid w-[320px] gap-1 p-2">
+                    {dropdown.items.map((item) => (
+                      <li key={item.href}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={resolveHref(tenant, item.href)}
+                            target={item.external ? "_blank" : undefined}
+                            rel={item.external ? "noopener noreferrer" : undefined}
+                            className="flex flex-col items-start gap-0.5"
+                          >
+                            <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
+                              {item.label}
+                              {item.external && <RiExternalLinkLine className="text-muted-foreground" />}
+                            </span>
+                            <span className="text-xs text-muted-foreground">{item.description}</span>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="min-w-[220px] p-2">
+                    {dropdown.items.map((item) => (
+                      <div
+                        key={item.href}
+                        className="flex flex-col items-start gap-0.5 px-2 py-1.5 opacity-50"
+                      >
+                        <span className="text-sm font-medium">{item.label}</span>
+                        <span className="text-xs text-muted-foreground">{item.description}</span>
+                      </div>
+                    ))}
+                    <div className="flex items-center justify-between gap-2 border-t px-2 py-2">
+                      <span className="text-xs text-muted-foreground">Register to get access</span>
+                      <Link
+                        href={`/${tenant}${registerHref}`}
+                        className="text-xs font-medium underline"
+                      >
+                        Register
+                      </Link>
                     </div>
-                  ))}
-                  <div className="flex items-center justify-between gap-2 border-t px-2 py-2">
-                    <span className="text-xs text-muted-foreground">Register to get access</span>
-                    <Button asChild size="sm" variant="outline">
-                      <Link href={`/${tenant}${registerHref}`}>Register</Link>
-                    </Button>
                   </div>
-                </div>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      })}
-    </div>
+                )}
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          );
+        })}
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }
