@@ -59,7 +59,14 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
         {/* Large, centered logo at the top */}
         <div className="flex justify-center">
           {logoUrl && (
-            <Image src={logoUrl} alt="Logo" width={120} height={120} className="w-28 h-28" />
+            <Image
+              src={logoUrl}
+              alt="Logo"
+              width={0}
+              height={0}
+              sizes="100vw"
+              style={{ width: 'auto', height: 120 }}
+            />
           )}
         </div>
 
