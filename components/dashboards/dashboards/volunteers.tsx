@@ -1,25 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { RiFileCopyLine, RiCheckLine } from "@remixicon/react";
-import { useCopyWithTimeout } from "@/hooks/use-copy";
-import { StatusIcon } from "../status-icon";
-import { Label } from "@/components/ui/label";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as volunteerSchema } from "@/components/forms/fields/volunteer";
-import { RiSunLine, RiMoonLine, RiSunCloudyLine } from "@remixicon/react";
+import { RiMoonLine, RiSunCloudyLine, RiSunLine, RiUserLine, RiPhoneLine, RiMessageLine, RiShirtLine, RiTableLine } from "@remixicon/react";
+import { StatusIcon } from "../status-icon";
+import { Label } from "@/components/ui/label";
 import { availabilities } from "@/data/information";
 import { formatShirtSize } from "@/lib/localization";
-import { selectColumn, useDrawerDirection } from "../profile-drawer";
+import { selectColumn } from "../profile-drawer";
+import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
 
 export const metadata = {
   title: "Volunteers",
@@ -44,7 +33,6 @@ export const csvFields = [
 
 const getAvailabilityIcon = (availability: string) => {
   const time = availability.split(" ")[1]?.toLowerCase();
-
   switch (time) {
     case "morning":
       return RiSunCloudyLine;
@@ -66,10 +54,7 @@ const AvailabilityIcon = ({
   availability: string;
   isAvailable: boolean;
 }) => {
-  const Icon = getAvailabilityIcon(availability) as React.ComponentType<{
-    className: string;
-  }>;
-
+  const Icon = getAvailabilityIcon(availability) as React.ComponentType<{ className: string }>;
   return (
     <div
       className={`flex items-center justify-center p-1 rounded ${isAvailable ? "text-primary" : "text-gray-300"}`}
@@ -82,9 +67,7 @@ const AvailabilityIcon = ({
 const AllAvailabilities = ({ selected }: { selected: string[] }) => {
   const saturday = availabilities.filter((a) => a.startsWith("Saturday"));
   const sunday = availabilities.filter((a) => a.startsWith("Sunday"));
-
   const isAvailable = (availability: string) => selected.includes(availability);
-
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
@@ -115,78 +98,59 @@ const AllAvailabilities = ({ selected }: { selected: string[] }) => {
   );
 };
 
-function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
-  const { copied, copy: copyText } = useCopyWithTimeout();
-  const direction = useDrawerDirection();
+const sections: MemberSectionConfig[] = [
+  {
+    title: "Contact",
+    icon: RiUserLine,
+    fields: [
+      { key: "email", label: "Email", icon: RiUserLine, copyable: true },
+      { key: "telephone", label: "Phone", icon: RiPhoneLine },
+      { key: "discord", label: "Discord", icon: RiMessageLine },
+    ],
+  },
+  {
+    title: "Preferences",
+    icon: RiShirtLine,
+    fields: [
+      { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
+      { key: "dietrestriction", label: "Dietary Restrictions", icon: RiTableLine, format: (value) => String(value) || "None" },
+    ],
+  },
+  {
+    title: "Admin Information",
+    icon: RiUserLine,
+    fields: [
+      { key: "gender", label: "Gender", icon: RiUserLine },
+    ],
+  },
+];
 
-  const handleCopyEmail = () => {
-    copyText(item.email);
-  };
+function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
+  const availabilitiesList = item.availabilities as string[] | undefined;
 
   return (
-    <Drawer direction={direction}>
-      <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.firstname + " " + item.lastname}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="gap-1">
-          <DrawerTitle>
-            {item.firstname} {item.lastname}
-          </DrawerTitle>
-          <DrawerDescription className="flex items-center gap-2">
-            {item.email}
-            <Button size="sm" variant="ghost" className="h-5 w-5 p-0" onClick={handleCopyEmail}>
-              {copied ? (
-                <RiCheckLine className="h-4 w-4" />
-              ) : (
-                <RiFileCopyLine className="h-4 w-4" />
-              )}
-            </Button>
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
+    <MemberSheet
+      item={item}
+      sections={sections}
+      header=
+        {<div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-              <Label className="text-muted-foreground">Phone</Label>
-              <p>{item.telephone}</p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label className="text-muted-foreground">Discord</Label>
-              <p>{item.discord}</p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label className="text-muted-foreground">Gender</Label>
-              <p>{item.gender}</p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label className="text-muted-foreground">Shirt Size</Label>
-              <p>{formatShirtSize(item.shirt)}</p>
-            </div>
-            <div className="flex flex-col gap-1">
               <Label className="text-muted-foreground">Availabilities</Label>
-              <AllAvailabilities selected={item.availabilities} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label className="text-muted-foreground">Diet Restrictions</Label>
-              <p>{item.dietrestriction}</p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <Label className="text-muted-foreground">Status</Label>
-              <div>
-                <StatusIcon status={item.status} />
+              <div className="flex flex-wrap gap-1">
+                {availabilitiesList?.map((avail) => (
+                  <AvailabilityIcon
+                    key={avail}
+                    availability={avail}
+                    isAvailable
+                  />
+                ))}
               </div>
             </div>
           </div>
-        </div>
-        <DrawerFooter>
-          <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        </div>}
+      
+    />
   );
 }
 
@@ -210,17 +174,17 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     ),
   },
   {
+    accessorKey: "telephone",
+    header: "Phone",
+    cell: ({ row }) => (
+      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
+    ),
+  },
+  {
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
       <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
-    ),
-  },
-  {
-    accessorKey: "telephone",
-    header: "Telephone",
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
     ),
   },
   {
