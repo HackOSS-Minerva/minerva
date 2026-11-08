@@ -18,7 +18,7 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as volunteerSchema } from "@/components/forms/fields/volunteer";
 import { RiSunLine, RiMoonLine, RiSunCloudyLine } from "@remixicon/react";
 import { availabilities } from "@/data/information";
-import { formatShirtSize } from "@/lib/utils";
+import { formatShirtSize } from "@/lib/localization";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
 
 export const metadata = {

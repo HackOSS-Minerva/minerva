@@ -1,47 +1,36 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 import Confetti from "react-confetti";
-import {
-  CONFETTI_DURATION_MS,
-  CONFETTI_EVENT_KEY,
-  CONFETTI_PIECE_COUNT,
-} from "@/hooks/use-confetti";
+import { useWindowSize } from "react-use";
 
-const ConfettiOverlay = () => {
-  const [width, setWidth] = useState<number>(() =>
-    typeof window !== "undefined" ? window.innerWidth : 0,
-  );
-  const [height, setHeight] = useState<number>(() =>
-    typeof window !== "undefined" ? window.innerHeight : 0,
-  );
-  const [active, setActive] = useState(false);
+export const CONFETTI_DURATION_MS = 5000;
 
-  const handleResize = useCallback(() => {
-    setWidth(window.innerWidth);
-    setHeight(window.innerHeight);
-  }, []);
+interface ConfettiContextValue {
+  triggerConfetti: () => void;
+}
 
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [handleResize]);
+const ConfettiContext = createContext<ConfettiContextValue | null>(null);
 
-  useEffect(() => {
-    const trigger = () => {
-      setActive(true);
-      setTimeout(() => setActive(false), CONFETTI_DURATION_MS);
-    };
-
-    window.addEventListener(CONFETTI_EVENT_KEY, trigger as EventListener);
-    return () => window.removeEventListener(CONFETTI_EVENT_KEY, trigger as EventListener);
-  }, []);
-
-  if (!active) return null;
-
-  return (
-    <Confetti width={width} height={height} recycle={false} numberOfPieces={CONFETTI_PIECE_COUNT} />
-  );
+export const useTriggerConfetti = (): ConfettiContextValue => {
+  const ctx = useContext(ConfettiContext);
+  if (!ctx) throw new Error("useTriggerConfetti must be used within ConfettiProvider");
+  return ctx;
 };
 
-export default ConfettiOverlay;
+export const ConfettiProvider = ({ children }: { children: React.ReactNode }) => {
+  const { width, height } = useWindowSize();
+  const [active, setActive] = useState(false);
+
+  const triggerConfetti = useCallback(() => {
+    setActive(true);
+    setTimeout(() => setActive(false), CONFETTI_DURATION_MS);
+  }, []);
+
+  return (
+    <ConfettiContext.Provider value={{ triggerConfetti }}>
+      {children}
+      {active && <Confetti width={width} height={height} recycle={false} />}
+    </ConfettiContext.Provider>
+  );
+};

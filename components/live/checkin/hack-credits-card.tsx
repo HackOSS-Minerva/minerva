@@ -22,9 +22,7 @@ export function HackCreditsCard({ tenant }: { tenant: TenantSlug }) {
           <p className="text-sm text-muted-foreground">Loading hack credits…</p>
         ) : credits ? (
           <>
-            <p
-              className="flex items-baseline gap-2 text-3xl font-bold"
-            >
+            <p className="flex items-baseline gap-2 text-3xl font-bold">
               {credits.balance} <span className="text-base font-normal">credits</span>
             </p>
             <p className="text-sm text-muted-foreground">

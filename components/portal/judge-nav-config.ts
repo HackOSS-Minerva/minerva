@@ -33,12 +33,6 @@ export const judgeDropdowns: DropdownConfig[] = [
         description: "Show your QR code to check in at the event.",
       },
       {
-        href: "/live/photos",
-        label: "Photos",
-        description: "View and upload event photos.",
-        featureFlagKey: "photos" as FeatureFlagKey,
-      },
-      {
         href: "/judge/assignments",
         label: "View Assignments",
         description: "See your assigned teams and judging slots.",

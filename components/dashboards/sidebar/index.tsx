@@ -5,7 +5,6 @@ import {
   RiBarChartLine,
   RiClipboardLine,
   RiFileList2Line,
-  RiImageLine,
   RiQrCodeLine,
   RiFileTextLine,
   RiUserLine,
@@ -53,12 +52,6 @@ const data = {
       url: "/admin/schedule",
       slug: "schedule",
       icon: RiFileList2Line,
-    },
-    {
-      title: "Photos",
-      url: "/admin/photos",
-      slug: "photos",
-      icon: RiImageLine,
     },
   ],
   navJudging: [
@@ -130,13 +123,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Feature-flagged nav entries are hidden entirely when their flag is off.
   const enabled = {
-    photos: useFeatureFlag("photos").isEnabled,
     analytics: useFeatureFlag("analytics").isEnabled,
     assignments: useFeatureFlag("assignments").isEnabled,
   };
   const flagBySlug: Partial<Record<string, FeatureFlagKey>> = {
     analytics: "analytics",
-    photos: "photos",
     assignments: "assignments",
   };
   const isFlagEnabled = (slug: string) => {

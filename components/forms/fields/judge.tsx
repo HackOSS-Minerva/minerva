@@ -84,7 +84,7 @@ export const fields: FieldDef[] = [
     maxLength: 32,
   }),
   ...demographicFields(),
-  fileField({ name: "picture", label: "Profile Picture", accept: "image/*" }),
+  fileField({ name: "picture", label: "Profile Picture", accept: "image/*", required: true }),
   termsField(),
 ];
 

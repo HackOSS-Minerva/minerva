@@ -15,7 +15,7 @@ const MAX_VISIBLE_TAGS = 3;
 
 // Up to two initials for the logo fallback tile; single-word names use the first
 // two characters ("Cline" -> "CL") so the tile is never a lone letter.
-import { getInitials as initialsOf } from "@/lib/utils";
+import { getInitials as initialsOf } from "@/lib/localization";
 
 function matchesSearch(tool: DevTool, query: string) {
   const haystack = [tool.name, tool.description, tool.category, ...tool.tags]

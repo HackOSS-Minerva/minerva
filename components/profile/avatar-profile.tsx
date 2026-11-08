@@ -14,7 +14,7 @@ import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { authClient } from "@/lib/auth-client";
 import { PLACEHOLDER_DISPLAY_EMAIL, PLACEHOLDER_DISPLAY_NAME } from "@/lib/checkin";
-import { getInitials } from "@/lib/utils";
+import { getInitials } from "@/lib/localization";
 
 export function AvatarProfile() {
   const { tenant } = useParams<{ tenant: TenantSlug }>();

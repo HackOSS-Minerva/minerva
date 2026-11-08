@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { PLACEHOLDER_DISPLAY_EMAIL, PLACEHOLDER_DISPLAY_NAME } from "@/lib/checkin";
-import { getInitials } from "@/lib/utils";
+import { getInitials } from "@/lib/localization";
 
 export function NavUser() {
   const { isMobile } = useSidebar();

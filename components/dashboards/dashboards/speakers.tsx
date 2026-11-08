@@ -19,7 +19,7 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { schema as speakerSchema } from "@/components/forms/fields/speaker";
 import { StatusIcon } from "../status-icon";
-import { formatShirtSize } from "@/lib/utils";
+import { formatShirtSize } from "@/lib/localization";
 import { selectColumn, useDrawerDirection } from "../profile-drawer";
 
 export const metadata = {

@@ -10,7 +10,7 @@ import { z } from "zod";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { AppError, logAppError } from "@/lib/app-error";
 import { toastAppError } from "@/hooks/use-app-error";
-import { triggerConfetti } from "./use-confetti";
+import { useTriggerConfetti } from "@/components/confetti/confetti-overlay";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -79,6 +79,7 @@ interface UseSubmissionsOptions {
 }
 
 export function useSubmissions({ tenant }: UseSubmissionsOptions) {
+  const { triggerConfetti } = useTriggerConfetti();
   const router = useRouter();
   const addSubmission = useMutation(api.submissions.add);
 
