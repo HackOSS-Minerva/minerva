@@ -24,6 +24,7 @@ import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
 import { groupEventsByDay } from "@/lib/schedule";
 import { parseCheckinQr, type CheckinQrPayload } from "@/lib/checkin";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import { HACK_CREDITS_PER_CHECKIN } from "@/lib/hack-credits";
 
 /** How long the success toast + QR preview stay on screen after a scan. */
 const SCAN_RESULT_RESET_MS = 3000;
@@ -99,7 +100,7 @@ const CheckinContent = () => {
           });
 
           toast.success(`Checked in: ${scanName}`, {
-            description: scan.email,
+            description: `${scan.email} · ${HACK_CREDITS_PER_CHECKIN} hack credits earned`,
             icon: <RiUserLine className="h-4 w-4" />,
           });
 

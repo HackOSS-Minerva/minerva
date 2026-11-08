@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
+    "test:e2e:credits": "node --env-file=.env --env-file=.env.local e2e/hack-credits.mts",
     "email": "email dev --dir components/email --port 4000",
     "convex": "bunx convex dev",
     "deploy": "bunx convex deploy"
@@ -49,6 +50,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@react-email/preview-server": "5.2.5",
     "@shadcn/lint": "^0.2.3",
     "@tailwindcss/postcss": "^4",

@@ -1,0 +1,47 @@
+"use client";
+
+import { useConvexAuth, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
+import { HACK_CREDITS_PER_CHECKIN } from "@/lib/hack-credits";
+
+export function HackCreditsCard({ tenant }: { tenant: TenantSlug }) {
+  const { isAuthenticated, isLoading } = useConvexAuth();
+  const credits = useQuery(api.checkins.getHackCredits, isAuthenticated ? { tenant } : "skip");
+  const { config } = getTenant(tenant);
+  const pending = isLoading || (isAuthenticated && credits === undefined);
+
+  return (
+    <Card data-testid="hack-credits-card">
+      <CardHeader>
+        <CardTitle>Hack credits</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4" aria-live="polite" aria-busy={pending}>
+        {pending ? (
+          <p className="text-sm text-muted-foreground">Loading hack credits…</p>
+        ) : credits ? (
+          <>
+            <p
+              className="flex items-baseline gap-2 text-3xl font-bold"
+              data-testid="hack-credits-balance"
+            >
+              {credits.balance} <span className="text-base font-normal">credits</span>
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {credits.checkinCount} {credits.checkinCount === 1 ? "check-in" : "check-ins"}
+              {" · "}
+              {HACK_CREDITS_PER_CHECKIN} credits each
+            </p>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">Sign in to view your hack credits.</p>
+        )}
+        <p className="text-sm text-muted-foreground">
+          Earn {HACK_CREDITS_PER_CHECKIN} credits for each activity you check into. Credits are
+          valid only for {config.name} and cannot transfer to another hackathon.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
