@@ -117,7 +117,7 @@ const sections: MemberSectionConfig[] = [
     ],
   },
   {
-    title: "Admin Information",
+    title: "Information",
     icon: RiUserLine,
     fields: [
       { key: "gender", label: "Gender", icon: RiUserLine },

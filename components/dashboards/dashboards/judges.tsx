@@ -50,7 +50,7 @@ const sections: MemberSectionConfig[] = [
     ],
   },
   {
-    title: "Application",
+    title: "Preferences",
     icon: RiShirtLine,
     fields: [
       { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },

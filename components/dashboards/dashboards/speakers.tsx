@@ -39,12 +39,24 @@ const sections: MemberSectionConfig[] = [
     icon: RiUserLine,
     fields: [
       { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
-      { key: "gender", label: "Gender", icon: RiUserLine },
+    ],
+  },
+  {
+    title: "Preferences",
+    icon: RiShirtLine,
+    fields: [
       { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
+      { key: "dietrestriction", label: "Diet Restriction", icon: RiTableLine },
+    ],
+  },
+  {
+    title: "Information",
+    icon: RiUserLine,
+    fields: [
+      { key: "gender", label: "Gender", icon: RiUserLine },
       { key: "affiliation", label: "Affiliation", icon: RiUser2Line },
       { key: "title", label: "Title", icon: RiGraduationCapLine },
       { key: "organization", label: "Organization", icon: RiCalendarLine },
-      { key: "dietrestriction", label: "Diet Restriction", icon: RiTableLine },
     ],
   },
 ];

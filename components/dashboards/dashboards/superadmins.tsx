@@ -64,7 +64,7 @@ const sections: MemberSectionConfig[] = [
     ],
   },
   {
-    title: "Superadmin Information",
+    title: "Information",
     icon: RiGraduationCapLine,
     fields: [
       { key: "major", label: "Major", icon: RiGraduationCapLine },
