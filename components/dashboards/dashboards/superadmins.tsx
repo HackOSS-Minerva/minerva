@@ -64,14 +64,20 @@ const sections: MemberSectionConfig[] = [
     ],
   },
   {
-    title: "Information",
+    title: "Attributes",
+    icon: RiUser2Line,
+    fields: [
+      { key: "team", label: "Team", icon: RiUser2Line },
+    ],
+  },
+  {
+    title: "Profile",
     icon: RiGraduationCapLine,
     fields: [
+      { key: "gender", label: "Gender", icon: RiUserLine },
       { key: "major", label: "Major", icon: RiGraduationCapLine },
-      { key: "team", label: "Team", icon: RiUser2Line },
       { key: "grade", label: "Grade", icon: RiCalendarLine },
       { key: "age", label: "Age", icon: RiUserLine },
-      { key: "gender", label: "Gender", icon: RiUserLine },
     ],
   },
 ];
@@ -81,7 +87,6 @@ function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
     <MemberSheet
       item={item}
       sections={sections}
-      header={undefined}
     />
   );
 }

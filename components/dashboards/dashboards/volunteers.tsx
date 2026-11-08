@@ -117,7 +117,14 @@ const sections: MemberSectionConfig[] = [
     ],
   },
   {
-    title: "Information",
+    title: "Attributes",
+    icon: RiMoonLine,
+    fields: [
+      { key: "availabilities", label: "Availabilities", icon: RiMoonLine },
+    ],
+  },
+  {
+    title: "Profile",
     icon: RiUserLine,
     fields: [
       { key: "gender", label: "Gender", icon: RiUserLine },
@@ -131,25 +138,7 @@ function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
   return (
     <MemberSheet
       item={item}
-      sections={sections}
-      header=
-        {<div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <Label className="text-muted-foreground">Availabilities</Label>
-              <div className="flex flex-wrap gap-1">
-                {availabilitiesList?.map((avail) => (
-                  <AvailabilityIcon
-                    key={avail}
-                    availability={avail}
-                    isAvailable
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>}
-      
+      sections={sections}      
     />
   );
 }

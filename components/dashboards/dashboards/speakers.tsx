@@ -50,13 +50,19 @@ const sections: MemberSectionConfig[] = [
     ],
   },
   {
-    title: "Information",
+    title: "Attributes",
+    icon: RiUserLine,
+    fields: [],
+  },
+  {
+    title: "Profile",
     icon: RiUserLine,
     fields: [
       { key: "gender", label: "Gender", icon: RiUserLine },
       { key: "affiliation", label: "Affiliation", icon: RiUser2Line },
       { key: "title", label: "Title", icon: RiGraduationCapLine },
       { key: "organization", label: "Organization", icon: RiCalendarLine },
+      { key: "picture", label: "Picture", icon: RiUserLine },
     ],
   },
 ];
@@ -66,25 +72,6 @@ function TableCellViewer({ item }: { item: Doc<"speakers"> }) {
     <MemberSheet
       item={item}
       sections={sections}
-      header=
-        {<div className="flex flex-col gap-2 text-sm text-foreground">
-          <div className="flex flex-col gap-1">
-            <Label className="text-muted-foreground">Affiliation</Label>
-            <p>{item.affiliation}</p>
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label className="text-muted-foreground">Title</Label>
-            <p>{item.title}</p>
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label className="text-muted-foreground">Organization</Label>
-            <p>{item.organization}</p>
-          </div>
-          <div className="flex flex-col gap-1">
-            <Label className="text-muted-foreground">Diet Restriction</Label>
-            <p>{item.dietrestriction}</p>
-          </div>
-        </div>}
     />
   );
 }

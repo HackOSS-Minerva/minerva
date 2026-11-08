@@ -7,6 +7,9 @@ import {
   RiShirtLine,
   RiUserLine,
   RiTableLine,
+  RiUser2Line,
+  RiGraduationCapLine,
+  RiCalendarLine,
 } from "@remixicon/react";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { StatusIcon } from "../status-icon";
@@ -57,6 +60,23 @@ const sections: MemberSectionConfig[] = [
       { key: "dietrestriction", label: "Dietary Restrictions", icon: RiTableLine, format: (value) => String(value) || "None" },
     ],
   },
+  {
+    title: "Attributes",
+    icon: RiUserLine,
+    fields: [
+      { key: "affiliation", label: "Affiliation", icon: RiUser2Line },
+      { key: "title", label: "Title", icon: RiGraduationCapLine },
+      { key: "organization", label: "Organization", icon: RiCalendarLine },
+      { key: "picture", label: "Picture", icon: RiUserLine },
+    ],
+  },
+  {
+    title: "Profile",
+    icon: RiUserLine,
+    fields: [
+      { key: "gender", label: "Gender", icon: RiUserLine },
+    ],
+  },
 ];
 
 function TableCellViewer({ item }: { item: Doc<"judges"> }) {
@@ -72,32 +92,6 @@ function TableCellViewer({ item }: { item: Doc<"judges"> }) {
     <MemberSheet
       item={item}
       sections={sections}
-      header=
-        {<div className="flex flex-col items-center text-sm text-foreground">
-          <div className="relative h-64 w-64 overflow-hidden rounded-2xl border border-border">
-            <Image
-              src={item.picture}
-              alt={`${item.firstname} ${item.lastname}`}
-              fill
-              sizes="128px"
-              className="object-cover"
-            />
-            <button
-              type="button"
-              className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-background text-sm text-muted-foreground"
-              onClick={handleCopyEmail}
-            >
-              <RiFileCopyLine className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <p className="text-lg font-semibold text-foreground">
-              {item.firstname} {item.lastname}
-            </p>
-            <p className="text-sm text-muted-foreground">{item.organization}</p>
-            <p className="text-sm text-muted-foreground">{item.title}</p>
-          </div>
-        </div>}
     />
   );
 }

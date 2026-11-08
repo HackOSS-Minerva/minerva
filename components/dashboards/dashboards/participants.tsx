@@ -55,16 +55,22 @@ const sections: MemberSectionConfig[] = [
     ],
   },
   {
-    title: "Information",
+    title: "Attributes",
+    icon: RiScrollToBottomLine,
+    fields: [
+      { key: "school", label: "School", icon: RiScrollToBottomLine },
+      { key: "country", label: "Country", icon: RiUserLine },
+      { key: "resume", label: "Resume", icon: RiFileTextLine, format: (value) => String(value) || "Not Attached" },
+    ],
+  },
+  {
+    title: "Profile",
     icon: RiUserLine,
     fields: [
       { key: "gender", label: "Gender", icon: RiUserLine },
-      { key: "school", label: "School", icon: RiScrollToBottomLine },
       { key: "grade", label: "Grade", icon: RiBriefcaseLine },
       { key: "major", label: "Major", icon: RiGraduationCapLine },
       { key: "age", label: "Age", icon: RiCakeLine },
-      { key: "country", label: "Country", icon: RiUserLine },
-      { key: "resume", label: "Resume", icon: RiFileTextLine, format: (value) => String(value) || "Not Attached" },
     ],
   },
 ];
