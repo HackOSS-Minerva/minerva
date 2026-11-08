@@ -13,7 +13,7 @@ export function HackCreditsCard({ tenant }: { tenant: TenantSlug }) {
   const pending = isLoading || (isAuthenticated && credits === undefined);
 
   return (
-    <Card data-testid="hack-credits-card">
+    <Card>
       <CardHeader>
         <CardTitle>Hack credits</CardTitle>
       </CardHeader>
@@ -24,7 +24,6 @@ export function HackCreditsCard({ tenant }: { tenant: TenantSlug }) {
           <>
             <p
               className="flex items-baseline gap-2 text-3xl font-bold"
-              data-testid="hack-credits-balance"
             >
               {credits.balance} <span className="text-base font-normal">credits</span>
             </p>
