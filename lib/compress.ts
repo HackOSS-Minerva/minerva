@@ -7,9 +7,6 @@ export const MAX_IMAGE_FILE_LABEL = "800KB";
 /** Default downscale for form uploads (resumes/pictures via `uploadFile`). */
 export const DEFAULT_COMPRESS_DIMENSION = 800;
 export const DEFAULT_COMPRESS_QUALITY = 0.8;
-/** Gallery uploads keep more detail (see `PHOTO_COMPRESSION_OPTIONS`). */
-export const PHOTO_COMPRESS_DIMENSION = 1920;
-export const PHOTO_COMPRESS_QUALITY = 0.82;
 
 export interface CompressOptions {
   maxWidth?: number;

@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   // /:tenant/forms/:form and the participant-gated /:tenant/live/* pages
   // (login only here; ACCEPTANCE is enforced in each page). The feedback
   // form is intentionally public and excluded from here and from the layouts.
-  // Dashboard + photos stay public; every page behind the locked navbar
+  // Dashboard stays public; every page behind the locked navbar
   // dropdowns (Resources + Participate) is gated.
   const isAdmin = /^\/[^/]+\/admin(?:\/|$)/.test(pathname);
   const isJudge = /^\/[^/]+\/judge(?:\/|$)/.test(pathname);

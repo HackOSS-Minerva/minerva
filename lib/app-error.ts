@@ -86,66 +86,6 @@ export const ERROR_CATALOG = defineCatalog({
     message: "File is too large.",
     retryable: false,
   },
-  PHOTO_REQUEST_INVALID: {
-    status: 400,
-    message: "Invalid photo request.",
-    retryable: false,
-  },
-  PHOTO_FILE_INVALID: {
-    status: 400,
-    message: "Invalid photo file.",
-    retryable: false,
-  },
-  PHOTO_ORIGIN_FORBIDDEN: {
-    status: 403,
-    message: "Photo request forbidden.",
-    retryable: false,
-  },
-  PHOTO_ADMIN_FORBIDDEN: {
-    status: 403,
-    message: "Admin access required.",
-    retryable: false,
-  },
-  PHOTO_FEATURE_DISABLED: {
-    status: 403,
-    message: "Photos are not available.",
-    retryable: false,
-  },
-  PHOTO_EVENT_NOT_FOUND: {
-    status: 404,
-    message: "Photo event not found.",
-    retryable: false,
-  },
-  PHOTO_CONFIGURATION_INVALID: {
-    status: 500,
-    message: "Photo service is not configured.",
-    retryable: false,
-  },
-  PHOTO_GOOGLE_UNAVAILABLE: {
-    status: 502,
-    message: "Photo service unavailable.",
-    retryable: true,
-  },
-  PHOTO_LIST_FAILED: {
-    status: 502,
-    message: "Unable to load photos.",
-    retryable: true,
-  },
-  PHOTO_UPLOAD_FAILED: {
-    status: 502,
-    message: "Unable to upload photo.",
-    retryable: true,
-  },
-  PHOTO_REMOVE_FAILED: {
-    status: 502,
-    message: "Unable to remove photo.",
-    retryable: true,
-  },
-  PHOTO_REQUEST_FAILED: {
-    status: 500,
-    message: "Photo request failed.",
-    retryable: false,
-  },
 });
 
 export type ErrorCode = keyof typeof ERROR_CATALOG;
