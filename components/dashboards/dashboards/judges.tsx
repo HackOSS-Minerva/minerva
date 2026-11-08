@@ -46,7 +46,7 @@ const sections: MemberSectionConfig[] = [
     icon: RiUserLine,
     fields: [
       { key: "email", label: "Email", icon: RiUserLine, copyable: true },
-      { key: "telephone", label: "Phone", icon: RiPhoneLine },
+      { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
     ],
   },
   {

@@ -38,7 +38,7 @@ const sections: MemberSectionConfig[] = [
     title: "Contact",
     icon: RiUserLine,
     fields: [
-      { key: "telephone", label: "Phone", icon: RiPhoneLine },
+      { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
       { key: "gender", label: "Gender", icon: RiUserLine },
       { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
       { key: "affiliation", label: "Affiliation", icon: RiUser2Line },

@@ -42,8 +42,8 @@ const sections: MemberSectionConfig[] = [
     icon: RiUserLine,
     fields: [
       { key: "email", label: "Email", icon: RiUserLine, copyable: true },
-      { key: "telephone", label: "Phone", icon: RiPhoneLine },
-      { key: "discord", label: "Discord", icon: RiMessageLine },
+      { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
+      { key: "discord", label: "Discord", icon: RiMessageLine, copyable: true },
       { key: "gender", label: "Gender", icon: RiUserLine },
       { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
     ],

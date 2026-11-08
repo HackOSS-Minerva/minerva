@@ -64,6 +64,12 @@ export function MemberSheet({ item, sections, header, footer }: MemberSheetProps
     }
   };
 
+  const handleFieldCopy = (field: MemberFieldConfig) => {
+    if (field.copyable && String(item[field.key]) === item[field.key]) {
+      copyText(item[field.key] as string);
+    }
+  };
+
   const normalizedStatus =
     item.status && typeof item.status === "string"
       ? normalizeApplicantStatus(item.status)
@@ -118,7 +124,11 @@ export function MemberSheet({ item, sections, header, footer }: MemberSheetProps
                         label={field.label}
                         value={displayValue as ReactNode}
                         copyable={field.copyable}
-                        onCopy={field.copyable ? handleCopyEmail : undefined}
+                        onCopy={() => {
+                  if (field.copyable && String(item[field.key]) === item[field.key]) {
+                    copyText(item[field.key] as string);
+                  }
+                }}
                         copied={copied}
                       />
                     );
