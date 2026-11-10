@@ -16,6 +16,7 @@ const MAX_VISIBLE_TAGS = 3;
 // Up to two initials for the logo fallback tile; single-word names use the first
 // two characters ("Cline" -> "CL") so the tile is never a lone letter.
 import { getInitials as initialsOf } from "@/lib/localization";
+import Link from "next/link";
 
 function matchesSearch(tool: DevTool, query: string) {
   const haystack = [tool.name, tool.description, tool.category, ...tool.tags]
@@ -170,9 +171,9 @@ function DevToolCard({ tool }: { tool: DevTool }) {
         </div>
         <Button variant="outline" size="sm" asChild className="w-full">
           <Link href={tool.url} target="_blank" rel="noopener noreferrer">
-              Visit {tool.name}
-              <RiExternalLinkLine className="h-3 w-3" />
-            </Link>
+            Visit {tool.name}
+            <RiExternalLinkLine className="h-3 w-3" />
+          </Link>
         </Button>
       </CardContent>
     </Card>

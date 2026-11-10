@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RiSearchLine, RiExternalLinkLine, RiStarFill } from "@remixicon/react";
 import type { Hackpack } from "@/data/hackpacks";
+import Link from "next/link";
 
 const CATEGORIES = [
   "All",

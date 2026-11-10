@@ -17,6 +17,7 @@ import { availabilities } from "@/data/information";
 import { formatShirtSize } from "@/lib/localization";
 import { selectColumn } from "../profile-drawer";
 import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
+import { ReactNode } from "react";
 
 export const metadata = {
   title: "Volunteers",
@@ -137,7 +138,14 @@ const sections: MemberSectionConfig[] = [
   {
     title: "Attributes",
     icon: RiMoonLine,
-    fields: [{ key: "availabilities", label: "Availabilities", icon: RiMoonLine }],
+    fields: [
+      {
+        key: "availabilities",
+        label: "Availabilities",
+        icon: RiMoonLine,
+        format: (value) => (Array.isArray(value) ? value.join(", ") : String(value)) as ReactNode,
+      },
+    ],
   },
   {
     title: "Profile",

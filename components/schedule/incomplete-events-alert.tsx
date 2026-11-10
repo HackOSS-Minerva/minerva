@@ -15,6 +15,7 @@ import {
   RiFileTextLine as FileText,
 } from "@remixicon/react";
 import { getDayOfWeek } from "@/lib/schedule";
+import Link from "next/link";
 
 interface IncompleteEventsAlertProps {
   incompleteEvents: IncompleteScheduleEvent[];
