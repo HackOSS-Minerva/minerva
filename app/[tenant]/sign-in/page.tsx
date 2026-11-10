@@ -65,7 +65,7 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
               width={0}
               height={0}
               sizes="100vw"
-              style={{ width: 'auto', height: 120 }}
+              style={{ width: "auto", height: 120 }}
             />
           )}
         </div>

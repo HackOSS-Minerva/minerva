@@ -3,10 +3,25 @@ import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as participantSchema } from "@/components/forms/fields/participant";
-import { RiBriefcaseLine, RiCakeLine, RiGraduationCapLine, RiPhoneLine, RiScrollToBottomLine, RiShirtLine, RiUserLine, RiMessageLine, RiFileTextLine } from "@remixicon/react";
+import {
+  RiBriefcaseLine,
+  RiCakeLine,
+  RiCheckLine,
+  RiExternalLinkLine,
+  RiGraduationCapLine,
+  RiPhoneLine,
+  RiScrollToBottomLine,
+  RiShirtLine,
+  RiUserLine,
+  RiMessageLine,
+  RiFileCopyLine,
+  RiFileTextLine,
+} from "@remixicon/react";
 import { StatusIcon } from "../status-icon";
 import { selectColumn } from "../profile-drawer";
 import { formatShirtSize } from "@/lib/localization";
+import { Button } from "@/components/ui/button";
+
 import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
 
 export const metadata = {
@@ -50,8 +65,18 @@ const sections: MemberSectionConfig[] = [
     title: "Preferences",
     icon: RiShirtLine,
     fields: [
-      { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
-      { key: "dietrestriction", label: "Dietary Restrictions", icon: RiFileTextLine, format: (value) => String(value) || "None" },
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
+      {
+        key: "dietrestriction",
+        label: "Dietary Restrictions",
+        icon: RiFileTextLine,
+        format: (value) => String(value) || "None",
+      },
     ],
   },
   {
@@ -60,7 +85,43 @@ const sections: MemberSectionConfig[] = [
     fields: [
       { key: "school", label: "School", icon: RiScrollToBottomLine },
       { key: "country", label: "Country", icon: RiUserLine },
-      { key: "resume", label: "Resume", icon: RiFileTextLine, format: (value) => String(value) || "Not Attached" },
+      {
+        key: "resume",
+        label: "Resume",
+        icon: RiFileTextLine,
+        render: (item, copyText, copied) => {
+          const resume = item.resume;
+          if (!resume) return "No Resume Attached";
+          const fullName =
+            `${(item.firstname as string) || ""} ${(item.lastname as string) || ""}`.trim();
+          const displayName = fullName || "Participant";
+          return (
+            <div className="flex items-center gap-2">
+              <span className="truncate flex-1 text-left">{displayName} Resume</span>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  try {
+                    window.open(resume as string, "_blank");
+                  } catch {}
+                }}
+              >
+                <RiExternalLinkLine />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => copyText?.(resume as string)}
+              >
+                {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+              </Button>
+            </div>
+          );
+        },
+      },
     ],
   },
   {

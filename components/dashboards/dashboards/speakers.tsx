@@ -1,11 +1,17 @@
-import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as speakerSchema } from "@/components/forms/fields/speaker";
-import { RiPhoneLine, RiShirtLine, RiUserLine, RiTableLine, RiUser2Line, RiGraduationCapLine, RiCalendarLine } from "@remixicon/react";
+import {
+  RiPhoneLine,
+  RiShirtLine,
+  RiUserLine,
+  RiTableLine,
+  RiUser2Line,
+  RiGraduationCapLine,
+  RiCalendarLine,
+} from "@remixicon/react";
 import { StatusIcon } from "../status-icon";
 import { Label } from "@/components/ui/label";
-import { DrawerFooter, DrawerClose } from "@/components/ui/drawer";
 import { formatShirtSize } from "@/lib/localization";
 import { selectColumn } from "../profile-drawer";
 import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
@@ -37,15 +43,18 @@ const sections: MemberSectionConfig[] = [
   {
     title: "Contact",
     icon: RiUserLine,
-    fields: [
-      { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
-    ],
+    fields: [{ key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true }],
   },
   {
     title: "Preferences",
     icon: RiShirtLine,
     fields: [
-      { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
       { key: "dietrestriction", label: "Diet Restriction", icon: RiTableLine },
     ],
   },
@@ -68,12 +77,7 @@ const sections: MemberSectionConfig[] = [
 ];
 
 function TableCellViewer({ item }: { item: Doc<"speakers"> }) {
-  return (
-    <MemberSheet
-      item={item}
-      sections={sections}
-    />
-  );
+  return <MemberSheet item={item} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"speakers">>[] = [

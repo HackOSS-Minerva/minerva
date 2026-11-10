@@ -15,8 +15,7 @@ import {
 import { StatusIcon } from "../status-icon";
 
 import { Label } from "@/components/ui/label";
-import {
-} from "@/components/ui/drawer";
+import {} from "@/components/ui/drawer";
 import { formatShirtSize } from "@/lib/localization";
 import { selectColumn } from "../profile-drawer";
 import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
@@ -59,16 +58,24 @@ const sections: MemberSectionConfig[] = [
     title: "Preferences",
     icon: RiShirtLine,
     fields: [
-      { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
-      { key: "dietrestriction", label: "Dietary Restrictions", icon: RiTableLine, format: (value) => String(value) || "None" },
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
+      {
+        key: "dietrestriction",
+        label: "Dietary Restrictions",
+        icon: RiTableLine,
+        format: (value) => String(value) || "None",
+      },
     ],
   },
   {
     title: "Attributes",
     icon: RiUser2Line,
-    fields: [
-      { key: "team", label: "Team", icon: RiUser2Line },
-    ],
+    fields: [{ key: "team", label: "Team", icon: RiUser2Line }],
   },
   {
     title: "Profile",
@@ -83,12 +90,7 @@ const sections: MemberSectionConfig[] = [
 ];
 
 function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
-  return (
-    <MemberSheet
-      item={item}
-      sections={sections}
-    />
-  );
+  return <MemberSheet item={item} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"superadmins">>[] = [

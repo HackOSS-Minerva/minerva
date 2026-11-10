@@ -2,6 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as judgeSchema } from "@/components/forms/fields/judge";
 import {
+  RiCheckLine,
+  RiExternalLinkLine,
   RiFileCopyLine,
   RiPhoneLine,
   RiShirtLine,
@@ -11,11 +13,9 @@ import {
   RiGraduationCapLine,
   RiCalendarLine,
 } from "@remixicon/react";
-import { useCopyWithTimeout } from "@/hooks/use-copy";
+import { Button } from "@/components/ui/button";
 import { StatusIcon } from "../status-icon";
 import { Label } from "@/components/ui/label";
-
-import Image from "next/image";
 import { formatShirtSize } from "@/lib/localization";
 import { selectColumn } from "../profile-drawer";
 import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
@@ -56,8 +56,18 @@ const sections: MemberSectionConfig[] = [
     title: "Preferences",
     icon: RiShirtLine,
     fields: [
-      { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
-      { key: "dietrestriction", label: "Dietary Restrictions", icon: RiTableLine, format: (value) => String(value) || "None" },
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
+      {
+        key: "dietrestriction",
+        label: "Dietary Restrictions",
+        icon: RiTableLine,
+        format: (value) => String(value) || "None",
+      },
     ],
   },
   {
@@ -67,33 +77,54 @@ const sections: MemberSectionConfig[] = [
       { key: "affiliation", label: "Affiliation", icon: RiUser2Line },
       { key: "title", label: "Title", icon: RiGraduationCapLine },
       { key: "organization", label: "Organization", icon: RiCalendarLine },
-      { key: "picture", label: "Picture", icon: RiUserLine },
+      {
+        key: "picture",
+        label: "Picture",
+        icon: RiUserLine,
+        render: (item, copyText, copied) => {
+          const picture = item.picture;
+          if (!picture) return "No Picture";
+          const fullName =
+            `${(item.firstname as string) || ""} ${(item.lastname as string) || ""}`.trim();
+          const displayName = fullName || "Judge";
+          return (
+            <div className="flex items-center gap-1">
+              <span className="truncate flex-1 text-left">{displayName} Picture</span>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  try {
+                    window.open(picture as string, "_blank");
+                  } catch {}
+                }}
+              >
+                <RiExternalLinkLine />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => copyText?.(picture as string)}
+              >
+                {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+              </Button>
+            </div>
+          );
+        },
+      },
     ],
   },
   {
     title: "Profile",
     icon: RiUserLine,
-    fields: [
-      { key: "gender", label: "Gender", icon: RiUserLine },
-    ],
+    fields: [{ key: "gender", label: "Gender", icon: RiUserLine }],
   },
 ];
 
 function TableCellViewer({ item }: { item: Doc<"judges"> }) {
-  const { copy: copyText } = useCopyWithTimeout();
-
-  const handleCopyEmail = () => {
-    if (typeof item.email === "string") {
-      copyText(item.email);
-    }
-  };
-
-  return (
-    <MemberSheet
-      item={item}
-      sections={sections}
-    />
-  );
+  return <MemberSheet item={item} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"judges">>[] = [

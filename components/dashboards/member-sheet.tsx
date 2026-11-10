@@ -4,13 +4,12 @@ import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { RiCloseLine, RiUserLine } from "@remixicon/react";
+import { RiUserLine } from "@remixicon/react";
 import { StatusIcon, normalizeApplicantStatus } from "./status-icon";
 import DetailRow from "./row";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
@@ -27,7 +26,11 @@ export type MemberFieldConfig = {
   /** Format the value before rendering. */
   format?: (value: unknown) => string | ReactNode;
   /** Fully custom render; bypasses format and default value. */
-  render?: (item: Record<string, unknown>) => ReactNode;
+  render?: (
+    item: Record<string, unknown>,
+    copyText?: (text: string) => void,
+    copied?: boolean,
+  ) => ReactNode;
   /** Whether this field's value is copyable. */
   copyable?: boolean;
 };
@@ -57,18 +60,6 @@ export type MemberSheetProps = {
 export function MemberSheet({ item, sections, header, footer }: MemberSheetProps) {
   const direction = useDrawerDirection();
   const { copied, copy: copyText } = useCopyWithTimeout();
-
-  const handleCopyEmail = () => {
-    if (typeof item.email === "string") {
-      copyText(item.email);
-    }
-  };
-
-  const handleFieldCopy = (field: MemberFieldConfig) => {
-    if (field.copyable && String(item[field.key]) === item[field.key]) {
-      copyText(item[field.key] as string);
-    }
-  };
 
   const normalizedStatus =
     item.status && typeof item.status === "string"
@@ -111,11 +102,9 @@ export function MemberSheet({ item, sections, header, footer }: MemberSheetProps
                 <div className="space-y-3">
                   {section.fields.map((field, fIdx) => {
                     const rawValue = item[field.key];
-                    const formattedValue = field.format
-                      ? field.format(rawValue)
-                      : rawValue;
+                    const formattedValue = field.format ? field.format(rawValue) : rawValue;
                     const displayValue = field.render
-                      ? field.render(item)
+                      ? field.render(item, copyText, copied)
                       : formattedValue;
                     return (
                       <DetailRow
@@ -125,16 +114,16 @@ export function MemberSheet({ item, sections, header, footer }: MemberSheetProps
                         value={displayValue as ReactNode}
                         copyable={field.copyable}
                         onCopy={() => {
-                  if (field.copyable && String(item[field.key]) === item[field.key]) {
-                    copyText(item[field.key] as string);
-                  }
-                }}
+                          if (field.copyable && String(item[field.key]) === item[field.key]) {
+                            copyText(item[field.key] as string);
+                          }
+                        }}
                         copied={copied}
                       />
                     );
                   })}
                 </div>
-                {idx < sections.length - 1 && <hr className="mt-4"/>}
+                {idx < sections.length - 1 && <hr className="mt-4" />}
               </div>
             ))}
           </div>

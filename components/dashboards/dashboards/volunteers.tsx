@@ -1,8 +1,16 @@
-import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as volunteerSchema } from "@/components/forms/fields/volunteer";
-import { RiMoonLine, RiSunCloudyLine, RiSunLine, RiUserLine, RiPhoneLine, RiMessageLine, RiShirtLine, RiTableLine } from "@remixicon/react";
+import {
+  RiMoonLine,
+  RiSunCloudyLine,
+  RiSunLine,
+  RiUserLine,
+  RiPhoneLine,
+  RiMessageLine,
+  RiShirtLine,
+  RiTableLine,
+} from "@remixicon/react";
 import { StatusIcon } from "../status-icon";
 import { Label } from "@/components/ui/label";
 import { availabilities } from "@/data/information";
@@ -112,35 +120,34 @@ const sections: MemberSectionConfig[] = [
     title: "Preferences",
     icon: RiShirtLine,
     fields: [
-      { key: "shirt", label: "Shirt Size", icon: RiShirtLine, format: (value) => formatShirtSize(String(value)) },
-      { key: "dietrestriction", label: "Dietary Restrictions", icon: RiTableLine, format: (value) => String(value) || "None" },
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
+      {
+        key: "dietrestriction",
+        label: "Dietary Restrictions",
+        icon: RiTableLine,
+        format: (value) => String(value) || "None",
+      },
     ],
   },
   {
     title: "Attributes",
     icon: RiMoonLine,
-    fields: [
-      { key: "availabilities", label: "Availabilities", icon: RiMoonLine },
-    ],
+    fields: [{ key: "availabilities", label: "Availabilities", icon: RiMoonLine }],
   },
   {
     title: "Profile",
     icon: RiUserLine,
-    fields: [
-      { key: "gender", label: "Gender", icon: RiUserLine },
-    ],
+    fields: [{ key: "gender", label: "Gender", icon: RiUserLine }],
   },
 ];
 
 function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
-  const availabilitiesList = item.availabilities as string[] | undefined;
-
-  return (
-    <MemberSheet
-      item={item}
-      sections={sections}      
-    />
-  );
+  return <MemberSheet item={item} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"volunteers">>[] = [
