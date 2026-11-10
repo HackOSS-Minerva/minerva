@@ -169,10 +169,10 @@ function DevToolCard({ tool }: { tool: DevTool }) {
           ))}
         </div>
         <Button variant="outline" size="sm" asChild className="w-full">
-          <a href={tool.url} target="_blank" rel="noopener noreferrer">
-            Visit {tool.name}
-            <RiExternalLinkLine className="h-3 w-3" />
-          </a>
+          <Link href={tool.url} target="_blank" rel="noopener noreferrer">
+              Visit {tool.name}
+              <RiExternalLinkLine className="h-3 w-3" />
+            </Link>
         </Button>
       </CardContent>
     </Card>

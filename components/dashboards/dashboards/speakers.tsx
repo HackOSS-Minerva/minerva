@@ -10,7 +10,7 @@ import {
   RiGraduationCapLine,
   RiCalendarLine,
 } from "@remixicon/react";
-import { StatusIcon } from "../status-icon";
+import { StatusBadge } from "../status-icon";
 import { Label } from "@/components/ui/label";
 import { formatShirtSize } from "@/lib/localization";
 import { selectColumn } from "../profile-drawer";
@@ -125,7 +125,7 @@ export const columns: ColumnDef<Doc<"speakers">>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        <StatusIcon status={row.original.status} />
+        <StatusBadge status={row.original.status} />
       </div>
     ),
   },

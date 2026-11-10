@@ -17,7 +17,7 @@ import {
   RiFileCopyLine,
   RiFileTextLine,
 } from "@remixicon/react";
-import { StatusIcon } from "../status-icon";
+import { StatusBadge } from "../status-icon";
 import { selectColumn } from "../profile-drawer";
 import { formatShirtSize } from "@/lib/localization";
 import { Button } from "@/components/ui/button";
@@ -178,7 +178,7 @@ export const columns: ColumnDef<Doc<"participants">>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        <StatusIcon status={row.original.status} />
+        <StatusBadge status={row.original.status} />
       </div>
     ),
   },

@@ -10,7 +10,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { RiUserLine } from "@remixicon/react";
-import { StatusIcon, normalizeApplicantStatus } from "./status-icon";
+import { StatusBadge, normalizeApplicantStatus } from "./status-icon";
 import DetailRow from "./row";
 import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { useDrawerDirection } from "./profile-drawer";
@@ -82,7 +82,7 @@ export function MemberSheet({ item, sections, header, footer }: MemberSheetProps
                 {String(item.firstname)} {String(item.lastname)}
               </DrawerTitle>
               <div className="flex items-center justify-center gap-2">
-                <StatusIcon status={normalizedStatus} />
+                <StatusBadge status={normalizedStatus} />
               </div>
             </DrawerHeader>
           </div>

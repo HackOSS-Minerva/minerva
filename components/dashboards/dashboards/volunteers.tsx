@@ -11,7 +11,7 @@ import {
   RiShirtLine,
   RiTableLine,
 } from "@remixicon/react";
-import { StatusIcon } from "../status-icon";
+import { StatusBadge } from "../status-icon";
 import { Label } from "@/components/ui/label";
 import { availabilities } from "@/data/information";
 import { formatShirtSize } from "@/lib/localization";
@@ -207,7 +207,7 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        <StatusIcon status={row.original.status} />
+        <StatusBadge status={row.original.status} />
       </div>
     ),
   },

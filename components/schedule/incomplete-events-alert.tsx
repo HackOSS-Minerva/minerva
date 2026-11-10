@@ -199,10 +199,10 @@ export function IncompleteEventsAlert({ incompleteEvents }: IncompleteEventsAler
                   {event.htmlLink && (
                     <div className="shrink-0 self-end sm:self-center">
                       <Button variant="outline" size="sm" className="h-7 gap-1 text-xs" asChild>
-                        <a href={event.htmlLink} target="_blank" rel="noopener noreferrer">
+                        <Link href={event.htmlLink} target="_blank" rel="noopener noreferrer">
                           <span>Edit in GCal</span>
                           <ExternalLink className="size-3" />
-                        </a>
+                        </Link>
                       </Button>
                     </div>
                   )}

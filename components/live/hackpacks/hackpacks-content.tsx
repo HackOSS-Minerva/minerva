@@ -85,10 +85,10 @@ export function HackpacksContent() {
                     )}
                     <div className="mt-auto pt-2">
                       <Button variant="outline" size="sm" asChild className="w-full">
-                        <a href={hackpack.link} target="_blank" rel="noopener noreferrer">
+                        <Link href={hackpack.link} target="_blank" rel="noopener noreferrer">
                           Get Started
                           <RiExternalLinkLine className="ml-1 h-3 w-3" />
-                        </a>
+                        </Link>
                       </Button>
                     </div>
                   </div>
