@@ -1,12 +1,13 @@
 "use client";
 
 import { useConvexAuth, useQuery } from "convex/react";
+import { useParams } from "next/navigation";
 import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
-import { HACK_CREDITS_PER_CHECKIN } from "@/lib/hack-credits";
 
-export function HackCreditsCard({ tenant }: { tenant: TenantSlug }) {
+export function HackCreditsCard() {
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const credits = useQuery(api.checkins.getHackCredits, isAuthenticated ? { tenant } : "skip");
   const { config } = getTenant(tenant);
@@ -28,14 +29,14 @@ export function HackCreditsCard({ tenant }: { tenant: TenantSlug }) {
             <p className="text-sm text-muted-foreground">
               {credits.checkinCount} {credits.checkinCount === 1 ? "check-in" : "check-ins"}
               {" · "}
-              {HACK_CREDITS_PER_CHECKIN} credits each
+              {config.hackCreditsPerCheckin} credits each
             </p>
           </>
         ) : (
           <p className="text-sm text-muted-foreground">Sign in to view your hack credits.</p>
         )}
         <p className="text-sm text-muted-foreground">
-          Earn {HACK_CREDITS_PER_CHECKIN} credits for each activity you check into. Credits are
+          Earn {config.hackCreditsPerCheckin} credits for each activity you check into. Credits are
           valid only for {config.name} and cannot transfer to another hackathon.
         </p>
       </CardContent>

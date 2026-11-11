@@ -2,18 +2,13 @@ import { mutation, query, type MutationCtx, type QueryCtx } from "./_generated/s
 import { convexError } from "./app_error";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
-import { HACK_CREDITS_PER_CHECKIN } from "../lib/hack-credits";
-import { components } from "./_generated/api";
+import { isTenantSlug, tenantConfigs } from "../tenants/config";
+import { api, components } from "./_generated/api";
 
 async function requireCheckinAdmin(ctx: QueryCtx | MutationCtx, tenant: string) {
-  const user = await authComponent.safeGetAuthUser(ctx);
-  if (!user) throw convexError("UNAUTHORIZED");
-
-  const admin = await ctx.db
-    .query("superadmins")
-    .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", user._id))
-    .first();
-  if (admin?.status !== "ACCEPTANCE") throw convexError("FORBIDDEN");
+  const access = await ctx.runQuery(api.auth.getAdminAccess, { tenant });
+  if (!access.authenticated) throw convexError("UNAUTHORIZED");
+  if (!access.authorized) throw convexError("FORBIDDEN");
 }
 
 export const getHackCredits = query({
@@ -21,6 +16,7 @@ export const getHackCredits = query({
   handler: async (ctx, { tenant }) => {
     const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) return null;
+    if (!isTenantSlug(tenant)) throw convexError("TENANT_INVALID");
 
     const checkins = await ctx.db
       .query("checkins")
@@ -31,7 +27,7 @@ export const getHackCredits = query({
     // Deduplicate legacy records so one activity never awards credits twice.
     const checkinCount = new Set(checkins.map((checkin) => checkin.eventid)).size;
     return {
-      balance: checkinCount * HACK_CREDITS_PER_CHECKIN,
+      balance: checkinCount * tenantConfigs[tenant].hackCreditsPerCheckin,
       checkinCount,
     };
   },

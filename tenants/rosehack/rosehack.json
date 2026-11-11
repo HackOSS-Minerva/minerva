@@ -6,6 +6,7 @@
     "deadline": "2027-01-31T19:00:00-08:00"
   },
   "slug": "rosehack",
+  "hackCreditsPerCheckin": 10,
   "name": "RoseHack",
   "domain": "https://rosehackucr.com",
   "email": "ucr.rosehack@gmail.com",

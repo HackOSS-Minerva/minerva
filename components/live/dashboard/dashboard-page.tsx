@@ -70,7 +70,7 @@ export function DashboardPage({
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             <CheckinSection user={checkinUser ?? null} />
 
-            <HackCreditsCard tenant={tenant} />
+            <HackCreditsCard />
 
             <SubmissionSection
               tenant={tenant}

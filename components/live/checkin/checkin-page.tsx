@@ -57,7 +57,7 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
           Show your QR code at the event check-in desk to verify your attendance.
         </p>
       </div>
-      <HackCreditsCard tenant={tenant} />
+      <HackCreditsCard />
       <Card className="border-none">
         <CardHeader>
           <CardTitle className="text-center text-primary">
