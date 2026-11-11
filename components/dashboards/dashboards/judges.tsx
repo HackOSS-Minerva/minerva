@@ -1,25 +1,24 @@
-"use client";
-
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { RiFileCopyLine, RiCheckLine, RiCloseLine } from "@remixicon/react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
-import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { schema as judgeSchema } from "@/components/forms/fields/judge";
-import { StatusIcon } from "../status-icon";
-import { RiPhoneLine, RiShirtLine, RiUserLine, RiTableLine } from "@remixicon/react";
-import DetailRow from "../row";
-import { selectColumn, useDrawerDirection } from "../profile-drawer";
+import {
+  RiCheckLine,
+  RiExternalLinkLine,
+  RiFileCopyLine,
+  RiPhoneLine,
+  RiShirtLine,
+  RiUserLine,
+  RiTableLine,
+  RiUser2Line,
+  RiGraduationCapLine,
+  RiCalendarLine,
+} from "@remixicon/react";
+import { Button } from "@/components/ui/button";
+import { StatusBadge } from "../status-icon";
+import { Label } from "@/components/ui/label";
 import { formatShirtSize } from "@/lib/localization";
+import { selectColumn } from "../profile-drawer";
+import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
 
 export const metadata = {
   title: "Judges",
@@ -44,106 +43,88 @@ export const csvFields = [
   "code_of_conduct_consent",
 ];
 
-function TableCellViewer({ item }: { item: Doc<"judges"> }) {
-  const { copied, copy: copyText } = useCopyWithTimeout();
-  const { copied: pictureCopied, copy: copyPicture } = useCopyWithTimeout();
-  const direction = useDrawerDirection();
-
-  const handleCopyEmail = () => {
-    copyText(item.email);
-  };
-
-  const handleCopyPicture = () => {
-    copyPicture(item.picture);
-  };
-
-  return (
-    <Drawer direction={direction}>
-      <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.firstname + " " + item.lastname}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="flex h-full flex-col px-4 py-5 gap-2">
-          <div className="flex items-start justify-between">
-            <DrawerTitle>Profile</DrawerTitle>
-            <DrawerClose asChild>
-              <Button variant="ghost" size="icon" aria-label="Close profile">
-                <RiCloseLine className="h-4 w-4" />
-              </Button>
-            </DrawerClose>
-          </div>
-
-          <div className="flex flex-col items-center text-sm text-foreground">
-            <div className="relative h-64 w-64 overflow-hidden rounded-2xl border border-border">
-              <Image
-                src={item.picture}
-                alt={`${item.firstname} ${item.lastname}`}
-                fill
-                sizes="128px"
-                className="object-cover"
-              />
-              <button
-                type="button"
-                className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-background text-sm text-muted-foreground"
-                onClick={handleCopyPicture}
+const sections: MemberSectionConfig[] = [
+  {
+    title: "Contact",
+    icon: RiUserLine,
+    fields: [
+      { key: "email", label: "Email", icon: RiUserLine, copyable: true },
+      { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
+    ],
+  },
+  {
+    title: "Preferences",
+    icon: RiShirtLine,
+    fields: [
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
+      {
+        key: "dietrestriction",
+        label: "Dietary Restrictions",
+        icon: RiTableLine,
+        format: (value) => String(value) || "None",
+      },
+    ],
+  },
+  {
+    title: "Attributes",
+    icon: RiUserLine,
+    fields: [
+      { key: "affiliation", label: "Affiliation", icon: RiUser2Line },
+      { key: "title", label: "Title", icon: RiGraduationCapLine },
+      { key: "organization", label: "Organization", icon: RiCalendarLine },
+      {
+        key: "picture",
+        label: "Picture",
+        icon: RiUserLine,
+        render: (item, copyText, copied) => {
+          const picture = item.picture;
+          if (!picture) return "No Picture";
+          const fullName =
+            `${(item.firstname as string) || ""} ${(item.lastname as string) || ""}`.trim();
+          const displayName = fullName || "Judge";
+          return (
+            <div className="flex items-center gap-1">
+              <span className="truncate flex-1 text-left">{displayName} Picture</span>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  try {
+                    window.open(picture as string, "_blank");
+                  } catch {}
+                }}
               >
-                {pictureCopied ? (
-                  <RiCheckLine className="h-4 w-4" />
-                ) : (
-                  <RiFileCopyLine className="h-4 w-4" />
-                )}
-              </button>
+                <RiExternalLinkLine />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => copyText?.(picture as string)}
+              >
+                {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+              </Button>
             </div>
-            <div className="gap-2 text-center">
-              <p className="text-lg font-semibold text-foreground">
-                {item.firstname} {item.lastname}
-              </p>
-              <p className="text-sm text-muted-foreground">{item.organization}</p>
-              <p className="text-sm text-muted-foreground">{item.title}</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-2">
-            <StatusIcon status={item.status} />
-          </div>
-          <hr />
-          <div className="space-y-4 text-sm">
-            <div>
-              <p className="text-sm font-semibold text-foreground">Contact</p>
-              <div className="mt-2 space-y-2">
-                <DetailRow
-                  icon={RiUserLine}
-                  label="Email"
-                  value={item.email}
-                  copyable
-                  onCopy={handleCopyEmail}
-                  copied={copied}
-                />
-                <DetailRow icon={RiPhoneLine} label="Phone" value={item.telephone} />
-              </div>
-            </div>
-            <hr />
-            <div>
-              <div className="mt-2 space-y-2">
-                <p className="text-sm font-semibold text-foreground">Application</p>
-                <DetailRow
-                  icon={RiShirtLine}
-                  label="Shirt Size"
-                  value={formatShirtSize(item.shirt)}
-                />
-                <DetailRow
-                  icon={RiTableLine}
-                  label="Dietary Restrictions"
-                  value={item.dietrestriction || "None"}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
+          );
+        },
+      },
+    ],
+  },
+  {
+    title: "Profile",
+    icon: RiUserLine,
+    fields: [{ key: "gender", label: "Gender", icon: RiUserLine }],
+  },
+];
+
+function TableCellViewer({ item }: { item: Doc<"judges"> }) {
+  return <MemberSheet item={item} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"judges">>[] = [
@@ -191,7 +172,7 @@ export const columns: ColumnDef<Doc<"judges">>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        <StatusIcon status={row.original.status} />
+        <StatusBadge status={row.original.status} />
       </div>
     ),
   },

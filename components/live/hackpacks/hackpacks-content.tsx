@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RiSearchLine, RiExternalLinkLine, RiStarFill } from "@remixicon/react";
 import type { Hackpack } from "@/data/hackpacks";
+import Link from "next/link";
 
 const CATEGORIES = [
   "All",
@@ -85,10 +86,10 @@ export function HackpacksContent() {
                     )}
                     <div className="mt-auto pt-2">
                       <Button variant="outline" size="sm" asChild className="w-full">
-                        <a href={hackpack.link} target="_blank" rel="noopener noreferrer">
+                        <Link href={hackpack.link} target="_blank" rel="noopener noreferrer">
                           Get Started
                           <RiExternalLinkLine className="ml-1 h-3 w-3" />
-                        </a>
+                        </Link>
                       </Button>
                     </div>
                   </div>

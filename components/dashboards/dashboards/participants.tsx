@@ -1,35 +1,28 @@
-import { Button } from "@/components/ui/button";
-import { RiCloseLine } from "@remixicon/react";
-import { useCopyWithTimeout } from "@/hooks/use-copy";
 import { Label } from "@/components/ui/label";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as participantSchema } from "@/components/forms/fields/participant";
 import {
   RiBriefcaseLine,
   RiCakeLine,
-  RiGlobeLine,
+  RiCheckLine,
+  RiExternalLinkLine,
   RiGraduationCapLine,
   RiPhoneLine,
   RiScrollToBottomLine,
   RiShirtLine,
   RiUserLine,
   RiMessageLine,
+  RiFileCopyLine,
   RiFileTextLine,
-  RiTableLine,
 } from "@remixicon/react";
-import { StatusIcon } from "../status-icon";
-import DetailRow from "../row";
-import { selectColumn, useDrawerDirection } from "../profile-drawer";
+import { StatusBadge } from "../status-icon";
+import { selectColumn } from "../profile-drawer";
 import { formatShirtSize } from "@/lib/localization";
+import { Button } from "@/components/ui/button";
+
+import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
 
 export const metadata = {
   title: "Participants",
@@ -58,92 +51,93 @@ export const csvFields = [
   "code_of_conduct_consent",
 ];
 
+const sections: MemberSectionConfig[] = [
+  {
+    title: "Contact",
+    icon: RiUserLine,
+    fields: [
+      { key: "email", label: "Email", icon: RiUserLine, copyable: true },
+      { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
+      { key: "discord", label: "Discord", icon: RiMessageLine, copyable: true },
+    ],
+  },
+  {
+    title: "Preferences",
+    icon: RiShirtLine,
+    fields: [
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
+      {
+        key: "dietrestriction",
+        label: "Dietary Restrictions",
+        icon: RiFileTextLine,
+        format: (value) => String(value) || "None",
+      },
+    ],
+  },
+  {
+    title: "Attributes",
+    icon: RiScrollToBottomLine,
+    fields: [
+      { key: "school", label: "School", icon: RiScrollToBottomLine },
+      { key: "country", label: "Country", icon: RiUserLine },
+      {
+        key: "resume",
+        label: "Resume",
+        icon: RiFileTextLine,
+        render: (item, copyText, copied) => {
+          const resume = item.resume;
+          if (!resume) return "No Resume Attached";
+          const fullName =
+            `${(item.firstname as string) || ""} ${(item.lastname as string) || ""}`.trim();
+          const displayName = fullName || "Participant";
+          return (
+            <div className="flex items-center gap-2">
+              <span className="truncate flex-1 text-left">{displayName} Resume</span>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  try {
+                    window.open(resume as string, "_blank");
+                  } catch {}
+                }}
+              >
+                <RiExternalLinkLine />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => copyText?.(resume as string)}
+              >
+                {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+              </Button>
+            </div>
+          );
+        },
+      },
+    ],
+  },
+  {
+    title: "Profile",
+    icon: RiUserLine,
+    fields: [
+      { key: "gender", label: "Gender", icon: RiUserLine },
+      { key: "grade", label: "Grade", icon: RiBriefcaseLine },
+      { key: "major", label: "Major", icon: RiGraduationCapLine },
+      { key: "age", label: "Age", icon: RiCakeLine },
+    ],
+  },
+];
+
 function TableCellViewer({ item }: { item: Doc<"participants"> }) {
-  const { copied, copy: copyText } = useCopyWithTimeout();
-  const direction = useDrawerDirection();
-
-  const handleCopyEmail = () => {
-    copyText(item.email);
-  };
-
-  return (
-    <Drawer direction={direction}>
-      <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.firstname + " " + item.lastname}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="flex h-full flex-col gap-5 px-4 py-5">
-          <div className="flex items-start justify-between">
-            <DrawerHeader className="gap-1 p-0 w-full">
-              <div className="flex items-center justify-between w-full">
-                <DrawerTitle>
-                  {item.firstname} {item.lastname}
-                </DrawerTitle>
-
-                <DrawerClose asChild>
-                  <Button variant="ghost" size="icon" aria-label="Close profile">
-                    <RiCloseLine className="h-4 w-4" />
-                  </Button>
-                </DrawerClose>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <StatusIcon status={item.status} />
-              </div>
-            </DrawerHeader>
-          </div>
-          <div className="flex flex-col gap-4 overflow-y-auto text-sm">
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-foreground">Contact</p>
-              <div className="grid gap-3">
-                <DetailRow
-                  icon={RiUserLine}
-                  label="Email"
-                  value={item.email}
-                  copyable
-                  onCopy={handleCopyEmail}
-                  copied={copied}
-                />
-                <DetailRow icon={RiPhoneLine} label="Phone" value={item.telephone} />
-                <DetailRow icon={RiMessageLine} label="Discord" value={item.discord} />
-                <DetailRow icon={RiUserLine} label="Gender" value={item.gender} />
-                <DetailRow
-                  icon={RiShirtLine}
-                  label="Shirt Size"
-                  value={formatShirtSize(item.shirt)}
-                />
-              </div>
-            </div>
-
-            <hr />
-
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-foreground">Application</p>
-              <div className="grid gap-3">
-                <DetailRow icon={RiGraduationCapLine} label="School" value={item.school} />
-                <DetailRow icon={RiScrollToBottomLine} label="Grade" value={item.grade} />
-                <DetailRow icon={RiBriefcaseLine} label="Major" value={item.major} />
-                <DetailRow icon={RiCakeLine} label="Age" value={item.age} />
-                <DetailRow icon={RiGlobeLine} label="Country" value={item.country} />
-                <DetailRow
-                  icon={RiTableLine}
-                  label="Dietary Restrictions"
-                  value={item.dietrestriction || "None"}
-                />
-                <DetailRow
-                  icon={RiFileTextLine}
-                  label="Resume"
-                  value={item.resume ? item.resume : "Not Attached"}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
+  return <MemberSheet item={item} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"participants">>[] = [
@@ -184,7 +178,7 @@ export const columns: ColumnDef<Doc<"participants">>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        <StatusIcon status={row.original.status} />
+        <StatusBadge status={row.original.status} />
       </div>
     ),
   },
