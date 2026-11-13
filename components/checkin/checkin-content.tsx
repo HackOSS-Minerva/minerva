@@ -23,7 +23,7 @@ import { getUserMessage } from "@/lib/app-error";
 import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
 import { groupEventsByDay } from "@/lib/schedule";
 import { parseCheckinQr, type CheckinQrPayload } from "@/lib/checkin";
-import type { TenantSlug } from "@/hooks/get-tenant";
+import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 
 /** How long the success toast + QR preview stay on screen after a scan. */
 const SCAN_RESULT_RESET_MS = 3000;
@@ -39,6 +39,8 @@ const CheckinContent = () => {
   const doCheckin = useMutation(api.checkins.checkin);
 
   const tenant = params.tenant;
+  const { config } = getTenant(tenant);
+  const creditsPerCheckin = config.hackCreditsPerCheckin;
 
   const events = useMemo(() => schedule?.items?.filter((event) => event.summary) ?? [], [schedule]);
   const isPaused = !selectedEventId;
@@ -99,7 +101,7 @@ const CheckinContent = () => {
           });
 
           toast.success(`Checked in: ${scanName}`, {
-            description: scan.email,
+            description: `${scan.email} · ${creditsPerCheckin} hack credits earned`,
             icon: <RiUserLine className="h-4 w-4" />,
           });
 
@@ -127,7 +129,7 @@ const CheckinContent = () => {
         setScanError("Invalid QR data");
       }
     },
-    [doCheckin, selectedEventId, tenant],
+    [doCheckin, selectedEventId, tenant, creditsPerCheckin],
   );
 
   const onDecodeError = useCallback(() => {

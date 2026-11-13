@@ -13,6 +13,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { authClient } from "@/lib/auth-client";
 import { buildCheckinQrPayload } from "@/lib/checkin";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import { HackCreditsCard } from "./hack-credits-card";
 
 interface CheckinPageProps {
   tenant: TenantSlug;
@@ -56,6 +57,7 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
           Show your QR code at the event check-in desk to verify your attendance.
         </p>
       </div>
+      <HackCreditsCard />
       <Card className="border-none">
         <CardHeader>
           <CardTitle className="text-center text-primary">
