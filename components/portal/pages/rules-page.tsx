@@ -6,14 +6,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
+import { type TenantSlug } from "@/hooks/get-tenant";
 
 interface RulesPageProps {
   tenant: TenantSlug;
   baseHref?: string;
 }
 export const RulesPage = ({ tenant, baseHref = `/${tenant}/live/dashboard` }: RulesPageProps) => {
-  const { config } = getTenant(tenant);
+  
 
   const Markdown = markdown.rules;
   return (
@@ -36,4 +36,4 @@ export const RulesPage = ({ tenant, baseHref = `/${tenant}/live/dashboard` }: Ru
       <Markdown />
     </div>
   );
-}
+};

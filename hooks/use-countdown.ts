@@ -2,14 +2,19 @@
 
 import { useState, useEffect } from "react";
 /** useCountdown - useState hook that counts down to a target date.
- * 
+ *
  * Usage example:
  * ```tsx
  * const { days, hours, minutes, seconds } = useCountdown(targetDate);
  * ```
  */
 export const useCountdown = (targetDate: string | Date | number | null) => {
-  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null);
+  const [timeLeft, setTimeLeft] = useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  } | null>(null);
 
   // Normalize to a stable primitive so object references (e.g. `new Date()`)
   // passed on every render don't retrigger the effect infinitely.

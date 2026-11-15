@@ -25,7 +25,7 @@ export const NavMain = ({
   }[];
 }) => {
 
-} = useParams<{ tenant: TenantSlug }>();
+const { tenant } = useParams<{ tenant: TenantSlug }>();
   const pathname = usePathname();
 
   const isActive = (url: string) => pathname.startsWith(`/${tenant}${url}`);

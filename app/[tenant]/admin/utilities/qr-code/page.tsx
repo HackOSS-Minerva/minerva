@@ -1,3 +1,1 @@
-export default async function QRCodePage() {
-
-}
+export default async function QRCodePage() {}

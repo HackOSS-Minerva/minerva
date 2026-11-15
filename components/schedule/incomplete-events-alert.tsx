@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import type { IncompleteScheduleEvent, MissingScheduleField } from "@/types/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -208,4 +207,4 @@ export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAler
       )}
     </div>
   );
-}
+};

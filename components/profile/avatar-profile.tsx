@@ -17,7 +17,7 @@ import { PLACEHOLDER_DISPLAY_EMAIL, PLACEHOLDER_DISPLAY_NAME } from "@/lib/check
 import { getInitials } from "@/lib/localization";
 export const AvatarProfile = () => {
 
-} = useParams<{ tenant: TenantSlug }>();
+const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { config } = getTenant(tenant);
   const { domain } = config;
   const { data: session } = authClient.useSession();

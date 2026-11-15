@@ -7,8 +7,8 @@
   },
   "settings": {
     "tailwindcss": {
-      "entryPoint": "app/globals.css",
-    },
+      "entryPoint": "app/globals.css"
+    }
   },
   "rules": {
     "shadcn/no-arbitrary-values": "error",
@@ -16,7 +16,7 @@
     "tailwindcss/no-conflicting-classes": "error",
     "tailwindcss/enforce-sort-order": "error",
     "tailwindcss/enforce-canonical": "error",
-    "tailwindcss/no-duplicate-classes": "error",
+    "tailwindcss/no-duplicate-classes": "error"
   },
   "env": {
     "builtin": true

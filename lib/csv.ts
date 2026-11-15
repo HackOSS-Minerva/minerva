@@ -38,4 +38,4 @@ export const convertToCSV = <T extends object>(data: T[], fields: string[]): Blo
 
   const csv = [header, ...rows].join("\r\n");
   return new Blob([csv], { type: "text/csv" });
-}
+};

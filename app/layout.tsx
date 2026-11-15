@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/lib/providers";
-import { getToken } from "@/lib/auth-server";
 import { LayoutProps } from "@/types/layouts";
 import { ConfettiProvider } from "@/components/confetti/confetti-overlay";
 import "./globals.css";
-import { cn } from "cn";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const _inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

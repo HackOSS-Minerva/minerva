@@ -1,3 +1,1 @@
-export default async function SchedulePage() {
-
-}
+export default async function SchedulePage() {}

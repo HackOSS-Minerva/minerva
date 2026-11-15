@@ -83,7 +83,7 @@ const requireOrganizerAccess = async (
   }
 
   return submission;
-}
+};
 
 const executeSubmissionVetting = async (
   ctx: ActionCtx,
@@ -153,7 +153,7 @@ const executeSubmissionVetting = async (
       contributors: githubResult?.contributors ?? [],
     };
   }
-}
+};
 
 // v1 trust boundary: the organizer-authorized UI supplies tenant dates from
 // useTenant; Convex validates shape but does not duplicate tenant config.

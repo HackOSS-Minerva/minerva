@@ -53,7 +53,6 @@ export const splitName = (name: string): { firstname: string; lastname: string }
  * signed-out state instead of a placeholder code.
  */
 export const buildCheckinQrPayload = (input: CheckinQrIdentity): string | null => {
-
   const id = input.id?.trim();
   const email = input.email?.trim();
   if (!id || !email) return null;
@@ -79,7 +78,6 @@ export const buildCheckinQrPayload = (input: CheckinQrIdentity): string | null =
  * the database.
  */
 export const parseCheckinQr = (raw: string): ParseCheckinQrResult => {
-
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -119,7 +117,6 @@ export const parseCheckinQr = (raw: string): ParseCheckinQrResult => {
 
 /** Storage path helper — `crypto.randomUUID()` with a collision-safe fallback. */
 export const newUploadId = (): string => {
-
   try {
     return crypto.randomUUID();
   } catch {
@@ -133,6 +130,5 @@ export const uploadPath = (
   role: string,
   ext = "",
 ): string => {
-
   return `${tenant}/${role}/${kind}/${newUploadId()}${ext}`;
 };

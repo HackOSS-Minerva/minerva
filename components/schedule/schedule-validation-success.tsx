@@ -9,7 +9,7 @@ interface ScheduleValidationSuccessProps {
   totalCount: number;
 }
 export const ScheduleValidationSuccess = ({ totalCount }: ScheduleValidationSuccessProps) => {
-  const [dismissed, setDismissed] = useState(false);
+  const [_dismissed, setDismissed] = useState(false);
 
   return (
     <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 shadow-xs dark:border-emerald-500/20 dark:bg-emerald-500/10">
@@ -47,4 +47,4 @@ export const ScheduleValidationSuccess = ({ totalCount }: ScheduleValidationSucc
       </div>
     </div>
   );
-}
+};

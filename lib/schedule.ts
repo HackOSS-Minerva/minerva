@@ -15,54 +15,51 @@ export const SCHEDULE_STALE_MS = 1000 * 60 * 5;
 export const SCHEDULE_REVALIDATE_SECONDS = 300;
 export const SCHEDULE_RETRY_COUNT = 2;
 
-/** Single builder for the Google Calendar list URL used server + client side. */export const buildScheduleUrl = (calendarId: string, apiKey: string): string => {
+/** Single builder for the Google Calendar list URL used server + client side. */ export const buildScheduleUrl =
+  (calendarId: string, apiKey: string): string => {
+    return `https://www.googleapis.com/calendar/v3/calendars/${
+      calendarId
+    }/events?key=${apiKey}&singleEvents=true&orderBy=startTime`;
+  };
 
-  return `https://www.googleapis.com/calendar/v3/calendars/${calendarId
-}/events?key=${apiKey}&singleEvents=true&orderBy=startTime`;
-}
+/** Weekday label in the event's own time zone (defaults to Pacific if absent). */ export const getDayOfWeek =
+  (dateTime?: string, timeZone?: string): string => {
+    if (!dateTime) return "N/A";
+    try {
+      // If all-day event, formatting with timeZone="UTC" preserves
+      // date without shifting backwards due to local timezone offset.
+      const isDateOnly = !dateTime.includes("T");
+      const date = new Date(dateTime);
+      if (isNaN(date.getTime())) return "N/A";
+      return date.toLocaleDateString("en-US", {
+        weekday: "long",
+        timeZone: isDateOnly ? "UTC" : timeZone || FALLBACK_EVENT_TIME_ZONE,
+      });
+    } catch {
+      return "N/A";
+    }
+  };
 
-/** Weekday label in the event's own time zone (defaults to Pacific if absent). */export const getDayOfWeek = (dateTime?: string, timeZone?: string): string => {
+/** Group events into `[dayLabel, options]` for grouped `<Select>`, API order kept. */ export const groupEventsByDay =
+  (events: readonly GoogleEvent[]): [string, ScheduleEventOption[]][] => {
+    const groups = new Map<string, ScheduleEventOption[]>();
 
-  if (!dateTime) return "N/A";
-  try {
-    // If all-day event, formatting with timeZone="UTC" preserves
-    // date without shifting backwards due to local timezone offset.
-    const isDateOnly = !dateTime.includes("T");
-    const date = new Date(dateTime);
-    if (isNaN(date.getTime())) return "N/A";
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      timeZone: isDateOnly ? "UTC" : timeZone || FALLBACK_EVENT_TIME_ZONE,
-    
-});
-  } catch {
-    return "N/A";
-  }
-}
+    for (const event of events) {
+      const dateTime = event.start?.dateTime ?? event.start?.date;
+      const group = dateTime
+        ? getDayOfWeek(dateTime, event.start?.timeZone ?? FALLBACK_EVENT_TIME_ZONE)
+        : "Unscheduled";
+      const options = groups.get(group) ?? [];
+      options.push({
+        value: event.id,
+        label: event.summary?.trim() || "Untitled Event",
+        group,
+      });
+      groups.set(group, options);
+    }
 
-/** Group events into `[dayLabel, options]` for grouped `<Select>`, API order kept. */export const groupEventsByDay = (
-  events: readonly GoogleEvent[],
-): [string, ScheduleEventOption[]][] => {
-
-  const groups = new Map<string, ScheduleEventOption[]>();
-
-  for (const event of events) {
-    const dateTime = event.start?.dateTime ?? event.start?.date;
-    const group = dateTime
-      ? getDayOfWeek(dateTime, event.start?.timeZone ?? FALLBACK_EVENT_TIME_ZONE)
-      : "Unscheduled";
-    const options = groups.get(group) ?? [];
-    options.push({
-      value: event.id,
-      label: event.summary?.trim() || "Untitled Event",
-      group,
-    
-});
-    groups.set(group, options);
-  }
-
-  return Array.from(groups.entries());
-}
+    return Array.from(groups.entries());
+  };
 
 /**
  * Zod schema defining the required completeness criteria for a Google Calendar event.
@@ -124,13 +121,12 @@ export type ValidatedScheduleEvent = z.infer<typeof scheduleEventSchema>;
 /**
  * Validates a Google Calendar event against `scheduleEventSchema`.
  * Returns an array of any missing field names (Title, Description, Date, Time, Location).
- */export const checkEventCompleteness = (event: GoogleEvent): MissingScheduleField[] => {
-
+ */ export const checkEventCompleteness = (event: GoogleEvent): MissingScheduleField[] => {
   const result = scheduleEventSchema.safeParse(event);
   if (result.success) {
     return [];
-  
-}const missing = new Set<MissingScheduleField>();
+  }
+  const missing = new Set<MissingScheduleField>();
 
   for (const issue of result.error.issues) {
     const rootField = issue.path[0];
@@ -153,11 +149,10 @@ export type ValidatedScheduleEvent = z.infer<typeof scheduleEventSchema>;
   ];
 
   return orderedFields.filter((field) => missing.has(field));
-}
+};
 export const getIncompleteScheduleEvents = (
   events: readonly GoogleEvent[],
 ): IncompleteScheduleEvent[] => {
-
   const incomplete: IncompleteScheduleEvent[] = [];
 
   for (const event of events) {
@@ -168,10 +163,9 @@ export const getIncompleteScheduleEvents = (
         id: event.id,
         title: event.summary?.trim() || "(Untitled Event)",
         missingFields,
-      
-});
+      });
     }
   }
 
   return incomplete;
-}
+};

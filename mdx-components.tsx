@@ -19,7 +19,5 @@ const components = {
   strong: ({ children }) => <span className="font-bold">{children}</span>,
 } satisfies MDXComponents;
 export const useMDXComponents = (): MDXComponents => {
-
   return components;
-
-}
+};

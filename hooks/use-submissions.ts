@@ -149,7 +149,7 @@ export const useSubmissions = ({ tenant }: UseSubmissionsOptions) => {
 type SubmissionId = Id<"submissions">;
 export const useSubmissionVetting = () => {
 
-} = useParams<{ tenant: TenantSlug }>();
+const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { config } = getTenant(tenant);
   const live = config?.event ?? null;
   const vetSubmission = useAction(api.vetting.runSubmissionVetting);

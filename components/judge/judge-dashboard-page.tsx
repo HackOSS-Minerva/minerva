@@ -21,7 +21,13 @@ interface JudgeDashboardPageProps {
 
 // Server Component shell: tenant config lookup is sync + server-safe.
 // Interactive children (countdown, QR, schedule filters) are client islands.
-export const JudgeDashboardPage = ({ tenant, judgeStatus, userName, checkinUser, initialSchedule }: JudgeDashboardPageProps) => {
+export const JudgeDashboardPage = ({
+  tenant,
+  judgeStatus,
+  userName,
+  checkinUser,
+  initialSchedule,
+}: JudgeDashboardPageProps) => {
   const { config } = getTenant(tenant);
   const live = config?.event ?? null;
 
@@ -59,4 +65,4 @@ export const JudgeDashboardPage = ({ tenant, judgeStatus, userName, checkinUser,
       <ScheduleSection initialData={initialSchedule} />
     </div>
   );
-}
+};

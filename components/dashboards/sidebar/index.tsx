@@ -123,7 +123,7 @@ const data = {
 };
 export const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
 
-} = useParams<{ tenant: TenantSlug }>();
+const { tenant } = useParams<{ tenant: TenantSlug }>();
   const {
     config: { logo, domain },
   } = getTenant(tenant);

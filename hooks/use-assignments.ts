@@ -101,8 +101,7 @@ export const formatStatus = (status?: string): string => {
 }// ── React hook ────────────────────────────────────────────────────────────────
 export const useAssignments = (tenant: TenantSlug) => {
 
-});
-  const rawJudges = useQuery(api.judges.get, { tenant });
+}; const rawJudges = useQuery(api.judges.get, { tenant });
   const rawAssignments = useQuery(api.assignments.getByTenant, { tenant });
   const setAssignmentsMut = useMutation(api.assignments.setAssignments);
 

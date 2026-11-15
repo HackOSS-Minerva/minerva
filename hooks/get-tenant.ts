@@ -53,4 +53,4 @@ export interface TenantData {
     markdown: tenantContent[slug].markdown,
   
 };
-}
+
