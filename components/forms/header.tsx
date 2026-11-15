@@ -1,9 +1,9 @@
 import { CardHeader } from "@/components/ui/card";
-import { getFormDef, type slugs } from "@/lib/form-defs";
+import { getFormDef, type FormSlug } from "@/lib/form-defs";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface HeaderProps {
-  form: slugs;
+  form: FormSlug;
   tenant: TenantSlug;
 }
 

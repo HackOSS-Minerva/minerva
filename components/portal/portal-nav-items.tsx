@@ -23,16 +23,16 @@ interface PortalNavItemsProps {
   registerHref: string;
 }
 
-function resolveHref(tenant: TenantSlug, href: string): string {
+const resolveHref = (tenant: TenantSlug, href: string): string => {
   if (href.startsWith("http://") || href.startsWith("https://")) {
     return href;
   }
   return `/${tenant}${href}`;
-}
+};
 
-function isActiveDropdown(pathname: string, dropdown: DropdownConfig): boolean {
+const isActiveDropdown = (pathname: string, dropdown: DropdownConfig): boolean => {
   return dropdown.items.some((item) => pathname.includes(item.href));
-}
+};
 
 export const PortalNavItems = ({
   tenant,

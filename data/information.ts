@@ -51,6 +51,8 @@ export const ages = ["18", "19", "20", "21", "22", "23+"] as const;
 
 export const roles = ["participant", "judge", "speaker", "superadmin", "volunteer"] as const;
 
+export type UserRole = (typeof roles)[number];
+
 export const feedbackFindOptions = [
   "instagram",
   "discord",

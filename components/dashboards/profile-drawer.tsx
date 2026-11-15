@@ -1,65 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { RiCloseLine } from "@remixicon/react";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-export const ProfileDrawerTrigger = ({ name }: { name: string }) => {
-  return (
-    <DrawerTrigger asChild>
-      <Button variant="link" className="w-fit px-0 text-left text-foreground">
-        {name}
-      </Button>
-    </DrawerTrigger>
-  );
-};
-
-export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: string }) => {
-  return (
-    <DrawerClose asChild>
-      <Button variant="ghost" size="icon" aria-label={label}>
-        <RiCloseLine className="h-4 w-4" />
-      </Button>
-    </DrawerClose>
-  );
-};
-
-/** Shared applicant drawer shell (mobile bottom / desktop right). */
-export const ProfileDrawer = ({
-  name,
-  title = "Profile",
-  children,
-}: {
-  name: string;
-  title?: string;
-  children: ReactNode;
-}) => {
-  const isMobile = useIsMobile();
-  return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
-      <ProfileDrawerTrigger name={name} />
-      <DrawerContent>
-        <div className="flex h-full flex-col gap-2 px-4 py-5">
-          <div className="flex items-start justify-between">
-            <DrawerTitle>{title}</DrawerTitle>
-            <ProfileDrawerCloseButton />
-          </div>
-          {children}
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
-};
 
 /** Drawer direction shared by every dashboard profile viewer. */
 export const useDrawerDirection = () => {
@@ -68,7 +11,7 @@ export const useDrawerDirection = () => {
 };
 
 /** Shared row-selection column used by every dashboard table. */
-export function selectColumn<T>(): ColumnDef<T> {
+export const selectColumn = <T,>(): ColumnDef<T> => {
   return {
     id: "select",
     header: ({ table }) => (
@@ -95,4 +38,4 @@ export function selectColumn<T>(): ColumnDef<T> {
     enableSorting: false,
     enableHiding: false,
   };
-}
+};

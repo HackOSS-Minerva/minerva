@@ -8,18 +8,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
-const resourcePaths: Record<string, string> = {
-  "/judge/venue": "Venue",
-  "/judge/rules": "Rules",
-  "/judge/code-of-conduct": "Code of Conduct",
-};
-
-const participatePaths: Record<string, string> = {
-  "/judge/assignments": "View Assignments",
-  "/judge/submissions": "Project Submissions",
-  "/judge/certificate": "Certificate",
-};
-
 interface JudgeBreadcrumbProps {
   tenant: TenantSlug;
   /** Current page label, e.g. "Certificate". */
@@ -50,23 +38,4 @@ export const JudgeBreadcrumb = ({ tenant, page, section }: JudgeBreadcrumbProps)
       </BreadcrumbList>
     </Breadcrumb>
   );
-};
-
-// Lookup helper for pages that still resolve the breadcrumb from a path.
-// Prefer passing `tenant`/`page`/`section` directly from the server route.
-export const resolveJudgeBreadcrumb = (
-  pathname: string,
-): {
-  page: string;
-  section: "Resources" | "Participate";
-} | null => {
-  const resourceKey = Object.keys(resourcePaths).find((k) => pathname.includes(k));
-  if (resourceKey) {
-    return { page: resourcePaths[resourceKey], section: "Resources" };
-  }
-  const participateKey = Object.keys(participatePaths).find((k) => pathname.includes(k));
-  if (participateKey) {
-    return { page: participatePaths[participateKey], section: "Participate" };
-  }
-  return null;
 };

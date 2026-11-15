@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description: "Minerva",
 };
 
-export default async function RootLayout({ children }: LayoutProps) {
+const RootLayout = async ({ children }: LayoutProps) => {
   // Read the Better Auth session token server-side so authenticated Convex
   // queries can be preloaded during SSR.
   const initialToken = await getToken();
@@ -41,4 +41,6 @@ export default async function RootLayout({ children }: LayoutProps) {
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

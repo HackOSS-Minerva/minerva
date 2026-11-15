@@ -1,11 +1,12 @@
 import posthog from "posthog-js";
 import { AppError } from "@/lib/app-error";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import type { UserRole } from "@/data/information";
 
 // Shared PostHog host constant (used by both client SDK and server API queries)
 export const POSTHOG_HOST = "https://us.posthog.com";
 
-export type AnalyticsRole = "participant" | "judge" | "speaker" | "superadmin" | "volunteer";
+export type AnalyticsRole = UserRole;
 
 export type ApplicationStatus = "PENDING" | "ACCEPTANCE" | "REJECTION";
 
@@ -126,7 +127,7 @@ export const captureAnalyticsEvent = (
   posthog.capture(event, properties);
 };
 
-async function queryPostHog(query: string): Promise<HogQLResponse> {
+const queryPostHog = async (query: string): Promise<HogQLResponse> => {
   const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
   const projectId = process.env.POSTHOG_PROJECT_ID;
   const host = POSTHOG_HOST.replace(/\\$/, "");
@@ -154,14 +155,14 @@ async function queryPostHog(query: string): Promise<HogQLResponse> {
   }
 
   return response.json();
-}
+};
 
 const toCount = (value: HogQLScalar) => {
   const count = Number(value);
   return Number.isFinite(count) ? count : 0;
 };
 
-export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData> {
+export const getPostHogAnalytics = async (tenant: string): Promise<AnalyticsData> => {
   if (!/^[a-z0-9-]+$/.test(tenant)) {
     throw new AppError("TENANT_INVALID");
   }
@@ -373,4 +374,4 @@ export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData
       total: submissions,
     },
   };
-}
+};

@@ -82,7 +82,7 @@ export const applyAutomatedReviewResult = (
   return current === "disqualified" ? current : (automated ?? current);
 };
 
-function contributorKey(commit: GithubCommitAuthor): string {
+const contributorKey = (commit: GithubCommitAuthor): string => {
   if (commit.githubUserId) return `github:${commit.githubUserId}`;
   if (commit.githubUsername) {
     return `username:${commit.githubUsername.toLowerCase()}`;
@@ -90,7 +90,7 @@ function contributorKey(commit: GithubCommitAuthor): string {
   if (commit.authorEmail) return `email:${commit.authorEmail.toLowerCase()}`;
   if (commit.authorName) return `name:${commit.authorName.toLowerCase()}`;
   return `unknown:${commit.sha}`;
-}
+};
 
 export const extractUniqueAuthors = (commits: GithubCommitAuthor[]): ExtractedContributor[] => {
   const contributors = new Map<string, ExtractedContributor>();

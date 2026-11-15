@@ -1,10 +1,12 @@
 import { AdminShell } from "@/components/dashboards/admin-shell";
 import ScheduleContent from "@/components/schedule/schedule-content";
 
-export default async function SchedulePage() {
+const SchedulePage = async () => {
   return (
     <AdminShell title="Schedule">
       <ScheduleContent />
     </AdminShell>
   );
-}
+};
+
+export default SchedulePage;

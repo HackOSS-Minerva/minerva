@@ -17,7 +17,7 @@ import { captureAnalyticsEvent, type AnalyticsRole, type ApplicationStatus } fro
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { useSubmissionVetting } from "./use-submissions";
 
-type slugs =
+type DashboardSlug =
   | "participants"
   | "judges"
   | "speakers"
@@ -55,7 +55,7 @@ type DashboardRowMap = {
 // (`slug`) ties row data, column module, and callbacks so consumers narrow
 // with a single `switch`.
 export type DashboardBundle = {
-  [S in slugs]: {
+  [S in DashboardSlug]: {
     slug: S;
     dashboard: DashboardModules[S];
     data: DashboardRowMap[S][];
@@ -64,7 +64,7 @@ export type DashboardBundle = {
     setStatusMany?(args: { ids: string[]; status: ApplicationStatus }): Promise<unknown>;
     runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
   };
-}[slugs];
+}[DashboardSlug];
 
 const DASHBOARDS: DashboardModules = {
   participants,
@@ -89,7 +89,7 @@ const applicationRoleByDashboard = {
   speakers: "speaker",
   superadmins: "superadmin",
   volunteers: "volunteer",
-} as const satisfies Partial<Record<slugs, AnalyticsRole>>;
+} as const satisfies Partial<Record<DashboardSlug, AnalyticsRole>>;
 
 const QUERIES = {
   participants: api.participants.get,
@@ -104,7 +104,7 @@ const QUERIES = {
 
 export const useDashboard = (eventid?: string) => {
   const { dashboard, tenant } = useParams<{
-    dashboard: slugs;
+    dashboard: DashboardSlug;
     tenant: TenantSlug;
   }>();
   const { config } = getTenant(tenant);

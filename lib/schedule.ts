@@ -116,8 +116,6 @@ export const scheduleEventSchema = z.object({
   start: scheduleEventStartSchema,
 });
 
-export type ValidatedScheduleEvent = z.infer<typeof scheduleEventSchema>;
-
 /**
  * Validates a Google Calendar event against `scheduleEventSchema`.
  * Returns an array of any missing field names (Title, Description, Date, Time, Location).

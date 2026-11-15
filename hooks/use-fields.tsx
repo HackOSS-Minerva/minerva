@@ -7,7 +7,7 @@ import {
   getFormDef,
   type FormValues,
   type FormValuesMap,
-  type slugs,
+  type FormSlug,
 } from "@/lib/form-defs";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { useEmail } from "./use-email";
@@ -18,10 +18,10 @@ import { toastAppError } from "@/hooks/use-app-error";
 import type { EmailRecipient, EmailRole } from "@/types/email";
 import type { TenantSlug } from "./get-tenant";
 
-export type { slugs, FormValues, FormValuesMap } from "@/lib/form-defs";
+export type { FormSlug, FormValues, FormValuesMap } from "@/lib/form-defs";
 
 export const useFields = () => {
-  const { form, tenant } = useParams<{ form: slugs; tenant: TenantSlug }>();
+  const { form, tenant } = useParams<{ form: FormSlug; tenant: TenantSlug }>();
   const slug = form;
 
   const { metadata, form: formDef } = getFormDef(slug, tenant);

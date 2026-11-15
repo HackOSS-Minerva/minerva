@@ -1,8 +1,9 @@
 import type { TenantSlug } from "@/hooks/get-tenant";
+import type { UserRole } from "@/data/information";
 
 export type EmailType = "CONFIRMATION" | "ACCEPTANCE" | "REJECTION";
 
-export type EmailRole = "judge" | "participant" | "speaker" | "superadmin" | "volunteer";
+export type EmailRole = UserRole;
 
 export type EmailRecipient = {
   firstname: string;

@@ -59,7 +59,7 @@ const participantDemographicKeys: ParticipantDemographicKey[] = [
   "grade",
 ];
 
-function MetricCard({ label, value, description }: MetricCardProps) {
+const MetricCard = ({ label, value, description }: MetricCardProps) => {
   return (
     <Card>
       <CardHeader>
@@ -71,14 +71,14 @@ function MetricCard({ label, value, description }: MetricCardProps) {
       </CardContent>
     </Card>
   );
-}
+};
 
 type ParticipantDemographicCardProps = {
   label: string;
   breakdown: ParticipantDemographicBreakdown[];
 };
 
-function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographicCardProps) {
+const ParticipantDemographicCard = ({ label, breakdown }: ParticipantDemographicCardProps) => {
   return (
     <Card>
       <CardHeader>
@@ -114,7 +114,7 @@ function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographic
       </CardContent>
     </Card>
   );
-}
+};
 
 export const AnalyticsPage = ({ tenant, scope }: AnalyticsPageProps) => {
   const { data, isLoading, isError } = useAnalytics(tenant);

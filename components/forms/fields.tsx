@@ -11,7 +11,7 @@ import { useRouter, useParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useTriggerConfetti } from "@/components/confetti/confetti-overlay";
 import type { TenantSlug } from "@/hooks/get-tenant";
-import type { slugs } from "@/lib/form-defs";
+import type { FormSlug } from "@/lib/form-defs";
 
 /** Seeds the form's identity fields from the session's `name` + `email`,
  * splitting the name into first token / rest so multi-word last names survive. */
@@ -39,7 +39,7 @@ const Fields = () => {
 
   const router = useRouter();
   const { form: slug, tenant } = useParams<{
-    form: slugs;
+    form: FormSlug;
     tenant: TenantSlug;
   }>();
 

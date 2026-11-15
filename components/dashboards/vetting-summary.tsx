@@ -70,7 +70,7 @@ export const repositoryEvidenceExplanation = (findings: VettingFinding[]): strin
   return messages.length > 0 ? `Repository evidence unavailable: ${messages.join(" ")}` : null;
 };
 
-function formatDate(timestamp?: number) {
+const formatDate = (timestamp?: number) => {
   if (!timestamp) return "Unknown";
   return new Date(timestamp).toLocaleString("en-US", {
     month: "short",
@@ -78,16 +78,16 @@ function formatDate(timestamp?: number) {
     hour: "numeric",
     minute: "2-digit",
   });
-}
+};
 
-function contributorLabel(contributor: VettingContributor) {
+const contributorLabel = (contributor: VettingContributor) => {
   return (
     contributor.githubUsername ??
     contributor.authorEmail ??
     contributor.authorName ??
     "Unknown contributor"
   );
-}
+};
 
 export const VettingSummary = ({
   submissionId,

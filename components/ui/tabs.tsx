@@ -5,11 +5,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 import { Tabs as TabsPrimitive } from "radix-ui";
 
-function Tabs({
+const Tabs = ({
   className,
   orientation = "horizontal",
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Root>) {
+}: React.ComponentProps<typeof TabsPrimitive.Root>) => {
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
@@ -18,7 +18,7 @@ function Tabs({
       {...props}
     />
   );
-}
+};
 
 const tabsListVariants = cva(
   "group/tabs-list inline-flex w-fit items-center justify-center rounded-lg p-[3px] text-muted-foreground group-data-horizontal/tabs:h-8 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none",
@@ -35,11 +35,11 @@ const tabsListVariants = cva(
   },
 );
 
-function TabsList({
+const TabsList = ({
   className,
   variant = "default",
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.List> & VariantProps<typeof tabsListVariants>) {
+}: React.ComponentProps<typeof TabsPrimitive.List> & VariantProps<typeof tabsListVariants>) => {
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
@@ -48,9 +48,12 @@ function TabsList({
       {...props}
     />
   );
-}
+};
 
-function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+const TabsTrigger = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Trigger>) => {
   return (
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
@@ -64,9 +67,12 @@ function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPr
       {...props}
     />
   );
-}
+};
 
-function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) {
+const TabsContent = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Content>) => {
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
@@ -74,6 +80,6 @@ function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPr
       {...props}
     />
   );
-}
+};
 
 export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants };

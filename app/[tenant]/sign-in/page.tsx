@@ -6,14 +6,9 @@ import { use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
+import type { TenantPageProps } from "@/types/layouts";
 import type { TenantSlug } from "@/hooks/get-tenant";
 import { tenantConfigs } from "@/tenants/generated";
-
-interface SignInPageProps {
-  params: Promise<{
-    tenant: TenantSlug;
-  }>;
-}
 
 // Split out so it can be wrapped in `<Suspense>`, which Next.js requires for
 // components calling `useSearchParams()` — without it the page de-optimizes and
@@ -98,7 +93,7 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
   );
 };
 
-const SignInPage = ({ params }: SignInPageProps) => {
+const SignInPage = ({ params }: TenantPageProps) => {
   const { tenant } = use(params);
 
   return (

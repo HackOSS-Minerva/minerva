@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Wrapper from "./wrapper";
-import { slugs } from "@/hooks/use-fields";
+import type { FormSlug } from "@/hooks/use-fields";
 import type { TenantSlug } from "@/hooks/get-tenant";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
@@ -8,7 +8,7 @@ import { api } from "@/convex/_generated/api";
 interface FormProps {
   params: {
     tenant: TenantSlug;
-    form: slugs;
+    form: FormSlug;
   };
 }
 

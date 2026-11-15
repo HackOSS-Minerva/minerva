@@ -2,15 +2,9 @@ import { AnalyticsPage } from "@/components/analytics/analytics-page";
 import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal";
 import { AdminShell } from "@/components/dashboards/admin-shell";
 import { getFeatureFlag } from "@/lib/feature-flags";
-import type { TenantSlug } from "@/hooks/get-tenant";
+import type { TenantPageProps } from "@/types/layouts";
 
-export default async function AdminAnalyticsPage({
-  params,
-}: {
-  params: Promise<{
-    tenant: TenantSlug;
-  }>;
-}) {
+const AdminAnalyticsPage = async ({ params }: TenantPageProps) => {
   const { tenant } = await params;
 
   return (
@@ -22,4 +16,6 @@ export default async function AdminAnalyticsPage({
       )}
     </AdminShell>
   );
-}
+};
+
+export default AdminAnalyticsPage;

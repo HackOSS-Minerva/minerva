@@ -1,5 +1,3 @@
-import type { TenantSlug } from "@/hooks/get-tenant";
-
 /**
  * Display-only placeholders for the avatar/sidebar UI while `useSession()`
  * is still loading. These are NEVER used to build check-in QR codes — QR
@@ -120,7 +118,6 @@ export const parseCheckinQr = (raw: string): ParseCheckinQrResult => {
   };
 };
 
-/** Storage path helper — `crypto.randomUUID()` with a collision-safe fallback. */
 export const newUploadId = (): string => {
   try {
     return crypto.randomUUID();
@@ -128,12 +125,4 @@ export const newUploadId = (): string => {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
   }
 };
-
-export const uploadPath = (
-  tenant: TenantSlug,
-  kind: "resumes" | "pictures",
-  role: string,
-  ext = "",
-): string => {
-  return `${tenant}/${role}/${kind}/${newUploadId()}${ext}`;
-};
+/** Storage path helper — `crypto.randomUUID()` with a collision-safe fallback. */

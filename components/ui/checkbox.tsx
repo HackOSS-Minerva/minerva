@@ -5,7 +5,7 @@ import { cn } from "cn";
 import { Checkbox as CheckboxPrimitive } from "radix-ui";
 import { RiCheckLine } from "@remixicon/react";
 
-function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
+const Checkbox = ({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) => {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
@@ -23,6 +23,6 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );
-}
+};
 
 export { Checkbox };

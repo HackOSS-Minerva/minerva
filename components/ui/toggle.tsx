@@ -27,12 +27,12 @@ const toggleVariants = cva(
   },
 );
 
-function Toggle({
+const Toggle = ({
   className,
   variant = "default",
   size = "default",
   ...props
-}: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) {
+}: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) => {
   return (
     <TogglePrimitive.Root
       data-slot="toggle"
@@ -40,6 +40,6 @@ function Toggle({
       {...props}
     />
   );
-}
+};
 
 export { Toggle, toggleVariants };

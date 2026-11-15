@@ -3,7 +3,7 @@ import { AdminShell } from "@/components/dashboards/admin-shell";
 import AssignmentsContent from "@/components/admin/assignments-page";
 import { getFeatureFlag } from "@/lib/feature-flags";
 
-export default async function AssignmentsPage() {
+const AssignmentsPage = async () => {
   return (
     <AdminShell title="Assignments">
       {!getFeatureFlag("assignments") ? (
@@ -13,4 +13,6 @@ export default async function AssignmentsPage() {
       )}
     </AdminShell>
   );
-}
+};
+
+export default AssignmentsPage;

@@ -18,14 +18,14 @@ const MAX_VISIBLE_TAGS = 3;
 import { getInitials as initialsOf } from "@/lib/localization";
 import Link from "next/link";
 
-function matchesSearch(tool: DevTool, query: string) {
+const matchesSearch = (tool: DevTool, query: string) => {
   const haystack = [tool.name, tool.description, tool.category, ...tool.tags]
     .join(" ")
     .toLowerCase();
   return haystack.includes(query);
-}
+};
 
-function ToolLogo({ tool }: { tool: DevTool }) {
+const ToolLogo = ({ tool }: { tool: DevTool }) => {
   const [errored, setErrored] = useState(false);
   const logo = tool.logo ?? `/logos/${tool.id}.svg`;
 
@@ -48,7 +48,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
       )}
     </div>
   );
-}
+};
 
 export const DevToolsContent = () => {
   const [search, setSearch] = useState("");
@@ -148,7 +148,7 @@ export const DevToolsContent = () => {
   );
 };
 
-function DevToolCard({ tool }: { tool: DevTool }) {
+const DevToolCard = ({ tool }: { tool: DevTool }) => {
   return (
     <Card className="gap-4 py-5 transition-shadow hover:shadow-md">
       <CardHeader className="px-5">
@@ -178,4 +178,4 @@ function DevToolCard({ tool }: { tool: DevTool }) {
       </CardContent>
     </Card>
   );
-}
+};

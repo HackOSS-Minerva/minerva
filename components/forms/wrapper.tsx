@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import Header from "@/components/forms/header";
 import Fields from "./fields";
-import { isFormSlug, type slugs } from "@/lib/form-defs";
+import { isFormSlug, type FormSlug } from "@/lib/form-defs";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -23,7 +23,7 @@ const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
   } = getTenant(tenant);
 
   if (!isFormSlug(form)) notFound();
-  const slug: slugs = form;
+  const slug: FormSlug = form;
 
   // Map database status to EmailType for the Status component.
   // Database uses "PENDING", Status component expects "CONFIRMATION".
