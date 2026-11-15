@@ -11,7 +11,6 @@ interface HackpacksRouteProps {
 const HackpacksRoute = async ({ params }: HackpacksRouteProps) => {
   const { tenant } = await params;
 
-  // Same guard as the navbar lock: signed-in accepted participants only.
   const locked = await guardParticipantPage(tenant, `/${tenant}/live/hackpacks`);
   if (locked) {
     return locked;

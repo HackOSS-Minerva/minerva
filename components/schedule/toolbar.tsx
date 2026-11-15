@@ -41,7 +41,6 @@ export const FilterToolbar = <TData extends RowData>({
 }) => {
   const anchor = useComboboxAnchor();
 
-  // Only include filter options whose column actually exists in the table
   const filterOptions = React.useMemo(() => {
     const columnIds = new Set(table.getAllColumns().map((col) => col.id));
     return allFilterOptions.filter((opt) => columnIds.has(opt.columnId));
@@ -53,7 +52,6 @@ export const FilterToolbar = <TData extends RowData>({
   const handleValueChange = (values: string[]) => {
     setSelectedValues(values);
 
-    // Build column filters from selected values
     const filterMap = new Map<string, string[]>();
     for (const composite of values) {
       const colId = getColumnId(composite);
@@ -71,7 +69,6 @@ export const FilterToolbar = <TData extends RowData>({
     table.setColumnFilters(columnFilters);
   };
 
-  // Filter options based on input value
   const filteredOptions = React.useMemo(() => {
     if (!inputValue) return filterOptions;
     const q = inputValue.toLowerCase();
@@ -80,7 +77,6 @@ export const FilterToolbar = <TData extends RowData>({
     );
   }, [inputValue, filterOptions]);
 
-  // Group filtered options for rendering
   const groupedFiltered = React.useMemo(() => {
     const map = new Map<string, FilterOption[]>();
     for (const opt of filteredOptions) {

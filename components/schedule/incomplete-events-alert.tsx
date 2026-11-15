@@ -53,7 +53,6 @@ export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAler
 
   return (
     <div className="rounded-xl border border-amber-500/40 bg-amber-500/5 p-4 shadow-xs dark:border-amber-500/30 dark:bg-amber-500/10">
-      {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">
@@ -99,7 +98,6 @@ export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAler
         </div>
       </div>
 
-      {/* Expanded List of Incomplete Events */}
       {isExpanded && (
         <div className="mt-4 space-y-2.5 border-t border-amber-500/20 pt-4">
           <div className="max-h-80 space-y-2 overflow-y-auto pr-1">
@@ -133,7 +131,6 @@ export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAler
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                      {/* Date & Time display */}
                       <span className="flex items-center gap-1">
                         <Calendar className="size-3 text-muted-foreground/70" />
                         {dayLabel !== "N/A" ? (
@@ -162,7 +159,6 @@ export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAler
                         )}
                       </span>
 
-                      {/* Location display */}
                       <span className="flex items-center gap-1">
                         <MapPin className="size-3 text-muted-foreground/70" />
                         {event.location?.trim() ? (
@@ -178,7 +174,6 @@ export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAler
                         )}
                       </span>
 
-                      {/* Description status */}
                       <span className="flex items-center gap-1">
                         <FileText className="size-3 text-muted-foreground/70" />
                         {event.description?.trim() ? (
@@ -196,7 +191,6 @@ export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAler
                     </div>
                   </div>
 
-                  {/* Open in Google Calendar */}
                   {event.htmlLink && (
                     <div className="shrink-0 self-end sm:self-center">
                       <Button variant="outline" size="sm" className="h-7 gap-1 text-xs" asChild>

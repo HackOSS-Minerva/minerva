@@ -82,7 +82,6 @@ export const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData
   return (
     <div className="flex w-full flex-col justify-start gap-6">
       <ScheduleToolbar table={table} />
-      {/* Table */}
       <div className="overflow-hidden rounded-lg border">
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-muted">
@@ -122,7 +121,6 @@ export const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData
         </Table>
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-between py-4">
         <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}

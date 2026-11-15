@@ -7,8 +7,6 @@ import type { Id } from "@/convex/_generated/dataModel";
 import type { TenantSlug } from "@/hooks/get-tenant";
 import { toSpacedTitleCase } from "@/lib/localization";
 
-// ── Public types ──────────────────────────────────────────────────────────────
-
 export interface JudgeDisplay {
   _id: Id<"judges">;
   firstname: string;
@@ -39,8 +37,6 @@ export interface EnrichedAssignment {
 }
 
 export type ViewMode = "teams-by-judge" | "judges-by-team";
-
-// ── Pure utility functions (no hooks) ─────────────────────────────────────────
 
 export const shuffleArray = <T>(arr: T[]): T[] => {
   const shuffled = [...arr];
@@ -97,10 +93,7 @@ export const formatStatus = (status?: string): string => {
   return toSpacedTitleCase(status);
 };
 
-// ── React hook ────────────────────────────────────────────────────────────────
-
 export const useAssignments = (tenant: TenantSlug) => {
-  // ── Queries ────────────────────────────────────────────────────────────
   const rawSubmissions = useQuery(api.submissions.get, { tenant });
   const rawJudges = useQuery(api.judges.get, { tenant });
   const rawAssignments = useQuery(api.assignments.getByTenant, { tenant });
@@ -108,7 +101,6 @@ export const useAssignments = (tenant: TenantSlug) => {
 
   const [isSaving, setIsSaving] = useState(false);
 
-  // ── Memoised transforms ────────────────────────────────────────────────
   const submissions: SubmissionDisplay[] = useMemo(
     () =>
       (rawSubmissions ?? []).map((s) => ({
@@ -141,12 +133,10 @@ export const useAssignments = (tenant: TenantSlug) => {
     [rawAssignments],
   );
 
-  // Lookup maps
   const judgesById = useMemo(() => new Map(judges.map((j) => [j._id, j])), [judges]);
 
   const submissionsById = useMemo(() => new Map(submissions.map((s) => [s._id, s])), [submissions]);
 
-  // Groupings
   const teamsByJudge = useMemo(() => {
     const map = new Map<Id<"judges">, Id<"submissions">[]>();
     for (const a of assignments) {
@@ -167,7 +157,6 @@ export const useAssignments = (tenant: TenantSlug) => {
     return map;
   }, [assignments]);
 
-  // Enriched assignments (for judge page)
   const enrichedAssignments: EnrichedAssignment[] = useMemo(() => {
     if (!rawAssignments || !rawSubmissions || !rawJudges) return [];
 
@@ -192,7 +181,6 @@ export const useAssignments = (tenant: TenantSlug) => {
 
   const hasAssignments = assignments.length > 0;
 
-  // ── Mutations ──────────────────────────────────────────────────────────
   const saveAssignments = useCallback(
     async (newAssignments: AssignmentData[]) => {
       setIsSaving(true);
@@ -212,7 +200,6 @@ export const useAssignments = (tenant: TenantSlug) => {
     await saveAssignments([]);
   }, [saveAssignments]);
 
-  // ── Return ─────────────────────────────────────────────────────────────
   return {
     submissions,
     judges,

@@ -51,7 +51,6 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-sm space-y-2">
-        {/* Large, centered logo at the top */}
         <div className="flex justify-center">
           {logoUrl && (
             <Image
@@ -84,7 +83,6 @@ const SignInContent = ({ tenant }: { tenant: TenantSlug }) => {
           )}
         </div>
 
-        {/* Back to main tenant page button */}
         <Button variant="outline" className="w-full" onClick={handleBackToTenant}>
           Back to {tenantName}
         </Button>

@@ -98,7 +98,6 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
         </CardHeader>
         <CardContent>
           <form id="feedback-form" onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {/* Question 1 */}
             <Field>
               <FieldLabel>How did you find {eventName}?</FieldLabel>
               <Select value={find} onValueChange={setFind} disabled={submitting}>
@@ -115,7 +114,6 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
               </Select>
             </Field>
 
-            {/* Question 2 */}
             <Field>
               <FieldLabel>
                 Was there anything that you would have liked to see at
@@ -132,7 +130,6 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
               />
             </Field>
 
-            {/* Question 3 */}
             <Field>
               <FieldLabel>
                 Was there anything that you did not find beneficial about
@@ -149,7 +146,6 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
               />
             </Field>
 
-            {/* Question 4 - Rating */}
             <Field>
               <FieldLabel>Please rate {eventName} on a scale of 1 - 10</FieldLabel>
               <Select value={rating} onValueChange={setRating} disabled={submitting}>
@@ -166,7 +162,6 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
               </Select>
             </Field>
 
-            {/* Question 5 */}
             <Field>
               <FieldLabel>
                 Is there anything else you&apos;d like to let us know about

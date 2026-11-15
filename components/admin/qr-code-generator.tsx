@@ -41,7 +41,6 @@ const QRCodeGenerator = () => {
     <div className="w-full space-y-4 p-4">
       <h1 className="text-left text-2xl font-bold">QR Code Generator</h1>
 
-      {/* Input and download button side by side */}
       <div className="flex gap-2">
         <Input
           value={value}
@@ -53,7 +52,6 @@ const QRCodeGenerator = () => {
         </Button>
       </div>
 
-      {/* Preview area - no border, left aligned */}
       <div>
         {isEmpty ? (
           <div className="flex h-48 items-center justify-center text-left text-muted-foreground">

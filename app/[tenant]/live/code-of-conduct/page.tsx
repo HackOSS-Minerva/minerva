@@ -11,7 +11,6 @@ interface CodeOfConductRouteProps {
 const CodeOfConductRoute = async ({ params }: CodeOfConductRouteProps) => {
   const { tenant } = await params;
 
-  // Same guard as the navbar lock: signed-in accepted participants only.
   const locked = await guardParticipantPage(tenant, `/${tenant}/live/code-of-conduct`);
   if (locked) {
     return locked;

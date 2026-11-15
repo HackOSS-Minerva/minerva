@@ -26,8 +26,6 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: LayoutProps) => {
-  // Read the Better Auth session token server-side so authenticated Convex
-  // queries can be preloaded during SSR.
   const initialToken = await getToken();
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable)}>

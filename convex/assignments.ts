@@ -26,7 +26,6 @@ export const setAssignments = mutation({
     ),
   },
   handler: async (ctx, { tenant, assignments }) => {
-    // Delete all existing assignments for this tenant
     const existing = await ctx.db
       .query("assignments")
       .withIndex("by_tenant", (q) => q.eq("tenant", tenant))
@@ -36,7 +35,6 @@ export const setAssignments = mutation({
       await ctx.db.delete(assignment._id);
     }
 
-    // Insert new assignments
     const now = Date.now();
     const ids = [];
     for (const assignment of assignments) {

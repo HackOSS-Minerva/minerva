@@ -6,11 +6,6 @@
 export const PLACEHOLDER_DISPLAY_NAME = "Guest User";
 export const PLACEHOLDER_DISPLAY_EMAIL = "guest@example.com";
 
-/**
- * The id baked into the old hardcoded guest QR code. Nothing generates it
- * anymore; kept only so {@link parseCheckinQr} can reject stale codes that
- * still carry it instead of writing a junk shared `visitor` check-in.
- */
 export const LEGACY_GUEST_QR_ID = "visitor";
 
 export interface CheckinQrPayload {
@@ -74,12 +69,6 @@ export const buildCheckinQrPayload = (input: CheckinQrIdentity): string | null =
   } satisfies CheckinQrPayload);
 };
 
-/**
- * Parse + validate a scanned check-in QR. Never throws; reports why a code
- * was rejected so the scanner can show an accurate message — including
- * explicitly flagging legacy placeholder codes so they are never written to
- * the database.
- */
 export const parseCheckinQr = (raw: string): ParseCheckinQrResult => {
   let parsed: unknown;
   try {

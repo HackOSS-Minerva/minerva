@@ -53,7 +53,6 @@ const AssignmentsContent = () => {
 
   const lowerQuery = searchQuery.toLowerCase();
 
-  // Filter judges based on search
   const filteredJudges = judges.filter((judge) => {
     const name = getJudgeName(judge).toLowerCase();
     const teamNames =
@@ -64,7 +63,6 @@ const AssignmentsContent = () => {
     return name.includes(lowerQuery) || teamNames.toLowerCase().includes(lowerQuery);
   });
 
-  // Filter submissions based on search
   const filteredSubmissions = submissions.filter((submission) => {
     const teamName = submission.teamName.toLowerCase();
     const projectName = submission.projectName.toLowerCase();
@@ -104,7 +102,6 @@ const AssignmentsContent = () => {
 
   return (
     <div className="w-full space-y-4">
-      {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex shrink-0 items-center gap-2">
           <Button
@@ -160,7 +157,6 @@ const AssignmentsContent = () => {
         </ToggleGroup>
       </div>
 
-      {/* Summary stats — always visible */}
       <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
         <span>
           <strong>{judges.length}</strong> Judges
@@ -173,7 +169,6 @@ const AssignmentsContent = () => {
         </span>
       </div>
 
-      {/* Empty states */}
       {judges.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <RiUser2Line className="mb-4 h-12 w-12 text-muted-foreground/40" />
@@ -201,7 +196,6 @@ const AssignmentsContent = () => {
         </div>
       )}
 
-      {/* Content — visible as soon as judges + submissions exist */}
       {judges.length > 0 && submissions.length > 0 && (
         <>
           {viewMode === "teams-by-judge" ? (
@@ -308,7 +302,6 @@ const AssignmentsContent = () => {
         </>
       )}
 
-      {/* Clear confirmation */}
       <AlertDialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

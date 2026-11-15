@@ -4,7 +4,6 @@ import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { getFeatureFlag, type FeatureFlagKey } from "@/lib/feature-flags";
 import { PortalNavItems } from "@/components/portal/portal-nav-items";
 
-// ── Types ──────────────────────────────────────────────────────────────
 
 export interface NavItem {
   href: string;
@@ -34,9 +33,7 @@ export interface PortalNavProps {
   registerHref: string;
 }
 
-// ── Helpers (shared with the `PortalNavItems` client island) ─────────────
 
-// ── Component ──────────────────────────────────────────────────────────
 
 // Server Component shell: resolves tenant config + feature flags on the
 // server and renders the logo. Active-link highlighting and the Radix

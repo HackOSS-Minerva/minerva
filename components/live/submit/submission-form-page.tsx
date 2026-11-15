@@ -76,7 +76,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
             }}
             className="flex flex-col gap-6"
           >
-            {/* Team Name */}
             <form.Field name="teamName">
               {(field) => {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -116,7 +115,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
               }}
             </form.Field>
 
-            {/* Project Name */}
             <form.Field name="projectName">
               {(field) => {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -156,7 +154,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
               }}
             </form.Field>
 
-            {/* Description */}
             <form.Field name="description">
               {(field) => {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -203,7 +200,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
               }}
             </form.Field>
 
-            {/* Devpost */}
             <form.Field name="devpost">
               {(field) => {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -245,7 +241,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
 
             <Separator />
 
-            {/* GitHub Links */}
             <form.Field name="github">
               {(field) => {
                 const links = field.state.value;
@@ -335,7 +330,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
 
             <Separator />
 
-            {/* Figma Links */}
             <form.Field name="figma">
               {(field) => {
                 const links = field.state.value;
@@ -423,7 +417,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
 
             <Separator />
 
-            {/* Canva Links */}
             <form.Field name="canva">
               {(field) => {
                 const links = field.state.value;
@@ -511,7 +504,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
 
             <Separator />
 
-            {/* Presentation */}
             <form.Field name="presentation">
               {(field) => {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -562,7 +554,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
 
             <Separator />
 
-            {/* Invites */}
             <form.Field name="invites">
               {(field) => {
                 const emails = field.state.value;
@@ -628,7 +619,6 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
               }}
             </form.Field>
 
-            {/* Submit Buttons */}
             <div className="flex justify-end gap-3">
               <form.Subscribe selector={(state) => state.isSubmitting}>
                 {(isSubmitting) => (

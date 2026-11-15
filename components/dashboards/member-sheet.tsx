@@ -75,7 +75,6 @@ export const MemberSheet = ({ item, sections, header, footer }: MemberSheetProps
       </DrawerTrigger>
       <DrawerContent>
         <div className="flex h-full flex-col gap-5 px-4 py-5">
-          {/* Header */}
           <div className="flex items-start justify-between">
             <DrawerHeader className="w-full items-center gap-1 p-0 text-center">
               <DrawerTitle className="text-center">
@@ -89,7 +88,6 @@ export const MemberSheet = ({ item, sections, header, footer }: MemberSheetProps
 
           {header}
 
-          {/* Sections */}
           <div className="flex flex-col gap-4 overflow-y-auto text-sm">
             {sections.map((section, idx) => (
               <div key={idx}>

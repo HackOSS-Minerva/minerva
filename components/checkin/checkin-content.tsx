@@ -43,7 +43,6 @@ const CheckinContent = () => {
   const events = useMemo(() => schedule?.items?.filter((event) => event.summary) ?? [], [schedule]);
   const isPaused = !selectedEventId;
 
-  // Grouped options for the event selector
   const groupedEventOptions = useMemo(() => groupEventsByDay(events), [events]);
 
   const onDecodeResult = useCallback(
@@ -54,8 +53,6 @@ const CheckinContent = () => {
 
         if (!decoded.ok) {
           if (decoded.reason === "legacy-placeholder") {
-            // Old builds shipped a hardcoded guest QR; reject it explicitly
-            // instead of writing a junk shared `visitor` check-in.
             toast.error("Placeholder QR code", {
               description: "Ask the attendee to reopen their live check-in page for a valid code.",
             });
@@ -103,7 +100,6 @@ const CheckinContent = () => {
             icon: <RiUserLine className="h-4 w-4" />,
           });
 
-          // Auto-reset after the scan window (only on success)
           setTimeout(() => {
             setLastScan(null);
           }, SCAN_RESULT_RESET_MS);
@@ -152,7 +148,6 @@ const CheckinContent = () => {
     },
   });
 
-  // --- Loading state ---
   if (isLoading) {
     return (
       <div className="flex h-full flex-col gap-6">
@@ -163,7 +158,6 @@ const CheckinContent = () => {
     );
   }
 
-  // --- Error state ---
   if (isError) {
     return (
       <div className="flex h-full flex-col gap-6">
@@ -180,7 +174,6 @@ const CheckinContent = () => {
 
   return (
     <div className="flex h-full flex-col gap-6">
-      {/* Event selector */}
       <Select value={selectedEventId || undefined} onValueChange={setSelectedEventId}>
         <SelectTrigger className="w-full">
           <SelectValue
@@ -201,7 +194,6 @@ const CheckinContent = () => {
         </SelectContent>
       </Select>
 
-      {/* QR Scanner */}
       <div className="rounded-lg border bg-muted p-3">
         {isPaused ? (
           <div className="flex aspect-4-3 flex-col items-center justify-center gap-3 text-muted-foreground">
@@ -213,7 +205,6 @@ const CheckinContent = () => {
         )}
       </div>
 
-      {/* Scan result */}
       {lastScan && (
         <div className="flex items-center gap-3 rounded-lg border border-green-500/50 bg-green-50 p-4 dark:bg-green-950/20">
           <RiUserLine className="h-6 w-6 shrink-0 text-green-600" />

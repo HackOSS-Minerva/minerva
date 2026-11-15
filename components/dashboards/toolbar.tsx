@@ -21,7 +21,6 @@ import { formatShirtSize, toTitleCase } from "@/lib/localization";
 const buildFilterOptions = (slug: string): FilterOption[] => {
   const options: FilterOption[] = [];
 
-  // Status is common to all
   statuses.forEach((s) =>
     options.push({
       value: `status:${s}`,
@@ -31,7 +30,6 @@ const buildFilterOptions = (slug: string): FilterOption[] => {
     }),
   );
 
-  // Shirt size is common to all
   shirts.forEach((s) =>
     options.push({
       value: `shirt:${s}`,
@@ -41,7 +39,6 @@ const buildFilterOptions = (slug: string): FilterOption[] => {
     }),
   );
 
-  // Gender is common to all
   genders.forEach((g) =>
     options.push({
       value: `gender:${g}`,
@@ -51,7 +48,6 @@ const buildFilterOptions = (slug: string): FilterOption[] => {
     }),
   );
 
-  // Diet restriction is common to all
   dietrestrictions.forEach((d) =>
     options.push({
       value: `dietrestriction:${d}`,
@@ -61,7 +57,7 @@ const buildFilterOptions = (slug: string): FilterOption[] => {
     }),
   );
 
-  // Role is available on the attendance dashboard
+  // Only attendance dashboards expose the role field.
   roles.forEach((r) =>
     options.push({
       value: `role:${r}`,

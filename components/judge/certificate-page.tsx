@@ -38,25 +38,19 @@ export const CertificatePage = ({ tenant }: CertificatePageProps) => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* preview certificate styling */}
             <div className="flex items-center justify-center rounded-lg p-2">
               <div className="relative w-5/8 border-2 border-chart-4 bg-sidebar p-6 text-center font-serif shadow">
                 <div className="pointer-events-none absolute inset-2 border border-chart-4" />
-                {/* Title */}
                 <div className="mb-2 text-sm font-bold tracking-widest text-slate-900 uppercase">
                   Certificate of Service
                 </div>
-                {/* Subtitle */}
                 <div className="mb-1 text-xs text-slate-500">Proudly presented to</div>
-                {/* Recipient */}
                 <div className="mb-0.5 text-2xl text-slate-900 italic">{judgeName}</div>
                 <hr className="mx-auto mb-3 w-2/3 border-slate-300" />
-                {/* Body */}
                 <div className="mx-auto mb-4 max-w-sm text-xs leading-relaxed text-slate-600">
                   In recognition of your valuable service and dedication as a Judge at{" "}
                   <strong>{tenantName}</strong>.
                 </div>
-                {/* Details row: ID — Seal — Date */}
                 <div className="mx-auto mb-4 flex max-w-xs items-center justify-between">
                   <div className="flex flex-1 flex-col items-center gap-0.5">
                     <span className="text-xs text-slate-400">Certificate ID</span>
@@ -68,7 +62,6 @@ export const CertificatePage = ({ tenant }: CertificatePageProps) => {
                     <span className="text-xs font-bold text-slate-900">{eventDate}</span>
                   </div>
                 </div>
-                {/* Signatures */}
                 <div className="flex justify-around">
                   <div className="flex flex-col items-center gap-1">
                     <div className="w-24 border-t border-slate-400 pt-1" />

@@ -11,7 +11,6 @@ interface CheckinRouteProps {
 const CheckinRoute = async ({ params }: CheckinRouteProps) => {
   const { tenant } = await params;
 
-  // Same guard as the navbar lock: signed-in accepted participants only.
   const locked = await guardParticipantPage(tenant, `/${tenant}/live/checkin`);
   if (locked) {
     return locked;
