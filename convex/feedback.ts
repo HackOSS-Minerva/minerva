@@ -4,8 +4,8 @@ import { v } from "convex/values";
 
 export const get = query({
   args: { tenant: v.string() },
-  handler: async (ctx, { tenant }) => {
-    return await ctx.db
+  handler: (ctx, { tenant }) => {
+    return ctx.db
       .query("feedback")
       .filter((q) => q.eq(q.field("tenant"), tenant))
       .collect();

@@ -35,9 +35,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
 // throwing ConvexError("Unauthenticated").
 export const getCurrentUser = query({
   args: {},
-  handler: async (ctx) => {
-    return authComponent.safeGetAuthUser(ctx);
-  },
+  handler: (ctx) => authComponent.safeGetAuthUser(ctx),
 });
 
 // Auth-only session check; no role/tenant authorization. Use `getAdminAccess`

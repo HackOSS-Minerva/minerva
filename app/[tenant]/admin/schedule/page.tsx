@@ -1,7 +1,7 @@
 import { AdminShell } from "@/components/dashboards/admin-shell";
 import ScheduleContent from "@/components/schedule/schedule-content";
 
-const SchedulePage = async () => {
+const SchedulePage = () => {
   return (
     <AdminShell title="Schedule">
       <ScheduleContent />

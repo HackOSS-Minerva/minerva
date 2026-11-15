@@ -3,8 +3,8 @@ import { v } from "convex/values";
 
 export const getByTenant = query({
   args: { tenant: v.string() },
-  handler: async (ctx, { tenant }) => {
-    return await ctx.db
+  handler: (ctx, { tenant }) => {
+    return ctx.db
       .query("assignments")
       .withIndex("by_tenant", (q) => q.eq("tenant", tenant))
       .collect();

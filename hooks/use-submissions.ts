@@ -173,8 +173,8 @@ export const useSubmissionVetting = () => {
   }, [live]);
 
   const runVetting = useCallback(
-    async (id: string): Promise<SubmissionVettingResult> => {
-      return await vetSubmission({
+    (id: string): Promise<SubmissionVettingResult> => {
+      return vetSubmission({
         submissionId: id as SubmissionId,
         event: getEventConfig(),
       });
@@ -183,8 +183,8 @@ export const useSubmissionVetting = () => {
   );
 
   const runVettingMany = useCallback(
-    async (ids: string[]): Promise<VettingBatchResult[]> => {
-      return await vetSubmissions({
+    (ids: string[]): Promise<VettingBatchResult[]> => {
+      return vetSubmissions({
         submissionIds: ids as SubmissionId[],
         event: getEventConfig(),
       });

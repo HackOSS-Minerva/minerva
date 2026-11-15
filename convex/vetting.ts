@@ -35,7 +35,7 @@ const eventConfigValidator = v.object({
 
 export const getSubmissionForVetting = internalQuery({
   args: { id: v.id("submissions") },
-  handler: async (ctx, { id }) => await ctx.db.get(id),
+  handler: (ctx, { id }) => ctx.db.get(id),
 });
 
 export const updateSubmissionVettingStatus = internalMutation({
