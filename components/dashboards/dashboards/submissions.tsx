@@ -21,7 +21,6 @@ import {
   RiExternalLinkLine as LinkIcon,
   RiGithubLine,
   RiFigmaLine,
-  RiArrowRightSFill,
   RiPresentationLine,
 } from "@remixicon/react";
 import DetailRow from "../row";
@@ -105,7 +104,6 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
           className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
         >
           <span className="min-w-0 truncate font-medium text-foreground">{item.teamName}</span>
-          <RiArrowRightSFill className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-xl">
