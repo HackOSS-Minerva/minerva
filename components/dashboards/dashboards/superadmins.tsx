@@ -132,13 +132,6 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     cell: ({ row }) => <Label className="px-1.5 text-muted-foreground">{row.original.team}</Label>,
   },
   {
-    accessorKey: "shirt",
-    header: () => <div>Shirt</div>,
-    cell: ({ row }) => (
-      <Label className="px-1.5 text-muted-foreground">{formatShirtSize(row.original.shirt)}</Label>
-    ),
-  },
-  {
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (

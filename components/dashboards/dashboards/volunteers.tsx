@@ -192,13 +192,6 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     ),
   },
   {
-    accessorKey: "shirt",
-    header: () => <div>Shirt</div>,
-    cell: ({ row }) => (
-      <Label className="px-1.5 text-muted-foreground">{formatShirtSize(row.original.shirt)}</Label>
-    ),
-  },
-  {
     accessorKey: "availabilities",
     header: () => <div>Availabilities</div>,
     cell: ({ row }) => <AllAvailabilities selected={row.original.availabilities} />,
