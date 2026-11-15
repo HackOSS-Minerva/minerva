@@ -9,9 +9,9 @@ interface CertificatePageProps {
 }
 
 // Server Component: the cert preview is static markup. The random ID is
-// generated server-side per request; only the pdf download stays client.export const CertificatePage = ({ tenant }: CertificatePageProps) => {
-
-} = getTenant(tenant);
+// generated server-side per request; only the pdf download stays client.
+export const CertificatePage = ({ tenant }: CertificatePageProps)=> {
+  const { config: tenantConfig } = getTenant(tenant);
   const live = tenantConfig?.event ?? null;
 
   const judgeName = "Alex J. Morgan";

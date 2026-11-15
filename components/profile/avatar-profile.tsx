@@ -15,9 +15,9 @@ import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { authClient } from "@/lib/auth-client";
 import { PLACEHOLDER_DISPLAY_EMAIL, PLACEHOLDER_DISPLAY_NAME } from "@/lib/checkin";
 import { getInitials } from "@/lib/localization";
-export const AvatarProfile = () => {
 
-const { tenant } = useParams<{ tenant: TenantSlug }>();
+export const AvatarProfile = () => {
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { config } = getTenant(tenant);
   const { domain } = config;
   const { data: session } = authClient.useSession();
@@ -51,4 +51,4 @@ const { tenant } = useParams<{ tenant: TenantSlug }>();
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

@@ -21,20 +21,21 @@ export const MAX_SUBMISSION_URL_LENGTH = 100;
 export const MAX_SUBMISSION_NAME_LENGTH = 50;
 export const MAX_SUBMISSION_DESCRIPTION_LENGTH = 300;
 export const TEAM_SIZE_ERROR = "Teams can include at most 4 people including the submitter.";
-export const uniqueNormalizedEmails = (emails: string[]): string[] => {
 
+export const uniqueNormalizedEmails = (emails: string[]): string[]=> {
   return Array.from(
     new Set(emails.map((email) => email.trim().toLowerCase()).filter((email) => email.length > 0)),
   );
+}
 
-}export const getSubmissionTeam(
+export const getSubmissionTeam = (
   submitterEmail: string | undefined,
   invites: string[],
 ): {
   memberEmails: string[];
   normalizedInvites: string[];
   memberCount: number;
-} {
+}=> {
   const normalizedSubmitter = submitterEmail?.trim().toLowerCase();
   const normalizedInvites = uniqueNormalizedEmails(invites).filter(
     (email) => email !== normalizedSubmitter,
@@ -53,10 +54,9 @@ export const uniqueNormalizedEmails = (emails: string[]): string[] => {
 
 // Validates the vetting event window from the organizer-authorized UI. Throws
 // `ConvexError({ code: "VALIDATION_FAILED" })` so actions and hooks share the
-// unified coded-error path.export const validateVettingEventConfig = (event: VettingEventConfig): void => {
-
-  const invalid = (message: string): ConvexError<{ code: ConvexErrorCode 
-}> =>
+// unified coded-error path.
+export const validateVettingEventConfig = (event: VettingEventConfig): void=> {
+  const invalid = (message: string): ConvexError<{ code: ConvexErrorCode }> =>
     new ConvexError({
       code: "VALIDATION_FAILED",
       message,
@@ -70,20 +70,20 @@ export const uniqueNormalizedEmails = (emails: string[]): string[] => {
     throw invalid("Submission deadline is invalid");
   }
 }
-export const resultFromFindings = (findings: VettingFinding[]): AutomatedVettingResult => {
 
+export const resultFromFindings = (findings: VettingFinding[]): AutomatedVettingResult=> {
   return findings.length > 0 ? "needs_review" : "verified";
+}
 
-}export const applyAutomatedReviewResult(
+export const applyAutomatedReviewResult = (
   current: SubmissionReviewStatus,
   automated?: AutomatedVettingResult,
-): SubmissionReviewStatus {
+): SubmissionReviewStatus=> {
   return current === "disqualified" ? current : (automated ?? current);
 }
-const contributorKey = (commit: GithubCommitAuthor): string => {
 
-  if (commit.githubUserId) return `github:${commit.githubUserId
-}`;
+function contributorKey(commit: GithubCommitAuthor): string {
+  if (commit.githubUserId) return `github:${commit.githubUserId}`;
   if (commit.githubUsername) {
     return `username:${commit.githubUsername.toLowerCase()}`;
   }
@@ -91,8 +91,8 @@ const contributorKey = (commit: GithubCommitAuthor): string => {
   if (commit.authorName) return `name:${commit.authorName.toLowerCase()}`;
   return `unknown:${commit.sha}`;
 }
-export const extractUniqueAuthors = (commits: GithubCommitAuthor[]): ExtractedContributor[] => {
 
+export const extractUniqueAuthors = (commits: GithubCommitAuthor[]): ExtractedContributor[]=> {
   const contributors = new Map<string, ExtractedContributor>();
 
   for (const commit of commits) {
@@ -108,8 +108,7 @@ export const extractUniqueAuthors = (commits: GithubCommitAuthor[]): ExtractedCo
         commitCount: 1,
         firstCommitAt: commit.authorDate,
         lastCommitAt: commit.authorDate,
-      
-});
+      });
       continue;
     }
 

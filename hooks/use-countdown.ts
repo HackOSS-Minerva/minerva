@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-/** useCountdown - useState hook that counts down to a target date.
- *
- * Usage example:
- * ```tsx
- * const { days, hours, minutes, seconds } = useCountdown(targetDate);
- * ```
- */
+
 export const useCountdown = (targetDate: string | Date | number | null) => {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;

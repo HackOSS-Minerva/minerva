@@ -6,9 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { useState } from "react";
-export const SiteHeader = ({ children }: { children?: React.ReactNode }) => {
 
-} catch {
+export const SiteHeader = ({ children }: { children?: React.ReactNode })=> {
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("URL copied to clipboard");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
       toast.error("Failed to copy URL");
     }
   };

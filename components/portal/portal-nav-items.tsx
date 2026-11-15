@@ -22,26 +22,34 @@ interface PortalNavItemsProps {
   isAuthorized: boolean;
   registerHref: string;
 }
-const resolveHref = (tenant: TenantSlug, href: string): string => {
 
+function resolveHref(tenant: TenantSlug, href: string): string {
   if (href.startsWith("http://") || href.startsWith("https://")) {
     return href;
-  
-}return `/${tenant}${href}`;
+  }
+  return `/${tenant}${href}`;
 }
-const isActiveDropdown = (pathname: string, dropdown: DropdownConfig): boolean => {
 
+function isActiveDropdown(pathname: string, dropdown: DropdownConfig): boolean {
   return dropdown.items.some((item) => pathname.includes(item.href));
+}
 
-}export const PortalNavItems = ({
+export const PortalNavItems = ({
   tenant,
   navItems,
   dropdowns,
   isAuthorized,
   registerHref,
-}: PortalNavItemsProps) => {
+}: PortalNavItemsProps)=> {
+  const pathname = usePathname();
 
-}>
+  return (
+    <NavigationMenu>
+      <NavigationMenuList>
+        {navItems.map((item) => {
+          const isActive = pathname.includes(item.href);
+          return (
+            <NavigationMenuItem key={item.href}>
               <NavigationMenuLink asChild active={isActive}>
                 <Link
                   href={resolveHref(tenant, item.href)}

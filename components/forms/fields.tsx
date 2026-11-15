@@ -15,15 +15,8 @@ import type { slugs } from "@/lib/form-defs";
 
 /** Seeds the form's identity fields from the session's `name` + `email`,
  * splitting the name into first token / rest so multi-word last names survive. */
-useSessionIdentity = () => {
-  const session = authClient.useSession();
-  return session?.user
-};
-
-  return useMemo(() => {
-  const session = authClient.useSession();
-  return session?.user
-};
+const useSessionIdentity = () => {
+  const { data: session } = authClient.useSession();
   const user = session?.user;
 
   return useMemo(() => {
@@ -36,7 +29,7 @@ useSessionIdentity = () => {
     const lastname = parts.length > 1 ? parts.slice(1).join(" ") : "";
     return { firstname, lastname, email };
   }, [user?.name, user?.email]);
-}
+};
 
 const Fields = () => {
   const {

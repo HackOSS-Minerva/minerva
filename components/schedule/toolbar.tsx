@@ -23,18 +23,18 @@ export interface FilterOption {
   group: string;
   columnId: string;
 }
-export const getColumnId = (value: string): string => {
 
+export const getColumnId = (value: string): string=> {
   return value.split(":")[0];
+}
 
-}export const getColumnValue = (value: string): string => {
+export const getColumnValue = (value: string): string=> {
   return value.split(":").slice(1).join(":");
 }
-export const FilterToolbar = <TData extends RowData>( => {
 
+export function FilterToolbar<TData extends RowData>({
   table,
   allFilterOptions,
-
 }: {
   table: Table<TData>;
   allFilterOptions: FilterOption[];
@@ -145,12 +145,11 @@ const SCHEDULE_STATUS_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "ongoing", label: "Ongoing" },
   { value: "planned", label: "Planned" },
 ];
-export const buildScheduleFilterOptions = (): FilterOption[] => {
 
+export const buildScheduleFilterOptions = (): FilterOption[]=> {
   return [
     ...SCHEDULE_STATUS_OPTIONS.map((s) => ({
-      value: `status:${s.value
-}`,
+      value: `status:${s.value}`,
       label: s.label,
       group: "Status",
       columnId: "status",
@@ -163,9 +162,8 @@ export const buildScheduleFilterOptions = (): FilterOption[] => {
     })),
   ];
 }
-export const ScheduleToolbar = <TData extends RowData>( => {
- table 
-}: { table: Table<TData> }) {
+
+export function ScheduleToolbar<TData extends RowData>({ table }: { table: Table<TData> }) {
   const allFilterOptions = React.useMemo(() => buildScheduleFilterOptions(), []);
   return <FilterToolbar table={table} allFilterOptions={allFilterOptions} />;
 }

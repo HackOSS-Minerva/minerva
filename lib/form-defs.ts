@@ -36,13 +36,14 @@ export const FORM_MUTATIONS = {
   superadmin: api.superadmins.add,
   volunteer: api.volunteers.add,
 } as const;
-export const isFormSlug = (slug: string): slug is slugs => {
 
+export const isFormSlug = (slug: string): slug is slugs=> {
   return slug in FIELDS;
+}
 
-}/** Pure server-safe lookup: form def + header for a slug. */export const getFormDef = (slug: slugs, tenant: TenantSlug) => {
-
-} = getTenant(tenant);
+/** Pure server-safe lookup: form def + header for a slug. */
+export const getFormDef = (slug: slugs, tenant: TenantSlug)=> {
+  const { headers } = getTenant(tenant);
   return {
     metadata: { Header: headers[slug], id: FIELDS[slug].metadata.id },
     form: FIELDS[slug],

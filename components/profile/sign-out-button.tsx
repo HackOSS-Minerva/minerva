@@ -11,9 +11,15 @@ interface SignOutButtonProps {
 
 // Client-side sign-out: the server admin layout can't call `authClient.signOut()`
 // directly. Clears the session and routes to `redirectTo` so a different
-// Google account can be used.export const SignOutButton = ({ redirectTo, className }: SignOutButtonProps) => {
+// Google account can be used.
+export const SignOutButton = ({ redirectTo, className }: SignOutButtonProps)=> {
+  const router = useRouter();
 
-};
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push(redirectTo);
+    router.refresh();
+  };
 
   return (
     <Button

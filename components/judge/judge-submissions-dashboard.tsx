@@ -9,9 +9,9 @@ import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 interface JudgeSubmissionsDashboardProps {
   tenant: TenantSlug;
 }
-export const JudgeSubmissionsDashboard = ({ tenant }: JudgeSubmissionsDashboardProps) => {
 
-} = getTenant(tenant);
+export const JudgeSubmissionsDashboard = ({ tenant }: JudgeSubmissionsDashboardProps)=> {
+  const { config } = getTenant(tenant);
   const tenantName = config.slug.toLowerCase();
   const data = useQuery(api.submissions.get, { tenant: tenantName });
 

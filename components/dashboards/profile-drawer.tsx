@@ -14,25 +14,25 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export const ProfileDrawerTrigger = ({ name }: { name: string }) => {
+export const ProfileDrawerTrigger = ({ name }: { name: string })=> {
   return (
-    <DrawerTrigger>
-      <Button variant="ghost" className="w-full justify-start">
+    <DrawerTrigger asChild>
+      <Button variant="link" className="w-fit px-0 text-left text-foreground">
         {name}
       </Button>
     </DrawerTrigger>
   );
-};
+}
 
-export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: string }) => {
+export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: string })=> {
   return (
-    <DrawerClose>
-      <Button variant="ghost" className="p-0 hover:bg-transparent">
+    <DrawerClose asChild>
+      <Button variant="ghost" size="icon" aria-label={label}>
         <RiCloseLine className="h-4 w-4" />
       </Button>
     </DrawerClose>
   );
-};
+}
 
 /** Shared applicant drawer shell (mobile bottom / desktop right). */
 export const ProfileDrawer = ({
@@ -43,7 +43,7 @@ export const ProfileDrawer = ({
   name: string;
   title?: string;
   children: ReactNode;
-}) => {
+})=> {
   const isMobile = useIsMobile();
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -59,21 +59,23 @@ export const ProfileDrawer = ({
       </DrawerContent>
     </Drawer>
   );
-};
+}
 
 /** Drawer direction shared by every dashboard profile viewer. */
-export const useDrawerDirection = () => {
-  return "left";
-};
+export const useDrawerDirection = ()=> {
+  const isMobile = useIsMobile();
+  return isMobile ? "bottom" : "right";
+}
 
 /** Shared row-selection column used by every dashboard table. */
-export const selectColumn = <T>(): ColumnDef<T> => {
+export function selectColumn<T>(): ColumnDef<T> {
   return {
     id: "select",
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
-          checked={table.getIsAllPageRowsSelected() ||
+          checked={
+            table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
@@ -93,4 +95,4 @@ export const selectColumn = <T>(): ColumnDef<T> => {
     enableSorting: false,
     enableHiding: false,
   };
-};
+}

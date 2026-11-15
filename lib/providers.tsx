@@ -7,15 +7,17 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const client = new QueryClient();
+
 export const Providers = ({
   children,
   initialToken,
 }: {
   children: ReactNode;
   initialToken?: string | null;
-}) => {
-
-}>
+})=> {
+  return (
+    <ThemeProvider>
+      <ConvexClientProvider initialToken={initialToken}>
         <QueryClientProvider client={client}>
           <TooltipProvider>{children}</TooltipProvider>
         </QueryClientProvider>

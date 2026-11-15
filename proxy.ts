@@ -5,7 +5,7 @@ import { getSessionCookie } from "better-auth/cookies";
 // cookie exists (UX-level early redirect); real authorization happens in the
 // layouts/routes via authenticated Convex queries. Skipped in dev.
 const BYPASS_AUTH_IN_DEV = process.env.NODE_ENV !== "production";
-export default async function proxy(request: NextRequest) {
+export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   // Propagate the unified error-handling request-id (`x-request-id`) so page
@@ -43,7 +43,7 @@ export default async function proxy(request: NextRequest) {
   }
 
   return NextResponse.next({ request: { headers: requestHeaders } });
-}
+};
 
 export const config = {
   matcher: [

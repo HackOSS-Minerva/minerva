@@ -43,9 +43,8 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
+
 export const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) => {
- columns, data 
-}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -200,4 +199,4 @@ export const DataTable = <TData, TValue>({ columns, data }: DataTableProps<TData
       </div>
     </div>
   );
-}
+};

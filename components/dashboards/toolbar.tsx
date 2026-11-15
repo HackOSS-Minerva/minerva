@@ -17,15 +17,14 @@ import {
   teams,
 } from "@/data/information";
 import { formatShirtSize, toTitleCase } from "@/lib/localization";
-const buildFilterOptions = (slug: string): FilterOption[] => {
 
+const buildFilterOptions = (slug: string): FilterOption[] => {
   const options: FilterOption[] = [];
 
   // Status is common to all
   statuses.forEach((s) =>
     options.push({
-      value: `status:${s
-}`,
+      value: `status:${s}`,
       label: toTitleCase(s),
       group: "Status",
       columnId: "status",
@@ -135,16 +134,15 @@ const buildFilterOptions = (slug: string): FilterOption[] => {
   }
 
   return options;
-}
-export const TableToolbar = <TData extends RowData>( => {
+};
 
+export const TableToolbar = <TData extends RowData,>({
   table,
   slug,
-
 }: {
   table: Table<TData>;
   slug: string;
-}) {
+}) => {
   const allFilterOptions = React.useMemo(() => buildFilterOptions(slug), [slug]);
   return <FilterToolbar table={table} allFilterOptions={allFilterOptions} />;
-}
+};

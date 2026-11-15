@@ -20,6 +20,7 @@ export const metadata = {
 };
 
 export const csvFields = ["firstname", "lastname", "email", "role", "timestamp"];
+
 const formatTimestamp = (ts: number): string => {
   const date = new Date(ts);
   return date.toLocaleString("en-US", {

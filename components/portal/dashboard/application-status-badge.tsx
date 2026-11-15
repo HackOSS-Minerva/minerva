@@ -33,14 +33,19 @@ const STATUS_CONFIG: Record<
 };
 
 // Server Component: badge config is pure. The greeting name comes from the
-// server page's `fetchAuthQuery(getCurrentUser)` instead of `useSession()`.export const ApplicationStatusBadge = ({
+// server page's `fetchAuthQuery(getCurrentUser)` instead of `useSession()`.
+export const ApplicationStatusBadge = ({
   status,
   userName,
   applyHref,
   applyLabel,
-}: ApplicationStatusBadgeProps) => {
+}: ApplicationStatusBadgeProps)=> {
+  const name = userName ?? "hacker";
+  const config = status ? STATUS_CONFIG[status] : null;
 
-}</p>
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <p className="text-xl font-bold md:text-2xl">👋 Hello, {name}</p>
 
       <div className="flex flex-wrap items-center justify-end gap-2">
         {!status ? (

@@ -135,10 +135,10 @@ const sections: MemberSectionConfig[] = [
     ],
   },
 ];
-const TableCellViewer = ({ item }: { item: Doc<"participants"> }) => {
 
-} sections={sections} />;
-}
+const TableCellViewer = ({ item }: { item: Doc<"participants"> }) => {
+  return <MemberSheet item={item} sections={sections} />;
+};
 
 export const columns: ColumnDef<Doc<"participants">>[] = [
   selectColumn(),

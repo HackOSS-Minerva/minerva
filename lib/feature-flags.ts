@@ -35,11 +35,11 @@ export type FeatureFlagKey = keyof typeof FEATURE_FLAGS;
 /** Registry-typed view of {@link FEATURE_FLAGS} for uniform flag access. */
 const REGISTRY: FeatureFlagRegistry = FEATURE_FLAGS;
 
-/** Resolve a flag by key; `flag` is checked against {@link FEATURE_FLAGS}. */ export const getFeatureFlag =
-  (flag: FeatureFlagKey): boolean => {
-    // Dev-mode unlock: flag-gated pages (photos, analytics, assignments) render in
-    // `next dev` without setup. Production still respects the registry values.
-    if (process.env.NODE_ENV !== "production") return true;
-    const { value, production } = REGISTRY[flag] as FeatureFlagDefinition;
-    return IS_PRODUCTION ? (production ?? value) : value;
-  };
+/** Resolve a flag by key; `flag` is checked against {@link FEATURE_FLAGS}. */
+export const getFeatureFlag = (flag: FeatureFlagKey): boolean => {
+  // Dev-mode unlock: flag-gated pages (photos, analytics, assignments) render in
+  // `next dev` without setup. Production still respects the registry values.
+  if (process.env.NODE_ENV !== "production") return true;
+  const { value, production } = REGISTRY[flag] as FeatureFlagDefinition;
+  return IS_PRODUCTION ? (production ?? value) : value;
+};

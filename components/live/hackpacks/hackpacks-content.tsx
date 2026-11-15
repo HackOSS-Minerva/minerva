@@ -21,9 +21,25 @@ const CATEGORIES = [
   "Game Dev",
   "General",
 ] as const;
-export const HackpacksContent = () => {
 
-}
+export const HackpacksContent = ()=> {
+  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+
+  const filtered = hackpacks.filter((h: Hackpack) => {
+    if (
+      activeCategory !== "All" &&
+      !h.category.includes(activeCategory as Hackpack["category"][number])
+    )
+      return false;
+    if (search) {
+      const q = search.toLowerCase();
+      return (
+        h.name.toLowerCase().includes(q) ||
+        h.sponsor.toLowerCase().includes(q) ||
+        h.description.toLowerCase().includes(q)
+      );
+    }
     return true;
   });
 

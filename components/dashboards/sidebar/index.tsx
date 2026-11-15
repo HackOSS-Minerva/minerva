@@ -121,9 +121,9 @@ const data = {
   ],
   navSecondary: [],
 };
-export const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
 
-const { tenant } = useParams<{ tenant: TenantSlug }>();
+export const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
   const {
     config: { logo, domain },
   } = getTenant(tenant);
@@ -168,4 +168,4 @@ const { tenant } = useParams<{ tenant: TenantSlug }>();
       </SidebarFooter>
     </Sidebar>
   );
-}
+};

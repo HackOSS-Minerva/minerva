@@ -14,9 +14,14 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 interface HackpacksPageProps {
   tenant: TenantSlug;
 }
-export const HackpacksPage = ({ tenant }: HackpacksPageProps) => {
 
-}/live/dashboard`}>Dashboard</BreadcrumbLink>
+export const HackpacksPage = ({ tenant }: HackpacksPageProps)=> {
+  return (
+    <div className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

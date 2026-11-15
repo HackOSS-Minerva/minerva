@@ -88,10 +88,10 @@ const sections: MemberSectionConfig[] = [
     ],
   },
 ];
-const TableCellViewer = ({ item }: { item: Doc<"superadmins"> }) => {
 
-} sections={sections} />;
-}
+const TableCellViewer = ({ item }: { item: Doc<"superadmins"> }) => {
+  return <MemberSheet item={item} sections={sections} />;
+};
 
 export const columns: ColumnDef<Doc<"superadmins">>[] = [
   selectColumn(),

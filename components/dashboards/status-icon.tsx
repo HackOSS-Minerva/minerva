@@ -40,13 +40,22 @@ export const statusIconMeta: Record<
       "border-red-200 bg-red-50 text-red-700 dark:border-red-900/70 dark:bg-red-950/20 dark:text-red-300",
   },
 };
-export const normalizeApplicantStatus = (status: unknown): ApplicantStatus => {
 
+export const normalizeApplicantStatus = (status: unknown): ApplicantStatus=> {
   return status === "ACCEPTANCE" || status === "REJECTION" ? status : "PENDING";
-
-}export const StatusIcon = ({ status, className }: { status: ApplicantStatus; className?: string }) => {
-
 }
+
+export const StatusIcon = ({ status, className }: { status: ApplicantStatus; className?: string })=> {
+  const normalized = normalizeApplicantStatus(status);
+  const meta = statusIconMeta[normalized];
+  const Icon = meta.icon;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span
+          role="img"
+          aria-label={meta.label}
           title={meta.label}
           className={cn("inline-flex items-center justify-center", className)}
         >
@@ -60,9 +69,17 @@ export const normalizeApplicantStatus = (status: unknown): ApplicantStatus => {
     </Tooltip>
   );
 }
-export const StatusBadge = ({ status }: { status: ApplicantStatus }) => {
 
-}
+export const StatusBadge = ({ status }: { status: ApplicantStatus })=> {
+  const meta = statusIconMeta[status];
+  return (
+    <span
+      data-slot="badge"
+      className={cn(
+        "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3",
+        meta.badgeClass,
+        "whitespace-nowrap",
+      )}
     >
       {meta.label}
     </span>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { IncompleteScheduleEvent, MissingScheduleField } from "@/types/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,14 @@ const FIELD_ICONS: Record<MissingScheduleField, React.ReactNode> = {
   Time: <Clock className="size-3" />,
   Location: <MapPin className="size-3" />,
 };
+
 export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAlertProps) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  if (incompleteEvents.length === 0) {
+    return null;
+  }
+
   const formatEventTime = (dateTime?: string, timeZone?: string) => {
     if (!dateTime) return null;
     try {

@@ -12,9 +12,14 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 interface TeamsPageProps {
   tenant: TenantSlug;
 }
-export const TeamsPage = ({ tenant }: TeamsPageProps) => {
 
-}/live/dashboard`}>Dashboard</BreadcrumbLink>
+export const TeamsPage = ({ tenant }: TeamsPageProps)=> {
+  return (
+    <div className="space-y-8">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>Participate</BreadcrumbItem>

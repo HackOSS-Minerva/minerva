@@ -14,9 +14,14 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 interface DevToolsPageProps {
   tenant: TenantSlug;
 }
-export const DevToolsPage = ({ tenant }: DevToolsPageProps) => {
 
-}/live/dashboard`}>Dashboard</BreadcrumbLink>
+export const DevToolsPage = ({ tenant }: DevToolsPageProps)=> {
+  return (
+    <div className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

@@ -77,16 +77,17 @@ const VETTING_STATUSES = new Set<VettingStatus>([
   "completed",
   "failed",
 ]);
-export const normalizeVettingStatus = (value: unknown): VettingStatus => {
 
+export const normalizeVettingStatus = (value: unknown): VettingStatus=> {
   return typeof value === "string" && VETTING_STATUSES.has(value as VettingStatus)
     ? (value as VettingStatus)
     : "not_started";
+}
 
-}export const visibleVettingStatus(
+export const visibleVettingStatus = (
   reviewStatus: SubmissionReviewStatus,
   runStatus: VettingStatus,
-): StatusMeta {
+): StatusMeta=> {
   return runStatus === "completed"
     ? reviewStatusMeta[reviewStatus]
     : vettingRunStatusMeta[runStatus];

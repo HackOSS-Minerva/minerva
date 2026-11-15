@@ -11,8 +11,19 @@ interface DeadlineBadgeProps {
 }
 
 // Client island: renders the live "Xh Ym remaining" / "Deadline Passed"
-// badge. The surrounding card + deadline text stay server-rendered.export const DeadlineBadge = ({ deadline, isPastDeadline: ssrPastDeadline }: DeadlineBadgeProps) => {
-  const { timeLeft } = useCountdown(deadline);
+// badge. The surrounding card + deadline text stay server-rendered.
+export const DeadlineBadge = ({ deadline, isPastDeadline: ssrPastDeadline }: DeadlineBadgeProps)=> {
+  const timeLeft = useCountdown(deadline);
+
+  // Before hydration `timeLeft` is null: fall back to the server value to
+  // avoid a hydration mismatch. Afterwards the ticking countdown is truth.
+  const isPastDeadline = timeLeft
+    ? timeLeft.days <= 0 && timeLeft.hours <= 0 && timeLeft.minutes <= 0 && timeLeft.seconds <= 0
+    : ssrPastDeadline;
+
+  if (isPastDeadline) {
+    return <Badge variant="outline">Deadline Passed</Badge>;
+  }
 
   if (!timeLeft) return null;
 

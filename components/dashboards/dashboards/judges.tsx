@@ -122,10 +122,10 @@ const sections: MemberSectionConfig[] = [
     fields: [{ key: "gender", label: "Gender", icon: RiUserLine }],
   },
 ];
-const TableCellViewer = ({ item }: { item: Doc<"judges"> }) => {
 
-} sections={sections} />;
-}
+const TableCellViewer = ({ item }: { item: Doc<"judges"> }) => {
+  return <MemberSheet item={item} sections={sections} />;
+};
 
 export const columns: ColumnDef<Doc<"judges">>[] = [
   selectColumn(),

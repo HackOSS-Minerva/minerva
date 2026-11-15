@@ -118,12 +118,12 @@ const emptyParticipantDemographics = (): ParticipantDemographics => ({
   grade: [],
 });
 
-export const captureAnalyticsEvent = (event: AnalyticsEvent, properties: AnalyticsEventProperties) {
+export const captureAnalyticsEvent = (event: AnalyticsEvent, properties: AnalyticsEventProperties)=> {
   if (typeof window === "undefined") return;
   posthog.capture(event, properties);
 }
 
-const queryPostHog = async (query: string): Promise<HogQLResponse> {
+async function queryPostHog(query: string): Promise<HogQLResponse> {
   const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
   const projectId = process.env.POSTHOG_PROJECT_ID;
   const host = POSTHOG_HOST.replace(/\\$/, "");
@@ -158,7 +158,7 @@ const toCount = (value: HogQLScalar) => {
   return Number.isFinite(count) ? count : 0;
 };
 
-export default async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData> {
+export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData> {
   if (!/^[a-z0-9-]+$/.test(tenant)) {
     throw new AppError("TENANT_INVALID");
   }

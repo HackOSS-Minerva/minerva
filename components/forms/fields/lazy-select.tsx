@@ -8,17 +8,16 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 /** Client body for `lazySelectField`: loads options on mount, then renders the
  * same select as `selectField`. Keeps big lists (schools) out of the initial
  * client bundle. Lives in its own `"use client"` file because `shared.tsx` is
- * imported through the server-side forms graph. */export const LazySelectFieldBody = ( => {
-
+ * imported through the server-side forms graph. */
+export const LazySelectFieldBody = ({
   field,
   label,
   loadOptions,
-
 }: {
   field: AnyFieldApi;
   label: string;
   loadOptions: () => Promise<readonly string[]>;
-}) {
+})=> {
   const [options, setOptions] = useState<readonly string[] | null>(null);
 
   useEffect(() => {

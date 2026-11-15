@@ -13,12 +13,17 @@ interface PackingListPageProps {
   tenant: TenantSlug;
   baseHref?: string;
 }
+
 export const PackingListPage = ({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
-}: PackingListPageProps) => {
-
-}>Dashboard</BreadcrumbLink>
+}: PackingListPageProps)=> {
+  return (
+    <div className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href={baseHref}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

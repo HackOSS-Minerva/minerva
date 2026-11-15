@@ -37,9 +37,10 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 interface SubmissionFormPageProps {
   tenant: TenantSlug;
 }
-export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
 
-} = useSubmissions({ tenant });
+export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps)=> {
+  const router = useRouter();
+  const { form } = useSubmissions({ tenant });
 
   return (
     <div className="space-y-8">

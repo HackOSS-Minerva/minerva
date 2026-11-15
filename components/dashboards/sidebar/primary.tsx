@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import type { TenantSlug } from "@/hooks/get-tenant";
+
 export const NavMain = ({
   label,
   items,
@@ -24,8 +25,7 @@ export const NavMain = ({
     icon?: RemixiconComponentType;
   }[];
 }) => {
-
-const { tenant } = useParams<{ tenant: TenantSlug }>();
+  const { tenant } = useParams<{ tenant: TenantSlug }>();
   const pathname = usePathname();
 
   const isActive = (url: string) => pathname.startsWith(`/${tenant}${url}`);
@@ -49,4 +49,4 @@ const { tenant } = useParams<{ tenant: TenantSlug }>();
       </SidebarGroupContent>
     </SidebarGroup>
   );
-}
+};

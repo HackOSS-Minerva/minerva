@@ -14,9 +14,24 @@ interface CheckinSectionProps {
 }
 
 // Server Component: static card + copy; the QR is built from the server
-// session props so no hardcoded guest identity can ever leak into a code.export const CheckinSection = ({ user }: CheckinSectionProps) => {
+// session props so no hardcoded guest identity can ever leak into a code.
+export const CheckinSection = ({ user }: CheckinSectionProps)=> {
+  const hasCheckedIn = false; // TODO: wire up real check-in status
+  const qrValue = user ? buildCheckinQrPayload(user) : null;
 
-}
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle>Check-in</CardTitle>
+        {hasCheckedIn && (
+          <Badge
+            variant="secondary"
+            className="flex items-center gap-1 border-emerald-500/20 bg-emerald-500/10 font-semibold text-emerald-500 hover:bg-emerald-500/20"
+          >
+            <RiCheckLine className="h-3 w-3" />
+            Checked in
+          </Badge>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">

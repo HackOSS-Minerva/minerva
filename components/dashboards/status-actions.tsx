@@ -28,13 +28,12 @@ interface StatusActionsProps<T extends ApplicantRow> {
   role: EmailRole;
   onSuccess: () => void;
 }
-export const StatusActions = <T extends ApplicantRow>( => {
 
+export const StatusActions = <T extends ApplicantRow,>({
   table,
   role,
   onSuccess,
-
-}: StatusActionsProps<T>) {
+}: StatusActionsProps<T>) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const { sendEmail } = useEmail();
   const selectedCount = table.getSelectedRowModel().rows.length;
@@ -154,4 +153,4 @@ export const StatusActions = <T extends ApplicantRow>( => {
       </Tooltip>
     </div>
   );
-}
+};

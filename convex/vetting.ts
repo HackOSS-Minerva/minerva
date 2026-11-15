@@ -68,8 +68,7 @@ export const queueSubmissionVettingMany = internalMutation({
 
 const requireOrganizerAccess = async (
   ctx: ActionCtx,
-  submissionId: Id<"submissions">,
-): Promise<Doc<"submissions">> => {
+  submissionId: Id<"submissions">,): Promise<Doc<"submissions">> => {
   const submission = await ctx.runQuery(internal.vetting.getSubmissionForVetting, {
     id: submissionId,
   });
@@ -88,8 +87,7 @@ const requireOrganizerAccess = async (
 const executeSubmissionVetting = async (
   ctx: ActionCtx,
   submission: Doc<"submissions">,
-  event: VettingEventConfig,
-): Promise<SubmissionVettingResult> => {
+  event: VettingEventConfig,): Promise<SubmissionVettingResult> => {
   let githubResult: GithubSubmissionVettingResult | null = null;
 
   try {

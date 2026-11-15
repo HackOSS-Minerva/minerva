@@ -54,9 +54,10 @@ export const JudgeBreadcrumb = ({ tenant, page, section }: JudgeBreadcrumbProps)
 
 // Lookup helper for pages that still resolve the breadcrumb from a path.
 // Prefer passing `tenant`/`page`/`section` directly from the server route.
-export const resolveJudgeBreadcrumb = (
-  pathname: string,
-): { page: string; section: "Resources" | "Participate" } | null => {
+export const resolveJudgeBreadcrumb = (pathname: string): {
+  page: string;
+  section: "Resources" | "Participate";
+} | null => {
   const resourceKey = Object.keys(resourcePaths).find((k) => pathname.includes(k));
   if (resourceKey) {
     return { page: resourcePaths[resourceKey], section: "Resources" };

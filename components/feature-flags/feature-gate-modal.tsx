@@ -37,9 +37,13 @@ interface FeatureGateModalProps {
   reason: FeatureGateReason;
   open?: boolean;
 }
-export const FeatureGateModal = ({ reason, open = true }: FeatureGateModalProps) => {
 
-}>
+export const FeatureGateModal = ({ reason, open = true }: FeatureGateModalProps)=> {
+  const copy = COPY[reason];
+  const Icon = copy.icon;
+
+  return (
+    <Dialog open={open}>
       <DialogContent className="sm:max-w-md" showCloseButton={false}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

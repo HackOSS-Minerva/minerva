@@ -14,15 +14,48 @@ interface DownloadCertificateButtonProps {
 }
 
 // Client island: `html2pdf` + iframe rendering + toast are browser-only.
-export const DownloadCertificateButton = (
-  { judgeName, tenantName, organization, certificateId, eventDate },
-}: DownloadCertificateButtonProps) => {
+// Receives all display values as props from the server `CertificatePage`.
+export const DownloadCertificateButton = ({
+  judgeName,
+  tenantName,
+  organization,
+  certificateId,
+  eventDate,
+}: DownloadCertificateButtonProps)=> {
   const [downloading, setDownloading] = useState(false);
 
-  async function handleDownload() {
+  const handleDownload = async () => {
+    if (downloading) return;
     setDownloading(true);
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
 
-    const certHTML = `
+      const sealSvg =
+        "<svg width='120' height='125' viewBox='0 0 180 188' fill='none' xmlns='http://www.w3.org/2000/svg'>" +
+        "<path d='M42.136 87.0348L89.9927 114.665L47.8568 187.646L39.4833 146.89L9.84669e-05 160.016L42.136 87.0348Z' fill='url(#p0)'/>" +
+        "<path d='M137.857 87.0348L90.0002 114.665L132.136 187.646L140.51 146.89L179.993 160.016L137.857 87.0348Z' fill='url(#p1)'/>" +
+        "<circle cx='88.7979' cy='69.0752' r='69.0752' fill='url(#p2)'/>" +
+        "<circle cx='89.4888' cy='69.7659' r='58.2139' fill='url(#p3)' stroke='#818181'/>" +
+        "<g filter='url(#fi)'><path d='M87.5418 80.1744L69.7392 93.0318L76.7566 72.1209L58.907 59.2164H80.7599L87.5418 38.3054L94.3237 59.2164H116.177L98.327 72.1209L105.344 93.0318L87.5418 80.1744Z' fill='white'/></g>" +
+        "<defs>" +
+        "<filter id='fi' x='58.907' y='38.3054' width='57.2695' height='58.7264' filterUnits='userSpaceOnUse' color-interpolation-filters='sRGB'>" +
+        "<feFlood flood-opacity='0' result='bg'/><feBlend in='SourceGraphic' in2='bg' result='shape'/>" +
+        "<feColorMatrix in='SourceAlpha' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0' result='ha'/>" +
+        "<feOffset dy='4'/><feGaussianBlur stdDeviation='2'/><feComposite in2='ha' operator='arithmetic' k2='-1' k3='1'/>" +
+        "<feColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0'/>" +
+        "<feBlend in2='shape' result='effect1_innerShadow'/></filter>" +
+        "<linearGradient id='p0' x1='66.0643' y1='100.85' x2='23.9285' y2='173.831' gradientUnits='userSpaceOnUse'>" +
+        "<stop stop-color='#E0A63E'/><stop offset='0.5' stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></linearGradient>" +
+        "<linearGradient id='p1' x1='113.929' y1='100.85' x2='156.064' y2='173.831' gradientUnits='userSpaceOnUse'>" +
+        "<stop stop-color='#E0A63E'/><stop offset='0.5' stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></linearGradient>" +
+        "<radialGradient id='p2' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(112.283 41.4451) rotate(103.65) scale(99.5163)'>" +
+        "<stop stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></radialGradient>" +
+        "<radialGradient id='p3' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(109.452 46.2804) rotate(103.65) scale(84.5888)'>" +
+        "<stop stop-color='#FFEE7B'/><stop offset='1' stop-color='#E0A63E'/></radialGradient>" +
+        "</defs></svg>";
+
+      const certHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+        <style>* { margin:0; padding:0; box-sizing:border-box; } body { font-family:Georgia,serif; background:#fff; }</style>
         </head><body>
         <div id="cert" style="background:#faf8f2;border:3px solid #c9a84c;padding:8px;font-family:Georgia,serif;">
           <div style="border:1px solid #c9a84c;padding:3.5rem 4rem;text-align:center;">
@@ -55,55 +88,57 @@ export const DownloadCertificateButton = (
           </div>
         </div>
         </body></html>`;
-    `;
 
-    const iframe = document.createElement("iframe");
-    iframe.style.cssText =
-      "position:absolute;left:-9999px;top:0;width:297mm;height:210mm;border:0;";
-    document.body.appendChild(iframe);
+      const iframe = document.createElement("iframe");
+      iframe.style.cssText =
+        "position:absolute;left:-9999px;top:0;width:297mm;height:210mm;border:0;";
+      document.body.appendChild(iframe);
 
-    await new Promise<void>((resolve) => {
-      iframe.onload = () => resolve();
-      iframe.srcdoc = certHTML;
-    });
-
-    const certElement = iframe.contentDocument!.getElementById("cert") as HTMLElement;
-
-    // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
-    // getComputedStyle and replace any unsupported color values with a safe fallback
-    const origGetComputedStyle = window.getComputedStyle;
-    window.getComputedStyle = (element, pseudoElt) => {
-      const styles = origGetComputedStyle.call(window, element, pseudoElt);
-      return new Proxy(styles, {
-        get(target, prop) {
-          const val: unknown = Reflect.get(target, prop);
-          if (typeof val === "string" && (val.includes("lab(") || val.includes("oklch("))) {
-            return "rgba(0,0,0,0)";
-          }
-          if (typeof val === "function") return val.bind(target);
-          return val;
-        },
+      await new Promise<void>((resolve) => {
+        iframe.onload = () => resolve();
+        iframe.srcdoc = certHTML;
       });
-    };
 
-    try {
-      await html2pdf()
-        .set({
-          margin: 10,
-          filename: `certificate-${judgeName.toLowerCase().replace(/\s+/g, "-")}.pdf`,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-        })
-        .from(certElement)
-        .save();
+      const certElement = iframe.contentDocument!.getElementById("cert") as HTMLElement;
+
+      // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
+      // getComputedStyle and replace any unsupported color values with a safe fallback
+      const origGetComputedStyle = window.getComputedStyle;
+      window.getComputedStyle = (element, pseudoElt) => {
+        const styles = origGetComputedStyle.call(window, element, pseudoElt);
+        return new Proxy(styles, {
+          get(target, prop) {
+            const val: unknown = Reflect.get(target, prop);
+            if (typeof val === "string" && (val.includes("lab(") || val.includes("oklch("))) {
+              return "rgba(0,0,0,0)";
+            }
+            if (typeof val === "function") return val.bind(target);
+            return val;
+          },
+        });
+      };
+
+      try {
+        await html2pdf()
+          .set({
+            margin: 10,
+            filename: `certificate-${judgeName.toLowerCase().replace(/\s+/g, "-")}.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+          })
+          .from(certElement)
+          .save();
+      } finally {
+        window.getComputedStyle = origGetComputedStyle;
+      }
+
+      document.body.removeChild(iframe);
+      toast.success("Certificate downloaded as PDF!");
     } finally {
-      window.getComputedStyle = origGetComputedStyle;
+      setDownloading(false);
     }
-
-    document.body.removeChild(iframe);
-    toast.success("Certificate downloaded as PDF!");
-  }
+  };
 
   return (
     <Button onClick={handleDownload} className="w-full" disabled={downloading}>
@@ -111,4 +146,4 @@ export const DownloadCertificateButton = (
       {downloading ? "Preparing PDF…" : "Download Certificate"}
     </Button>
   );
-};
+}
