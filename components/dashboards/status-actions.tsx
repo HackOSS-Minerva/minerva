@@ -29,7 +29,7 @@ interface StatusActionsProps<T extends ApplicantRow> {
   onSuccess: () => void;
 }
 
-export const StatusActions = <T extends ApplicantRow,>({
+export const StatusActions = <T extends ApplicantRow>({
   table,
   role,
   onSuccess,

@@ -28,7 +28,7 @@ export const DashboardPage = ({
   userName,
   checkinUser,
   initialSchedule,
-}: DashboardPageProps)=> {
+}: DashboardPageProps) => {
   const { config } = getTenant(tenant);
   const live = config?.event ?? null;
 
@@ -82,4 +82,4 @@ export const DashboardPage = ({
       <ScheduleSection initialData={initialSchedule} />
     </div>
   );
-}
+};

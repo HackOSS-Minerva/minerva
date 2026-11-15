@@ -56,9 +56,7 @@ const QRCodeGenerator = () => {
       {/* Preview area - no border, left aligned */}
       <div>
         {isEmpty ? (
-          <div
-            className="flex h-48 items-center justify-center text-left text-muted-foreground"
-          >
+          <div className="flex h-48 items-center justify-center text-left text-muted-foreground">
             Enter text to preview
           </div>
         ) : (

@@ -22,11 +22,11 @@ export const MAX_SUBMISSION_NAME_LENGTH = 50;
 export const MAX_SUBMISSION_DESCRIPTION_LENGTH = 300;
 export const TEAM_SIZE_ERROR = "Teams can include at most 4 people including the submitter.";
 
-export const uniqueNormalizedEmails = (emails: string[]): string[]=> {
+export const uniqueNormalizedEmails = (emails: string[]): string[] => {
   return Array.from(
     new Set(emails.map((email) => email.trim().toLowerCase()).filter((email) => email.length > 0)),
   );
-}
+};
 
 export const getSubmissionTeam = (
   submitterEmail: string | undefined,
@@ -35,7 +35,7 @@ export const getSubmissionTeam = (
   memberEmails: string[];
   normalizedInvites: string[];
   memberCount: number;
-}=> {
+} => {
   const normalizedSubmitter = submitterEmail?.trim().toLowerCase();
   const normalizedInvites = uniqueNormalizedEmails(invites).filter(
     (email) => email !== normalizedSubmitter,
@@ -50,12 +50,12 @@ export const getSubmissionTeam = (
     normalizedInvites,
     memberCount: normalizedInvites.length + 1,
   };
-}
+};
 
 // Validates the vetting event window from the organizer-authorized UI. Throws
 // `ConvexError({ code: "VALIDATION_FAILED" })` so actions and hooks share the
 // unified coded-error path.
-export const validateVettingEventConfig = (event: VettingEventConfig): void=> {
+export const validateVettingEventConfig = (event: VettingEventConfig): void => {
   const invalid = (message: string): ConvexError<{ code: ConvexErrorCode }> =>
     new ConvexError({
       code: "VALIDATION_FAILED",
@@ -69,18 +69,18 @@ export const validateVettingEventConfig = (event: VettingEventConfig): void=> {
   if (!Number.isFinite(event.submissionDeadlineAt) || event.submissionDeadlineAt < event.startsAt) {
     throw invalid("Submission deadline is invalid");
   }
-}
+};
 
-export const resultFromFindings = (findings: VettingFinding[]): AutomatedVettingResult=> {
+export const resultFromFindings = (findings: VettingFinding[]): AutomatedVettingResult => {
   return findings.length > 0 ? "needs_review" : "verified";
-}
+};
 
 export const applyAutomatedReviewResult = (
   current: SubmissionReviewStatus,
   automated?: AutomatedVettingResult,
-): SubmissionReviewStatus=> {
+): SubmissionReviewStatus => {
   return current === "disqualified" ? current : (automated ?? current);
-}
+};
 
 function contributorKey(commit: GithubCommitAuthor): string {
   if (commit.githubUserId) return `github:${commit.githubUserId}`;
@@ -92,7 +92,7 @@ function contributorKey(commit: GithubCommitAuthor): string {
   return `unknown:${commit.sha}`;
 }
 
-export const extractUniqueAuthors = (commits: GithubCommitAuthor[]): ExtractedContributor[]=> {
+export const extractUniqueAuthors = (commits: GithubCommitAuthor[]): ExtractedContributor[] => {
   const contributors = new Map<string, ExtractedContributor>();
 
   for (const commit of commits) {
@@ -118,4 +118,4 @@ export const extractUniqueAuthors = (commits: GithubCommitAuthor[]): ExtractedCo
   }
 
   return Array.from(contributors.values()).sort((a, b) => b.commitCount - a.commitCount);
-}
+};

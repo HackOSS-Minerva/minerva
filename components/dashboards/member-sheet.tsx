@@ -57,7 +57,7 @@ export type MemberSheetProps = {
   footer?: ReactNode;
 };
 
-export const MemberSheet = ({ item, sections, header, footer }: MemberSheetProps)=> {
+export const MemberSheet = ({ item, sections, header, footer }: MemberSheetProps) => {
   const direction = useDrawerDirection();
   const { copied, copy: copyText } = useCopyWithTimeout();
 
@@ -133,4 +133,4 @@ export const MemberSheet = ({ item, sections, header, footer }: MemberSheetProps
       </DrawerContent>
     </Drawer>
   );
-}
+};

@@ -15,7 +15,7 @@ interface DevToolsPageProps {
   tenant: TenantSlug;
 }
 
-export const DevToolsPage = ({ tenant }: DevToolsPageProps)=> {
+export const DevToolsPage = ({ tenant }: DevToolsPageProps) => {
   return (
     <div className="space-y-6">
       <Breadcrumb>
@@ -42,4 +42,4 @@ export const DevToolsPage = ({ tenant }: DevToolsPageProps)=> {
       <DevToolsContent />
     </div>
   );
-}
+};

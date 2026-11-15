@@ -58,7 +58,7 @@ const unavailableRepositoryFindingCodes = new Set<FindingCode>([
   "github_api_error",
 ]);
 
-export const repositoryEvidenceExplanation = (findings: VettingFinding[]): string | null=> {
+export const repositoryEvidenceExplanation = (findings: VettingFinding[]): string | null => {
   const messages = Array.from(
     new Set(
       findings
@@ -68,7 +68,7 @@ export const repositoryEvidenceExplanation = (findings: VettingFinding[]): strin
   );
 
   return messages.length > 0 ? `Repository evidence unavailable: ${messages.join(" ")}` : null;
-}
+};
 
 function formatDate(timestamp?: number) {
   if (!timestamp) return "Unknown";
@@ -97,7 +97,7 @@ export const VettingSummary = ({
   submissionId: string;
   currentStatus: SubmissionReviewStatus;
   vettingStatus: VettingStatus;
-})=> {
+}) => {
   const { runVetting } = useSubmissionVetting();
   const [result, setResult] = useState<SubmissionVettingResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -328,4 +328,4 @@ export const VettingSummary = ({
       )}
     </section>
   );
-}
+};

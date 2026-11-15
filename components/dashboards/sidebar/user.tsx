@@ -20,7 +20,7 @@ import { authClient } from "@/lib/auth-client";
 import { PLACEHOLDER_DISPLAY_EMAIL, PLACEHOLDER_DISPLAY_NAME } from "@/lib/checkin";
 import { getInitials } from "@/lib/localization";
 
-export const NavUser = ()=> {
+export const NavUser = () => {
   const { isMobile } = useSidebar();
   const router = useRouter();
   const { data: session } = authClient.useSession();
@@ -69,4 +69,4 @@ export const NavUser = ()=> {
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
+};

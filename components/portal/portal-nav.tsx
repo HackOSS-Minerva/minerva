@@ -48,7 +48,7 @@ export const PortalNav = ({
   dropdowns,
   isAuthorized,
   registerHref,
-}: PortalNavProps)=> {
+}: PortalNavProps) => {
   const { config } = getTenant(tenant);
   const logo = config?.logo;
 
@@ -87,4 +87,4 @@ export const PortalNav = ({
       />
     </nav>
   );
-}
+};

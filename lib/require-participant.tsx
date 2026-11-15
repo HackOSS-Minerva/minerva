@@ -42,7 +42,7 @@ interface ParticipantLockedProps {
 
 // Signed-in but not an accepted participant: locked state with
 // status-specific messaging instead of the page content.
-export const ParticipantLocked = ({ status, tenant }: ParticipantLockedProps)=> {
+export const ParticipantLocked = ({ status, tenant }: ParticipantLockedProps) => {
   const message =
     status === "PENDING"
       ? "Your participant registration is still pending approval. Once accepted, you will be able to access this page."
@@ -66,4 +66,4 @@ export const ParticipantLocked = ({ status, tenant }: ParticipantLockedProps)=> 
       </div>
     </div>
   );
-}
+};

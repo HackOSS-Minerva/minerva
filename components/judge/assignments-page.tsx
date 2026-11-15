@@ -10,7 +10,7 @@ interface AssignmentsPageProps {
   tenant: TenantSlug;
 }
 
-export const AssignmentsPage = ({ tenant }: AssignmentsPageProps)=> {
+export const AssignmentsPage = ({ tenant }: AssignmentsPageProps) => {
   const { enrichedAssignments, isLoading } = useAssignments(tenant);
 
   if (isLoading) {
@@ -92,4 +92,4 @@ export const AssignmentsPage = ({ tenant }: AssignmentsPageProps)=> {
       </div>
     </div>
   );
-}
+};

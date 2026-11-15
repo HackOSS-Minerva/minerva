@@ -13,7 +13,7 @@ interface VenuePageProps {
   baseHref?: string;
 }
 
-export const VenuePage = ({ tenant, baseHref = `/${tenant}/live/dashboard` }: VenuePageProps)=> {
+export const VenuePage = ({ tenant, baseHref = `/${tenant}/live/dashboard` }: VenuePageProps) => {
   const { markdown } = getTenant(tenant);
   const Markdown = markdown.venue;
   return (
@@ -36,4 +36,4 @@ export const VenuePage = ({ tenant, baseHref = `/${tenant}/live/dashboard` }: Ve
       <Markdown />
     </div>
   );
-}
+};

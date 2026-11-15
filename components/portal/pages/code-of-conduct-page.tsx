@@ -16,7 +16,7 @@ interface CodeOfConductPageProps {
 export const CodeOfConductPage = ({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
-}: CodeOfConductPageProps)=> {
+}: CodeOfConductPageProps) => {
   const { markdown } = getTenant(tenant);
   const Markdown = markdown.codeOfConduct;
   return (
@@ -39,4 +39,4 @@ export const CodeOfConductPage = ({
       <Markdown />
     </div>
   );
-}
+};

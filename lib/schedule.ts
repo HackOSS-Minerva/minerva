@@ -40,7 +40,8 @@ export const getDayOfWeek = (dateTime?: string, timeZone?: string): string => {
 
 /** Group events into `[dayLabel, options]` for grouped `<Select>`, API order kept. */
 export const groupEventsByDay = (
-  events: readonly GoogleEvent[],): [string, ScheduleEventOption[]][] => {
+  events: readonly GoogleEvent[],
+): [string, ScheduleEventOption[]][] => {
   const groups = new Map<string, ScheduleEventOption[]>();
 
   for (const event of events) {
@@ -153,7 +154,8 @@ export const checkEventCompleteness = (event: GoogleEvent): MissingScheduleField
 };
 
 export const getIncompleteScheduleEvents = (
-  events: readonly GoogleEvent[],): IncompleteScheduleEvent[] => {
+  events: readonly GoogleEvent[],
+): IncompleteScheduleEvent[] => {
   const incomplete: IncompleteScheduleEvent[] = [];
 
   for (const event of events) {

@@ -21,7 +21,7 @@ export const NavSecondary = ({
     url: string;
     icon: RemixiconComponentType;
   }[];
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>)=> {
+} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) => {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
@@ -40,4 +40,4 @@ export const NavSecondary = ({
       </SidebarGroupContent>
     </SidebarGroup>
   );
-}
+};

@@ -50,7 +50,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
   );
 }
 
-export const DevToolsContent = ()=> {
+export const DevToolsContent = () => {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<DevToolCategory | typeof ALL>(ALL);
 
@@ -146,7 +146,7 @@ export const DevToolsContent = ()=> {
       )}
     </div>
   );
-}
+};
 
 function DevToolCard({ tool }: { tool: DevTool }) {
   return (

@@ -21,7 +21,7 @@ export const DownloadCertificateButton = ({
   organization,
   certificateId,
   eventDate,
-}: DownloadCertificateButtonProps)=> {
+}: DownloadCertificateButtonProps) => {
   const [downloading, setDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -146,4 +146,4 @@ export const DownloadCertificateButton = ({
       {downloading ? "Preparing PDF…" : "Download Certificate"}
     </Button>
   );
-}
+};

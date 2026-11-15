@@ -118,10 +118,13 @@ const emptyParticipantDemographics = (): ParticipantDemographics => ({
   grade: [],
 });
 
-export const captureAnalyticsEvent = (event: AnalyticsEvent, properties: AnalyticsEventProperties)=> {
+export const captureAnalyticsEvent = (
+  event: AnalyticsEvent,
+  properties: AnalyticsEventProperties,
+) => {
   if (typeof window === "undefined") return;
   posthog.capture(event, properties);
-}
+};
 
 async function queryPostHog(query: string): Promise<HogQLResponse> {
   const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;

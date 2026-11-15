@@ -14,7 +14,7 @@ export const ConvexClientProvider = ({
 }: {
   children: ReactNode;
   initialToken?: string | null;
-})=> {
+}) => {
   return (
     <ConvexProvider client={convex}>
       <ConvexBetterAuthProvider
@@ -26,4 +26,4 @@ export const ConvexClientProvider = ({
       </ConvexBetterAuthProvider>
     </ConvexProvider>
   );
-}
+};

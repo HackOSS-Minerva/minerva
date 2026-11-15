@@ -22,7 +22,7 @@ const ITEMS = [
   "Reusable Bag",
 ];
 
-export const PackingChecklist = ({ tenant }: PackingChecklistProps)=> {
+export const PackingChecklist = ({ tenant }: PackingChecklistProps) => {
   const [checkedItems, setCheckedItems] = useLocalStorage<Record<string, boolean>>(
     `packing-${tenant}`,
     {},
@@ -50,4 +50,4 @@ export const PackingChecklist = ({ tenant }: PackingChecklistProps)=> {
       ))}
     </div>
   );
-}
+};

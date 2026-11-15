@@ -54,7 +54,7 @@ export function shuffleArray<T>(arr: T[]): T[] {
 export const generateAssignments = (
   judges: JudgeDisplay[],
   submissions: SubmissionDisplay[],
-): AssignmentData[]=> {
+): AssignmentData[] => {
   if (judges.length === 0 || submissions.length === 0) return [];
 
   const shuffledTeams = shuffleArray(submissions);
@@ -71,15 +71,15 @@ export const generateAssignments = (
   });
 
   return assignments;
-}
+};
 
-export const getJudgeName = (judge: JudgeDisplay): string=> {
+export const getJudgeName = (judge: JudgeDisplay): string => {
   return `${judge.firstname} ${judge.lastname}`.trim();
-}
+};
 
 export const getStatusBadgeVariant = (
   status?: string,
-): "default" | "secondary" | "outline" | "destructive"=> {
+): "default" | "secondary" | "outline" | "destructive" => {
   switch (status) {
     case "assigned":
       return "secondary";
@@ -90,16 +90,16 @@ export const getStatusBadgeVariant = (
     default:
       return "outline";
   }
-}
+};
 
-export const formatStatus = (status?: string): string=> {
+export const formatStatus = (status?: string): string => {
   if (!status) return "Assigned";
   return toSpacedTitleCase(status);
-}
+};
 
 // ── React hook ────────────────────────────────────────────────────────────────
 
-export const useAssignments = (tenant: TenantSlug)=> {
+export const useAssignments = (tenant: TenantSlug) => {
   // ── Queries ────────────────────────────────────────────────────────────
   const rawSubmissions = useQuery(api.submissions.get, { tenant });
   const rawJudges = useQuery(api.judges.get, { tenant });
@@ -228,4 +228,4 @@ export const useAssignments = (tenant: TenantSlug)=> {
     saveAssignments,
     clearAssignments,
   };
-}
+};

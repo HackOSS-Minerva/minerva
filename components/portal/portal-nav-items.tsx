@@ -40,7 +40,7 @@ export const PortalNavItems = ({
   dropdowns,
   isAuthorized,
   registerHref,
-}: PortalNavItemsProps)=> {
+}: PortalNavItemsProps) => {
   const pathname = usePathname();
 
   return (
@@ -133,4 +133,4 @@ export const PortalNavItems = ({
       </NavigationMenuList>
     </NavigationMenu>
   );
-}
+};

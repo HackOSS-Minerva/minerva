@@ -35,7 +35,9 @@ export type ParseCheckinQrResult =
   | { ok: false; reason: "invalid" | "legacy-placeholder" };
 
 /** Split "Anna Marie Lopez" -> ["Anna", "Marie Lopez"] (multi-word last kept). */
-export const splitName = (name: string): {
+export const splitName = (
+  name: string,
+): {
   firstname: string;
   lastname: string;
 } => {
@@ -131,6 +133,7 @@ export const uploadPath = (
   tenant: TenantSlug,
   kind: "resumes" | "pictures",
   role: string,
-  ext = "",): string => {
+  ext = "",
+): string => {
   return `${tenant}/${role}/${kind}/${newUploadId()}${ext}`;
 };

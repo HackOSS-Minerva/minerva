@@ -22,7 +22,7 @@ const CATEGORIES = [
   "General",
 ] as const;
 
-export const HackpacksContent = ()=> {
+export const HackpacksContent = () => {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
@@ -101,4 +101,4 @@ export const HackpacksContent = ()=> {
       </Tabs>
     </div>
   );
-}
+};

@@ -20,8 +20,8 @@ export function useFeatureFlag<K extends FeatureFlagKey>(flag: K): UseFeatureFla
 // Resolve every flag in one order-stable call. Use this instead of
 // {@link useFeatureFlag} in a loop: hook order must be identical on every
 // render, so a loop over dynamic content is unsafe.
-export const useFeatureFlags = (): Record<FeatureFlagKey, boolean>=> {
+export const useFeatureFlags = (): Record<FeatureFlagKey, boolean> => {
   return Object.fromEntries(
     (Object.keys(FEATURE_FLAGS) as FeatureFlagKey[]).map((key) => [key, getFeatureFlag(key)]),
   ) as Record<FeatureFlagKey, boolean>;
-}
+};

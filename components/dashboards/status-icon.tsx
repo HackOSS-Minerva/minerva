@@ -41,11 +41,17 @@ export const statusIconMeta: Record<
   },
 };
 
-export const normalizeApplicantStatus = (status: unknown): ApplicantStatus=> {
+export const normalizeApplicantStatus = (status: unknown): ApplicantStatus => {
   return status === "ACCEPTANCE" || status === "REJECTION" ? status : "PENDING";
-}
+};
 
-export const StatusIcon = ({ status, className }: { status: ApplicantStatus; className?: string })=> {
+export const StatusIcon = ({
+  status,
+  className,
+}: {
+  status: ApplicantStatus;
+  className?: string;
+}) => {
   const normalized = normalizeApplicantStatus(status);
   const meta = statusIconMeta[normalized];
   const Icon = meta.icon;
@@ -68,9 +74,9 @@ export const StatusIcon = ({ status, className }: { status: ApplicantStatus; cla
       </TooltipContent>
     </Tooltip>
   );
-}
+};
 
-export const StatusBadge = ({ status }: { status: ApplicantStatus })=> {
+export const StatusBadge = ({ status }: { status: ApplicantStatus }) => {
   const meta = statusIconMeta[status];
   return (
     <span
@@ -84,4 +90,4 @@ export const StatusBadge = ({ status }: { status: ApplicantStatus })=> {
       {meta.label}
     </span>
   );
-}
+};

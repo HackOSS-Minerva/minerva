@@ -8,7 +8,7 @@ interface CountdownTimerProps {
 
 // Client island: the only ticking (1s interval) part of the hero. Everything
 // else in `HeroSection` is static and server-rendered.
-export const CountdownTimer = ({ target }: CountdownTimerProps)=> {
+export const CountdownTimer = ({ target }: CountdownTimerProps) => {
   const timeLeft = useCountdown(target);
 
   if (!timeLeft) return null;
@@ -57,4 +57,4 @@ export const CountdownTimer = ({ target }: CountdownTimerProps)=> {
       </div>
     </div>
   );
-}
+};

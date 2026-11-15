@@ -38,7 +38,7 @@ interface SubmissionFormPageProps {
   tenant: TenantSlug;
 }
 
-export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps)=> {
+export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
   const router = useRouter();
   const { form } = useSubmissions({ tenant });
 
@@ -660,4 +660,4 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps)=> {
       </Card>
     </div>
   );
-}
+};

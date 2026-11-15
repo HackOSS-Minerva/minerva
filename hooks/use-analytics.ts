@@ -5,7 +5,7 @@ import type { AnalyticsData } from "@/lib/posthog";
 import { parseAppError } from "@/lib/app-error";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
-export const useAnalytics = (tenant: TenantSlug)=> {
+export const useAnalytics = (tenant: TenantSlug) => {
   return useQuery({
     queryKey: ["analytics", tenant],
     queryFn: async (): Promise<AnalyticsData> => {
@@ -15,4 +15,4 @@ export const useAnalytics = (tenant: TenantSlug)=> {
       return response.json();
     },
   });
-}
+};

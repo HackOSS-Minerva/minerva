@@ -15,7 +15,7 @@ interface HackpacksPageProps {
   tenant: TenantSlug;
 }
 
-export const HackpacksPage = ({ tenant }: HackpacksPageProps)=> {
+export const HackpacksPage = ({ tenant }: HackpacksPageProps) => {
   return (
     <div className="space-y-6">
       <Breadcrumb>
@@ -42,4 +42,4 @@ export const HackpacksPage = ({ tenant }: HackpacksPageProps)=> {
       <HackpacksContent />
     </div>
   );
-}
+};

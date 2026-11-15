@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner";
 import { useState } from "react";
 
-export const SiteHeader = ({ children }: { children?: React.ReactNode })=> {
+export const SiteHeader = ({ children }: { children?: React.ReactNode }) => {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = async () => {
@@ -46,4 +46,4 @@ export const SiteHeader = ({ children }: { children?: React.ReactNode })=> {
       </div>
     </header>
   );
-}
+};

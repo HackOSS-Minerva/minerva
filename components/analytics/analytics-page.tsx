@@ -116,7 +116,7 @@ function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographic
   );
 }
 
-export const AnalyticsPage = ({ tenant, scope }: AnalyticsPageProps)=> {
+export const AnalyticsPage = ({ tenant, scope }: AnalyticsPageProps) => {
   const { data, isLoading, isError } = useAnalytics(tenant);
 
   if (isLoading) {
@@ -224,4 +224,4 @@ export const AnalyticsPage = ({ tenant, scope }: AnalyticsPageProps)=> {
       ) : null}
     </div>
   );
-}
+};

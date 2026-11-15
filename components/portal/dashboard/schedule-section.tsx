@@ -19,7 +19,7 @@ interface ScheduleSectionProps {
 
 // Client island: search / day tabs / countdown need browser state. Data
 // itself is SSR'd by the page and passed as `initialData`.
-export const ScheduleSection = ({ initialData }: ScheduleSectionProps)=> {
+export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
   const { data, isLoading, isError, error } = useSchedule(initialData);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDay, setSelectedDay] = useState<string>("all");
@@ -313,4 +313,4 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps)=> {
       </div>
     </div>
   );
-}
+};

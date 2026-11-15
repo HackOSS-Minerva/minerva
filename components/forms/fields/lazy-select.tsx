@@ -17,7 +17,7 @@ export const LazySelectFieldBody = ({
   field: AnyFieldApi;
   label: string;
   loadOptions: () => Promise<readonly string[]>;
-})=> {
+}) => {
   const [options, setOptions] = useState<readonly string[] | null>(null);
 
   useEffect(() => {
@@ -58,4 +58,4 @@ export const LazySelectFieldBody = ({
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>
   );
-}
+};

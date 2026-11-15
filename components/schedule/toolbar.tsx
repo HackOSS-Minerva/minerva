@@ -24,13 +24,13 @@ export interface FilterOption {
   columnId: string;
 }
 
-export const getColumnId = (value: string): string=> {
+export const getColumnId = (value: string): string => {
   return value.split(":")[0];
-}
+};
 
-export const getColumnValue = (value: string): string=> {
+export const getColumnValue = (value: string): string => {
   return value.split(":").slice(1).join(":");
-}
+};
 
 export function FilterToolbar<TData extends RowData>({
   table,
@@ -146,7 +146,7 @@ const SCHEDULE_STATUS_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "planned", label: "Planned" },
 ];
 
-export const buildScheduleFilterOptions = (): FilterOption[]=> {
+export const buildScheduleFilterOptions = (): FilterOption[] => {
   return [
     ...SCHEDULE_STATUS_OPTIONS.map((s) => ({
       value: `status:${s.value}`,
@@ -161,7 +161,7 @@ export const buildScheduleFilterOptions = (): FilterOption[]=> {
       columnId: "day",
     })),
   ];
-}
+};
 
 export function ScheduleToolbar<TData extends RowData>({ table }: { table: Table<TData> }) {
   const allFilterOptions = React.useMemo(() => buildScheduleFilterOptions(), []);

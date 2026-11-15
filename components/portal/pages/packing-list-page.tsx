@@ -17,7 +17,7 @@ interface PackingListPageProps {
 export const PackingListPage = ({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
-}: PackingListPageProps)=> {
+}: PackingListPageProps) => {
   return (
     <div className="space-y-6">
       <Breadcrumb>
@@ -41,4 +41,4 @@ export const PackingListPage = ({
       <PackingChecklist tenant={tenant} />
     </div>
   );
-}
+};

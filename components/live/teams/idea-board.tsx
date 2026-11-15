@@ -26,7 +26,7 @@ interface IdeaBoardProps {
   tenant: TenantSlug;
 }
 
-export const IdeaBoard = ({ tenant }: IdeaBoardProps)=> {
+export const IdeaBoard = ({ tenant }: IdeaBoardProps) => {
   const ideas = useQuery(api.ideas.list, { tenant });
   const addIdea = useMutation(api.ideas.add);
   const removeIdea = useMutation(api.ideas.remove);
@@ -214,4 +214,4 @@ export const IdeaBoard = ({ tenant }: IdeaBoardProps)=> {
       </Dialog>
     </div>
   );
-}
+};

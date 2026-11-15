@@ -136,7 +136,7 @@ const buildFilterOptions = (slug: string): FilterOption[] => {
   return options;
 };
 
-export const TableToolbar = <TData extends RowData,>({
+export const TableToolbar = <TData extends RowData>({
   table,
   slug,
 }: {

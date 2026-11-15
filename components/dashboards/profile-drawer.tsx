@@ -14,7 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export const ProfileDrawerTrigger = ({ name }: { name: string })=> {
+export const ProfileDrawerTrigger = ({ name }: { name: string }) => {
   return (
     <DrawerTrigger asChild>
       <Button variant="link" className="w-fit px-0 text-left text-foreground">
@@ -22,9 +22,9 @@ export const ProfileDrawerTrigger = ({ name }: { name: string })=> {
       </Button>
     </DrawerTrigger>
   );
-}
+};
 
-export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: string })=> {
+export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: string }) => {
   return (
     <DrawerClose asChild>
       <Button variant="ghost" size="icon" aria-label={label}>
@@ -32,7 +32,7 @@ export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: 
       </Button>
     </DrawerClose>
   );
-}
+};
 
 /** Shared applicant drawer shell (mobile bottom / desktop right). */
 export const ProfileDrawer = ({
@@ -43,7 +43,7 @@ export const ProfileDrawer = ({
   name: string;
   title?: string;
   children: ReactNode;
-})=> {
+}) => {
   const isMobile = useIsMobile();
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -59,13 +59,13 @@ export const ProfileDrawer = ({
       </DrawerContent>
     </Drawer>
   );
-}
+};
 
 /** Drawer direction shared by every dashboard profile viewer. */
-export const useDrawerDirection = ()=> {
+export const useDrawerDirection = () => {
   const isMobile = useIsMobile();
   return isMobile ? "bottom" : "right";
-}
+};
 
 /** Shared row-selection column used by every dashboard table. */
 export function selectColumn<T>(): ColumnDef<T> {

@@ -38,7 +38,7 @@ interface FeatureGateModalProps {
   open?: boolean;
 }
 
-export const FeatureGateModal = ({ reason, open = true }: FeatureGateModalProps)=> {
+export const FeatureGateModal = ({ reason, open = true }: FeatureGateModalProps) => {
   const copy = COPY[reason];
   const Icon = copy.icon;
 
@@ -68,4 +68,4 @@ export const FeatureGateModal = ({ reason, open = true }: FeatureGateModalProps)
       </DialogContent>
     </Dialog>
   );
-}
+};

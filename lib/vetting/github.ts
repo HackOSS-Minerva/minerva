@@ -33,7 +33,7 @@ type GithubCommitPagesResult = GithubJsonResult & {
   reachedPageLimit: boolean;
 };
 
-export const parseGithubRepoUrl = (rawUrl: string): ParsedGithubRepo | null=> {
+export const parseGithubRepoUrl = (rawUrl: string): ParsedGithubRepo | null => {
   let url: URL;
 
   try {
@@ -62,7 +62,7 @@ export const parseGithubRepoUrl = (rawUrl: string): ParsedGithubRepo | null=> {
     name,
     canonicalUrl: `https://github.com/${owner}/${name}`,
   };
-}
+};
 
 function parseGithubRateLimit(headers: Headers): number | undefined {
   const value = headers.get("x-ratelimit-remaining");

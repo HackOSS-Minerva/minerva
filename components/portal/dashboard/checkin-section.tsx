@@ -15,7 +15,7 @@ interface CheckinSectionProps {
 
 // Server Component: static card + copy; the QR is built from the server
 // session props so no hardcoded guest identity can ever leak into a code.
-export const CheckinSection = ({ user }: CheckinSectionProps)=> {
+export const CheckinSection = ({ user }: CheckinSectionProps) => {
   const hasCheckedIn = false; // TODO: wire up real check-in status
   const qrValue = user ? buildCheckinQrPayload(user) : null;
 
@@ -52,4 +52,4 @@ export const CheckinSection = ({ user }: CheckinSectionProps)=> {
       </CardContent>
     </Card>
   );
-}
+};

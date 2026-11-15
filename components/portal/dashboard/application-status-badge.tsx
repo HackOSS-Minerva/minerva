@@ -39,7 +39,7 @@ export const ApplicationStatusBadge = ({
   userName,
   applyHref,
   applyLabel,
-}: ApplicationStatusBadgeProps)=> {
+}: ApplicationStatusBadgeProps) => {
   const name = userName ?? "hacker";
   const config = status ? STATUS_CONFIG[status] : null;
 
@@ -62,4 +62,4 @@ export const ApplicationStatusBadge = ({
       </div>
     </div>
   );
-}
+};

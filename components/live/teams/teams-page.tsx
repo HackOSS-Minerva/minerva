@@ -13,7 +13,7 @@ interface TeamsPageProps {
   tenant: TenantSlug;
 }
 
-export const TeamsPage = ({ tenant }: TeamsPageProps)=> {
+export const TeamsPage = ({ tenant }: TeamsPageProps) => {
   return (
     <div className="space-y-8">
       <Breadcrumb>
@@ -39,4 +39,4 @@ export const TeamsPage = ({ tenant }: TeamsPageProps)=> {
       <IdeaBoard tenant={tenant} />
     </div>
   );
-}
+};

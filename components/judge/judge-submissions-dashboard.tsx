@@ -10,7 +10,7 @@ interface JudgeSubmissionsDashboardProps {
   tenant: TenantSlug;
 }
 
-export const JudgeSubmissionsDashboard = ({ tenant }: JudgeSubmissionsDashboardProps)=> {
+export const JudgeSubmissionsDashboard = ({ tenant }: JudgeSubmissionsDashboardProps) => {
   const { config } = getTenant(tenant);
   const tenantName = config.slug.toLowerCase();
   const data = useQuery(api.submissions.get, { tenant: tenantName });
@@ -29,4 +29,4 @@ export const JudgeSubmissionsDashboard = ({ tenant }: JudgeSubmissionsDashboardP
       <DataTable dashboard={{ data, dashboard: submissions }} slugOverride="submissions" readOnly />
     </div>
   );
-}
+};

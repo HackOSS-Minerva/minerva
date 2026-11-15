@@ -2,7 +2,7 @@ import * as React from "react";
 
 const MOBILE_BREAKPOINT = 768;
 
-export const useIsMobile = ()=> {
+export const useIsMobile = () => {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);
 
   React.useEffect(() => {
@@ -16,4 +16,4 @@ export const useIsMobile = ()=> {
   }, []);
 
   return !!isMobile;
-}
+};

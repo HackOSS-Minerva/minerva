@@ -76,7 +76,7 @@ export const textField = ({
   placeholder: string;
   maxLength?: number;
   required?: boolean;
-}): FieldDef=> {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => {
@@ -108,7 +108,7 @@ export const textField = ({
       );
     },
   };
-}
+};
 
 /** Single-choice radio group over a fixed option list. */
 export const radioField = ({
@@ -119,7 +119,7 @@ export const radioField = ({
   name: string;
   label: string;
   options: readonly string[];
-}): FieldDef=> {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => {
@@ -150,7 +150,7 @@ export const radioField = ({
       );
     },
   };
-}
+};
 
 /** Dropdown over a fixed option list, with a leading placeholder option. */
 export const selectField = ({
@@ -161,7 +161,7 @@ export const selectField = ({
   name: string;
   label: string;
   options: readonly string[];
-}): FieldDef=> {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => {
@@ -191,7 +191,7 @@ export const selectField = ({
       );
     },
   };
-}
+};
 
 /** Same as {@link selectField} but loads its options on mount instead of
  * shipping them in the bundle. */
@@ -203,14 +203,14 @@ export const lazySelectField = ({
   name: string;
   label: string;
   loadOptions: () => Promise<readonly string[]>;
-}): FieldDef=> {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => (
       <LazySelectFieldBody field={field} label={label} loadOptions={loadOptions} />
     ),
   };
-}
+};
 
 /** File picker that swaps to a removable chip once a file is chosen. */
 export const fileField = ({
@@ -223,7 +223,7 @@ export const fileField = ({
   label: string;
   accept: string;
   required?: boolean;
-}): FieldDef=> {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => {
@@ -286,7 +286,7 @@ export const fileField = ({
       );
     },
   };
-}
+};
 
 /**
  * Terms-and-conditions acceptance checkbox with the required legal copy.
@@ -298,7 +298,7 @@ export const termsField = ({
   checkboxValueProp = "checked",
 }: {
   checkboxValueProp?: "checked" | "value";
-} = {}): FieldDef=> {
+} = {}): FieldDef => {
   return {
     name: "terms",
     children: (field: AnyFieldApi) => {
@@ -346,7 +346,7 @@ export const termsField = ({
       );
     },
   };
-}
+};
 /** Boolean consent checkbox with supporting description copy. */
 export const consentField = ({
   name,
@@ -356,7 +356,7 @@ export const consentField = ({
   name: string;
   label: string;
   description: string;
-}): FieldDef=> {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => {
@@ -385,7 +385,7 @@ export const consentField = ({
       );
     },
   };
-}
+};
 
 /** Multi-select checkbox grid (used for volunteer availabilities). */
 export const checkboxGridField = ({
@@ -396,7 +396,7 @@ export const checkboxGridField = ({
   name: string;
   label: string;
   options: readonly string[];
-}): FieldDef=> {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => {
@@ -433,7 +433,7 @@ export const checkboxGridField = ({
       );
     },
   };
-}
+};
 /** The standard identity block, shared by every registration form. */
 export const identityFields = (): FieldDef[] => [
   textField({

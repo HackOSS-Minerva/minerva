@@ -7,7 +7,7 @@ interface HeroSectionProps {
 
 // Server Component: title/dates are static config. The ticking countdown is
 // a `CountdownTimer` client island (renders null until hydrated).
-export const HeroSection = ({ startTime, endTime }: HeroSectionProps)=> {
+export const HeroSection = ({ startTime, endTime }: HeroSectionProps) => {
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString("en-US", {
       weekday: "long",
@@ -30,4 +30,4 @@ export const HeroSection = ({ startTime, endTime }: HeroSectionProps)=> {
       </div>
     </div>
   );
-}
+};

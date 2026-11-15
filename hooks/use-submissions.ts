@@ -78,7 +78,7 @@ interface UseSubmissionsOptions {
   tenant: TenantSlug;
 }
 
-export const useSubmissions = ({ tenant }: UseSubmissionsOptions)=> {
+export const useSubmissions = ({ tenant }: UseSubmissionsOptions) => {
   const { triggerConfetti } = useTriggerConfetti();
   const router = useRouter();
   const addSubmission = useMutation(api.submissions.add);
@@ -144,11 +144,11 @@ export const useSubmissions = ({ tenant }: UseSubmissionsOptions)=> {
   return {
     form,
   };
-}
+};
 
 type SubmissionId = Id<"submissions">;
 
-export const useSubmissionVetting = ()=> {
+export const useSubmissionVetting = () => {
   const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { config } = getTenant(tenant);
   const live = config?.event ?? null;
@@ -193,4 +193,4 @@ export const useSubmissionVetting = ()=> {
   );
 
   return { runVetting, runVettingMany };
-}
+};

@@ -11,7 +11,7 @@ interface AdminShellProps {
 // Shared chrome + content spacing for every /admin page: the single source of
 // truth for admin padding. Pages and inner content must not add their own
 // horizontal/vertical page wrappers (causes double- or zero-padding).
-export const AdminShell = ({ title, children }: AdminShellProps)=> {
+export const AdminShell = ({ title, children }: AdminShellProps) => {
   return (
     <SidebarProvider
       style={
@@ -32,4 +32,4 @@ export const AdminShell = ({ title, children }: AdminShellProps)=> {
       </SidebarInset>
     </SidebarProvider>
   );
-}
+};

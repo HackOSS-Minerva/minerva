@@ -18,7 +18,7 @@ interface CheckinPageProps {
   tenant: TenantSlug;
 }
 
-export const CheckinPage = ({ tenant }: CheckinPageProps)=> {
+export const CheckinPage = ({ tenant }: CheckinPageProps) => {
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
 
@@ -85,4 +85,4 @@ export const CheckinPage = ({ tenant }: CheckinPageProps)=> {
       </Card>
     </div>
   );
-}
+};

@@ -14,7 +14,7 @@ export const Providers = ({
 }: {
   children: ReactNode;
   initialToken?: string | null;
-})=> {
+}) => {
   return (
     <ThemeProvider>
       <ConvexClientProvider initialToken={initialToken}>
@@ -24,4 +24,4 @@ export const Providers = ({
       </ConvexClientProvider>
     </ThemeProvider>
   );
-}
+};
