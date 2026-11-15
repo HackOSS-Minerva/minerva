@@ -1,31 +1,27 @@
-export type AnalyticsRole = "participant" | "judge" | "speaker" | "superadmin" | "volunteer";
+import type { AnalyticsCapture } from "@/lib/analytics-schema";
 
-export type ApplicationStatus = "PENDING" | "ACCEPTANCE" | "REJECTION";
+export type AnalyticsEvent = AnalyticsCapture["event"];
+export type AnalyticsEventProperties = AnalyticsCapture["properties"];
+export type AnalyticsRole = NonNullable<AnalyticsEventProperties["role"]>;
+export type ApplicationStatus = NonNullable<AnalyticsEventProperties["status"]>;
 
-export type AnalyticsEvent =
-  | "application_created"
-  | "application_status_changed"
-  | "application_deleted"
-  | "checkin_created"
-  | "checkin_deleted"
-  | "submission_created"
-  | "submission_deleted";
+export function captureAnalyticsEvent(event: AnalyticsEvent, properties: AnalyticsEventProperties) {
+  if (typeof window === "undefined") return;
 
-export type AnalyticsEventProperties = {
-  tenant: string;
-  entity_id: string;
-  role?: AnalyticsRole;
-  status?: ApplicationStatus;
-  user_id?: string;
-  event_id?: string;
-  gender?: string;
-  dietrestriction?: string;
-  shirt?: string;
-  school?: string;
-  major?: string;
-  age?: string;
-  grade?: string;
-};
+  // Best-effort browser delivery: analytics failure must not fail the database operation.
+  void fetch("/api/analytics/capture", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    keepalive: true,
+    body: JSON.stringify({ event, properties }),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error(`Analytics capture failed (${response.status})`);
+    })
+    .catch(() => {
+      console.warn("Analytics event delivery failed", { event, tenant: properties.tenant });
+    });
+}
 
 export type StatusCounts = {
   total: number;

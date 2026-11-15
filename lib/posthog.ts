@@ -1,12 +1,49 @@
 import "server-only";
+import { analyticsRoleSchema } from "@/lib/analytics-schema";
 import { AppError } from "@/lib/app-error";
 import type {
+  AnalyticsEvent,
+  AnalyticsEventProperties,
   AnalyticsData,
   AnalyticsRole,
   StatusCounts,
   ParticipantDemographicKey,
   ParticipantDemographics,
 } from "@/lib/analytics";
+
+export async function capturePostHogEvent(
+  event: AnalyticsEvent,
+  properties: AnalyticsEventProperties,
+  timestamp: Date,
+): Promise<void> {
+  const key = process.env.POSTHOG_KEY;
+  if (!key) throw new AppError("CONFIG_ERROR");
+
+  const host = (process.env.POSTHOG_HOST ?? "https://us.i.posthog.com").replace(/\/$/, "");
+  let response: Response;
+  try {
+    response = await fetch(`${host}/i/v0/e/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      redirect: "error",
+      signal: AbortSignal.timeout(5_000),
+      body: JSON.stringify({
+        api_key: key,
+        distinct_id: `${properties.tenant}:${properties.user_id ?? properties.entity_id}`,
+        event,
+        timestamp: timestamp.toISOString(),
+        properties: { ...properties, $process_person_profile: false },
+      }),
+    });
+  } catch {
+    throw new AppError("ANALYTICS_UNAVAILABLE");
+  }
+  if (!response.ok) {
+    throw new AppError("ANALYTICS_UNAVAILABLE", {
+      details: `PostHog capture returned ${response.status}`,
+    });
+  }
+}
 
 /** Scalar values a HogQL query can return in a result row. */
 type HogQLScalar = string | number | boolean | null;
@@ -15,13 +52,7 @@ type HogQLResponse = {
   results?: HogQLScalar[][];
 };
 
-const analyticsRoles: AnalyticsRole[] = [
-  "participant",
-  "judge",
-  "speaker",
-  "superadmin",
-  "volunteer",
-];
+const analyticsRoles = analyticsRoleSchema.options;
 
 const participantDemographicKeys: ParticipantDemographicKey[] = [
   "gender",
@@ -96,8 +127,8 @@ export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData
       SELECT
         properties.entity_id AS entity_id,
         argMax(properties.role, timestamp) AS role,
-        argMax(properties.status, timestamp) AS status,
-        argMax(event, timestamp) AS latest_event
+        argMax(properties.status, tuple(event = 'application_status_changed', timestamp)) AS status,
+        countIf(event = 'application_deleted') AS deleted
       FROM events
       WHERE properties.tenant = '${tenant}'
         AND event IN (
@@ -107,7 +138,7 @@ export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData
         )
       GROUP BY properties.entity_id
     )
-    WHERE latest_event != 'application_deleted'
+    WHERE deleted = 0
     GROUP BY role, status
     ORDER BY role, status
   `;
@@ -118,7 +149,8 @@ export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData
       SELECT
         properties.entity_id AS entity_id,
         if(event LIKE 'checkin_%', 'checkin', 'submission') AS entity_type,
-        argMax(event, timestamp) AS latest_event,
+        countIf(event IN ('checkin_deleted', 'submission_deleted')) AS deleted,
+        countIf(event IN ('checkin_created', 'submission_created')) AS created,
         argMax(properties.user_id, timestamp) AS user_id
       FROM events
       WHERE properties.tenant = '${tenant}'
@@ -130,7 +162,7 @@ export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData
         )
       GROUP BY properties.entity_id, entity_type
     )
-    WHERE latest_event IN ('checkin_created', 'submission_created')
+    WHERE deleted = 0 AND created > 0
     GROUP BY entity_type
     ORDER BY entity_type
   `;
@@ -143,7 +175,7 @@ export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData
     FROM (
       SELECT
         properties.entity_id AS entity_id,
-        argMax(event, timestamp) AS latest_event,
+        countIf(event = 'application_deleted') AS deleted,
         argMax(properties.role, timestamp) AS role,
         argMaxIf(
           properties.gender,
@@ -198,7 +230,7 @@ export async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData
       tuple('age', age),
       tuple('grade', grade)
     ] AS demographic
-    WHERE latest_event != 'application_deleted'
+    WHERE deleted = 0
       AND role = 'participant'
       AND demographic.2 != ''
     GROUP BY dimension, value

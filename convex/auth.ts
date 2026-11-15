@@ -2,7 +2,7 @@ import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
-import { query } from "./_generated/server";
+import { query, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { betterAuth } from "better-auth/minimal";
 import authConfig from "./auth.config";
@@ -55,24 +55,74 @@ export const getAuthStatus = query({
 // the secure gate — the proxy only does an optimistic cookie check.
 export const getAdminAccess = query({
   args: { tenant: v.string() },
-  handler: async (ctx, { tenant }) => {
-    const user = await authComponent.safeGetAuthUser(ctx);
-    if (!user) {
-      return { authenticated: false, authorized: false } as const;
+  handler: (ctx, { tenant }) => readAdminAccess(ctx, tenant),
+});
+
+async function readAdminAccess(ctx: QueryCtx, tenant: string) {
+  const user = await authComponent.safeGetAuthUser(ctx);
+  if (!user) {
+    return { authenticated: false, authorized: false } as const;
+  }
+
+  const superadmin = await ctx.db
+    .query("superadmins")
+    .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", user._id))
+    .first();
+
+  const authorized = superadmin?.status === "ACCEPTANCE";
+
+  return {
+    authenticated: true,
+    authorized,
+    status: superadmin?.status ?? null,
+  } as const;
+}
+
+export const getAnalyticsCreationTime = query({
+  args: {
+    tenant: v.string(),
+    id: v.string(),
+    table: v.union(
+      v.literal("participants"),
+      v.literal("judges"),
+      v.literal("speakers"),
+      v.literal("superadmins"),
+      v.literal("volunteers"),
+      v.literal("submissions"),
+      v.literal("checkins"),
+    ),
+    userId: v.optional(v.string()),
+    eventId: v.optional(v.string()),
+  },
+  handler: async (ctx, { tenant, id, table, userId, eventId }) => {
+    if (table === "checkins") {
+      const access = await readAdminAccess(ctx, tenant);
+      if (!access.authenticated) return { authenticated: false } as const;
+      if (!access.authorized) return { authenticated: true, timestamp: null } as const;
+
+      const recordId = ctx.db.normalizeId(table, id);
+      const record = recordId && (await ctx.db.get(table, recordId));
+      const timestamp =
+        record && record.tenant === tenant && record.userid === userId && record.eventid === eventId
+          ? record.timestamp
+          : null;
+      return { authenticated: true, timestamp } as const;
     }
 
-    const superadmin = await ctx.db
-      .query("superadmins")
-      .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", user._id))
-      .first();
+    const user = await authComponent.safeGetAuthUser(ctx);
+    if (!user) return { authenticated: false } as const;
 
-    const authorized = superadmin?.status === "ACCEPTANCE";
+    const recordId = ctx.db.normalizeId(table, id);
+    const record = recordId && (await ctx.db.get(table, recordId));
+    if (!record || record.tenant !== tenant)
+      return { authenticated: true, timestamp: null } as const;
 
-    return {
-      authenticated: true,
-      authorized,
-      status: superadmin?.status ?? null,
-    } as const;
+    const email = user.email.trim().toLowerCase();
+    const ownsRecord =
+      "userId" in record
+        ? record.userId === user._id
+        : Boolean(email) && record.submitterEmail === email;
+    return { authenticated: true, timestamp: ownsRecord ? record._creationTime : null } as const;
   },
 });
 

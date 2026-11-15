@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { RiUserLine } from "@remixicon/react";
+import { captureAnalyticsEvent } from "@/lib/analytics";
 import { getUserMessage } from "@/lib/app-error";
 import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
 import { groupEventsByDay } from "@/lib/schedule";
@@ -81,13 +82,20 @@ const CheckinContent = () => {
         setIsCheckingIn(true);
 
         try {
-          await doCheckin({
+          const checkin = await doCheckin({
             userid: scan.id,
             eventid: selectedEventId,
             firstname: scan.firstname,
             lastname: scan.lastname,
             email: scan.email,
             tenant,
+          });
+
+          captureAnalyticsEvent("checkin_created", {
+            tenant,
+            entity_id: String(checkin.id),
+            user_id: scan.id,
+            event_id: selectedEventId,
           });
 
           toast.success(`Checked in: ${scanName}`, {
