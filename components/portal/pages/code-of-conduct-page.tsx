@@ -34,9 +34,7 @@ export function CodeOfConductPage({
       </Breadcrumb>
       <div>
         <h1 className="text-2xl font-bold md:text-3xl">Code of Conduct</h1>
-        <p className="mt-1 text-muted-foreground">
-          Understand our community standards.
-        </p>
+        <p className="mt-1 text-muted-foreground">Understand our community standards.</p>
       </div>
       <Markdown />
     </div>

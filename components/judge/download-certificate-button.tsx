@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { RiDownloadLine } from "@remixicon/react";
 import { toast } from "sonner";
 
 interface DownloadCertificateButtonProps {
@@ -99,9 +99,7 @@ export function DownloadCertificateButton({
         iframe.srcdoc = certHTML;
       });
 
-      const certElement = iframe.contentDocument!.getElementById(
-        "cert",
-      ) as HTMLElement;
+      const certElement = iframe.contentDocument!.getElementById("cert") as HTMLElement;
 
       // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
       // getComputedStyle and replace any unsupported color values with a safe fallback
@@ -111,10 +109,7 @@ export function DownloadCertificateButton({
         return new Proxy(styles, {
           get(target, prop) {
             const val: unknown = Reflect.get(target, prop);
-            if (
-              typeof val === "string" &&
-              (val.includes("lab(") || val.includes("oklch("))
-            ) {
+            if (typeof val === "string" && (val.includes("lab(") || val.includes("oklch("))) {
               return "rgba(0,0,0,0)";
             }
             if (typeof val === "function") return val.bind(target);
@@ -147,7 +142,7 @@ export function DownloadCertificateButton({
 
   return (
     <Button onClick={handleDownload} className="w-full" disabled={downloading}>
-      <Download className="mr-2 h-4 w-4" />
+      <RiDownloadLine className="mr-2 h-4 w-4" />
       {downloading ? "Preparing PDF…" : "Download Certificate"}
     </Button>
   );

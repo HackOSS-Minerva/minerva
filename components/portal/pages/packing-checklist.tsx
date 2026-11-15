@@ -23,9 +23,10 @@ const ITEMS = [
 ];
 
 export function PackingChecklist({ tenant }: PackingChecklistProps) {
-  const [checkedItems, setCheckedItems] = useLocalStorage<
-    Record<string, boolean>
-  >(`packing-${tenant}`, {});
+  const [checkedItems, setCheckedItems] = useLocalStorage<Record<string, boolean>>(
+    `packing-${tenant}`,
+    {},
+  );
 
   return (
     <div className="space-y-3">
@@ -41,9 +42,7 @@ export function PackingChecklist({ tenant }: PackingChecklistProps) {
             }
           />
           <span
-            className={`text-sm ${
-              checkedItems[item] ? "text-muted-foreground line-through" : ""
-            }`}
+            className={`text-sm ${checkedItems[item] ? "text-muted-foreground line-through" : ""}`}
           >
             {item}
           </span>

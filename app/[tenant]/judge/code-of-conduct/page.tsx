@@ -7,17 +7,10 @@ interface JudgeCodeOfConductRouteProps {
   }>;
 }
 
-const JudgeCodeOfConductRoute = async ({
-  params,
-}: JudgeCodeOfConductRouteProps) => {
+const JudgeCodeOfConductRoute = async ({ params }: JudgeCodeOfConductRouteProps) => {
   const { tenant } = await params;
 
-  return (
-    <CodeOfConductPage
-      tenant={tenant}
-      baseHref={`/${tenant}/judge/dashboard`}
-    />
-  );
+  return <CodeOfConductPage tenant={tenant} baseHref={`/${tenant}/judge/dashboard`} />;
 };
 
 export default JudgeCodeOfConductRoute;

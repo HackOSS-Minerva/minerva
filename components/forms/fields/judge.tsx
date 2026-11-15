@@ -57,10 +57,7 @@ export const schema = z.object({
 
   picture: z
     .file()
-    .max(
-      MAX_IMAGE_FILE_SIZE,
-      `Profile picture must be less than ${MAX_IMAGE_FILE_LABEL}.`,
-    ),
+    .max(MAX_IMAGE_FILE_SIZE, `Profile picture must be less than ${MAX_IMAGE_FILE_LABEL}.`),
 
   terms: termsSchema,
 
@@ -87,7 +84,7 @@ export const fields: FieldDef[] = [
     maxLength: 32,
   }),
   ...demographicFields(),
-  fileField({ name: "picture", label: "Profile Picture", accept: "image/*" }),
+  fileField({ name: "picture", label: "Profile Picture", accept: "image/*", required: true }),
   termsField(),
 ];
 

@@ -2,25 +2,21 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import {
-  devTools,
-  devToolCategories,
-  type DevTool,
-  type DevToolCategory,
-} from "@/data/dev-tools";
+import { devTools, devToolCategories, type DevTool, type DevToolCategory } from "@/data/dev-tools";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IconSearch, IconExternalLink, IconX } from "@tabler/icons-react";
+import { RiSearchLine, RiExternalLinkLine, RiCloseLine } from "@remixicon/react";
 
 const ALL = "All";
 const MAX_VISIBLE_TAGS = 3;
 
 // Up to two initials for the logo fallback tile; single-word names use the first
 // two characters ("Cline" -> "CL") so the tile is never a lone letter.
-import { getInitials as initialsOf } from "@/lib/utils";
+import { getInitials as initialsOf } from "@/lib/localization";
+import Link from "next/link";
 
 function matchesSearch(tool: DevTool, query: string) {
   const haystack = [tool.name, tool.description, tool.category, ...tool.tags]
@@ -36,10 +32,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
   return (
     <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5">
       {errored ? (
-        <span
-          aria-hidden
-          className="text-muted-foreground text-[11px] leading-none font-semibold"
-        >
+        <span aria-hidden className="text-muted-foreground text-xs leading-none font-semibold">
           {initialsOf(tool.name)}
         </span>
       ) : (
@@ -59,15 +52,12 @@ function ToolLogo({ tool }: { tool: DevTool }) {
 
 export function DevToolsContent() {
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState<
-    DevToolCategory | typeof ALL
-  >(ALL);
+  const [activeCategory, setActiveCategory] = useState<DevToolCategory | typeof ALL>(ALL);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return devTools.filter((tool) => {
-      if (activeCategory !== ALL && tool.category !== activeCategory)
-        return false;
+      if (activeCategory !== ALL && tool.category !== activeCategory) return false;
       return query ? matchesSearch(tool, query) : true;
     });
   }, [search, activeCategory]);
@@ -90,7 +80,7 @@ export function DevToolsContent() {
     <div className="space-y-4">
       <div className="flex gap-3 items-center justify-center">
         <div className="relative flex-1">
-          <IconSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <RiSearchLine className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search tools by name, category, or keyword..."
@@ -106,9 +96,7 @@ export function DevToolsContent() {
 
       <Tabs
         value={activeCategory}
-        onValueChange={(value) =>
-          setActiveCategory(value as DevToolCategory | typeof ALL)
-        }
+        onValueChange={(value) => setActiveCategory(value as DevToolCategory | typeof ALL)}
       >
         <TabsList className="h-auto flex-wrap">
           {[ALL, ...devToolCategories].map((category) => (
@@ -128,7 +116,7 @@ export function DevToolsContent() {
             setActiveCategory(ALL);
           }}
         >
-          <IconX className="h-3.5 w-3.5" />
+          <RiCloseLine className="h-3.5 w-3.5" />
           Clear filters
         </Button>
       )}
@@ -142,10 +130,8 @@ export function DevToolsContent() {
           {grouped.map(({ category, tools }) => (
             <section key={category} className="space-y-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold tracking-wide uppercase">
-                  {category}
-                </h2>
-                <Badge variant="outline" className="text-[10px]">
+                <h2 className="text-sm font-semibold tracking-wide uppercase">{category}</h2>
+                <Badge variant="outline" className="text-xs">
                   {tools.length}
                 </Badge>
               </div>
@@ -170,9 +156,7 @@ function DevToolCard({ tool }: { tool: DevTool }) {
           <ToolLogo tool={tool} />
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-base">{tool.name}</CardTitle>
-            <p className="text-muted-foreground mt-0.5 text-xs">
-              {tool.category}
-            </p>
+            <p className="text-muted-foreground mt-0.5 text-xs">{tool.category}</p>
           </div>
         </div>
       </CardHeader>
@@ -180,16 +164,16 @@ function DevToolCard({ tool }: { tool: DevTool }) {
         <p className="text-sm">{tool.description}</p>
         <div className="mt-auto flex flex-wrap items-center gap-1.5">
           {tool.tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-[10px]">
+            <Badge key={tag} variant="secondary" className="text-xs">
               {tag}
             </Badge>
           ))}
         </div>
         <Button variant="outline" size="sm" asChild className="w-full">
-          <a href={tool.url} target="_blank" rel="noopener noreferrer">
+          <Link href={tool.url} target="_blank" rel="noopener noreferrer">
             Visit {tool.name}
-            <IconExternalLink className="h-3 w-3" />
-          </a>
+            <RiExternalLinkLine className="h-3 w-3" />
+          </Link>
         </Button>
       </CardContent>
     </Card>

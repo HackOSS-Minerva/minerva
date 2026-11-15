@@ -2,10 +2,7 @@
 
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type {
-  CalendarResponse,
-  IncompleteScheduleEvent,
-} from "@/types/calendar";
+import type { CalendarResponse, IncompleteScheduleEvent } from "@/types/calendar";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "./get-tenant";
 import { AppError } from "@/lib/app-error";
@@ -26,10 +23,7 @@ export const useSchedule = (initialData?: CalendarResponse) => {
     }
 
     const response = await fetch(
-      buildScheduleUrl(
-        config.calendarid,
-        process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY ?? "",
-      ),
+      buildScheduleUrl(config.calendarid, process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_API_KEY ?? ""),
       { method: "GET" },
     );
 

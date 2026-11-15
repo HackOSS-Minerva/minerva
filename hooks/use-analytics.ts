@@ -9,12 +9,9 @@ export function useAnalytics(tenant: TenantSlug) {
   return useQuery({
     queryKey: ["analytics", tenant],
     queryFn: async (): Promise<AnalyticsData> => {
-      const response = await fetch(
-        `/api/analytics?tenant=${encodeURIComponent(tenant)}`,
-      );
+      const response = await fetch(`/api/analytics?tenant=${encodeURIComponent(tenant)}`);
 
-      if (!response.ok)
-        throw await parseAppError(response, "ANALYTICS_UNAVAILABLE");
+      if (!response.ok) throw await parseAppError(response, "ANALYTICS_UNAVAILABLE");
       return response.json();
     },
   });

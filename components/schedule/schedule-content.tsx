@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useSchedule, useScheduleValidation } from "@/hooks/use-schedule";
 import { columns } from "@/components/schedule/columns";
 import { DataTable } from "@/components/schedule/data-table";
@@ -10,7 +9,6 @@ import { ScheduleValidationSuccess } from "@/components/schedule/schedule-valida
 const ScheduleContent = () => {
   const { data, isLoading, isError, error } = useSchedule();
   const { incompleteEvents, totalCount } = useScheduleValidation();
-  const [filterIncompleteOnly, setFilterIncompleteOnly] = useState(false);
 
   if (isLoading) {
     return (
@@ -18,10 +16,7 @@ const ScheduleContent = () => {
         <div className="mx-auto w-10/12">
           <div className="mt-6 space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-16 w-full animate-pulse rounded bg-muted"
-              />
+              <div key={i} className="h-16 w-full animate-pulse rounded bg-muted" />
             ))}
           </div>
         </div>
@@ -33,24 +28,17 @@ const ScheduleContent = () => {
     return (
       <div className="flex flex-col items-center justify-center">
         <p className="text-destructive text-lg font-semibold">
-          Failed to load schedule:{" "}
-          {(error as Error)?.message ?? "Unknown error"}
+          Failed to load schedule: {(error as Error)?.message ?? "Unknown error"}
         </p>
       </div>
     );
   }
 
-  const displayedEvents = filterIncompleteOnly
-    ? incompleteEvents.map((issue) => issue.event)
-    : (data?.items ?? []);
+  const displayedEvents = data?.items ?? [];
   return (
     <div className="flex w-full flex-col gap-6">
       {incompleteEvents.length > 0 ? (
-        <IncompleteEventsAlert
-          incompleteEvents={incompleteEvents}
-          filterActive={filterIncompleteOnly}
-          onToggleFilter={() => setFilterIncompleteOnly((prev) => !prev)}
-        />
+        <IncompleteEventsAlert incompleteEvents={incompleteEvents} />
       ) : (
         <ScheduleValidationSuccess totalCount={totalCount} />
       )}

@@ -10,32 +10,24 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { IconX } from "@tabler/icons-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { RiCloseLine } from "@remixicon/react";
 import { Label } from "@/components/ui/label";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
-  Users,
-  Link as LinkIcon,
-  Github,
-  Figma,
-  PanelRightOpen,
-  Presentation,
-} from "lucide-react";
+  RiUser2Line,
+  RiExternalLinkLine as LinkIcon,
+  RiGithubLine,
+  RiFigmaLine,
+  RiArrowRightSFill,
+  RiPresentationLine,
+} from "@remixicon/react";
 import DetailRow from "../row";
 import { VettingSummary } from "../vetting-summary";
-import {
-  normalizeVettingStatus,
-  reviewStatusMeta,
-  visibleVettingStatus,
-} from "../vetting-status";
+import { normalizeVettingStatus, reviewStatusMeta, visibleVettingStatus } from "../vetting-status";
+import Link from "next/link";
 
 type SubmissionRecord = Doc<"submissions">;
 
@@ -83,18 +75,12 @@ function formatCompactTimestamp(ts: number): string {
   });
 }
 
-function LinkList({
-  links,
-  fallback = "None",
-}: {
-  links: string[];
-  fallback?: string;
-}) {
+function LinkList({ links, fallback = "None" }: { links: string[]; fallback?: string }) {
   if (!links || links.length === 0) return <span>{fallback}</span>;
   return (
     <div className="flex flex-col gap-1">
       {links.map((link, i) => (
-        <a
+        <Link
           key={i}
           href={link}
           target="_blank"
@@ -102,7 +88,7 @@ function LinkList({
           className="text-primary underline underline-offset-2 break-all hover:opacity-80 transition-opacity"
         >
           {link}
-        </a>
+        </Link>
       ))}
     </div>
   );
@@ -118,10 +104,8 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
           variant="ghost"
           className="group h-auto max-w-full justify-start gap-1.5 px-1.5 py-1 text-left"
         >
-          <span className="min-w-0 truncate font-medium text-foreground">
-            {item.teamName}
-          </span>
-          <PanelRightOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
+          <span className="min-w-0 truncate font-medium text-foreground">{item.teamName}</span>
+          <RiArrowRightSFill className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-xl">
@@ -130,20 +114,12 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
             <DrawerHeader className="gap-1 p-0 w-full">
               <div className="flex items-start justify-between gap-3 w-full">
                 <div className="min-w-0">
-                  <p className="text-xs font-medium uppercase text-muted-foreground">
-                    Team Name
-                  </p>
-                  <DrawerTitle className="break-words">
-                    {item.teamName}
-                  </DrawerTitle>
+                  <p className="text-xs font-medium uppercase text-muted-foreground">Team Name</p>
+                  <DrawerTitle className="break-words">{item.teamName}</DrawerTitle>
                 </div>
                 <DrawerClose asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Close submission"
-                  >
-                    <IconX className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" aria-label="Close submission">
+                    <RiCloseLine className="h-4 w-4" />
                   </Button>
                 </DrawerClose>
               </div>
@@ -153,7 +129,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
             </DrawerHeader>
           </div>
 
-          <div className="flex-1 overflow-y-auto [scrollbar-width:thin] [scrollbar-color:theme(colors.border)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border">
+          <div className="flex-1 overflow-y-auto scrollbar-thin-custom">
             <div className="grid gap-5">
               <VettingSummary
                 submissionId={item._id}
@@ -177,14 +153,14 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                   label="Devpost"
                   value={
                     item.devpost ? (
-                      <a
+                      <Link
                         href={item.devpost}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
                       >
                         {item.devpost}
-                      </a>
+                      </Link>
                     ) : (
                       "No devpost link"
                     )
@@ -192,7 +168,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Github}
+                  icon={RiGithubLine}
                   label="GitHub"
                   value={
                     item.github && item.github.length > 0 ? (
@@ -204,7 +180,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Figma}
+                  icon={RiFigmaLine}
                   label="Figma"
                   value={
                     item.figma && item.figma.length > 0 ? (
@@ -216,20 +192,20 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Presentation}
+                  icon={RiPresentationLine}
                   label="Canva / Presentation"
                   value={
                     item.canva && item.canva.length > 0 ? (
                       <LinkList links={item.canva} />
                     ) : item.presentation ? (
-                      <a
+                      <Link
                         href={item.presentation}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
                       >
                         {item.presentation}
-                      </a>
+                      </Link>
                     ) : (
                       "No presentation link"
                     )
@@ -237,7 +213,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                 />
 
                 <DetailRow
-                  icon={Users}
+                  icon={RiUser2Line}
                   label="Team Members"
                   value={
                     item.submitterEmail || item.invites.length > 0
@@ -260,10 +236,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
   );
 }
 
-function truncateDescription(
-  description: string,
-  maxLength: number = 52,
-): string {
+function truncateDescription(description: string, maxLength: number = 52): string {
   if (description.length <= maxLength) {
     return description;
   }
@@ -282,19 +255,13 @@ function ReviewCell({ item }: { item: SubmissionRecord }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <span className="ml-auto inline-flex max-w-full items-center justify-end gap-1.5 px-1.5 text-sm">
-            <VisibleIcon
-              className={`h-4 w-4 shrink-0 ${visibleStatus.iconClass}`}
-            />
-            <span className="truncate whitespace-nowrap">
-              {visibleStatus.label}
-            </span>
+            <VisibleIcon className={`h-4 w-4 shrink-0 ${visibleStatus.iconClass}`} />
+            <span className="truncate whitespace-nowrap">{visibleStatus.label}</span>
           </span>
         </TooltipTrigger>
         <TooltipContent side="top">
           <p>
-            {runStatus === "completed"
-              ? review.label
-              : `${visibleStatus.label} / ${review.label}`}
+            {runStatus === "completed" ? review.label : `${visibleStatus.label} / ${review.label}`}
           </p>
         </TooltipContent>
       </Tooltip>

@@ -1,9 +1,6 @@
 import { notFound } from "next/navigation";
 import { PortalNav } from "@/components/portal/portal-nav";
-import {
-  liveNavItems,
-  liveDropdowns,
-} from "@/components/portal/live-nav-config";
+import { liveNavItems, liveDropdowns } from "@/components/portal/live-nav-config";
 import { fetchAuthQuery } from "@/lib/auth-server";
 import { api } from "@/convex/_generated/api";
 import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";

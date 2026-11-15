@@ -1,9 +1,5 @@
 import { z } from "zod";
-import type {
-  GoogleEvent,
-  IncompleteScheduleEvent,
-  MissingScheduleField,
-} from "@/types/calendar";
+import type { GoogleEvent, IncompleteScheduleEvent, MissingScheduleField } from "@/types/calendar";
 
 /** A single entry of a day-grouped event selector. */
 export interface ScheduleEventOption {
@@ -51,10 +47,7 @@ export function groupEventsByDay(
   for (const event of events) {
     const dateTime = event.start?.dateTime ?? event.start?.date;
     const group = dateTime
-      ? getDayOfWeek(
-          dateTime,
-          event.start?.timeZone ?? FALLBACK_EVENT_TIME_ZONE,
-        )
+      ? getDayOfWeek(dateTime, event.start?.timeZone ?? FALLBACK_EVENT_TIME_ZONE)
       : "Unscheduled";
     const options = groups.get(group) ?? [];
     options.push({
@@ -98,9 +91,7 @@ export const scheduleEventStartSchema = z
     const hasValidDateTime = Boolean(
       start?.dateTime && isoDateTime.safeParse(start.dateTime).success,
     );
-    const hasValidDateOnly = Boolean(
-      start?.date && isoDate.safeParse(start.date).success,
-    );
+    const hasValidDateOnly = Boolean(start?.date && isoDate.safeParse(start.date).success);
 
     const hasValidSchedule = hasValidDateTime || hasValidDateOnly;
 
@@ -131,9 +122,7 @@ export type ValidatedScheduleEvent = z.infer<typeof scheduleEventSchema>;
  * Validates a Google Calendar event against `scheduleEventSchema`.
  * Returns an array of any missing field names (Title, Description, Date, Time, Location).
  */
-export function checkEventCompleteness(
-  event: GoogleEvent,
-): MissingScheduleField[] {
+export function checkEventCompleteness(event: GoogleEvent): MissingScheduleField[] {
   const result = scheduleEventSchema.safeParse(event);
   if (result.success) {
     return [];

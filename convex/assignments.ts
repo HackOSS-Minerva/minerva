@@ -20,11 +20,7 @@ export const setAssignments = mutation({
         submissionId: v.id("submissions"),
         room: v.optional(v.string()),
         status: v.optional(
-          v.union(
-            v.literal("assigned"),
-            v.literal("completed"),
-            v.literal("no_show"),
-          ),
+          v.union(v.literal("assigned"), v.literal("completed"), v.literal("no_show")),
         ),
       }),
     ),

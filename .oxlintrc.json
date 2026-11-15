@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "jsPlugins": ["@shadcn/lint"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "shadcn/no-arbitrary-values": "error"
+  },
+  "env": {
+    "builtin": true
+  }
+}

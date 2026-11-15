@@ -22,8 +22,10 @@ export const toastAppError = (error: unknown, fallback?: string): string => {
   const code = resolveAppErrorCode(error);
   const message = fallback ?? getUserMessage(code);
   const requestId = error instanceof AppError ? error.requestId : undefined;
-  toast.error(message, {
-    ...(requestId ? { description: `Request ID: ${requestId}` } : {}),
-  });
+  const options: { description?: string } = {};
+  if (requestId) {
+    options.description = `Request ID: ${requestId}`;
+  }
+  toast.error(message, options);
   return message;
 };

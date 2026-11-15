@@ -13,11 +13,7 @@ import * as volunteers from "@/components/dashboards/dashboards/volunteers";
 import * as attendance from "@/components/dashboards/dashboards/attendance";
 import * as feedback from "@/components/dashboards/dashboards/feedback";
 import * as submissions from "@/components/dashboards/dashboards/submissions";
-import {
-  captureAnalyticsEvent,
-  type AnalyticsRole,
-  type ApplicationStatus,
-} from "@/lib/posthog";
+import { captureAnalyticsEvent, type AnalyticsRole, type ApplicationStatus } from "@/lib/posthog";
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { useSubmissionVetting } from "./use-submissions";
 
@@ -65,10 +61,7 @@ export type DashboardBundle = {
     data: DashboardRowMap[S][];
     onDelete(args: { id: string }): Promise<unknown>;
     onDeleteMany(args: { ids: string[] }): Promise<unknown>;
-    setStatusMany?(args: {
-      ids: string[];
-      status: ApplicationStatus;
-    }): Promise<unknown>;
+    setStatusMany?(args: { ids: string[]; status: ApplicationStatus }): Promise<unknown>;
     runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
   };
 }[slugs];
@@ -88,8 +81,7 @@ const DASHBOARDS: DashboardModules = {
 // but callbacks get row ids as strings. This is the single conversion point.
 const adaptMutationArgs = <TArgs extends object>(
   mutation: (args: never) => unknown,
-): ((args: TArgs) => Promise<unknown>) =>
-  mutation as unknown as (args: TArgs) => Promise<unknown>;
+): ((args: TArgs) => Promise<unknown>) => mutation as unknown as (args: TArgs) => Promise<unknown>;
 
 const applicationRoleByDashboard = {
   participants: "participant",
@@ -156,15 +148,11 @@ export const useDashboard = (eventid?: string) => {
   } as const;
 
   const onDelete = allDeleteMutations[slug as keyof typeof allDeleteMutations];
-  const onDeleteMany =
-    allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
-  const setStatusMany =
-    allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
+  const onDeleteMany = allDeleteManyMutations[slug as keyof typeof allDeleteManyMutations];
+  const setStatusMany = allSetStatusManyMutations[slug as keyof typeof allSetStatusManyMutations];
 
-  const role =
-    applicationRoleByDashboard[slug as keyof typeof applicationRoleByDashboard];
-  const shouldCaptureDeletion =
-    Boolean(role) || slug === "attendance" || slug === "submissions";
+  const role = applicationRoleByDashboard[slug as keyof typeof applicationRoleByDashboard];
+  const shouldCaptureDeletion = Boolean(role) || slug === "attendance" || slug === "submissions";
 
   const captureDeletion = (id: string) => {
     if (role) {
@@ -234,9 +222,7 @@ export const useDashboard = (eventid?: string) => {
     dashboard: DASHBOARDS[slug],
     data: data ?? [],
     onDelete: shouldCaptureDeletion ? onDeleteWithAnalytics : onDelete,
-    onDeleteMany: shouldCaptureDeletion
-      ? onDeleteManyWithAnalytics
-      : onDeleteMany,
+    onDeleteMany: shouldCaptureDeletion ? onDeleteManyWithAnalytics : onDeleteMany,
     setStatusMany: role ? setStatusManyWithAnalytics : setStatusMany,
     runVettingMany: slug === "submissions" ? runVettingMany : undefined,
   } as DashboardBundle;

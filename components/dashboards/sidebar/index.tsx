@@ -2,14 +2,13 @@
 
 import * as React from "react";
 import {
-  IconChartBar,
-  IconClipboardList,
-  IconListDetails,
-  IconPhoto,
-  IconQrcode,
-  IconReport,
-  IconUserCheck,
-} from "@tabler/icons-react";
+  RiBarChartLine,
+  RiClipboardLine,
+  RiFileList2Line,
+  RiQrCodeLine,
+  RiFileTextLine,
+  RiUserLine,
+} from "@remixicon/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
@@ -34,31 +33,25 @@ const data = {
       title: "Analytics",
       url: "/admin/analytics",
       slug: "analytics",
-      icon: IconChartBar,
+      icon: RiBarChartLine,
     },
     {
       title: "QR Code Generator",
       url: "/admin/utilities/qr-code",
       slug: "qr-code",
-      icon: IconQrcode,
+      icon: RiQrCodeLine,
     },
     {
       title: "Check-in",
       url: "/admin/checkin",
       slug: "checkin",
-      icon: IconQrcode,
+      icon: RiQrCodeLine,
     },
     {
       title: "Schedule",
       url: "/admin/schedule",
       slug: "schedule",
-      icon: IconListDetails,
-    },
-    {
-      title: "Photos",
-      url: "/admin/photos",
-      slug: "photos",
-      icon: IconPhoto,
+      icon: RiFileList2Line,
     },
   ],
   navJudging: [
@@ -66,19 +59,19 @@ const data = {
       title: "Submissions",
       url: "/admin/dashboards/submissions",
       slug: "submissions",
-      icon: IconClipboardList,
+      icon: RiClipboardLine,
     },
     {
       title: "Judges",
       url: "/admin/dashboards/judges",
       slug: "judges",
-      icon: IconListDetails,
+      icon: RiFileList2Line,
     },
     {
       title: "Assignments",
       url: "/admin/assignments",
       slug: "assignments",
-      icon: IconUserCheck,
+      icon: RiUserLine,
     },
   ],
   navDashboards: [
@@ -86,37 +79,37 @@ const data = {
       title: "Attendance",
       url: "/admin/dashboards/attendance",
       slug: "attendance",
-      icon: IconReport,
+      icon: RiFileTextLine,
     },
     {
       title: "Participants",
       url: "/admin/dashboards/participants",
       slug: "participants",
-      icon: IconListDetails,
+      icon: RiFileList2Line,
     },
     {
       title: "Speakers",
       url: "/admin/dashboards/speakers",
       slug: "speakers",
-      icon: IconListDetails,
+      icon: RiFileList2Line,
     },
     {
       title: "Superadmins",
       url: "/admin/dashboards/superadmins",
       slug: "superadmins",
-      icon: IconListDetails,
+      icon: RiFileList2Line,
     },
     {
       title: "Volunteers",
       url: "/admin/dashboards/volunteers",
       slug: "volunteers",
-      icon: IconListDetails,
+      icon: RiFileList2Line,
     },
     {
       title: "Feedback",
       url: "/admin/dashboards/feedback",
       slug: "feedback",
-      icon: IconReport,
+      icon: RiFileTextLine,
     },
   ],
   navSecondary: [],
@@ -130,13 +123,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Feature-flagged nav entries are hidden entirely when their flag is off.
   const enabled = {
-    photos: useFeatureFlag("photos").isEnabled,
     analytics: useFeatureFlag("analytics").isEnabled,
     assignments: useFeatureFlag("assignments").isEnabled,
   };
   const flagBySlug: Partial<Record<string, FeatureFlagKey>> = {
     analytics: "analytics",
-    photos: "photos",
     assignments: "assignments",
   };
   const isFlagEnabled = (slug: string) => {

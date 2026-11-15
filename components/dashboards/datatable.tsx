@@ -1,17 +1,17 @@
 "use client";
 
 import {
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-  IconCopy,
-  IconDownload,
-  IconLayoutColumns,
-  IconSwords,
-  IconTrash,
-} from "@tabler/icons-react";
+  RiArrowDownLine,
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiArrowLeftDoubleLine,
+  RiArrowRightDoubleLine,
+  RiFileCopyLine,
+  RiDownloadLine,
+  RiLayout2Line,
+  RiSwordLine,
+  RiDeleteBinLine,
+} from "@remixicon/react";
 import {
   flexRender,
   getCoreRowModel,
@@ -71,7 +71,7 @@ import { AppError, logAppError } from "@/lib/app-error";
 import type { ApplicationStatus } from "@/lib/posthog";
 import type { VettingBatchResult } from "@/lib/vetting/types";
 import { MAX_VETTING_BATCH_SIZE } from "@/lib/vetting/rules";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 import { TableToolbar } from "./toolbar";
 import { StatusActions, type ApplicantRow } from "./status-actions";
 
@@ -91,10 +91,7 @@ export interface DashboardProps<T extends ApplicantRow> {
   };
   onDelete?(args: { id: string }): Promise<unknown>;
   onDeleteMany?(args: { ids: string[] }): Promise<unknown>;
-  setStatusMany?(args: {
-    ids: string[];
-    status: ApplicationStatus;
-  }): Promise<unknown>;
+  setStatusMany?(args: { ids: string[]; status: ApplicationStatus }): Promise<unknown>;
   runVettingMany?: (ids: string[]) => Promise<VettingBatchResult[]>;
 }
 
@@ -193,17 +190,13 @@ export const DataTable = <T extends ApplicantRow>({
     },
   });
 
-  const selectedIds = table
-    .getSelectedRowModel()
-    .rows.map((row) => row.original._id);
+  const selectedIds = table.getSelectedRowModel().rows.map((row) => row.original._id);
 
   const handleRunVetting = async () => {
     if (!runVettingMany || selectedIds.length === 0) return;
 
     if (selectedIds.length > MAX_VETTING_BATCH_SIZE) {
-      toast.error(
-        `At most ${MAX_VETTING_BATCH_SIZE} projects can be vetted at once.`,
-      );
+      toast.error(`At most ${MAX_VETTING_BATCH_SIZE} projects can be vetted at once.`);
       return;
     }
 
@@ -215,18 +208,14 @@ export const DataTable = <T extends ApplicantRow>({
       setRowSelection({});
 
       if (failed === 0) {
-        toast.success(
-          `Vetted ${results.length} project${results.length === 1 ? "" : "s"}`,
-        );
+        toast.success(`Vetted ${results.length} project${results.length === 1 ? "" : "s"}`);
       } else if (succeeded === 0) {
         logAppError({
           route: "datatable-vetting",
           error: results[0]?.errorDetails,
           requestId: "client",
         });
-        toast.warning(
-          `Failed to vet ${failed} project${failed === 1 ? "" : "s"}`,
-        );
+        toast.warning(`Failed to vet ${failed} project${failed === 1 ? "" : "s"}`);
       } else {
         logAppError({
           route: "datatable-vetting",
@@ -268,20 +257,12 @@ export const DataTable = <T extends ApplicantRow>({
     <Tabs defaultValue="outline">
       <div className="flex items-start gap-2">
         {emailRole && (
-          <StatusActions
-            table={table}
-            role={emailRole}
-            onSuccess={() => setRowSelection({})}
-          />
+          <StatusActions table={table} role={emailRole} onSuccess={() => setRowSelection({})} />
         )}
         <TableToolbar table={table} slug={slug} />
         <div className="ml-auto flex items-center gap-2">
           <Select defaultValue="accepted">
-            <SelectTrigger
-              className="flex w-fit @4xl/main:hidden"
-              size="sm"
-              id="view-selector"
-            >
+            <SelectTrigger className="flex w-fit @4xl/main:hidden" size="sm" id="view-selector">
               <SelectValue placeholder="Select a view" />
             </SelectTrigger>
             <SelectContent>
@@ -300,7 +281,7 @@ export const DataTable = <T extends ApplicantRow>({
                   onClick={handleRunVetting}
                   disabled={selectedIds.length === 0 || vetting}
                 >
-                  <IconSwords />
+                  <RiSwordLine />
                   <span className="hidden lg:inline ml-1">
                     {vetting ? "Vetting..." : "Vet Projects"}
                   </span>
@@ -314,13 +295,11 @@ export const DataTable = <T extends ApplicantRow>({
                     const emails = rows.map((row) => row.original.email);
                     const csv = emails.join(",");
                     navigator.clipboard.writeText(csv);
-                    toast.success(
-                      `Copied ${emails.length} emails to clipboard`,
-                    );
+                    toast.success(`Copied ${emails.length} emails to clipboard`);
                   }}
                   disabled={table.getFilteredRowModel().rows.length === 0}
                 >
-                  <IconCopy />
+                  <RiFileCopyLine />
                   <span className="hidden lg:inline ml-1">Copy Emails</span>
                 </Button>
               ))}
@@ -330,9 +309,7 @@ export const DataTable = <T extends ApplicantRow>({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const rows = table
-                    .getFilteredRowModel()
-                    .rows.map((row) => row.original);
+                  const rows = table.getFilteredRowModel().rows.map((row) => row.original);
                   const blob = convertToCSV(rows, csvFields);
                   const now = new Date();
                   const pad = (n: number) => String(n).padStart(2, "0");
@@ -348,7 +325,7 @@ export const DataTable = <T extends ApplicantRow>({
                 }}
                 disabled={table.getFilteredRowModel().rows.length === 0}
               >
-                <IconDownload />
+                <RiDownloadLine />
                 <span className="hidden lg:inline ml-1">Download CSV</span>
               </Button>
             )}
@@ -356,18 +333,16 @@ export const DataTable = <T extends ApplicantRow>({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
-                  <IconLayoutColumns />
+                  <RiLayout2Line />
                   <span>Columns</span>
-                  <IconChevronDown />
+                  <RiArrowDownLine />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 {table
                   .getAllColumns()
                   .filter(
-                    (column) =>
-                      typeof column.accessorFn !== "undefined" &&
-                      column.getCanHide(),
+                    (column) => typeof column.accessorFn !== "undefined" && column.getCanHide(),
                   )
                   .map((column) => {
                     return (
@@ -375,9 +350,7 @@ export const DataTable = <T extends ApplicantRow>({
                         key={column.id}
                         className="capitalize"
                         checked={column.getIsVisible()}
-                        onCheckedChange={(value) =>
-                          column.toggleVisibility(!!value)
-                        }
+                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
                       >
                         {column.id}
                       </DropdownMenuCheckboxItem>
@@ -391,26 +364,21 @@ export const DataTable = <T extends ApplicantRow>({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const ids = table
-                    .getSelectedRowModel()
-                    .rows.map((row) => row.original._id);
+                  const ids = table.getSelectedRowModel().rows.map((row) => row.original._id);
                   setDeleteTarget({ type: "many", ids });
                   setDeleteDialogOpen(true);
                 }}
                 disabled={table.getSelectedRowModel().rows.length === 0}
                 className="hover:bg-red-500 hover:text-white"
               >
-                <IconTrash />
+                <RiDeleteBinLine />
                 <span className="hidden lg:inline ml-1">Delete</span>
               </Button>
             )}
           </div>
         </div>
       </div>
-      <TabsContent
-        value="outline"
-        className="relative flex flex-col gap-4 overflow-auto"
-      >
+      <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
         <div className="overflow-hidden rounded-lg border">
           <Table className={isSubmissions ? "table-fixed" : undefined}>
             <TableHeader className="bg-muted sticky top-0 z-10">
@@ -428,21 +396,14 @@ export const DataTable = <T extends ApplicantRow>({
                       >
                         {header.isPlaceholder
                           ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                          : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     );
                   })}
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody
-              className={
-                readOnly ? undefined : "**:data-[slot=table-cell]:first:w-8"
-              }
-            >
+            <TableBody className={readOnly ? undefined : "**:data-[slot=table-cell]:first:w-8"}>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
@@ -458,20 +419,14 @@ export const DataTable = <T extends ApplicantRow>({
                           isSubmissions && "overflow-hidden",
                         )}
                       >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={visibleColumns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={visibleColumns.length} className="h-24 text-center">
                     No results.
                   </TableCell>
                 </TableRow>
@@ -496,9 +451,7 @@ export const DataTable = <T extends ApplicantRow>({
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
+                  <SelectValue placeholder={table.getState().pagination.pageSize} />
                 </SelectTrigger>
                 <SelectContent side="top">
                   {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -510,8 +463,7 @@ export const DataTable = <T extends ApplicantRow>({
               </Select>
             </div>
             <div className="flex w-fit items-center justify-center text-sm font-medium">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               <Button
@@ -521,7 +473,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
+                <RiArrowLeftDoubleLine />
               </Button>
               <Button
                 variant="outline"
@@ -531,7 +483,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to previous page</span>
-                <IconChevronLeft />
+                <RiArrowLeftLine />
               </Button>
               <Button
                 variant="outline"
@@ -541,7 +493,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to next page</span>
-                <IconChevronRight />
+                <RiArrowRightLine />
               </Button>
               <Button
                 variant="outline"
@@ -551,7 +503,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
+                <RiArrowRightDoubleLine />
               </Button>
             </div>
           </div>

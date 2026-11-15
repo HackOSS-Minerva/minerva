@@ -76,7 +76,8 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/typescript-hackpack",
     category: ["General"],
     featured: false,
-    instructions: "Use This Template → bun install → bun run src/index.ts.",
+    instructions:
+      "Use This Template → bun install → bun run src/index.ts.",
   },
   {
     id: "python-hackpack",
@@ -87,7 +88,8 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/python-hackpack",
     category: ["General"],
     featured: false,
-    instructions: "Use This Template → uv sync --locked → uv run calculator.",
+    instructions:
+      "Use This Template → uv sync --locked → uv run calculator.",
   },
   {
     id: "nextjs-hackpack",
@@ -98,6 +100,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/nextjs-hackpack",
     category: ["Web Development"],
     featured: true,
-    instructions: "Use This Template → bun install → bun dev (localhost:3000).",
+    instructions:
+      "Use This Template → bun install → bun dev (localhost:3000).",
   },
 ];

@@ -13,13 +13,12 @@ const Rejection = ({ name, position, preview, tenant }: RejectionProps) => {
   return (
     <Template name={name} preview={preview} tenant={tenant}>
       <Text>
-        Thank you for applying to {tenant.name} as a{" "}
-        {position ?? "Insert Position"}. Unfortunately, due to particular
-        circumstances we are unable to provide you a spot at {tenant.name}.
+        Thank you for applying to {tenant.name} as a {position ?? "Insert Position"}. Unfortunately,
+        due to particular circumstances we are unable to provide you a spot at {tenant.name}.
       </Text>
       <Text>
-        However, we loved getting to know you and hope that you apply next year.
-        If you have any questions, please reach out at {tenant.email}
+        However, we loved getting to know you and hope that you apply next year. If you have any
+        questions, please reach out at {tenant.email}
       </Text>
     </Template>
   );

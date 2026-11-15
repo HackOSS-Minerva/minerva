@@ -49,13 +49,7 @@ export const genders = ["Female", "Male", "Nonbinary", "Other"] as const;
 
 export const ages = ["18", "19", "20", "21", "22", "23+"] as const;
 
-export const roles = [
-  "participant",
-  "judge",
-  "speaker",
-  "superadmin",
-  "volunteer",
-] as const;
+export const roles = ["participant", "judge", "speaker", "superadmin", "volunteer"] as const;
 
 export const feedbackFindOptions = [
   "instagram",

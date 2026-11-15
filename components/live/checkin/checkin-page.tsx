@@ -38,15 +38,11 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>
-              Dashboard
-            </BreadcrumbLink>
+            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/checkin`}>
-              Participate
-            </BreadcrumbLink>
+            <BreadcrumbLink href={`/${tenant}/live/checkin`}>Participate</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -57,8 +53,7 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
       <div>
         <h1 className="text-2xl font-bold md:text-3xl">Check-in</h1>
         <p className="mt-1 text-muted-foreground">
-          Show your QR code at the event check-in desk to verify your
-          attendance.
+          Show your QR code at the event check-in desk to verify your attendance.
         </p>
       </div>
       <Card className="border-none">
@@ -77,8 +72,8 @@ export function CheckinPage({ tenant }: CheckinPageProps) {
               </div>
             ) : user ? (
               <p className="max-w-xs text-center text-sm text-muted-foreground">
-                Your account is missing the email or id needed to build a
-                check-in code. Sign out and back in, or contact an organizer.
+                Your account is missing the email or id needed to build a check-in code. Sign out
+                and back in, or contact an organizer.
               </p>
             ) : (
               <p className="max-w-xs text-center text-sm text-muted-foreground">

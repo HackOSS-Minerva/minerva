@@ -1,8 +1,8 @@
-import { Check } from "lucide-react";
+import { RiCheckLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { TenantSlug } from "@/hooks/get-tenant";
-import { toTitleCase } from "@/lib/utils";
+import { toTitleCase } from "@/lib/localization";
 
 interface AcceptedProps {
   form: string;
@@ -23,18 +23,15 @@ const Accepted = ({ form, tenant }: AcceptedProps) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
-      <Check className="h-12 w-12 text-primary" />
+      <RiCheckLine className="h-12 w-12 text-primary" />
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold text-primary">Congratulations!</h2>
         <p className="text-primary">
-          Your {roleLabel} application has been accepted. We&apos;re excited to
-          have you join us!
+          Your {roleLabel} application has been accepted. We&apos;re excited to have you join us!
         </p>
         {dashboardHref && (
           <Button asChild className="mt-4">
-            <Link href={`/${tenant}${dashboardHref}`}>
-              Go to {roleLabel} Dashboard
-            </Link>
+            <Link href={`/${tenant}${dashboardHref}`}>Go to {roleLabel} Dashboard</Link>
           </Button>
         )}
       </div>

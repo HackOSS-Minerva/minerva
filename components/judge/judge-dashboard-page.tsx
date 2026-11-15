@@ -42,9 +42,7 @@ export function JudgeDashboardPage({
             applyLabel="Apply to be a Judge"
           />
         </div>
-        <p className="mt-4 text-muted-foreground">
-          Live event information is not available yet.
-        </p>
+        <p className="mt-4 text-muted-foreground">Live event information is not available yet.</p>
       </div>
     );
   }

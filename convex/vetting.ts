@@ -1,9 +1,4 @@
-import {
-  action,
-  internalMutation,
-  internalQuery,
-  type ActionCtx,
-} from "./_generated/server";
+import { action, internalMutation, internalQuery, type ActionCtx } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
@@ -23,10 +18,7 @@ import type {
   VettingEventConfig,
 } from "../lib/vetting/types";
 
-const automatedVettingResult = v.union(
-  v.literal("verified"),
-  v.literal("needs_review"),
-);
+const automatedVettingResult = v.union(v.literal("verified"), v.literal("needs_review"));
 
 const vettingStatus = v.union(
   v.literal("not_started"),
@@ -78,20 +70,16 @@ async function requireOrganizerAccess(
   ctx: ActionCtx,
   submissionId: Id<"submissions">,
 ): Promise<Doc<"submissions">> {
-  const submission = await ctx.runQuery(
-    internal.vetting.getSubmissionForVetting,
-    { id: submissionId },
-  );
+  const submission = await ctx.runQuery(internal.vetting.getSubmissionForVetting, {
+    id: submissionId,
+  });
   if (!submission) throw convexError("NOT_FOUND", "Submission not found");
 
   const access = await ctx.runQuery(api.auth.getAdminAccess, {
     tenant: submission.tenant,
   });
   if (!access.authorized) {
-    throw convexError(
-      "FORBIDDEN",
-      "Organizer access is required to vet projects",
-    );
+    throw convexError("FORBIDDEN", "Organizer access is required to vet projects");
   }
 
   return submission;
@@ -110,10 +98,7 @@ async function executeSubmissionVetting(
       vettingStatus: "running",
     });
 
-    const team = getSubmissionTeam(
-      submission.submitterEmail,
-      submission.invites,
-    );
+    const team = getSubmissionTeam(submission.submitterEmail, submission.invites);
     githubResult = await runGithubSubmissionVetting({
       repositoryUrls: submission.github,
       declaredEmails: team.memberEmails,
@@ -162,8 +147,7 @@ async function executeSubmissionVetting(
       result: "needs_review",
       storedVetted,
       errorCode: "UPSTREAM_UNAVAILABLE",
-      errorDetails:
-        error instanceof Error ? error.message : "Unknown vetting failure",
+      errorDetails: error instanceof Error ? error.message : "Unknown vetting failure",
       findings: githubResult?.findings ?? [],
       repos: githubResult?.repos ?? [],
       contributors: githubResult?.contributors ?? [],
@@ -190,10 +174,7 @@ export const runSubmissionVettingMany = action({
     submissionIds: v.array(v.id("submissions")),
     event: eventConfigValidator,
   },
-  handler: async (
-    ctx,
-    { submissionIds, event },
-  ): Promise<VettingBatchResult[]> => {
+  handler: async (ctx, { submissionIds, event }): Promise<VettingBatchResult[]> => {
     validateVettingEventConfig(event);
 
     const uniqueSubmissionIds = Array.from(new Set(submissionIds));

@@ -4,12 +4,12 @@ import { Field, FieldGroup } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { useFields, type FormValues } from "@/hooks/use-fields";
 import { useForm, type DeepKeys } from "@tanstack/react-form";
-import { Loader2 } from "lucide-react";
+import { RiLoaderLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { useEffect, useMemo, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { triggerConfetti } from "@/hooks/use-confetti";
+import { useTriggerConfetti } from "@/components/confetti/confetti-overlay";
 import type { TenantSlug } from "@/hooks/get-tenant";
 import type { slugs } from "@/lib/form-defs";
 
@@ -43,6 +43,8 @@ const Fields = () => {
     tenant: TenantSlug;
   }>();
 
+  const { triggerConfetti } = useTriggerConfetti();
+
   const identity = useSessionIdentity();
 
   // Seed defaults with the signed-in user's identity so the name/email fields
@@ -66,9 +68,7 @@ const Fields = () => {
       onSubmitAsync: schema,
     },
     onSubmit: async ({ value }) => {
-      toast.success(
-        `Thank you for applying. We will send you an application update shortly!`,
-      );
+      toast.success(`Thank you for applying. We will send you an application update shortly!`);
       triggerConfetti();
       // Schema validator already narrowed `value`; the cast bridges TanStack's placeholder types.
       await onSubmit(value as FormValues);
@@ -86,15 +86,13 @@ const Fields = () => {
     if (!identity.firstname && !identity.lastname && !identity.email) return;
 
     const current = formInstance.state.values;
-    const needsPrefill =
-      !current.firstname && !current.lastname && !current.email;
+    const needsPrefill = !current.firstname && !current.lastname && !current.email;
 
     if (needsPrefill) {
       formInstance.reset(initialValues);
       didPrefill.current = true;
     }
     // Deps intentionally exclude `formInstance` (stable) and `initialValues`.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identity]);
 
   return (
@@ -110,10 +108,7 @@ const Fields = () => {
           <FieldGroup>
             <FieldGroup>
               {fields.map(({ name, children }, key) => (
-                <formInstance.Field
-                  key={key}
-                  name={name as DeepKeys<typeof initialValues>}
-                >
+                <formInstance.Field key={key} name={name as DeepKeys<typeof initialValues>}>
                   {(fieldApi) => children(fieldApi)}
                 </formInstance.Field>
               ))}
@@ -121,11 +116,13 @@ const Fields = () => {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="bg-transparent border-0">
         <Field orientation="horizontal" className="justify-center">
           <formInstance.Subscribe selector={(state) => state.isSubmitting}>
             {(isSubmitting) => (
               <Button
+                className="px-6"
+                size="lg"
                 type="submit"
                 form={metadata.id}
                 disabled={isSubmitting}
@@ -133,7 +130,7 @@ const Fields = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="size-4 animate-spin" />
+                    <RiLoaderLine className="size-4 animate-spin" />
                     Submitting...
                   </>
                 ) : (

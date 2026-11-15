@@ -25,10 +25,7 @@ export interface TenantConfig {
 }
 
 const typedTenantConfigs = Object.fromEntries<TenantConfig>(
-  tenantSlugs.map((slug) => [
-    slug,
-    { ...tenantConfigs[slug], slug } satisfies TenantConfig,
-  ]),
+  tenantSlugs.map((slug) => [slug, { ...tenantConfigs[slug], slug } satisfies TenantConfig]),
 ) as Record<TenantSlug, TenantConfig>;
 
 type RegistryContent = (typeof tenantContent)[TenantSlug];

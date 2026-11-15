@@ -29,9 +29,7 @@ export const getstatus = query({
   handler: async (ctx, { tenant, userId }) => {
     const participant = await ctx.db
       .query("participants")
-      .withIndex("by_tenant_user", (q) =>
-        q.eq("tenant", tenant).eq("userId", userId),
-      )
+      .withIndex("by_tenant_user", (q) => q.eq("tenant", tenant).eq("userId", userId))
       .first();
 
     if (!participant) return null;
@@ -120,8 +118,7 @@ export const setStatusMany = mutation({
   handler: async (ctx, { ids, status }) => {
     for (const id of ids) {
       const participant = await ctx.db.get("participants", id);
-      if (!participant)
-        throw convexError("NOT_FOUND", `Participant ${id} not found`);
+      if (!participant) throw convexError("NOT_FOUND", `Participant ${id} not found`);
 
       if (participant.status === status) continue;
 

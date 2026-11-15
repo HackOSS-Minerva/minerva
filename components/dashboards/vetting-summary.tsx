@@ -2,23 +2,23 @@
 
 import { useMemo, useState } from "react";
 import {
-  CheckCircle2,
-  CircleDashed,
-  Clock3,
-  ExternalLink,
-  GitBranch,
-  GitCommit,
-  RefreshCw,
-  UserRound,
-  UsersRound,
-} from "lucide-react";
+  RiCheckLine,
+  RiMoreLine,
+  RiTimeLine,
+  RiExternalLinkLine,
+  RiGitBranchLine,
+  RiGitCommitLine,
+  RiRefreshLine,
+  RiUserLine,
+  RiUser2Line,
+} from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSubmissionVetting } from "@/hooks/use-submissions";
 import { toastAppError } from "@/hooks/use-app-error";
 import { getUserMessage, logAppError } from "@/lib/app-error";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 import type {
   FindingCode,
   SubmissionReviewStatus,
@@ -28,27 +28,27 @@ import type {
   VettingStatus,
 } from "@/lib/vetting/types";
 import { reviewStatusMeta } from "./vetting-status";
+import Link from "next/link";
 
-const peopleFindingMeta: Partial<
-  Record<FindingCode, { label: string; icon: typeof UserRound }>
-> = {
-  declared_team_size_exceeds_limit: {
-    label: "Declared team size exceeds limit",
-    icon: UsersRound,
-  },
-  git_contributor_count_exceeds_limit: {
-    label: "Git contributor count exceeds limit",
-    icon: UsersRound,
-  },
-  unregistered_git_contributor: {
-    label: "Unregistered Git contributor",
-    icon: UserRound,
-  },
-  author_committer_mismatch: {
-    label: "Author and committer mismatch",
-    icon: GitCommit,
-  },
-};
+const peopleFindingMeta: Partial<Record<FindingCode, { label: string; icon: typeof RiUserLine }>> =
+  {
+    declared_team_size_exceeds_limit: {
+      label: "Declared team size exceeds limit",
+      icon: RiUser2Line,
+    },
+    git_contributor_count_exceeds_limit: {
+      label: "Git contributor count exceeds limit",
+      icon: RiUser2Line,
+    },
+    unregistered_git_contributor: {
+      label: "Unregistered Git contributor",
+      icon: RiUserLine,
+    },
+    author_committer_mismatch: {
+      label: "Author and committer mismatch",
+      icon: RiGitCommitLine,
+    },
+  };
 
 const unavailableRepositoryFindingCodes = new Set<FindingCode>([
   "repo_missing",
@@ -58,9 +58,7 @@ const unavailableRepositoryFindingCodes = new Set<FindingCode>([
   "github_api_error",
 ]);
 
-export function repositoryEvidenceExplanation(
-  findings: VettingFinding[],
-): string | null {
+export function repositoryEvidenceExplanation(findings: VettingFinding[]): string | null {
   const messages = Array.from(
     new Set(
       findings
@@ -69,9 +67,7 @@ export function repositoryEvidenceExplanation(
     ),
   );
 
-  return messages.length > 0
-    ? `Repository evidence unavailable: ${messages.join(" ")}`
-    : null;
+  return messages.length > 0 ? `Repository evidence unavailable: ${messages.join(" ")}` : null;
 }
 
 function formatDate(timestamp?: number) {
@@ -120,17 +116,14 @@ export function VettingSummary({
 
   const peopleFindings = useMemo(
     () =>
-      (result?.findings ?? []).filter(
-        (finding) => peopleFindingMeta[finding.code] !== undefined,
-      ),
+      (result?.findings ?? []).filter((finding) => peopleFindingMeta[finding.code] !== undefined),
     [result?.findings],
   );
   const repositoryExplanation = useMemo(
     () => repositoryEvidenceExplanation(result?.findings ?? []),
     [result?.findings],
   );
-  const isBusy =
-    isRunning || vettingStatus === "queued" || vettingStatus === "running";
+  const isBusy = isRunning || vettingStatus === "queued" || vettingStatus === "running";
   const reviewStatus = result?.storedVetted ?? currentStatus;
   const status = reviewStatusMeta[reviewStatus];
   const StatusIcon = status.icon;
@@ -154,7 +147,7 @@ export function VettingSummary({
               onClick={() => void runVettingAction()}
               disabled={isBusy}
             >
-              <RefreshCw className={cn("h-4 w-4", isBusy && "animate-spin")} />
+              <RiRefreshLine className={cn("h-4 w-4", isBusy && "animate-spin")} />
               {isBusy
                 ? "Vetting..."
                 : result || vettingStatus === "completed"
@@ -164,13 +157,9 @@ export function VettingSummary({
           </div>
         </div>
         {repositoryExplanation ? (
-          <p className="text-xs text-amber-700 dark:text-amber-300">
-            {repositoryExplanation}
-          </p>
+          <p className="text-xs text-amber-700 dark:text-amber-300">{repositoryExplanation}</p>
         ) : result?.errorCode ? (
-          <p className="text-xs text-red-600">
-            {getUserMessage(result.errorCode)}
-          </p>
+          <p className="text-xs text-red-600">{getUserMessage(result.errorCode)}</p>
         ) : null}
       </div>
 
@@ -188,7 +177,7 @@ export function VettingSummary({
 
           <div className="grid gap-3">
             <h4 className="flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
-              <GitBranch className="h-4 w-4" />
+              <RiGitBranchLine className="h-4 w-4" />
               Repositories
             </h4>
             {result.repos.length > 0 ? (
@@ -211,15 +200,15 @@ export function VettingSummary({
                       className="grid gap-3 rounded-md border border-border/70 p-3"
                     >
                       <div className="flex flex-wrap items-start justify-between gap-2">
-                        <a
+                        <Link
                           href={repo.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex min-w-0 items-center gap-1 break-all text-sm font-medium text-primary underline underline-offset-2"
                         >
                           {repo.owner}/{repo.name}
-                          <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-                        </a>
+                          <RiExternalLinkLine className="h-3.5 w-3.5 shrink-0" />
+                        </Link>
                         {repo.isPrivate ? (
                           <Badge variant="outline" className="text-amber-700">
                             Private
@@ -235,7 +224,7 @@ export function VettingSummary({
                               "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-200",
                           )}
                         >
-                          <Clock3 className="h-3.5 w-3.5" />
+                          <RiTimeLine className="h-3.5 w-3.5" />
                           Created: {formatDate(repo.createdAt)}
                         </div>
                         <div
@@ -245,7 +234,7 @@ export function VettingSummary({
                               "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/70 dark:bg-amber-950/20 dark:text-amber-200",
                           )}
                         >
-                          <Clock3 className="h-3.5 w-3.5" />
+                          <RiTimeLine className="h-3.5 w-3.5" />
                           Last push: {formatDate(repo.pushedAt)}
                         </div>
                       </div>
@@ -254,9 +243,7 @@ export function VettingSummary({
                 })}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                No repository evidence was recorded.
-              </p>
+              <p className="text-sm text-muted-foreground">No repository evidence was recorded.</p>
             )}
           </div>
 
@@ -264,7 +251,7 @@ export function VettingSummary({
 
           <div className="grid gap-3">
             <h4 className="flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
-              <GitCommit className="h-4 w-4" />
+              <RiGitCommitLine className="h-4 w-4" />
               People
             </h4>
             {peopleFindings.length > 0 ? (
@@ -282,9 +269,7 @@ export function VettingSummary({
                       <FindingIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                       <div className="min-w-0">
                         <p className="font-medium leading-5">{meta.label}</p>
-                        <p className="text-xs leading-5 opacity-80">
-                          {finding.message}
-                        </p>
+                        <p className="text-xs leading-5 opacity-80">{finding.message}</p>
                       </div>
                     </div>
                   );
@@ -292,7 +277,7 @@ export function VettingSummary({
               </div>
             ) : (
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                <RiCheckLine className="h-3.5 w-3.5 text-emerald-500" />
                 No people-related issues found.
               </div>
             )}
@@ -307,10 +292,8 @@ export function VettingSummary({
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 text-sm font-medium">
-                          <UserRound className="h-4 w-4 text-muted-foreground" />
-                          <span className="break-all">
-                            {contributorLabel(contributor)}
-                          </span>
+                          <RiUserLine className="h-4 w-4 text-muted-foreground" />
+                          <span className="break-all">{contributorLabel(contributor)}</span>
                         </div>
                         <div className="mt-1 grid gap-0.5 text-xs text-muted-foreground">
                           <span>{contributor.commitCount} commits</span>
@@ -321,11 +304,7 @@ export function VettingSummary({
                         </div>
                       </div>
                       <Badge
-                        variant={
-                          contributor.mappingSource === "unmapped"
-                            ? "outline"
-                            : "secondary"
-                        }
+                        variant={contributor.mappingSource === "unmapped" ? "outline" : "secondary"}
                         className={cn(
                           "capitalize",
                           contributor.mappingSource === "unmapped" &&
@@ -340,7 +319,7 @@ export function VettingSummary({
               </div>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CircleDashed className="h-4 w-4" />
+                <RiMoreLine className="h-4 w-4" />
                 No event-window Git contributors were found.
               </div>
             )}

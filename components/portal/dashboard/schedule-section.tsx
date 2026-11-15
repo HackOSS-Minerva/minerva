@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
-import { IconClock, IconSearch } from "@tabler/icons-react";
+import { RiTimeLine, RiSearchLine } from "@remixicon/react";
 
 interface ScheduleSectionProps {
   /** SSR'd calendar payload from the server page — used as React Query
@@ -27,16 +27,11 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
 
   const [now] = useState(Date.now);
 
-  const getEventTimestamp = (
-    point?: { dateTime?: string; date?: string },
-    isEnd = false,
-  ) => {
+  const getEventTimestamp = (point?: { dateTime?: string; date?: string }, isEnd = false) => {
     if (!point) return 0;
     if (point.dateTime) return new Date(point.dateTime).getTime();
     if (point.date) {
-      return new Date(
-        `${point.date}T${isEnd ? "23:59:59" : "00:00:00"}`,
-      ).getTime();
+      return new Date(`${point.date}T${isEnd ? "23:59:59" : "00:00:00"}`).getTime();
     }
     return 0;
   };
@@ -71,9 +66,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
     : next?.start?.date
       ? `${next.start.date}T00:00:00`
       : null;
-  const nextEventCountdown = useCountdown(
-    nextStartTime ? new Date(nextStartTime) : null,
-  );
+  const nextEventCountdown = useCountdown(nextStartTime ? new Date(nextStartTime) : null);
 
   const formatTime = (dateTime?: string, timeZone?: string) => {
     if (!dateTime) return "All Day";
@@ -120,11 +113,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
   const uniqueDays = useMemo(() => {
     if (!data?.items) return [];
     const days = [
-      ...new Set(
-        data.items.map((e) =>
-          getEventDayLabel(e.start?.dateTime ?? e.start?.date),
-        ),
-      ),
+      ...new Set(data.items.map((e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date))),
     ];
     return days;
   }, [data]);
@@ -135,24 +124,18 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
       const matchesSearch =
         searchQuery.trim() === "" ||
         event.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ??
-          false);
+        (event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
 
       const matchesDay =
         selectedDay === "all" ||
-        getEventDayLabel(event.start?.dateTime ?? event.start?.date) ===
-          selectedDay;
+        getEventDayLabel(event.start?.dateTime ?? event.start?.date) === selectedDay;
 
       return matchesSearch && matchesDay;
     });
   }, [data, searchQuery, selectedDay]);
 
-  const filteredCurrent = current
-    ? filteredItems.find((e) => e.id === current.id) || null
-    : null;
-  const filteredNext = next
-    ? filteredItems.find((e) => e.id === next.id) || null
-    : null;
+  const filteredCurrent = current ? filteredItems.find((e) => e.id === current.id) || null : null;
+  const filteredNext = next ? filteredItems.find((e) => e.id === next.id) || null : null;
 
   if (isLoading) {
     return (
@@ -171,8 +154,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
       <div>
         <h2 className="mb-4 text-lg font-semibold">Schedule</h2>
         <p className="text-sm text-destructive">
-          Failed to load schedule:{" "}
-          {(error as Error)?.message ?? "Unknown error"}
+          Failed to load schedule: {(error as Error)?.message ?? "Unknown error"}
         </p>
       </div>
     );
@@ -198,7 +180,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <IconSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <RiSearchLine className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Search events..."
@@ -219,15 +201,10 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
                 <TabsTrigger key={day} value={day} className="text-xs">
                   {formatDayButtonLabel(
                     data?.items.find(
-                      (e) =>
-                        getEventDayLabel(e.start?.dateTime ?? e.start?.date) ===
-                        day,
+                      (e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date) === day,
                     )?.start?.dateTime ??
                       data?.items.find(
-                        (e) =>
-                          getEventDayLabel(
-                            e.start?.dateTime ?? e.start?.date,
-                          ) === day,
+                        (e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date) === day,
                       )?.start?.date ??
                       day,
                   )}
@@ -250,9 +227,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
               {formatEventTimes(filteredCurrent.start, filteredCurrent.end)}
             </p>
             {filteredCurrent.location && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                📍 {filteredCurrent.location}
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">📍 {filteredCurrent.location}</p>
             )}
           </div>
         )}
@@ -260,15 +235,13 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
         {filteredNext && (
           <div className="rounded-lg border p-4">
             <div className="mb-1 flex items-center gap-2">
-              <IconClock className="h-3 w-3 text-muted-foreground" />
+              <RiTimeLine className="h-3 w-3 text-muted-foreground" />
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Up Next
               </span>
               {nextEventCountdown && (
-                <Badge variant="secondary" className="ml-auto text-[10px]">
-                  {nextEventCountdown.hours > 0
-                    ? `${nextEventCountdown.hours}h `
-                    : ""}
+                <Badge variant="secondary" className="ml-auto text-xs">
+                  {nextEventCountdown.hours > 0 ? `${nextEventCountdown.hours}h ` : ""}
                   {nextEventCountdown.minutes}m {nextEventCountdown.seconds}s
                 </Badge>
               )}
@@ -278,26 +251,19 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
               {formatEventTimes(filteredNext.start, filteredNext.end)}
             </p>
             {filteredNext.location && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                📍 {filteredNext.location}
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">📍 {filteredNext.location}</p>
             )}
           </div>
         )}
 
         {!filteredCurrent && !filteredNext && upcomingEvents.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground">
-            No upcoming events.
-          </p>
+          <p className="text-center text-sm text-muted-foreground">No upcoming events.</p>
         )}
 
         {upcomingEvents.length > 0 && (
           <div className="mt-3 space-y-2">
             {upcomingEvents
-              .sort(
-                (a, b) =>
-                  getEventTimestamp(a.start) - getEventTimestamp(b.start),
-              )
+              .sort((a, b) => getEventTimestamp(a.start) - getEventTimestamp(b.start))
               .map((event) => (
                 <div key={event.id} className="rounded-lg border p-3">
                   <h4 className="text-sm font-medium">{event.summary}</h4>
@@ -325,18 +291,12 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
             {showPastEvents && (
               <div className="space-y-2">
                 {pastEvents
-                  .sort(
-                    (a, b) =>
-                      getEventTimestamp(a.start) - getEventTimestamp(b.start),
-                  )
+                  .sort((a, b) => getEventTimestamp(a.start) - getEventTimestamp(b.start))
                   .map((event) => (
-                    <div
-                      key={event.id}
-                      className="rounded-lg border p-3 opacity-50"
-                    >
+                    <div key={event.id} className="rounded-lg border p-3 opacity-50">
                       <div className="flex items-center justify-between">
                         <h4 className="text-sm font-medium">{event.summary}</h4>
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-xs">
                           Past
                         </Badge>
                       </div>

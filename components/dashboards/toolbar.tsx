@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import type { RowData, Table } from "@tanstack/react-table";
-import {
-  FilterToolbar,
-  type FilterOption,
-} from "@/components/schedule/toolbar";
+import { FilterToolbar, type FilterOption } from "@/components/schedule/toolbar";
 import { statuses } from "@/data/status";
 import {
   affiliations,
@@ -19,7 +16,7 @@ import {
   shirts,
   teams,
 } from "@/data/information";
-import { formatShirtSize, toTitleCase } from "@/lib/utils";
+import { formatShirtSize, toTitleCase } from "@/lib/localization";
 
 function buildFilterOptions(slug: string): FilterOption[] {
   const options: FilterOption[] = [];
@@ -146,9 +143,6 @@ export function TableToolbar<TData extends RowData>({
   table: Table<TData>;
   slug: string;
 }) {
-  const allFilterOptions = React.useMemo(
-    () => buildFilterOptions(slug),
-    [slug],
-  );
+  const allFilterOptions = React.useMemo(() => buildFilterOptions(slug), [slug]);
   return <FilterToolbar table={table} allFilterOptions={allFilterOptions} />;
 }

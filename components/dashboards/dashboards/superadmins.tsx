@@ -1,31 +1,24 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { IconX } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { schema as superadminSchema } from "@/components/forms/fields/superadmin";
-import { StatusIcon } from "../status-icon";
 import {
-  Phone,
-  UserRound,
-  Shirt,
-  Utensils,
-  MessageSquare,
-  GraduationCap,
-  Users,
-  Calendar,
-} from "lucide-react";
-import DetailRow from "../row";
-import { selectColumn, useDrawerDirection } from "../profile-drawer";
-import { useCopyWithTimeout } from "@/hooks/use-copy";
-import { formatShirtSize } from "@/lib/utils";
+  RiPhoneLine,
+  RiUserLine,
+  RiShirtLine,
+  RiTableLine,
+  RiMessageLine,
+  RiGraduationCapLine,
+  RiUser2Line,
+  RiCalendarLine,
+} from "@remixicon/react";
+
+import { StatusBadge } from "../status-icon";
+
+import { Label } from "@/components/ui/label";
+import {} from "@/components/ui/drawer";
+import { formatShirtSize } from "@/lib/localization";
+import { selectColumn } from "../profile-drawer";
+import { MemberSheet, type MemberSectionConfig } from "../member-sheet";
 
 export const metadata = {
   title: "Superadmins",
@@ -51,107 +44,53 @@ export const csvFields = [
   "code_of_conduct_consent",
 ];
 
+const sections: MemberSectionConfig[] = [
+  {
+    title: "Contact",
+    icon: RiUserLine,
+    fields: [
+      { key: "email", label: "Email", icon: RiUserLine, copyable: true },
+      { key: "telephone", label: "Phone", icon: RiPhoneLine, copyable: true },
+      { key: "discord", label: "Discord", icon: RiMessageLine, copyable: true },
+    ],
+  },
+  {
+    title: "Preferences",
+    icon: RiShirtLine,
+    fields: [
+      {
+        key: "shirt",
+        label: "Shirt Size",
+        icon: RiShirtLine,
+        format: (value) => formatShirtSize(String(value)),
+      },
+      {
+        key: "dietrestriction",
+        label: "Dietary Restrictions",
+        icon: RiTableLine,
+        format: (value) => String(value) || "None",
+      },
+    ],
+  },
+  {
+    title: "Attributes",
+    icon: RiUser2Line,
+    fields: [{ key: "team", label: "Team", icon: RiUser2Line }],
+  },
+  {
+    title: "Profile",
+    icon: RiGraduationCapLine,
+    fields: [
+      { key: "gender", label: "Gender", icon: RiUserLine },
+      { key: "major", label: "Major", icon: RiGraduationCapLine },
+      { key: "grade", label: "Grade", icon: RiCalendarLine },
+      { key: "age", label: "Age", icon: RiUserLine },
+    ],
+  },
+];
+
 function TableCellViewer({ item }: { item: Doc<"superadmins"> }) {
-  const { copied, copy: copyText } = useCopyWithTimeout();
-  const direction = useDrawerDirection();
-
-  const handleCopyEmail = () => {
-    copyText(item.email);
-  };
-
-  return (
-    <Drawer direction={direction}>
-      <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.firstname + " " + item.lastname}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="flex h-full flex-col px-4 py-5 gap-2 overflow-y-auto">
-          <div className="flex items-start justify-between">
-            <DrawerTitle>Profile</DrawerTitle>
-            <DrawerClose asChild>
-              <Button variant="ghost" size="icon" aria-label="Close profile">
-                <IconX className="h-4 w-4" />
-              </Button>
-            </DrawerClose>
-          </div>
-
-          <div className="flex flex-col items-center text-sm text-foreground">
-            <div className="gap-2 text-center">
-              <p className="text-lg font-semibold text-foreground">
-                {item.firstname} {item.lastname}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-2">
-            <StatusIcon status={item.status} />
-          </div>
-          <hr />
-          <div className="space-y-4 text-sm">
-            <div>
-              <p className="text-sm font-semibold text-foreground">Contact</p>
-              <div className="mt-2 space-y-2">
-                <DetailRow
-                  icon={UserRound}
-                  label="Email"
-                  value={item.email}
-                  copyable
-                  onCopy={handleCopyEmail}
-                  copied={copied}
-                />
-                <DetailRow icon={Phone} label="Phone" value={item.telephone} />
-                <DetailRow
-                  icon={MessageSquare}
-                  label="Discord"
-                  value={item.discord}
-                />
-              </div>
-            </div>
-            <hr />
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                Admin Information
-              </p>
-              <div className="mt-2 space-y-2">
-                <DetailRow
-                  icon={GraduationCap}
-                  label="Major"
-                  value={item.major}
-                />
-                <DetailRow icon={Users} label="Team" value={item.team} />
-                <DetailRow icon={Calendar} label="Grade" value={item.grade} />
-                <DetailRow label="Age" value={item.age} icon={UserRound} />
-                <DetailRow
-                  label="Gender"
-                  value={item.gender}
-                  icon={UserRound}
-                />
-              </div>
-            </div>
-            <hr />
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                Preferences
-              </p>
-              <div className="mt-2 space-y-2">
-                <DetailRow
-                  icon={Shirt}
-                  label="Shirt Size"
-                  value={formatShirtSize(item.shirt)}
-                />
-                <DetailRow
-                  icon={Utensils}
-                  label="Dietary Restrictions"
-                  value={item.dietrestriction || "None"}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
+  return <MemberSheet item={item} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"superadmins">>[] = [
@@ -169,9 +108,7 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">
-          {row.original.email}
-        </Label>
+        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
       </div>
     ),
   },
@@ -179,36 +116,26 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     accessorKey: "telephone",
     header: "Phone",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.telephone}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
     ),
   },
   {
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.discord}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
     ),
   },
   {
     accessorKey: "team",
     header: () => <div>Team</div>,
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.team}
-      </Label>
-    ),
+    cell: ({ row }) => <Label className="text-muted-foreground px-1.5">{row.original.team}</Label>,
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {formatShirtSize(row.original.shirt)}
-      </Label>
+      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {
@@ -216,7 +143,7 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
-        <StatusIcon status={row.original.status} />
+        <StatusBadge status={row.original.status} />
       </div>
     ),
   },

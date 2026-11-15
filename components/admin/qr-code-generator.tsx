@@ -42,8 +42,8 @@ export default function QRCodeGenerator() {
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">QR Code Generator</h1>
         <p className="text-sm text-muted-foreground">
-          Enter any text or URL to generate a QR code. Download it as a PNG
-          instantly. Nothing is saved.
+          Enter any text or URL to generate a QR code. Download it as a PNG instantly. Nothing is
+          saved.
         </p>
       </div>
 
@@ -58,18 +58,14 @@ export default function QRCodeGenerator() {
       <div className="flex flex-col items-center gap-4">
         <div className="rounded-lg border bg-white p-4">
           {isEmpty ? (
-            <div className="flex h-[180px] w-[180px] items-center justify-center text-muted-foreground">
+            <div className="flex h-45 w-45 items-center justify-center text-muted-foreground">
               Enter text to preview
             </div>
           ) : (
             <QRCodeSVG value={value} size={180} />
           )}
         </div>
-        <Button
-          onClick={handleDownload}
-          disabled={isEmpty}
-          className="w-full sm:w-auto"
-        >
+        <Button onClick={handleDownload} disabled={isEmpty} className="w-full sm:w-auto">
           Download PNG
         </Button>
       </div>

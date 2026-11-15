@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { UserCheck } from "lucide-react";
+import { RiUserLine } from "@remixicon/react";
 import { captureAnalyticsEvent } from "@/lib/posthog";
 import { getUserMessage } from "@/lib/app-error";
 import { resolveAppErrorCode, toastAppError } from "@/hooks/use-app-error";
@@ -40,10 +40,7 @@ const CheckinContent = () => {
 
   const tenant = params.tenant;
 
-  const events = useMemo(
-    () => schedule?.items?.filter((event) => event.summary) ?? [],
-    [schedule],
-  );
+  const events = useMemo(() => schedule?.items?.filter((event) => event.summary) ?? [], [schedule]);
   const isPaused = !selectedEventId;
 
   // Grouped options for the event selector
@@ -60,8 +57,7 @@ const CheckinContent = () => {
             // Old builds shipped a hardcoded guest QR; reject it explicitly
             // instead of writing a junk shared `visitor` check-in.
             toast.error("Placeholder QR code", {
-              description:
-                "Ask the attendee to reopen their live check-in page for a valid code.",
+              description: "Ask the attendee to reopen their live check-in page for a valid code.",
             });
             setScanError("Placeholder QR code");
           } else {
@@ -79,9 +75,7 @@ const CheckinContent = () => {
         }
 
         const scan = decoded.payload;
-        const scanName = [scan.firstname, scan.lastname]
-          .filter(Boolean)
-          .join(" ");
+        const scanName = [scan.firstname, scan.lastname].filter(Boolean).join(" ");
 
         setLastScan(scan);
         setScanError(null);
@@ -106,7 +100,7 @@ const CheckinContent = () => {
 
           toast.success(`Checked in: ${scanName}`, {
             description: scan.email,
-            icon: <UserCheck className="h-4 w-4" />,
+            icon: <RiUserLine className="h-4 w-4" />,
           });
 
           // Auto-reset after the scan window (only on success)
@@ -119,7 +113,7 @@ const CheckinContent = () => {
           if (code === "VALIDATION_FAILED") {
             toast("Note: User is already checked in", {
               description: scanName,
-              icon: <UserCheck className="h-4 w-4" />,
+              icon: <RiUserLine className="h-4 w-4" />,
             });
           } else {
             toastAppError(err, message);
@@ -164,7 +158,7 @@ const CheckinContent = () => {
       <div className="flex h-full flex-col gap-6">
         <div className="h-9 w-32 animate-pulse rounded bg-muted" />
         <div className="h-10 w-full animate-pulse rounded-lg bg-muted" />
-        <div className="aspect-[4/3] w-full animate-pulse rounded-lg bg-muted" />
+        <div className="aspect-4-3 w-full animate-pulse rounded-lg bg-muted" />
       </div>
     );
   }
@@ -175,9 +169,7 @@ const CheckinContent = () => {
       <div className="flex h-full flex-col gap-6">
         <span className="text-2xl font-bold">Checkin</span>
         <div className="rounded-lg border border-destructive/50 p-4">
-          <p className="text-lg font-semibold text-destructive">
-            Failed to load events
-          </p>
+          <p className="text-lg font-semibold text-destructive">Failed to load events</p>
           <p className="text-sm text-muted-foreground">
             {(error as Error)?.message ?? "Unknown error"}
           </p>
@@ -189,15 +181,10 @@ const CheckinContent = () => {
   return (
     <div className="flex h-full flex-col gap-6">
       {/* Event selector */}
-      <Select
-        value={selectedEventId || undefined}
-        onValueChange={setSelectedEventId}
-      >
+      <Select value={selectedEventId || undefined} onValueChange={setSelectedEventId}>
         <SelectTrigger className="w-full">
           <SelectValue
-            placeholder={
-              events.length > 0 ? "Select an event..." : "No events available"
-            }
+            placeholder={events.length > 0 ? "Select an event..." : "No events available"}
           />
         </SelectTrigger>
         <SelectContent>
@@ -217,22 +204,19 @@ const CheckinContent = () => {
       {/* QR Scanner */}
       <div className="rounded-lg border bg-muted p-3">
         {isPaused ? (
-          <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 text-muted-foreground">
+          <div className="flex aspect-4-3 flex-col items-center justify-center gap-3 text-muted-foreground">
             <span className="text-sm font-medium">Scanner paused</span>
             <span className="text-xs">Select an event to start scanning</span>
           </div>
         ) : (
-          <video
-            ref={ref}
-            className="aspect-[4/3] w-full object-cover -scale-x-100"
-          />
+          <video ref={ref} className="aspect-4-3 w-full object-cover -scale-100" />
         )}
       </div>
 
       {/* Scan result */}
       {lastScan && (
         <div className="flex items-center gap-3 rounded-lg border border-green-500/50 bg-green-50 p-4 dark:bg-green-950/20">
-          <UserCheck className="h-6 w-6 shrink-0 text-green-600" />
+          <RiUserLine className="h-6 w-6 shrink-0 text-green-600" />
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium text-green-700 dark:text-green-400">
               {lastScan.firstname} {lastScan.lastname}
@@ -250,9 +234,7 @@ const CheckinContent = () => {
         </div>
       )}
 
-      {scanError && !lastScan && (
-        <p className="text-sm text-destructive">{scanError}</p>
-      )}
+      {scanError && !lastScan && <p className="text-sm text-destructive">{scanError}</p>}
     </div>
   );
 };

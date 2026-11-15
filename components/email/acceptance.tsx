@@ -17,13 +17,13 @@ const Acceptance = ({ name, position, preview, tenant }: AcceptanceProps) => {
         <strong>{position ?? "Insert Position"}</strong>
       </Text>
       <Text>
-        We will be using Discord as our primary communication platform regarding
-        announcements, events, workshops, activities, and more!
+        We will be using Discord as our primary communication platform regarding announcements,
+        events, workshops, activities, and more!
       </Text>
       <Section className="text-center">
         <Button
           href={tenant.discord}
-          className="rounded bg-[#7289da] px-5 py-3 text-center text-xs font-semibold text-white no-underline"
+          className="rounded bg-discord px-5 py-3 text-center text-xs font-semibold text-white no-underline"
         >
           Join Discord
         </Button>

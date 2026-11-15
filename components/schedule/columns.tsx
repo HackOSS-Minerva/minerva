@@ -2,7 +2,7 @@
 
 import type { GoogleEvent } from "@/types/calendar";
 import type { ColumnDef, Row } from "@tanstack/react-table";
-import { ArrowUpDown, ExternalLink } from "lucide-react";
+import { RiArrowUpDownLine, RiExternalLinkLine } from "@remixicon/react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -59,21 +59,13 @@ const statusVariant = (
   }
 };
 
-const eventStatusFilter = (
-  row: Row<GoogleEvent>,
-  _columnId: string,
-  filterValues: string[],
-) => {
+const eventStatusFilter = (row: Row<GoogleEvent>, _columnId: string, filterValues: string[]) => {
   const { start, end } = row.original;
   const status = getEventStatus(start, end);
   return filterValues.includes(status);
 };
 
-const dayOfWeekFilter = (
-  row: Row<GoogleEvent>,
-  _columnId: string,
-  filterValues: string[],
-) => {
+const dayOfWeekFilter = (row: Row<GoogleEvent>, _columnId: string, filterValues: string[]) => {
   const dateTime = row.original.start?.dateTime ?? row.original.start?.date;
   const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
   const day = getDayOfWeek(dateTime, timeZone);
@@ -102,7 +94,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Start
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <RiArrowUpDownLine className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -112,16 +104,10 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
 
       if (isAllDay) {
-        return (
-          <span className="text-muted-foreground italic text-xs font-medium">
-            All Day
-          </span>
-        );
+        return <span className="text-muted-foreground italic text-xs font-medium">All Day</span>;
       }
 
-      return (
-        <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
-      );
+      return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
     },
     sortingFn: (rowA, rowB) => {
       const aStr = rowA.original.start?.dateTime ?? rowA.original.start?.date;
@@ -140,7 +126,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           End
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <RiArrowUpDownLine className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -150,16 +136,10 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       const timeZone = row.original.end?.timeZone ?? "America/Los_Angeles";
 
       if (isAllDay) {
-        return (
-          <span className="text-muted-foreground italic text-xs font-medium">
-            All Day
-          </span>
-        );
+        return <span className="text-muted-foreground italic text-xs font-medium">All Day</span>;
       }
 
-      return (
-        <span className="font-medium">{formatTime(dateTime, timeZone)}</span>
-      );
+      return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
     },
     sortingFn: (rowA, rowB) => {
       const aStr = rowA.original.end?.dateTime ?? rowA.original.end?.date;
@@ -179,17 +159,15 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Event
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <RiArrowUpDownLine className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
       const summary = row.getValue("summary") as string | undefined;
       return (
-        <span className="font-medium line-clamp-1 max-w-[250px]">
-          {summary?.trim() || (
-            <span className="text-muted-foreground italic">Untitled Event</span>
-          )}
+        <span className="font-medium line-clamp-1 max-w-(--size-250px)">
+          {summary?.trim() || <span className="text-muted-foreground italic">Untitled Event</span>}
         </span>
       );
     },
@@ -200,7 +178,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const location = row.getValue("location") as string | undefined;
       return location?.trim() ? (
-        <span className="text-muted-foreground line-clamp-1 max-w-[250px]">
+        <span className="text-muted-foreground line-clamp-1 max-w-(--size-250px)">
           {location.trim()}
         </span>
       ) : (
@@ -241,7 +219,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
           onClick={() => window.open(event.htmlLink, "_blank")}
         >
           <span className="sr-only">Open in Google Calendar</span>
-          <ExternalLink className="h-4 w-4" />
+          <RiExternalLinkLine className="h-4 w-4" />
         </Button>
       );
     },

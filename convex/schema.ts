@@ -33,9 +33,7 @@ export const grades = union(Grades);
 export const majors = union(Majors);
 export const teams = union(Teams);
 export const countries = union(Countries);
-export const schools = union(
-  Schools as unknown as readonly [string, ...string[]],
-);
+export const schools = union(Schools as unknown as readonly [string, ...string[]]);
 export const ages = union(Ages);
 export const dietrestrictions = union(DietRestrictions);
 export const availabilities = union(Availabilities);
@@ -176,11 +174,7 @@ export default defineSchema({
     invites: v.array(v.string()),
     tenant: v.string(),
     timestamp: v.number(),
-    vetted: v.union(
-      v.literal("verified"),
-      v.literal("needs_review"),
-      v.literal("disqualified"),
-    ),
+    vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")),
     // Keep this open for legacy values already stored in existing deployments.
     vettingStatus: v.optional(v.string()),
   }),
@@ -190,11 +184,7 @@ export default defineSchema({
     tenant: v.string(),
     room: v.optional(v.string()),
     status: v.optional(
-      v.union(
-        v.literal("assigned"),
-        v.literal("completed"),
-        v.literal("no_show"),
-      ),
+      v.union(v.literal("assigned"), v.literal("completed"), v.literal("no_show")),
     ),
     assignedAt: v.number(),
   }).index("by_tenant", ["tenant"]),

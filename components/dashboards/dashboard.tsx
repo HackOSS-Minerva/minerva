@@ -21,8 +21,7 @@ const Dashboard = () => {
 
   const { data: schedule } = useSchedule();
 
-  const eventid =
-    slug === "attendance" ? selectedEventId || undefined : undefined;
+  const eventid = slug === "attendance" ? selectedEventId || undefined : undefined;
   const dashboard = useDashboard(eventid);
 
   // Narrow the correlated bundle per slug so `DataTable` infers one concrete
@@ -48,20 +47,14 @@ const Dashboard = () => {
     }
   };
 
-  const events = useMemo(
-    () => schedule?.items?.filter((event) => event.summary) ?? [],
-    [schedule],
-  );
+  const events = useMemo(() => schedule?.items?.filter((event) => event.summary) ?? [], [schedule]);
   const groupedEventOptions = useMemo(() => groupEventsByDay(events), [events]);
 
   return (
     <div className="flex flex-col gap-6">
       {slug === "attendance" && (
         <div>
-          <Select
-            value={selectedEventId || undefined}
-            onValueChange={setSelectedEventId}
-          >
+          <Select value={selectedEventId || undefined} onValueChange={setSelectedEventId}>
             <SelectTrigger className="w-full">
               <SelectValue
                 placeholder={

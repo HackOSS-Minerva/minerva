@@ -1,14 +1,6 @@
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -16,11 +8,11 @@ import { LazySelectFieldBody } from "./lazy-select";
 import { resources, terms } from "@/data/terms";
 import { genders, shirts, dietrestrictions } from "@/data/information";
 import { statuses } from "@/data/status";
-import { SquareArrowOutUpRight, X } from "lucide-react";
+import { RiExternalLinkLine, RiCloseLine } from "@remixicon/react";
 import Link from "next/link";
 import * as z from "zod";
-
 import type { AnyFieldApi } from "@tanstack/react-form";
+import { compress } from "@/lib/compress";
 
 /** A form field definition consumed by `components/forms/fields.tsx`. */
 export type FieldDef = {
@@ -54,10 +46,7 @@ export const dietrestrictionSchema = z.enum(
   dietrestrictions,
   "Please select a valid diet restriction.",
 );
-export const termsSchema = z.literal(
-  true,
-  "You must accept the terms and conditions.",
-);
+export const termsSchema = z.literal(true, "You must accept the terms and conditions.");
 export const statusSchema = z.enum(statuses);
 
 /** True once a touched field has failed validation. */
@@ -67,9 +56,7 @@ const isInvalidField = (field: AnyFieldApi) =>
 const CharCounter = ({ value, max }: { value: string; max: number }) => (
   <span
     className={`text-xs shrink-0 ${
-      value.length >= max
-        ? "text-destructive font-medium"
-        : "text-muted-foreground"
+      value.length >= max ? "text-destructive font-medium" : "text-muted-foreground"
     }`}
   >
     {value.length}/{max}
@@ -101,9 +88,7 @@ export function textField({
               {label}
               <span className="text-destructive">*</span>
             </FieldLabel>
-            {maxLength && (
-              <CharCounter value={field.state.value} max={maxLength} />
-            )}
+            {maxLength && <CharCounter value={field.state.value} max={maxLength} />}
           </div>
           <Input
             className="text-primary"
@@ -222,11 +207,7 @@ export function lazySelectField({
   return {
     name,
     children: (field: AnyFieldApi) => (
-      <LazySelectFieldBody
-        field={field}
-        label={label}
-        loadOptions={loadOptions}
-      />
+      <LazySelectFieldBody field={field} label={label} loadOptions={loadOptions} />
     ),
   };
 }
@@ -248,9 +229,16 @@ export function fileField({
     children: (field: AnyFieldApi) => {
       const isInvalid = isInvalidField(field);
 
-      const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
-        field.handleChange(required ? selectedFile || null : selectedFile);
+        if (!selectedFile) return;
+        let fileToStore = selectedFile;
+        if (selectedFile.type.startsWith("image/")) {
+          try {
+            fileToStore = await compress(selectedFile);
+          } catch {}
+        }
+        field.handleChange(required ? fileToStore || null : fileToStore);
       };
 
       return (
@@ -275,13 +263,20 @@ export function fileField({
               <div className="flex items-center justify-between w-full">
                 <span className="text-sm text-muted-foreground">
                   {(field.state.value as File).name}
+                  {" · "}
+                  {(() => {
+                    const bytes = (field.state.value as File).size;
+                    if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+                    if (bytes >= 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+                    return `${bytes} B`;
+                  })()}
                 </span>
                 <button
                   type="button"
                   onClick={() => field.handleChange(null)}
                   className="text-primary"
                 >
-                  <X size={16} />
+                  <RiCloseLine size={16} />
                 </button>
               </div>
             )}
@@ -323,13 +318,9 @@ export function termsField({
 
           <div className="flex flex-col text-sm">
             {resources.map(({ name, url }) => (
-              <Link
-                href={url}
-                key={name}
-                className="flex gap-2 items-center text-primary"
-              >
+              <Link href={url} key={name} className="flex gap-2 items-center text-primary">
                 {name}
-                <SquareArrowOutUpRight size={16} />
+                <RiExternalLinkLine size={16} />
               </Link>
             ))}
           </div>
@@ -346,8 +337,7 @@ export function termsField({
                 Accept terms and conditions
               </Label>
               <p className="text-muted-foreground text-sm">
-                By clicking this checkbox, you agree to the terms and
-                conditions.
+                By clicking this checkbox, you agree to the terms and conditions.
               </p>
             </div>
           </div>
@@ -427,9 +417,7 @@ export function checkboxGridField({
                     if (checked) {
                       field.handleChange([...currentValue, option]);
                     } else {
-                      field.handleChange(
-                        currentValue.filter((item: string) => item !== option),
-                      );
+                      field.handleChange(currentValue.filter((item: string) => item !== option));
                     }
                   }}
                   id={`${name}-${option}`}

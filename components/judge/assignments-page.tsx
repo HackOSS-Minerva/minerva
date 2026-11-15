@@ -2,17 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  IconMapPin,
-  IconUsers,
-  IconClipboardList,
-  IconBuilding,
-} from "@tabler/icons-react";
-import {
-  useAssignments,
-  getStatusBadgeVariant,
-  formatStatus,
-} from "@/hooks/use-assignments";
+import { RiMapPinLine, RiUser2Line, RiClipboardLine, RiBuildingLine } from "@remixicon/react";
+import { useAssignments, getStatusBadgeVariant, formatStatus } from "@/hooks/use-assignments";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface AssignmentsPageProps {
@@ -40,10 +31,8 @@ export function AssignmentsPage({ tenant }: AssignmentsPageProps) {
           </p>
         </div>
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <IconClipboardList className="mb-4 h-12 w-12 text-muted-foreground/40" />
-          <h3 className="text-lg font-semibold text-muted-foreground">
-            No assignments available
-          </h3>
+          <RiClipboardLine className="mb-4 h-12 w-12 text-muted-foreground/40" />
+          <h3 className="text-lg font-semibold text-muted-foreground">No assignments available</h3>
           <p className="mt-1 text-sm text-muted-foreground/60">
             Assignments have not been created yet. Please check back later.
           </p>
@@ -67,11 +56,9 @@ export function AssignmentsPage({ tenant }: AssignmentsPageProps) {
             <CardHeader>
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <CardTitle className="text-base">
-                    {assignment.projectName}
-                  </CardTitle>
+                  <CardTitle className="text-base">{assignment.projectName}</CardTitle>
                   <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                    <IconUsers className="h-3 w-3" />
+                    <RiUser2Line className="h-3 w-3" />
                     {assignment.teamName}
                   </p>
                 </div>
@@ -84,17 +71,17 @@ export function AssignmentsPage({ tenant }: AssignmentsPageProps) {
               <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
                 {assignment.room && (
                   <span className="flex items-center gap-1">
-                    <IconMapPin className="h-3 w-3" />
+                    <RiMapPinLine className="h-3 w-3" />
                     {assignment.room}
                   </span>
                 )}
                 <span className="flex items-center gap-1">
-                  <IconBuilding className="h-3 w-3" />
+                  <RiBuildingLine className="h-3 w-3" />
                   {assignment.judgeName}
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
-                <IconClipboardList className="h-3 w-3 text-muted-foreground self-center" />
+                <RiClipboardLine className="h-3 w-3 text-muted-foreground self-center" />
                 <Badge variant="outline">Innovation</Badge>
                 <Badge variant="outline">Technical Complexity</Badge>
                 <Badge variant="outline">Presentation</Badge>

@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import { IconDotsVertical } from "@tabler/icons-react";
+import { RiMoreLine } from "@remixicon/react";
 import { ColumnDef } from "@tanstack/react-table";
 import type { Doc } from "@/convex/_generated/dataModel";
 
@@ -19,13 +19,7 @@ export const metadata = {
   title: "Attendance",
 };
 
-export const csvFields = [
-  "firstname",
-  "lastname",
-  "email",
-  "role",
-  "timestamp",
-];
+export const csvFields = ["firstname", "lastname", "email", "role", "timestamp"];
 
 function formatTimestamp(ts: number): string {
   const date = new Date(ts);
@@ -79,19 +73,13 @@ export const columns: ColumnDef<CheckinRecord>[] = [
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
-        {row.original.email}
-      </Label>
-    ),
+    cell: ({ row }) => <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>,
   },
   {
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5 capitalize">
-        {row.original.role}
-      </Label>
+      <Label className="text-muted-foreground px-1.5 capitalize">{row.original.role}</Label>
     ),
   },
   {
@@ -113,7 +101,7 @@ export const columns: ColumnDef<CheckinRecord>[] = [
             className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
             size="icon"
           >
-            <IconDotsVertical />
+            <RiMoreLine />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>

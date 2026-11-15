@@ -13,10 +13,7 @@ interface RulesPageProps {
   baseHref?: string;
 }
 
-export function RulesPage({
-  tenant,
-  baseHref = `/${tenant}/live/dashboard`,
-}: RulesPageProps) {
+export function RulesPage({ tenant, baseHref = `/${tenant}/live/dashboard` }: RulesPageProps) {
   const { markdown } = getTenant(tenant);
   const Markdown = markdown.rules;
   return (
@@ -34,9 +31,7 @@ export function RulesPage({
       </Breadcrumb>
       <div>
         <h1 className="text-2xl font-bold md:text-3xl">Rules</h1>
-        <p className="mt-1 text-muted-foreground">
-          Review the hackathon rules and guidelines.
-        </p>
+        <p className="mt-1 text-muted-foreground">Review the hackathon rules and guidelines.</p>
       </div>
       <Markdown />
     </div>
