@@ -1,4 +1,3 @@
-import { scheduleAnalyticsEvent } from "./posthog";
 import { query, mutation } from "./_generated/server";
 import { convexError } from "./app_error";
 import { v } from "convex/values";
@@ -89,20 +88,6 @@ export const add = mutation({
     const created = await ctx.db.get("participants", id);
     if (!created) throw convexError("INTERNAL", "Failed to create participant");
 
-    await scheduleAnalyticsEvent(ctx, "application_created", {
-      tenant: created.tenant,
-      entity_id: id,
-      role: "participant",
-      status: created.status,
-      gender: created.gender,
-      dietrestriction: created.dietrestriction,
-      shirt: created.shirt,
-      school: created.school,
-      major: created.major,
-      age: created.age,
-      grade: created.grade,
-    });
-
     return { id, user: created };
   },
 });
@@ -110,15 +95,7 @@ export const add = mutation({
 export const remove = mutation({
   args: { id: v.id("participants") },
   handler: async (ctx, { id }) => {
-    const record = await ctx.db.get(id);
-    if (!record) return { success: true };
     await ctx.db.delete(id);
-    await scheduleAnalyticsEvent(ctx, "application_deleted", {
-      tenant: record.tenant,
-      entity_id: id,
-      role: "participant",
-      status: record.status,
-    });
     return { success: true };
   },
 });
@@ -127,15 +104,7 @@ export const deleteMany = mutation({
   args: { ids: v.array(v.id("participants")) },
   handler: async (ctx, { ids }) => {
     for (const id of ids) {
-      const record = await ctx.db.get(id);
-      if (!record) continue;
       await ctx.db.delete(id);
-      await scheduleAnalyticsEvent(ctx, "application_deleted", {
-        tenant: record.tenant,
-        entity_id: id,
-        role: "participant",
-        status: record.status,
-      });
     }
     return { success: true };
   },
@@ -154,12 +123,6 @@ export const setStatusMany = mutation({
       if (participant.status === status) continue;
 
       await ctx.db.patch(id, { status });
-      await scheduleAnalyticsEvent(ctx, "application_status_changed", {
-        tenant: participant.tenant,
-        entity_id: id,
-        role: "participant",
-        status,
-      });
     }
 
     return { status: "success" };

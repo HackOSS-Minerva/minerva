@@ -16,7 +16,6 @@ import type * as http from "../http.js";
 import type * as ideas from "../ideas.js";
 import type * as judges from "../judges.js";
 import type * as participants from "../participants.js";
-import type * as posthog from "../posthog.js";
 import type * as speakers from "../speakers.js";
 import type * as submissions from "../submissions.js";
 import type * as superadmins from "../superadmins.js";
@@ -35,7 +34,6 @@ declare const fullApi: ApiFromModules<{
   ideas: typeof ideas;
   judges: typeof judges;
   participants: typeof participants;
-  posthog: typeof posthog;
   speakers: typeof speakers;
   submissions: typeof submissions;
   superadmins: typeof superadmins;
