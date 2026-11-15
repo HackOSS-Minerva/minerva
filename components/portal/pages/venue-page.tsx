@@ -12,9 +12,9 @@ interface VenuePageProps {
   tenant: TenantSlug;
   baseHref?: string;
 }
+export const VenuePage = ({ tenant, baseHref = `/${tenant}/live/dashboard` }: VenuePageProps) => {
 
-export function VenuePage({ tenant, baseHref = `/${tenant}/live/dashboard` }: VenuePageProps) {
-  const { markdown } = getTenant(tenant);
+} = getTenant(tenant);
   const Markdown = markdown.venue;
   return (
     <div className="space-y-6">

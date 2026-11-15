@@ -28,11 +28,12 @@ interface StatusActionsProps<T extends ApplicantRow> {
   role: EmailRole;
   onSuccess: () => void;
 }
+export const StatusActions = <T extends ApplicantRow>( => {
 
-export function StatusActions<T extends ApplicantRow>({
   table,
   role,
   onSuccess,
+
 }: StatusActionsProps<T>) {
   const [isUpdating, setIsUpdating] = useState(false);
   const { sendEmail } = useEmail();

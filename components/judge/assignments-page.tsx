@@ -9,9 +9,9 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 interface AssignmentsPageProps {
   tenant: TenantSlug;
 }
+export const AssignmentsPage = ({ tenant }: AssignmentsPageProps) => {
 
-export function AssignmentsPage({ tenant }: AssignmentsPageProps) {
-  const { enrichedAssignments, isLoading } = useAssignments(tenant);
+} = useAssignments(tenant);
 
   if (isLoading) {
     return (

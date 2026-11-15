@@ -56,10 +56,9 @@ export type MemberSheetProps = {
   /** Optional footer content (e.g. close button). */
   footer?: ReactNode;
 };
+export const MemberSheet = ({ item, sections, header, footer }: MemberSheetProps) => {
 
-export function MemberSheet({ item, sections, header, footer }: MemberSheetProps) {
-  const direction = useDrawerDirection();
-  const { copied, copy: copyText } = useCopyWithTimeout();
+} = useCopyWithTimeout();
 
   const normalizedStatus =
     item.status && typeof item.status === "string"

@@ -12,8 +12,7 @@ import {
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import type { TenantSlug } from "@/hooks/get-tenant";
-
-export function NavMain({
+export const NavMain = ({
   label,
   items,
 }: {
@@ -24,8 +23,9 @@ export function NavMain({
     slug?: string;
     icon?: RemixiconComponentType;
   }[];
-}) {
-  const { tenant } = useParams<{ tenant: TenantSlug }>();
+}) => {
+
+} = useParams<{ tenant: TenantSlug }>();
   const pathname = usePathname();
 
   const isActive = (url: string) => pathname.startsWith(`/${tenant}${url}`);

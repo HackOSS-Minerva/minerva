@@ -45,11 +45,12 @@ export interface TenantData {
 }
 
 // Resolves a validated slug to its config and MDX content (always complete).
-// Validate untrusted strings with `isTenantSlug` before calling this.
-export function getTenant(slug: TenantSlug): TenantData {
+// Validate untrusted strings with `isTenantSlug` before calling this.export const getTenant = (slug: TenantSlug): TenantData => {
+
   return {
     config: typedTenantConfigs[slug],
     headers: tenantContent[slug].headers,
     markdown: tenantContent[slug].markdown,
-  };
+  
+};
 }

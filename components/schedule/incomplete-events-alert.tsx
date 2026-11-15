@@ -28,13 +28,9 @@ const FIELD_ICONS: Record<MissingScheduleField, React.ReactNode> = {
   Time: <Clock className="size-3" />,
   Location: <MapPin className="size-3" />,
 };
+export const IncompleteEventsAlert = ({ incompleteEvents }: IncompleteEventsAlertProps) => {
 
-export function IncompleteEventsAlert({ incompleteEvents }: IncompleteEventsAlertProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
-
-  if (incompleteEvents.length === 0) {
-    return null;
-  }
+}
 
   const formatEventTime = (dateTime?: string, timeZone?: string) => {
     if (!dateTime) return null;

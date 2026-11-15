@@ -17,14 +17,15 @@ import {
   teams,
 } from "@/data/information";
 import { formatShirtSize, toTitleCase } from "@/lib/localization";
+const buildFilterOptions = (slug: string): FilterOption[] => {
 
-function buildFilterOptions(slug: string): FilterOption[] {
   const options: FilterOption[] = [];
 
   // Status is common to all
   statuses.forEach((s) =>
     options.push({
-      value: `status:${s}`,
+      value: `status:${s
+}`,
       label: toTitleCase(s),
       group: "Status",
       columnId: "status",
@@ -135,10 +136,11 @@ function buildFilterOptions(slug: string): FilterOption[] {
 
   return options;
 }
+export const TableToolbar = <TData extends RowData>( => {
 
-export function TableToolbar<TData extends RowData>({
   table,
   slug,
+
 }: {
   table: Table<TData>;
   slug: string;

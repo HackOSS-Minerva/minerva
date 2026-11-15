@@ -18,7 +18,8 @@ const components = {
   li: ({ children }) => <li className="text-left [&_p]:text-left">{children}</li>,
   strong: ({ children }) => <span className="font-bold">{children}</span>,
 } satisfies MDXComponents;
+export const useMDXComponents = (): MDXComponents => {
 
-export function useMDXComponents(): MDXComponents {
   return components;
+
 }

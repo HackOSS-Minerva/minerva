@@ -58,12 +58,9 @@ const participantDemographicKeys: ParticipantDemographicKey[] = [
   "major",
   "grade",
 ];
+const MetricCard = ({ label, value, description }: MetricCardProps) => {
 
-function MetricCard({ label, value, description }: MetricCardProps) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium">{label}</CardTitle>
+}</CardTitle>
         {description ? <CardDescription>{description}</CardDescription> : null}
       </CardHeader>
       <CardContent>
@@ -77,12 +74,9 @@ type ParticipantDemographicCardProps = {
   label: string;
   breakdown: ParticipantDemographicBreakdown[];
 };
+const ParticipantDemographicCard = ({ label, breakdown }: ParticipantDemographicCardProps) => {
 
-function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographicCardProps) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">{label}</CardTitle>
+}</CardTitle>
       </CardHeader>
       <CardContent>
         {breakdown.length > 0 ? (
@@ -115,9 +109,9 @@ function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographic
     </Card>
   );
 }
+export const AnalyticsPage = ({ tenant, scope }: AnalyticsPageProps) => {
 
-export function AnalyticsPage({ tenant, scope }: AnalyticsPageProps) {
-  const { data, isLoading, isError } = useAnalytics(tenant);
+} = useAnalytics(tenant);
 
   if (isLoading) {
     return (

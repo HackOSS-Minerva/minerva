@@ -21,10 +21,9 @@ const ITEMS = [
   "Snacks",
   "Reusable Bag",
 ];
+export const PackingChecklist = ({ tenant }: PackingChecklistProps) => {
 
-export function PackingChecklist({ tenant }: PackingChecklistProps) {
-  const [checkedItems, setCheckedItems] = useLocalStorage<Record<string, boolean>>(
-    `packing-${tenant}`,
+}`,
     {},
   );
 

@@ -5,21 +5,9 @@ import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+export default const QRCodeGenerator = () => {
 
-export default function QRCodeGenerator() {
-  const [value, setValue] = React.useState("");
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-
-  const handleDownload = React.useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !value.trim()) return;
-
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          toast.error("Failed to generate QR code image");
-          return;
-        }
+}
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;

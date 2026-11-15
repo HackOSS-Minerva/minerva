@@ -63,13 +63,14 @@ const CharCounter = ({ value, max }: { value: string; max: number }) => (
   </span>
 );
 
-/** Text input; `maxLength` also enables the live character counter. */
-export function textField({
+/** Text input; `maxLength` also enables the live character counter. */export const textField = ( => {
+
   name,
   label,
   placeholder,
   maxLength,
   required = true,
+
 }: {
   name: string;
   label: string;
@@ -110,11 +111,12 @@ export function textField({
   };
 }
 
-/** Single-choice radio group over a fixed option list. */
-export function radioField({
+/** Single-choice radio group over a fixed option list. */export const radioField = ( => {
+
   name,
   label,
   options,
+
 }: {
   name: string;
   label: string;
@@ -152,11 +154,12 @@ export function radioField({
   };
 }
 
-/** Dropdown over a fixed option list, with a leading placeholder option. */
-export function selectField({
+/** Dropdown over a fixed option list, with a leading placeholder option. */export const selectField = ( => {
+
   name,
   label,
   options,
+
 }: {
   name: string;
   label: string;
@@ -194,11 +197,12 @@ export function selectField({
 }
 
 /** Same as {@link selectField} but loads its options on mount instead of
- * shipping them in the bundle. */
-export function lazySelectField({
+ * shipping them in the bundle. */export const lazySelectField = ( => {
+
   name,
   label,
   loadOptions,
+
 }: {
   name: string;
   label: string;
@@ -212,12 +216,13 @@ export function lazySelectField({
   };
 }
 
-/** File picker that swaps to a removable chip once a file is chosen. */
-export function fileField({
+/** File picker that swaps to a removable chip once a file is chosen. */export const fileField = ( => {
+
   name,
   label,
   accept,
   required = false,
+
 }: {
   name: string;
   label: string;
@@ -293,9 +298,10 @@ export function fileField({
  *
  * `checkboxValueProp` preserves the pre-existing difference between forms:
  * most pass `checked`, while the superadmin and volunteer forms pass `value`.
- */
-export function termsField({
+ */export const termsField = ( => {
+
   checkboxValueProp = "checked",
+
 }: {
   checkboxValueProp?: "checked" | "value";
 } = {}): FieldDef {
@@ -347,11 +353,12 @@ export function termsField({
     },
   };
 }
-/** Boolean consent checkbox with supporting description copy. */
-export function consentField({
+/** Boolean consent checkbox with supporting description copy. */export const consentField = ( => {
+
   name,
   label,
   description,
+
 }: {
   name: string;
   label: string;
@@ -387,11 +394,12 @@ export function consentField({
   };
 }
 
-/** Multi-select checkbox grid (used for volunteer availabilities). */
-export function checkboxGridField({
+/** Multi-select checkbox grid (used for volunteer availabilities). */export const checkboxGridField = ( => {
+
   name,
   label,
   options,
+
 }: {
   name: string;
   label: string;

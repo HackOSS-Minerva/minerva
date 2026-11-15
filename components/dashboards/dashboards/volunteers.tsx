@@ -153,9 +153,9 @@ const sections: MemberSectionConfig[] = [
     fields: [{ key: "gender", label: "Gender", icon: RiUserLine }],
   },
 ];
+const TableCellViewer = ({ item }: { item: Doc<"volunteers"> }) => {
 
-function TableCellViewer({ item }: { item: Doc<"volunteers"> }) {
-  return <MemberSheet item={item} sections={sections} />;
+} sections={sections} />;
 }
 
 export const columns: ColumnDef<Doc<"volunteers">>[] = [

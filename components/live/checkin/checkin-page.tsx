@@ -17,9 +17,9 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 interface CheckinPageProps {
   tenant: TenantSlug;
 }
+export const CheckinPage = ({ tenant }: CheckinPageProps) => {
 
-export function CheckinPage({ tenant }: CheckinPageProps) {
-  const { data: session, isPending } = authClient.useSession();
+} = authClient.useSession();
   const user = session?.user;
 
   // Real identity only: until the session resolves (and when signed out) we

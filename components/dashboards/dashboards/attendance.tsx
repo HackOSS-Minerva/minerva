@@ -20,8 +20,8 @@ export const metadata = {
 };
 
 export const csvFields = ["firstname", "lastname", "email", "role", "timestamp"];
+const formatTimestamp = (ts: number): string => {
 
-function formatTimestamp(ts: number): string {
   const date = new Date(ts);
   return date.toLocaleString("en-US", {
     month: "short",
@@ -30,7 +30,8 @@ function formatTimestamp(ts: number): string {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-  });
+  
+});
 }
 
 export const columns: ColumnDef<CheckinRecord>[] = [

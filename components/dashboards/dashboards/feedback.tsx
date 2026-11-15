@@ -46,8 +46,8 @@ export const csvFields = [
   "anything_else",
   "timestamp",
 ];
+const formatTimestamp = (ts: number): string => {
 
-function formatTimestamp(ts: number): string {
   const date = new Date(ts);
   return date.toLocaleString("en-US", {
     month: "short",
@@ -56,17 +56,16 @@ function formatTimestamp(ts: number): string {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-  });
+  
+});
 }
+const formatLabel = (str: string): string => {
 
-function formatLabel(str: string): string {
   return toWordsTitleCase(str);
-}
 
-function RatingBadge({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-1">
-      {Array.from({ length: feedbackMaxRating }, (_, i) => (
+}const RatingBadge = ({ rating }: { rating: number }) => {
+
+}, (_, i) => (
         <RiStarLine
           key={i}
           className={`h-3 w-3 ${
@@ -80,12 +79,9 @@ function RatingBadge({ rating }: { rating: number }) {
     </div>
   );
 }
+const TableCellViewer = ({ item }: { item: FeedbackRecord }) => {
 
-function TableCellViewer({ item }: { item: FeedbackRecord }) {
-  const direction = useDrawerDirection();
-
-  return (
-    <Drawer direction={direction}>
+}>
       <DrawerTrigger asChild>
         <Button variant="link" className="w-fit px-0 text-left text-foreground">
           {formatLabel(item.find)}

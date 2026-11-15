@@ -50,8 +50,8 @@ export const csvFields = [
   "vetted",
   "timestamp",
 ];
+const formatTimestamp = (ts: number): string => {
 
-function formatTimestamp(ts: number): string {
   const date = new Date(ts);
   return date.toLocaleString("en-US", {
     month: "short",
@@ -60,10 +60,11 @@ function formatTimestamp(ts: number): string {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-  });
+  
+});
 }
+const formatCompactTimestamp = (ts: number): string => {
 
-function formatCompactTimestamp(ts: number): string {
   const date = new Date(ts);
   return date.toLocaleString("en-US", {
     month: "short",
@@ -71,11 +72,12 @@ function formatCompactTimestamp(ts: number): string {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-  });
+  
+});
 }
+const LinkList = ({ links, fallback = "None" }: { links: string[]; fallback?: string }) => {
 
-function LinkList({ links, fallback = "None" }: { links: string[]; fallback?: string }) {
-  if (!links || links.length === 0) return <span>{fallback}</span>;
+}</span>;
   return (
     <div className="flex flex-col gap-1">
       {links.map((link, i) => (
@@ -92,12 +94,9 @@ function LinkList({ links, fallback = "None" }: { links: string[]; fallback?: st
     </div>
   );
 }
+const TableCellViewer = ({ item }: { item: SubmissionRecord }) => {
 
-function TableCellViewer({ item }: { item: SubmissionRecord }) {
-  const isMobile = useIsMobile();
-
-  return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
+}>
       <DrawerTrigger asChild>
         <Button
           variant="ghost"
@@ -233,23 +232,16 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
     </Drawer>
   );
 }
+const truncateDescription = (description: string, maxLength: number = 52): string => {
 
-function truncateDescription(description: string, maxLength: number = 52): string {
   if (description.length <= maxLength) {
     return description;
-  }
-  return description.substring(0, maxLength).trim() + "...";
+  
+}return description.substring(0, maxLength).trim() + "...";
 }
+const ReviewCell = ({ item }: { item: SubmissionRecord }) => {
 
-function ReviewCell({ item }: { item: SubmissionRecord }) {
-  const reviewStatus = item.vetted ?? "needs_review";
-  const runStatus = normalizeVettingStatus(item.vettingStatus);
-  const visibleStatus = visibleVettingStatus(reviewStatus, runStatus);
-  const review = reviewStatusMeta[reviewStatus];
-  const VisibleIcon = visibleStatus.icon;
-
-  return (
-    <TooltipProvider delayDuration={200}>
+}>
       <Tooltip>
         <TooltipTrigger asChild>
           <span className="ml-auto inline-flex max-w-full items-center justify-end gap-1.5 px-1.5 text-sm">

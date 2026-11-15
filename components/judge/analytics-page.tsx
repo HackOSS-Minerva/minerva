@@ -5,7 +5,7 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 interface JudgeAnalyticsPageProps {
   tenant: TenantSlug;
 }
+export const AnalyticsPage = ({ tenant }: JudgeAnalyticsPageProps) => {
 
-export function AnalyticsPage({ tenant }: JudgeAnalyticsPageProps) {
-  return <SharedAnalyticsPage tenant={tenant} scope="shared" />;
+} scope="shared" />;
 }

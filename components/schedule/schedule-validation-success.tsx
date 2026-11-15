@@ -8,13 +8,9 @@ import { RiCheckboxCircleLine as CheckCircle2, RiCloseLine as X } from "@remixic
 interface ScheduleValidationSuccessProps {
   totalCount: number;
 }
+export const ScheduleValidationSuccess = ({ totalCount }: ScheduleValidationSuccessProps) => {
 
-export function ScheduleValidationSuccess({ totalCount }: ScheduleValidationSuccessProps) {
-  const [dismissed, setDismissed] = useState(false);
-
-  if (dismissed) {
-    return null;
-  }
+}
 
   return (
     <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 shadow-xs dark:border-emerald-500/20 dark:bg-emerald-500/10">

@@ -12,9 +12,9 @@ interface RulesPageProps {
   tenant: TenantSlug;
   baseHref?: string;
 }
+export const RulesPage = ({ tenant, baseHref = `/${tenant}/live/dashboard` }: RulesPageProps) => {
 
-export function RulesPage({ tenant, baseHref = `/${tenant}/live/dashboard` }: RulesPageProps) {
-  const { markdown } = getTenant(tenant);
+} = getTenant(tenant);
   const Markdown = markdown.rules;
   return (
     <div className="space-y-6">

@@ -1,14 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+export const useCountdown = (targetDate: string | Date | number | null) => {
 
-export function useCountdown(targetDate: string | Date | number | null) {
-  const [timeLeft, setTimeLeft] = useState<{
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-  } | null>(null);
+} | null>(null);
 
   // Normalize to a stable primitive so object references (e.g. `new Date()`)
   // passed on every render don't retrigger the effect infinitely.

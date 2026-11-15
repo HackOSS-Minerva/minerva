@@ -12,12 +12,12 @@ interface CodeOfConductPageProps {
   tenant: TenantSlug;
   baseHref?: string;
 }
-
-export function CodeOfConductPage({
+export const CodeOfConductPage = ({
   tenant,
   baseHref = `/${tenant}/live/dashboard`,
-}: CodeOfConductPageProps) {
-  const { markdown } = getTenant(tenant);
+}: CodeOfConductPageProps) => {
+
+} = getTenant(tenant);
   const Markdown = markdown.codeOfConduct;
   return (
     <div className="space-y-6">

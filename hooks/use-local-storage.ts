@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+export const useLocalStorage = <T>(key: string, initialValue: T) => {
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -12,8 +12,8 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       if (item) {
         // Reading localStorage is intentionally done after mount (SSR-safe).
         setStoredValue(JSON.parse(item));
-      }
-    } catch (error) {
+      
+}} catch (error) {
       console.error(`Error reading localStorage key "${key}":`, error);
     }
     setIsLoaded(true);

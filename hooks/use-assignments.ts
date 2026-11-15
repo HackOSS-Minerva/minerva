@@ -41,20 +41,20 @@ export interface EnrichedAssignment {
 export type ViewMode = "teams-by-judge" | "judges-by-team";
 
 // ── Pure utility functions (no hooks) ─────────────────────────────────────────
+export const shuffleArray = <T>(arr: T[]): T[] => {
 
-export function shuffleArray<T>(arr: T[]): T[] {
   const shuffled = [...arr];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
+  
+}return shuffled;
 }
-
-export function generateAssignments(
+export const generateAssignments = (
   judges: JudgeDisplay[],
   submissions: SubmissionDisplay[],
-): AssignmentData[] {
+): AssignmentData[] => {
+
   if (judges.length === 0 || submissions.length === 0) return [];
 
   const shuffledTeams = shuffleArray(submissions);
@@ -67,19 +67,21 @@ export function generateAssignments(
       judgeId: judge._id,
       submissionId: submission._id,
       status: "assigned",
-    });
+    
+});
   });
 
   return assignments;
 }
+export const getJudgeName = (judge: JudgeDisplay): string => {
 
-export function getJudgeName(judge: JudgeDisplay): string {
-  return `${judge.firstname} ${judge.lastname}`.trim();
+  return `${judge.firstname
+}${judge.lastname}`.trim();
 }
-
-export function getStatusBadgeVariant(
+export const getStatusBadgeVariant = (
   status?: string,
-): "default" | "secondary" | "outline" | "destructive" {
+): "default" | "secondary" | "outline" | "destructive" => {
+
   switch (status) {
     case "assigned":
       return "secondary";
@@ -89,19 +91,17 @@ export function getStatusBadgeVariant(
       return "destructive";
     default:
       return "outline";
-  }
-}
+  
+}}
+export const formatStatus = (status?: string): string => {
 
-export function formatStatus(status?: string): string {
   if (!status) return "Assigned";
   return toSpacedTitleCase(status);
-}
 
-// ── React hook ────────────────────────────────────────────────────────────────
+}// ── React hook ────────────────────────────────────────────────────────────────
+export const useAssignments = (tenant: TenantSlug) => {
 
-export function useAssignments(tenant: TenantSlug) {
-  // ── Queries ────────────────────────────────────────────────────────────
-  const rawSubmissions = useQuery(api.submissions.get, { tenant });
+});
   const rawJudges = useQuery(api.judges.get, { tenant });
   const rawAssignments = useQuery(api.assignments.getByTenant, { tenant });
   const setAssignmentsMut = useMutation(api.assignments.setAssignments);

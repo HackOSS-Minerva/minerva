@@ -14,9 +14,9 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 import type { slugs } from "@/lib/form-defs";
 
 /** Seeds the form's identity fields from the session's `name` + `email`,
- * splitting the name into first token / rest so multi-word last names survive. */
-function useSessionIdentity() {
-  const { data: session } = authClient.useSession();
+ * splitting the name into first token / rest so multi-word last names survive. */const useSessionIdentity = () => {
+
+} = authClient.useSession();
   const user = session?.user;
 
   return useMemo(() => {

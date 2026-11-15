@@ -24,13 +24,9 @@ export const metadata: Metadata = {
   title: "Minerva",
   description: "Minerva",
 };
+export default const RootLayout = async ({ children }: LayoutProps) => {
 
-export default async function RootLayout({ children }: LayoutProps) {
-  // Read the Better Auth session token server-side so authenticated Convex
-  // queries can be preloaded during SSR.
-  const initialToken = await getToken();
-  return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
+}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers initialToken={initialToken}>
           <ConfettiProvider>

@@ -17,17 +17,12 @@ const MAX_VISIBLE_TAGS = 3;
 // two characters ("Cline" -> "CL") so the tile is never a lone letter.
 import { getInitials as initialsOf } from "@/lib/localization";
 import Link from "next/link";
+const matchesSearch = (tool: DevTool, query: string) => {
 
-function matchesSearch(tool: DevTool, query: string) {
-  const haystack = [tool.name, tool.description, tool.category, ...tool.tags]
-    .join(" ")
-    .toLowerCase();
-  return haystack.includes(query);
 }
+const ToolLogo = ({ tool }: { tool: DevTool }) => {
 
-function ToolLogo({ tool }: { tool: DevTool }) {
-  const [errored, setErrored] = useState(false);
-  const logo = tool.logo ?? `/logos/${tool.id}.svg`;
+}.svg`;
 
   return (
     <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5">
@@ -49,17 +44,9 @@ function ToolLogo({ tool }: { tool: DevTool }) {
     </div>
   );
 }
+export const DevToolsContent = () => {
 
-export function DevToolsContent() {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState<DevToolCategory | typeof ALL>(ALL);
-
-  const filtered = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return devTools.filter((tool) => {
-      if (activeCategory !== ALL && tool.category !== activeCategory) return false;
-      return query ? matchesSearch(tool, query) : true;
-    });
+});
   }, [search, activeCategory]);
 
   // Bucket by category so results stay grouped even while searching.
@@ -147,13 +134,9 @@ export function DevToolsContent() {
     </div>
   );
 }
+const DevToolCard = ({ tool }: { tool: DevTool }) => {
 
-function DevToolCard({ tool }: { tool: DevTool }) {
-  return (
-    <Card className="gap-4 py-5 transition-shadow hover:shadow-md">
-      <CardHeader className="px-5">
-        <div className="flex items-start gap-3">
-          <ToolLogo tool={tool} />
+} />
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-base">{tool.name}</CardTitle>
             <p className="mt-0.5 text-xs text-muted-foreground">{tool.category}</p>

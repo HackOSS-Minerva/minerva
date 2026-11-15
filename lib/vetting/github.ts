@@ -33,7 +33,7 @@ type GithubCommitPagesResult = GithubJsonResult & {
   reachedPageLimit: boolean;
 };
 
-export function parseGithubRepoUrl(rawUrl: string): ParsedGithubRepo | null {
+export const parseGithubRepoUrl = (rawUrl: string): ParsedGithubRepo | null  => {
   let url: URL;
 
   try {
@@ -64,7 +64,7 @@ export function parseGithubRepoUrl(rawUrl: string): ParsedGithubRepo | null {
   };
 }
 
-function parseGithubRateLimit(headers: Headers): number | undefined {
+const parseGithubRateLimit = (headers: Headers): number | undefined {
   const value = headers.get("x-ratelimit-remaining");
   if (value === null) return undefined;
 
@@ -72,7 +72,7 @@ function parseGithubRateLimit(headers: Headers): number | undefined {
   return Number.isFinite(remaining) ? remaining : undefined;
 }
 
-function githubHeaders(): HeadersInit {
+const githubHeaders = (): HeadersInit {
   const token = process.env.GITHUB_TOKEN;
 
   return {
@@ -82,7 +82,7 @@ function githubHeaders(): HeadersInit {
   };
 }
 
-async function githubJson(url: string): Promise<GithubJsonResult> {
+const githubJson = async (url: string): Promise<GithubJsonResult> {
   const response = await fetch(url, { headers: githubHeaders() });
 
   return {
@@ -93,21 +93,21 @@ async function githubJson(url: string): Promise<GithubJsonResult> {
   };
 }
 
-function isRateLimited(result: GithubJsonResult): boolean {
+const isRateLimited = (result: GithubJsonResult): boolean {
   return result.status === 429 || (result.status === 403 && result.rateLimitRemaining === 0);
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
+const isObject = (value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function toTimestamp(value: unknown): number | undefined {
+const toTimestamp = (value: unknown): number | undefined {
   if (typeof value !== "string") return undefined;
   const timestamp = new Date(value).getTime();
   return Number.isFinite(timestamp) ? timestamp : undefined;
 }
 
-function normalizeRepo(data: unknown): {
+const normalizeRepo = (data: unknown): {
   isPrivate?: boolean;
   createdAt?: number;
   pushedAt?: number;
@@ -121,7 +121,7 @@ function normalizeRepo(data: unknown): {
   };
 }
 
-function normalizeCommits(data: unknown): GithubCommitAuthor[] {
+const normalizeCommits = (data: unknown): GithubCommitAuthor[] {
   if (!Array.isArray(data)) return [];
 
   return data
@@ -150,11 +150,11 @@ function normalizeCommits(data: unknown): GithubCommitAuthor[] {
     .filter((commit): commit is GithubCommitAuthor => commit !== null);
 }
 
-function finding(code: FindingCode, message: string, repoUrl?: string): VettingFinding {
+const finding = (code: FindingCode, message: string, repoUrl?: string): VettingFinding {
   return { code, message, repoUrl };
 }
 
-async function fetchCommits(args: {
+const fetchCommits = async (args: {
   owner: string;
   name: string;
   since?: string;
@@ -172,7 +172,7 @@ async function fetchCommits(args: {
   );
 }
 
-async function fetchCommitPages(args: {
+const fetchCommitPages = async (args: {
   owner: string;
   name: string;
   since: string;
@@ -202,7 +202,7 @@ async function fetchCommitPages(args: {
   return { ...lastResult, commits, reachedPageLimit: true };
 }
 
-function failedResult(
+const failedResult = (
   errorCode: "RATE_LIMITED" | "UPSTREAM_UNAVAILABLE",
   errorDetails: string,
   findings: VettingFinding[],
@@ -220,7 +220,7 @@ function failedResult(
   };
 }
 
-function apiFailure(
+const apiFailure = (
   result: GithubJsonResult,
   repoUrl: string,
 ): {
@@ -247,7 +247,7 @@ function apiFailure(
   };
 }
 
-function authorCommitterMismatchCount(commits: GithubCommitAuthor[]): number {
+const authorCommitterMismatchCount = (commits: GithubCommitAuthor[]): number {
   return commits.filter((commit) => {
     if (!commit.authorEmail || !commit.committerEmail) return false;
     if (commit.committerEmail.includes("noreply.github.com")) return false;
@@ -255,7 +255,7 @@ function authorCommitterMismatchCount(commits: GithubCommitAuthor[]): number {
   }).length;
 }
 
-export async function runSubmissionVetting(
+export default const runSubmissionVetting = async (
   input: GithubSubmissionVettingInput,
 ): Promise<GithubSubmissionVettingResult> {
   const findings: VettingFinding[] = [];

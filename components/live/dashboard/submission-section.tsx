@@ -12,27 +12,9 @@ interface SubmissionSectionProps {
 }
 
 // Server Component: card + deadline text render on the server. The ticking
-// badge is a `DeadlineBadge` client island.
-export function SubmissionSection({ tenant, submissionDeadline }: SubmissionSectionProps) {
-  // Per-request "now" on the server (matches the previous `useState(Date.now)`
-  // mount-frozen semantics). Impure by design — evaluated once per request.
-  const isPastDeadline = Date.now() > submissionDeadline;
+// badge is a `DeadlineBadge` client island.export const SubmissionSection = ({ tenant, submissionDeadline }: SubmissionSectionProps) => {
 
-  const hasSubmitted = false;
-
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle>Submission</CardTitle>
-        {hasSubmitted && (
-          <Badge
-            variant="secondary"
-            className="flex items-center gap-1 border-emerald-500/20 bg-emerald-500/10 font-semibold text-emerald-500 hover:bg-emerald-500/20"
-          >
-            <RiCheckLine className="h-3 w-3" />
-            Submitted
-          </Badge>
-        )}
+}
       </CardHeader>
       <CardContent className="space-y-4">
         <div>

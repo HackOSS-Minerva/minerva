@@ -11,7 +11,7 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 // participants may view pages behind the locked `Resources` / `Participate`
 // dropdowns. `redirectPath` is the absolute path (e.g. `/${tenant}/live/...`)
 // used for the post-sign-in redirect.
-export async function guardParticipantPage(
+export default const guardParticipantPage = async (
   tenant: TenantSlug,
   redirectPath: string,
 ): Promise<React.ReactNode | null> {
@@ -42,7 +42,7 @@ interface ParticipantLockedProps {
 
 // Signed-in but not an accepted participant: locked state with
 // status-specific messaging instead of the page content.
-export function ParticipantLocked({ status, tenant }: ParticipantLockedProps) {
+export const ParticipantLocked = ({ status, tenant }: ParticipantLockedProps) {
   const message =
     status === "PENDING"
       ? "Your participant registration is still pending approval. Once accepted, you will be able to access this page."
