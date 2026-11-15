@@ -28,6 +28,7 @@ import type {
   VettingStatus,
 } from "@/lib/vetting/types";
 import { reviewStatusMeta } from "./vetting-status";
+import Link from "next/link";
 
 const peopleFindingMeta: Partial<Record<FindingCode, { label: string; icon: typeof RiUserLine }>> =
   {
@@ -199,7 +200,7 @@ export function VettingSummary({
                       className="grid gap-3 rounded-md border border-border/70 p-3"
                     >
                       <div className="flex flex-wrap items-start justify-between gap-2">
-                        <a
+                        <Link
                           href={repo.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -207,7 +208,7 @@ export function VettingSummary({
                         >
                           {repo.owner}/{repo.name}
                           <RiExternalLinkLine className="h-3.5 w-3.5 shrink-0" />
-                        </a>
+                        </Link>
                         {repo.isPrivate ? (
                           <Badge variant="outline" className="text-amber-700">
                             Private

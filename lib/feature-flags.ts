@@ -18,12 +18,6 @@ export type FeatureFlagRegistry = Record<string, FeatureFlagDefinition>;
 export const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export const FEATURE_FLAGS = {
-  photos: {
-    description:
-      "Event photo gallery — the live photos page, admin photo management, and the photo upload/list/delete APIs.",
-    value: false,
-    production: false,
-  },
   analytics: {
     description:
       "Event analytics dashboards (admin, judge) and the analytics API backed by PostHog.",

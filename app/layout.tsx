@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/lib/providers";
 import { getToken } from "@/lib/auth-server";
 import { LayoutProps } from "@/types/layouts";
-import ConfettiOverlay from "@/components/confetti/confetti-overlay";
+import { ConfettiProvider } from "@/components/confetti/confetti-overlay";
 import "./globals.css";
 import { cn } from "cn";
 
@@ -33,9 +33,10 @@ export default async function RootLayout({ children }: LayoutProps) {
     <html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers initialToken={initialToken}>
-          {children}
-          <Toaster />
-          <ConfettiOverlay />
+          <ConfettiProvider>
+            {children}
+            <Toaster />
+          </ConfettiProvider>
         </Providers>
       </body>
     </html>

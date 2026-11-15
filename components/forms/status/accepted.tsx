@@ -2,7 +2,7 @@ import { RiCheckLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { TenantSlug } from "@/hooks/get-tenant";
-import { toTitleCase } from "@/lib/utils";
+import { toTitleCase } from "@/lib/localization";
 
 interface AcceptedProps {
   form: string;

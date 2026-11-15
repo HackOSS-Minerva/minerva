@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useEffect, useMemo, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { triggerConfetti } from "@/hooks/use-confetti";
+import { useTriggerConfetti } from "@/components/confetti/confetti-overlay";
 import type { TenantSlug } from "@/hooks/get-tenant";
 import type { slugs } from "@/lib/form-defs";
 
@@ -42,6 +42,8 @@ const Fields = () => {
     form: slugs;
     tenant: TenantSlug;
   }>();
+
+  const { triggerConfetti } = useTriggerConfetti();
 
   const identity = useSessionIdentity();
 
@@ -114,11 +116,13 @@ const Fields = () => {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="bg-transparent border-0">
         <Field orientation="horizontal" className="justify-center">
           <formInstance.Subscribe selector={(state) => state.isSubmitting}>
             {(isSubmitting) => (
               <Button
+                className="px-6"
+                size="lg"
                 type="submit"
                 form={metadata.id}
                 disabled={isSubmitting}

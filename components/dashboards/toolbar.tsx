@@ -16,7 +16,7 @@ import {
   shirts,
   teams,
 } from "@/data/information";
-import { formatShirtSize, toTitleCase } from "@/lib/utils";
+import { formatShirtSize, toTitleCase } from "@/lib/localization";
 
 function buildFilterOptions(slug: string): FilterOption[] {
   const options: FilterOption[] = [];

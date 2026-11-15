@@ -27,6 +27,7 @@ import {
 import DetailRow from "../row";
 import { VettingSummary } from "../vetting-summary";
 import { normalizeVettingStatus, reviewStatusMeta, visibleVettingStatus } from "../vetting-status";
+import Link from "next/link";
 
 type SubmissionRecord = Doc<"submissions">;
 
@@ -79,7 +80,7 @@ function LinkList({ links, fallback = "None" }: { links: string[]; fallback?: st
   return (
     <div className="flex flex-col gap-1">
       {links.map((link, i) => (
-        <a
+        <Link
           key={i}
           href={link}
           target="_blank"
@@ -87,7 +88,7 @@ function LinkList({ links, fallback = "None" }: { links: string[]; fallback?: st
           className="text-primary underline underline-offset-2 break-all hover:opacity-80 transition-opacity"
         >
           {link}
-        </a>
+        </Link>
       ))}
     </div>
   );
@@ -152,14 +153,14 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                   label="Devpost"
                   value={
                     item.devpost ? (
-                      <a
+                      <Link
                         href={item.devpost}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
                       >
                         {item.devpost}
-                      </a>
+                      </Link>
                     ) : (
                       "No devpost link"
                     )
@@ -197,14 +198,14 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                     item.canva && item.canva.length > 0 ? (
                       <LinkList links={item.canva} />
                     ) : item.presentation ? (
-                      <a
+                      <Link
                         href={item.presentation}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
                       >
                         {item.presentation}
-                      </a>
+                      </Link>
                     ) : (
                       "No presentation link"
                     )
