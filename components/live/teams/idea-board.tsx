@@ -134,7 +134,7 @@ export function IdeaBoard({ tenant }: IdeaBoardProps) {
               </div>
               <div>
                 <label className="text-sm font-medium">Looking for</label>
-                <p className="text-xs text-muted-foreground mb-2">
+                <p className="mb-2 text-xs text-muted-foreground">
                   Select the roles you need for your team.
                 </p>
                 <div className="flex flex-wrap gap-1">

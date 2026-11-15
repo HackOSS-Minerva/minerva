@@ -32,7 +32,7 @@ const Wrapper = ({ form, tenant, userStatus }: WrapperProps) => {
   return (
     <>
       {logo && <Image src={logo} alt="logo" width={100} height={100} />}
-      <Card className="w-full sm:max-w-md border-none">
+      <Card className="w-full border-none sm:max-w-md">
         {statusForUI && statusForUI !== null ? (
           <Status status={statusForUI} form={slug} tenant={tenant} tenantEmail={tenantEmail} />
         ) : (

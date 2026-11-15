@@ -98,9 +98,9 @@ function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographic
                       {item.count.toLocaleString()} ({item.percentage.toLocaleString()}%)
                     </span>
                   </div>
-                  <div className="bg-muted h-2 overflow-hidden rounded-full">
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
                     <div
-                      className="bg-primary h-full rounded-full"
+                      className="h-full rounded-full bg-primary"
                       style={{ width: `${barWidth}%` }}
                     />
                   </div>
@@ -109,7 +109,7 @@ function ParticipantDemographicCard({ label, breakdown }: ParticipantDemographic
             })}
           </div>
         ) : (
-          <span className="text-muted-foreground text-sm">No PostHog data yet</span>
+          <span className="text-sm text-muted-foreground">No PostHog data yet</span>
         )}
       </CardContent>
     </Card>

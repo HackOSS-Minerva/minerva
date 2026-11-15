@@ -12,7 +12,7 @@ const Rejected = ({ tenantEmail }: RejectedProps) => {
       <div className="rounded-full p-2">
         <RiCloseLine className="h-12 w-12 text-primary" />
       </div>
-      <div className="text-center space-y-2">
+      <div className="space-y-2 text-center">
         <h2 className="text-2xl font-bold text-primary">Application Rejected</h2>
         <p className="text-primary">
           Thank you for your interest. Unfortunately, your application was not selected at this

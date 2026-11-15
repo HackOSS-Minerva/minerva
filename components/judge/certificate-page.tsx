@@ -39,31 +39,31 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
           </CardHeader>
           <CardContent>
             {/* preview certificate styling */}
-            <div className="rounded-lg p-2 flex items-center justify-center">
-              <div className="bg-sidebar w-5/8 text-center border-2 border-chart-4 relative p-6 shadow font-serif">
-                <div className="absolute inset-2 border border-chart-4 pointer-events-none" />
+            <div className="flex items-center justify-center rounded-lg p-2">
+              <div className="relative w-5/8 border-2 border-chart-4 bg-sidebar p-6 text-center font-serif shadow">
+                <div className="pointer-events-none absolute inset-2 border border-chart-4" />
                 {/* Title */}
-                <div className="text-sm font-bold uppercase tracking-widest text-slate-900 mb-2">
+                <div className="mb-2 text-sm font-bold tracking-widest text-slate-900 uppercase">
                   Certificate of Service
                 </div>
                 {/* Subtitle */}
-                <div className="text-xs text-slate-500 mb-1">Proudly presented to</div>
+                <div className="mb-1 text-xs text-slate-500">Proudly presented to</div>
                 {/* Recipient */}
-                <div className="text-2xl italic text-slate-900 mb-0.5">{judgeName}</div>
-                <hr className="w-2/3 mx-auto border-slate-300 mb-3" />
+                <div className="mb-0.5 text-2xl text-slate-900 italic">{judgeName}</div>
+                <hr className="mx-auto mb-3 w-2/3 border-slate-300" />
                 {/* Body */}
-                <div className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto mb-4">
+                <div className="mx-auto mb-4 max-w-sm text-xs leading-relaxed text-slate-600">
                   In recognition of your valuable service and dedication as a Judge at{" "}
                   <strong>{tenantName}</strong>.
                 </div>
                 {/* Details row: ID — Seal — Date */}
-                <div className="flex justify-between items-center max-w-xs mx-auto mb-4">
-                  <div className="flex flex-col items-center gap-0.5 flex-1">
+                <div className="mx-auto mb-4 flex max-w-xs items-center justify-between">
+                  <div className="flex flex-1 flex-col items-center gap-0.5">
                     <span className="text-xs text-slate-400">Certificate ID</span>
                     <span className="text-xs font-bold text-slate-900">{certificateId}</span>
                   </div>
                   <img src="/newSeal.svg" className="w-14 flex-shrink-0" alt="seal" />
-                  <div className="flex flex-col items-center gap-0.5 flex-1">
+                  <div className="flex flex-1 flex-col items-center gap-0.5">
                     <span className="text-xs text-slate-400">Date Issued</span>
                     <span className="text-xs font-bold text-slate-900">{eventDate}</span>
                   </div>
@@ -76,7 +76,7 @@ export function CertificatePage({ tenant }: CertificatePageProps) {
                   </div>
                   <div className="flex flex-col items-center gap-1">
                     <div className="w-24 border-t border-slate-400 pt-1" />
-                    <span className="text-xs text-slate-500 text-center max-w-20">
+                    <span className="max-w-20 text-center text-xs text-slate-500">
                       {organization}
                     </span>
                   </div>

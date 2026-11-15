@@ -32,7 +32,7 @@ function ToolLogo({ tool }: { tool: DevTool }) {
   return (
     <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-white p-1.5">
       {errored ? (
-        <span aria-hidden className="text-muted-foreground text-xs leading-none font-semibold">
+        <span aria-hidden className="text-xs leading-none font-semibold text-muted-foreground">
           {initialsOf(tool.name)}
         </span>
       ) : (
@@ -78,9 +78,9 @@ export function DevToolsContent() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3 items-center justify-center">
+      <div className="flex items-center justify-center gap-3">
         <div className="relative flex-1">
-          <RiSearchLine className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <RiSearchLine className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search tools by name, category, or keyword..."
@@ -156,7 +156,7 @@ function DevToolCard({ tool }: { tool: DevTool }) {
           <ToolLogo tool={tool} />
           <div className="min-w-0 flex-1">
             <CardTitle className="truncate text-base">{tool.name}</CardTitle>
-            <p className="text-muted-foreground mt-0.5 text-xs">{tool.category}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{tool.category}</p>
           </div>
         </div>
       </CardHeader>

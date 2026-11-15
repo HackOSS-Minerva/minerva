@@ -34,7 +34,7 @@ const Layout = async ({ children, params }: AdminLayoutProps) => {
               alt="Logo"
               width={120}
               height={120}
-              className="w-28 h-28"
+              className="h-28 w-28"
             />
           </div>
           <div className="space-y-3">

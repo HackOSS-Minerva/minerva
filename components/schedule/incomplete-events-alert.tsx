@@ -126,7 +126,7 @@ export function IncompleteEventsAlert({ incompleteEvents }: IncompleteEventsAler
                           Missing Title
                         </Badge>
                       ) : (
-                        <span className="text-sm font-semibold text-foreground truncate">
+                        <span className="truncate text-sm font-semibold text-foreground">
                           {title}
                         </span>
                       )}
@@ -166,7 +166,7 @@ export function IncompleteEventsAlert({ incompleteEvents }: IncompleteEventsAler
                       <span className="flex items-center gap-1">
                         <MapPin className="size-3 text-muted-foreground/70" />
                         {event.location?.trim() ? (
-                          <span className="truncate max-w-50">{event.location.trim()}</span>
+                          <span className="max-w-50 truncate">{event.location.trim()}</span>
                         ) : (
                           <Badge
                             variant="destructive"
@@ -182,7 +182,7 @@ export function IncompleteEventsAlert({ incompleteEvents }: IncompleteEventsAler
                       <span className="flex items-center gap-1">
                         <FileText className="size-3 text-muted-foreground/70" />
                         {event.description?.trim() ? (
-                          <span className="truncate max-w-50">{event.description.trim()}</span>
+                          <span className="max-w-50 truncate">{event.description.trim()}</span>
                         ) : (
                           <Badge
                             variant="destructive"

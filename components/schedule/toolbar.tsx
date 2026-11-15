@@ -92,7 +92,7 @@ export function FilterToolbar<TData extends RowData>({
   }, [filteredOptions]);
 
   return (
-    <div className="flex items-center gap-2 w-full">
+    <div className="flex w-full items-center gap-2">
       <Combobox
         multiple
         autoHighlight

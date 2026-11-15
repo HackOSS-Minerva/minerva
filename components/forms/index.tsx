@@ -49,7 +49,7 @@ const Form = async ({ params }: FormProps) => {
   }
 
   return (
-    <div className="flex justify-center flex-col items-center gap-4">
+    <div className="flex flex-col items-center justify-center gap-4">
       <Wrapper form={form} tenant={tenant} userStatus={userStatus} />
     </div>
   );

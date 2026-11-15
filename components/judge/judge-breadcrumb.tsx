@@ -41,7 +41,7 @@ export function JudgeBreadcrumb({ tenant, page, section }: JudgeBreadcrumbProps)
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage className="text-muted-foreground font-normal">{section}</BreadcrumbPage>
+          <BreadcrumbPage className="font-normal text-muted-foreground">{section}</BreadcrumbPage>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>

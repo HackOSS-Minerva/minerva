@@ -66,7 +66,7 @@ const AvailabilityIcon = ({
   const Icon = getAvailabilityIcon(availability) as React.ComponentType<{ className: string }>;
   return (
     <div
-      className={`flex items-center justify-center p-1 rounded ${isAvailable ? "text-primary" : "text-gray-300"}`}
+      className={`flex items-center justify-center rounded p-1 ${isAvailable ? "text-primary" : "text-gray-300"}`}
     >
       <Icon className="h-4 w-4" />
     </div>
@@ -173,7 +173,7 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
+        <Label className="px-1.5 text-muted-foreground">{row.original.email}</Label>
       </div>
     ),
   },
@@ -181,21 +181,21 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     accessorKey: "telephone",
     header: "Phone",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.telephone}</Label>
     ),
   },
   {
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.discord}</Label>
     ),
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
+      <Label className="px-1.5 text-muted-foreground">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {
@@ -207,7 +207,7 @@ export const columns: ColumnDef<Doc<"volunteers">>[] = [
     accessorKey: "dietrestriction",
     header: () => <div>Diet Restrictions</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.dietrestriction}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.dietrestriction}</Label>
     ),
   },
   {

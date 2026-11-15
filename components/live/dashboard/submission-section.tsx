@@ -27,7 +27,7 @@ export function SubmissionSection({ tenant, submissionDeadline }: SubmissionSect
         {hasSubmitted && (
           <Badge
             variant="secondary"
-            className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 border-emerald-500/20 flex items-center gap-1 font-semibold"
+            className="flex items-center gap-1 border-emerald-500/20 bg-emerald-500/10 font-semibold text-emerald-500 hover:bg-emerald-500/20"
           >
             <RiCheckLine className="h-3 w-3" />
             Submitted

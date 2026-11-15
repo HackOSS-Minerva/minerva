@@ -69,15 +69,15 @@ export function MemberSheet({ item, sections, header, footer }: MemberSheetProps
   return (
     <Drawer direction={direction}>
       <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
+        <Button variant="link" className="w-fit px-0 text-left text-foreground">
           {String(item.firstname)} {String(item.lastname)}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="flex h-full flex-col px-4 py-5 gap-5">
+        <div className="flex h-full flex-col gap-5 px-4 py-5">
           {/* Header */}
           <div className="flex items-start justify-between">
-            <DrawerHeader className="gap-1 p-0 w-full items-center text-center">
+            <DrawerHeader className="w-full items-center gap-1 p-0 text-center">
               <DrawerTitle className="text-center">
                 {String(item.firstname)} {String(item.lastname)}
               </DrawerTitle>

@@ -27,7 +27,7 @@ const ScheduleContent = () => {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center">
-        <p className="text-destructive text-lg font-semibold">
+        <p className="text-lg font-semibold text-destructive">
           Failed to load schedule: {(error as Error)?.message ?? "Unknown error"}
         </p>
       </div>

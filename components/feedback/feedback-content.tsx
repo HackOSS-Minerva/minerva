@@ -73,9 +73,9 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
 
   if (submitted) {
     return (
-      <Card className="w-full sm:max-w-md border-none">
+      <Card className="w-full border-none sm:max-w-md">
         <CardHeader>
-          <h2 className="text-2xl font-bold text-center">Thank You for Your Feedback!</h2>
+          <h2 className="text-center text-2xl font-bold">Thank You for Your Feedback!</h2>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground">
@@ -90,7 +90,7 @@ export const FeedbackContent = ({ tenant }: FeedbackContentProps) => {
   return (
     <>
       <Image src={config.logo} alt="logo" width={200} height={200} />
-      <Card className="w-full sm:max-w-md border-none">
+      <Card className="w-full border-none sm:max-w-md">
         <CardHeader>
           <div className="px-4">
             <Header />

@@ -95,7 +95,7 @@ export const columns: ColumnDef<Doc<"speakers">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
+        <Label className="px-1.5 text-muted-foreground">{row.original.email}</Label>
       </div>
     ),
   },
@@ -103,21 +103,21 @@ export const columns: ColumnDef<Doc<"speakers">>[] = [
     accessorKey: "telephone",
     header: "Phone",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.telephone}</Label>
     ),
   },
   {
     accessorKey: "affiliation",
     header: () => <div>Affiliation</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.affiliation}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.affiliation}</Label>
     ),
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
+      <Label className="px-1.5 text-muted-foreground">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {

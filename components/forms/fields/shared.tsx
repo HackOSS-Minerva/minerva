@@ -55,7 +55,7 @@ const isInvalidField = (field: AnyFieldApi) =>
 
 const CharCounter = ({ value, max }: { value: string; max: number }) => (
   <span
-    className={`text-xs shrink-0 ${
+    className={`shrink-0 text-xs ${
       value.length >= max ? "text-destructive font-medium" : "text-muted-foreground"
     }`}
   >
@@ -83,7 +83,7 @@ export function textField({
       const isInvalid = isInvalidField(field);
       return (
         <Field data-invalid={isInvalid}>
-          <div className="flex justify-between items-end gap-4">
+          <div className="flex items-end justify-between gap-4">
             <FieldLabel htmlFor={field.name} className="text-primary">
               {label}
               <span className="text-destructive">*</span>
@@ -260,7 +260,7 @@ export function fileField({
               />
             )}
             {field.state.value && (
-              <div className="flex items-center justify-between w-full">
+              <div className="flex w-full items-center justify-between">
                 <span className="text-sm text-muted-foreground">
                   {(field.state.value as File).name}
                   {" · "}
@@ -309,7 +309,7 @@ export function termsField({
             Terms and Conditions<span className="text-destructive">*</span>
           </FieldLabel>
           <FieldContent className="text-sm">
-            <ul className="list-disc mx-3 text-primary">
+            <ul className="mx-3 list-disc text-primary">
               {terms.map((term) => (
                 <li key={term}>{term}</li>
               ))}
@@ -318,7 +318,7 @@ export function termsField({
 
           <div className="flex flex-col text-sm">
             {resources.map(({ name, url }) => (
-              <Link href={url} key={name} className="flex gap-2 items-center text-primary">
+              <Link href={url} key={name} className="flex items-center gap-2 text-primary">
                 {name}
                 <RiExternalLinkLine size={16} />
               </Link>
@@ -336,7 +336,7 @@ export function termsField({
               <Label htmlFor="terms" className="text-primary">
                 Accept terms and conditions
               </Label>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-sm text-muted-foreground">
                 By clicking this checkbox, you agree to the terms and conditions.
               </p>
             </div>
@@ -377,7 +377,7 @@ export function consentField({
               <Label htmlFor={name} className="text-primary">
                 {label}
               </Label>
-              <p className="text-muted-foreground text-sm">{description}</p>
+              <p className="text-sm text-muted-foreground">{description}</p>
             </div>
           </div>
           {isInvalid && <FieldError errors={field.state.meta.errors} />}

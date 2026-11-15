@@ -84,7 +84,7 @@ function LinkList({ links, fallback = "None" }: { links: string[]; fallback?: st
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary underline underline-offset-2 break-all hover:opacity-80 transition-opacity"
+          className="break-all text-primary underline underline-offset-2 transition-opacity hover:opacity-80"
         >
           {link}
         </Link>
@@ -109,10 +109,10 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
       <DrawerContent className="data-[vaul-drawer-direction=right]:sm:max-w-xl">
         <div className="flex h-full flex-col gap-5 px-4 py-5">
           <div className="flex items-start justify-between">
-            <DrawerHeader className="gap-1 p-0 w-full">
-              <div className="flex items-start justify-between gap-3 w-full">
+            <DrawerHeader className="w-full gap-1 p-0">
+              <div className="flex w-full items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-xs font-medium uppercase text-muted-foreground">Team Name</p>
+                  <p className="text-xs font-medium text-muted-foreground uppercase">Team Name</p>
                   <DrawerTitle className="break-words">{item.teamName}</DrawerTitle>
                 </div>
                 <DrawerClose asChild>
@@ -127,7 +127,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
             </DrawerHeader>
           </div>
 
-          <div className="flex-1 overflow-y-auto scrollbar-thin-custom">
+          <div className="scrollbar-thin-custom flex-1 overflow-y-auto">
             <div className="grid gap-5">
               <VettingSummary
                 submissionId={item._id}
@@ -136,11 +136,11 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
               />
 
               <div className="flex flex-col gap-1">
-                <p className="text-xs font-medium uppercase text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground uppercase">
                   Project Details
                 </p>
                 <h3 className="text-base font-semibold">{item.projectName}</h3>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                <p className="text-sm whitespace-pre-wrap text-muted-foreground">
                   {item.description}
                 </p>
               </div>
@@ -155,7 +155,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                         href={item.devpost}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+                        className="text-primary underline underline-offset-2 transition-opacity hover:opacity-80"
                       >
                         {item.devpost}
                       </Link>
@@ -200,7 +200,7 @@ function TableCellViewer({ item }: { item: SubmissionRecord }) {
                         href={item.presentation}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+                        className="text-primary underline underline-offset-2 transition-opacity hover:opacity-80"
                       >
                         {item.presentation}
                       </Link>
@@ -254,7 +254,7 @@ function ReviewCell({ item }: { item: SubmissionRecord }) {
         <TooltipTrigger asChild>
           <span className="ml-auto inline-flex max-w-full items-center justify-end gap-1.5 px-1.5 text-sm">
             <VisibleIcon className={`h-4 w-4 shrink-0 ${visibleStatus.iconClass}`} />
-            <span className="truncate whitespace-nowrap">{visibleStatus.label}</span>
+            <span className="truncate">{visibleStatus.label}</span>
           </span>
         </TooltipTrigger>
         <TooltipContent side="top">
@@ -301,7 +301,7 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
       <TooltipProvider delayDuration={200}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Label className="text-muted-foreground block truncate px-1.5 whitespace-nowrap">
+            <Label className="block truncate px-1.5 text-muted-foreground">
               {formatCompactTimestamp(row.original.timestamp)}
             </Label>
           </TooltipTrigger>
@@ -324,7 +324,7 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
     accessorKey: "projectName",
     header: "Project",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground block truncate px-1.5">
+      <Label className="block truncate px-1.5 text-muted-foreground">
         {row.original.projectName}
       </Label>
     ),

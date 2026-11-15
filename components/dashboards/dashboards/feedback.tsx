@@ -87,15 +87,15 @@ function TableCellViewer({ item }: { item: FeedbackRecord }) {
   return (
     <Drawer direction={direction}>
       <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
+        <Button variant="link" className="w-fit px-0 text-left text-foreground">
           {formatLabel(item.find)}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="flex h-full flex-col gap-5 px-4 py-5">
           <div className="flex items-start justify-between">
-            <DrawerHeader className="gap-1 p-0 w-full">
-              <div className="flex items-center justify-between w-full">
+            <DrawerHeader className="w-full gap-1 p-0">
+              <div className="flex w-full items-center justify-between">
                 <DrawerTitle>Feedback Details</DrawerTitle>
                 <DrawerClose asChild>
                   <Button variant="ghost" size="icon" aria-label="Close feedback">
@@ -188,7 +188,7 @@ export const columns: ColumnDef<FeedbackRecord>[] = [
     header: "Liked to See",
     cell: ({ row }) => (
       <div className="max-w-48">
-        <Label className="text-muted-foreground px-1.5 line-clamp-2">
+        <Label className="line-clamp-2 px-1.5 text-muted-foreground">
           {row.original.liked_to_see}
         </Label>
       </div>
@@ -199,7 +199,7 @@ export const columns: ColumnDef<FeedbackRecord>[] = [
     header: "Not Beneficial",
     cell: ({ row }) => (
       <div className="max-w-48">
-        <Label className="text-muted-foreground px-1.5 line-clamp-2">
+        <Label className="line-clamp-2 px-1.5 text-muted-foreground">
           {row.original.not_beneficial}
         </Label>
       </div>
@@ -209,7 +209,7 @@ export const columns: ColumnDef<FeedbackRecord>[] = [
     accessorKey: "rating",
     header: "Rating",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
+      <Label className="px-1.5 text-muted-foreground">
         <RatingBadge rating={row.original.rating} />
       </Label>
     ),
@@ -218,7 +218,7 @@ export const columns: ColumnDef<FeedbackRecord>[] = [
     accessorKey: "timestamp",
     header: "Submitted",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
+      <Label className="px-1.5 text-muted-foreground">
         {formatTimestamp(row.original.timestamp)}
       </Label>
     ),
@@ -230,7 +230,7 @@ export const columns: ColumnDef<FeedbackRecord>[] = [
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
             size="icon"
           >
             <RiMoreLine />

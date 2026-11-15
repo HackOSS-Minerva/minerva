@@ -176,7 +176,7 @@ export function VettingSummary({
           <Separator />
 
           <div className="grid gap-3">
-            <h4 className="flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
+            <h4 className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
               <RiGitBranchLine className="h-4 w-4" />
               Repositories
             </h4>
@@ -204,7 +204,7 @@ export function VettingSummary({
                           href={repo.repoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex min-w-0 items-center gap-1 break-all text-sm font-medium text-primary underline underline-offset-2"
+                          className="inline-flex min-w-0 items-center gap-1 text-sm font-medium break-all text-primary underline underline-offset-2"
                         >
                           {repo.owner}/{repo.name}
                           <RiExternalLinkLine className="h-3.5 w-3.5 shrink-0" />
@@ -250,7 +250,7 @@ export function VettingSummary({
           <Separator />
 
           <div className="grid gap-3">
-            <h4 className="flex items-center gap-2 text-xs font-medium uppercase text-muted-foreground">
+            <h4 className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
               <RiGitCommitLine className="h-4 w-4" />
               People
             </h4>
@@ -268,7 +268,7 @@ export function VettingSummary({
                     >
                       <FindingIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                       <div className="min-w-0">
-                        <p className="font-medium leading-5">{meta.label}</p>
+                        <p className="leading-5 font-medium">{meta.label}</p>
                         <p className="text-xs leading-5 opacity-80">{finding.message}</p>
                       </div>
                     </div>

@@ -23,8 +23,8 @@ const DetailRow = ({
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
-        <div className="wrap-break-words text-sm text-foreground">{value}</div>
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
+        <div className="text-sm wrap-break-word text-foreground">{value}</div>
       </div>
       {copyable && onCopy ? (
         <Button size="sm" variant="ghost" className="h-5 w-5 shrink-0 p-0" onClick={onCopy}>

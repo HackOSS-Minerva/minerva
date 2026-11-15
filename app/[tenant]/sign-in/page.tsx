@@ -108,7 +108,7 @@ const SignInPage = ({ params }: SignInPageProps) => {
           <div className="w-full max-w-sm space-y-6">
             <div className="space-y-2 text-center">
               <h1 className="text-2xl font-semibold">Sign In</h1>
-              <p className="text-muted-foreground text-sm">Loading…</p>
+              <p className="text-sm text-muted-foreground">Loading…</p>
             </div>
           </div>
         </div>

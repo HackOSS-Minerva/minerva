@@ -28,11 +28,11 @@ export function ScheduleValidationSuccess({ totalCount }: ScheduleValidationSucc
               <h3 className="text-base font-semibold text-foreground">
                 Schedule Validation Passed
               </h3>
-              <Badge className="border-emerald-500/30 bg-emerald-500/10 font-semibold text-emerald-700 text-xs hover:bg-emerald-500/15 dark:text-emerald-300">
+              <Badge className="border-emerald-500/30 bg-emerald-500/10 text-xs font-semibold text-emerald-700 hover:bg-emerald-500/15 dark:text-emerald-300">
                 {totalCount > 0 ? `All ${totalCount} Events Valid` : "Validation Complete"}
               </Badge>
             </div>
-            <p className="mt-1 text-muted-foreground text-sm">
+            <p className="mt-1 text-sm text-muted-foreground">
               {totalCount > 0
                 ? `Validation ran successfully on page load. All ${totalCount} Google Calendar events have a valid Title, description, date, time, and location.`
                 : "Validation ran on page load. No events were found in Google Calendar."}

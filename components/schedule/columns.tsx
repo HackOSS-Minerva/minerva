@@ -104,7 +104,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       const timeZone = row.original.start?.timeZone ?? "America/Los_Angeles";
 
       if (isAllDay) {
-        return <span className="text-muted-foreground italic text-xs font-medium">All Day</span>;
+        return <span className="text-xs font-medium text-muted-foreground italic">All Day</span>;
       }
 
       return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
@@ -136,7 +136,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
       const timeZone = row.original.end?.timeZone ?? "America/Los_Angeles";
 
       if (isAllDay) {
-        return <span className="text-muted-foreground italic text-xs font-medium">All Day</span>;
+        return <span className="text-xs font-medium text-muted-foreground italic">All Day</span>;
       }
 
       return <span className="font-medium">{formatTime(dateTime, timeZone)}</span>;
@@ -166,7 +166,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const summary = row.getValue("summary") as string | undefined;
       return (
-        <span className="font-medium line-clamp-1 max-w-(--size-250px)">
+        <span className="line-clamp-1 max-w-(--size-250px) font-medium">
           {summary?.trim() || <span className="text-muted-foreground italic">Untitled Event</span>}
         </span>
       );
@@ -178,7 +178,7 @@ export const columns: ColumnDef<GoogleEvent>[] = [
     cell: ({ row }) => {
       const location = row.getValue("location") as string | undefined;
       return location?.trim() ? (
-        <span className="text-muted-foreground line-clamp-1 max-w-(--size-250px)">
+        <span className="line-clamp-1 max-w-(--size-250px) text-muted-foreground">
           {location.trim()}
         </span>
       ) : (

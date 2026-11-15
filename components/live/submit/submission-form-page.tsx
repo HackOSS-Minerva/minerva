@@ -82,12 +82,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <FieldLabel htmlFor={field.name} className="text-primary">
                         Team Name<span className="text-destructive">*</span>
                       </FieldLabel>
                       <span
-                        className={`text-xs shrink-0 ${
+                        className={`shrink-0 text-xs ${
                           field.state.value.length >= MAX_SUBMISSION_NAME_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
@@ -122,12 +122,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <FieldLabel htmlFor={field.name} className="text-primary">
                         Project Name<span className="text-destructive">*</span>
                       </FieldLabel>
                       <span
-                        className={`text-xs shrink-0 ${
+                        className={`shrink-0 text-xs ${
                           field.state.value.length >= MAX_SUBMISSION_NAME_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
@@ -166,12 +166,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       Project Description
                       <span className="text-destructive">*</span>
                     </FieldLabel>
-                    <div className="flex justify-between items-end gap-4">
+                    <div className="flex items-end justify-between gap-4">
                       <FieldDescription>
                         Briefly describe what your project does and what problem it solves.
                       </FieldDescription>
                       <span
-                        className={`text-xs shrink-0 ${
+                        className={`shrink-0 text-xs ${
                           field.state.value.length >= MAX_SUBMISSION_DESCRIPTION_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
@@ -209,12 +209,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <FieldLabel htmlFor={field.name} className="text-primary">
                         Devpost URL<span className="text-destructive">*</span>
                       </FieldLabel>
                       <span
-                        className={`text-xs shrink-0 ${
+                        className={`shrink-0 text-xs ${
                           field.state.value.length >= MAX_SUBMISSION_URL_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
@@ -253,18 +253,18 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <FieldLabel className="text-primary font-medium flex items-center gap-1">
+                        <FieldLabel className="flex items-center gap-1 font-medium text-primary">
                           <RiGithubLine className="h-4 w-4" />
                           GitHub Repositories
                         </FieldLabel>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           Add at least one repository link (up to {MAX_LINKS_PER_TYPE}, max{" "}
                           {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex shrink-0 items-center gap-2">
                         <span className="text-xs text-muted-foreground">
                           {links.length}/{MAX_LINKS_PER_TYPE}
                         </span>
@@ -281,12 +281,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                               : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
-                          <RiAddLine className="h-3 w-3 mr-1" /> Add Repo
+                          <RiAddLine className="mr-1 h-3 w-3" /> Add Repo
                         </Button>
                       </div>
                     </div>
                     {links.map((link, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
+                      <div key={idx} className="flex items-center gap-2">
                         <Input
                           type="url"
                           value={link}
@@ -297,13 +297,13 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           }}
                           onBlur={field.handleBlur}
                           placeholder="https://github.com/..."
-                          className="text-primary text-sm"
+                          className="text-sm text-primary"
                           disabled={form.state.isSubmitting}
                           autoComplete="off"
                           maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
                         <span
-                          className={`text-xs shrink-0 w-14 text-right ${
+                          className={`w-14 shrink-0 text-right text-xs ${
                             link.length >= MAX_SUBMISSION_URL_LENGTH
                               ? "text-destructive font-medium"
                               : "text-muted-foreground"
@@ -316,7 +316,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
+                            className="h-10 w-10 shrink-0 text-muted-foreground hover:text-destructive"
                             onClick={() => {
                               field.handleChange(links.filter((_, i) => i !== idx));
                             }}
@@ -343,18 +343,18 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <FieldLabel className="text-primary font-medium flex items-center gap-1">
+                        <FieldLabel className="flex items-center gap-1 font-medium text-primary">
                           <RiFigmaLine className="h-4 w-4" />
                           Figma Designs
                         </FieldLabel>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           Include links to your Figma design files or prototypes (up to{" "}
                           {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex shrink-0 items-center gap-2">
                         <span className="text-xs text-muted-foreground">
                           {links.length}/{MAX_LINKS_PER_TYPE}
                         </span>
@@ -369,12 +369,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
-                          <RiAddLine className="h-3 w-3 mr-1" /> Add Design
+                          <RiAddLine className="mr-1 h-3 w-3" /> Add Design
                         </Button>
                       </div>
                     </div>
                     {links.map((link, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
+                      <div key={idx} className="flex items-center gap-2">
                         <Input
                           type="url"
                           value={link}
@@ -385,13 +385,13 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           }}
                           onBlur={field.handleBlur}
                           placeholder="https://figma.com/..."
-                          className="text-primary text-sm"
+                          className="text-sm text-primary"
                           disabled={form.state.isSubmitting}
                           autoComplete="off"
                           maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
                         <span
-                          className={`text-xs shrink-0 w-14 text-right ${
+                          className={`w-14 shrink-0 text-right text-xs ${
                             link.length >= MAX_SUBMISSION_URL_LENGTH
                               ? "text-destructive font-medium"
                               : "text-muted-foreground"
@@ -404,7 +404,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
+                            className="h-10 w-10 shrink-0 text-muted-foreground hover:text-destructive"
                             onClick={() => {
                               field.handleChange(links.filter((_, i) => i !== idx));
                             }}
@@ -431,18 +431,18 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const canAddMore = links.length < MAX_LINKS_PER_TYPE;
                 return (
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <FieldLabel className="text-primary font-medium flex items-center gap-1">
+                        <FieldLabel className="flex items-center gap-1 font-medium text-primary">
                           <RiFileTextLine className="h-4 w-4" />
                           Canva Designs
                         </FieldLabel>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           Include links to your Canva presentations or designs (up to{" "}
                           {MAX_LINKS_PER_TYPE}, max {MAX_SUBMISSION_URL_LENGTH} characters each).
                         </p>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex shrink-0 items-center gap-2">
                         <span className="text-xs text-muted-foreground">
                           {links.length}/{MAX_LINKS_PER_TYPE}
                         </span>
@@ -457,12 +457,12 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
                         >
-                          <RiAddLine className="h-3 w-3 mr-1" /> Add Design
+                          <RiAddLine className="mr-1 h-3 w-3" /> Add Design
                         </Button>
                       </div>
                     </div>
                     {links.map((link, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
+                      <div key={idx} className="flex items-center gap-2">
                         <Input
                           type="url"
                           value={link}
@@ -473,13 +473,13 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           }}
                           onBlur={field.handleBlur}
                           placeholder="https://canva.com/..."
-                          className="text-primary text-sm"
+                          className="text-sm text-primary"
                           disabled={form.state.isSubmitting}
                           autoComplete="off"
                           maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
                         <span
-                          className={`text-xs shrink-0 w-14 text-right ${
+                          className={`w-14 shrink-0 text-right text-xs ${
                             link.length >= MAX_SUBMISSION_URL_LENGTH
                               ? "text-destructive font-medium"
                               : "text-muted-foreground"
@@ -492,7 +492,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
+                            className="h-10 w-10 shrink-0 text-muted-foreground hover:text-destructive"
                             onClick={() => {
                               field.handleChange(links.filter((_, i) => i !== idx));
                             }}
@@ -517,16 +517,16 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <FieldLabel
                         htmlFor={field.name}
-                        className="text-primary flex items-center gap-1"
+                        className="flex items-center gap-1 text-primary"
                       >
                         <RiExternalLinkLine className="h-4 w-4" />
                         Presentation / Demo Video
                       </FieldLabel>
                       <span
-                        className={`text-xs shrink-0 ${
+                        className={`shrink-0 text-xs ${
                           field.state.value.length >= MAX_SUBMISSION_URL_LENGTH
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
@@ -549,7 +549,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_URL_LENGTH}
                       placeholder="https://slides.com/..."
-                      className="text-primary mt-1"
+                      className="mt-1 text-primary"
                       disabled={form.state.isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
@@ -569,13 +569,13 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                 const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <FieldLabel className="text-primary font-medium flex items-center gap-1">
+                        <FieldLabel className="flex items-center gap-1 font-medium text-primary">
                           <RiMailLine className="h-4 w-4" />
                           Invite Teammates by Email
                         </FieldLabel>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           Invited members will be linked to this submission.
                         </p>
                       </div>
@@ -587,11 +587,11 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                         onClick={() => field.handleChange([...emails, ""])}
                         disabled={form.state.isSubmitting}
                       >
-                        <RiAddLine className="h-3 w-3 mr-1" /> Add Member
+                        <RiAddLine className="mr-1 h-3 w-3" /> Add Member
                       </Button>
                     </div>
                     {emails.map((email, idx) => (
-                      <div key={idx} className="flex gap-2 items-center">
+                      <div key={idx} className="flex items-center gap-2">
                         <Input
                           type="email"
                           value={email}
@@ -602,7 +602,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                           }}
                           onBlur={field.handleBlur}
                           placeholder={`member${idx + 2}@email.com`}
-                          className="text-primary text-sm"
+                          className="text-sm text-primary"
                           disabled={form.state.isSubmitting}
                           autoComplete="off"
                         />
@@ -611,7 +611,7 @@ export function SubmissionFormPage({ tenant }: SubmissionFormPageProps) {
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="h-10 w-10 text-muted-foreground hover:text-destructive shrink-0"
+                            className="h-10 w-10 shrink-0 text-muted-foreground hover:text-destructive"
                             onClick={() => {
                               field.handleChange(emails.filter((_, i) => i !== idx));
                             }}

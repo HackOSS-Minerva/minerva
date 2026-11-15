@@ -30,7 +30,7 @@ export function AvatarProfile() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-full focus:outline-none transition-transform duration-200 hover:scale-110 cursor-pointer">
+        <button className="cursor-pointer rounded-full transition-transform duration-200 hover:scale-110 focus:outline-none">
           <Avatar>
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>

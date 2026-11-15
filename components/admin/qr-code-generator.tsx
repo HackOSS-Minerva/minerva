@@ -38,8 +38,8 @@ export default function QRCodeGenerator() {
   const isEmpty = value.trim().length === 0;
 
   return (
-    <div className="w-full p-4 space-y-4">
-      <h1 className="text-2xl font-bold text-left">QR Code Generator</h1>
+    <div className="w-full space-y-4 p-4">
+      <h1 className="text-left text-2xl font-bold">QR Code Generator</h1>
 
       {/* Input and download button side by side */}
       <div className="flex gap-2">
@@ -57,12 +57,12 @@ export default function QRCodeGenerator() {
       <div>
         {isEmpty ? (
           <div
-            className="h-48 flex items-center justify-center text-muted-foreground text-left"
+            className="flex h-48 items-center justify-center text-left text-muted-foreground"
           >
             Enter text to preview
           </div>
         ) : (
-          <QRCodeSVG value={value} size={200} className="mx-auto d-block" />
+          <QRCodeSVG value={value} size={200} className="mx-auto block" />
         )}
       </div>
     </div>

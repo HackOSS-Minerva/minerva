@@ -129,7 +129,7 @@ export default function AssignmentsContent() {
         </div>
 
         <div className="relative min-w-40 flex-1">
-          <RiSearchLine className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <RiSearchLine className="absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search..."
             className="w-full pl-8"

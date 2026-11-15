@@ -81,7 +81,7 @@ export function AssignmentsPage({ tenant }: AssignmentsPageProps) {
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
-                <RiClipboardLine className="h-3 w-3 text-muted-foreground self-center" />
+                <RiClipboardLine className="h-3 w-3 self-center text-muted-foreground" />
                 <Badge variant="outline">Innovation</Badge>
                 <Badge variant="outline">Technical Complexity</Badge>
                 <Badge variant="outline">Presentation</Badge>

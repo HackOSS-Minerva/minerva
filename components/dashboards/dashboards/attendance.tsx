@@ -64,7 +64,7 @@ export const columns: ColumnDef<CheckinRecord>[] = [
     accessorKey: "firstname",
     header: "Name",
     cell: ({ row }) => (
-      <Label className="text-foreground px-1.5">
+      <Label className="px-1.5 text-foreground">
         {row.original.firstname} {row.original.lastname}
       </Label>
     ),
@@ -73,20 +73,20 @@ export const columns: ColumnDef<CheckinRecord>[] = [
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>,
+    cell: ({ row }) => <Label className="px-1.5 text-muted-foreground">{row.original.email}</Label>,
   },
   {
     accessorKey: "role",
     header: "Role",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5 capitalize">{row.original.role}</Label>
+      <Label className="px-1.5 text-muted-foreground capitalize">{row.original.role}</Label>
     ),
   },
   {
     accessorKey: "timestamp",
     header: "Check-in Time",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">
+      <Label className="px-1.5 text-muted-foreground">
         {formatTimestamp(row.original.timestamp)}
       </Label>
     ),
@@ -98,7 +98,7 @@ export const columns: ColumnDef<CheckinRecord>[] = [
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
             size="icon"
           >
             <RiMoreLine />

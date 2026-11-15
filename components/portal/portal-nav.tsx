@@ -65,7 +65,7 @@ export function PortalNav({
   }));
 
   return (
-    <nav className="flex items-center justify-between gap-1 w-full max-w-4xl mx-auto">
+    <nav className="mx-auto flex w-full max-w-4xl items-center justify-between gap-1">
       {logo && (
         <Link href={`/${tenant}${dashboardPath}`} className="flex items-center">
           <Image

@@ -97,7 +97,7 @@ const sections: MemberSectionConfig[] = [
           const displayName = fullName || "Participant";
           return (
             <div className="flex items-center gap-2">
-              <span className="truncate flex-1 text-left">{displayName} Resume</span>
+              <span className="flex-1 truncate text-left">{displayName} Resume</span>
               <Button
                 size="sm"
                 variant="ghost"
@@ -155,7 +155,7 @@ export const columns: ColumnDef<Doc<"participants">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
+        <Label className="px-1.5 text-muted-foreground">{row.original.email}</Label>
       </div>
     ),
   },
@@ -163,14 +163,14 @@ export const columns: ColumnDef<Doc<"participants">>[] = [
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.discord}</Label>
     ),
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
+      <Label className="px-1.5 text-muted-foreground">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {

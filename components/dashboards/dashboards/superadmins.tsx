@@ -108,7 +108,7 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     header: "Email",
     cell: ({ row }) => (
       <div className="w-32">
-        <Label className="text-muted-foreground px-1.5">{row.original.email}</Label>
+        <Label className="px-1.5 text-muted-foreground">{row.original.email}</Label>
       </div>
     ),
   },
@@ -116,26 +116,26 @@ export const columns: ColumnDef<Doc<"superadmins">>[] = [
     accessorKey: "telephone",
     header: "Phone",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.telephone}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.telephone}</Label>
     ),
   },
   {
     accessorKey: "discord",
     header: "Discord",
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{row.original.discord}</Label>
+      <Label className="px-1.5 text-muted-foreground">{row.original.discord}</Label>
     ),
   },
   {
     accessorKey: "team",
     header: () => <div>Team</div>,
-    cell: ({ row }) => <Label className="text-muted-foreground px-1.5">{row.original.team}</Label>,
+    cell: ({ row }) => <Label className="px-1.5 text-muted-foreground">{row.original.team}</Label>,
   },
   {
     accessorKey: "shirt",
     header: () => <div>Shirt</div>,
     cell: ({ row }) => (
-      <Label className="text-muted-foreground px-1.5">{formatShirtSize(row.original.shirt)}</Label>
+      <Label className="px-1.5 text-muted-foreground">{formatShirtSize(row.original.shirt)}</Label>
     ),
   },
   {

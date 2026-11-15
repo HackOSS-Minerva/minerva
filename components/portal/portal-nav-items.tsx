@@ -90,7 +90,7 @@ export function PortalNavItems({
                             rel={item.external ? "noopener noreferrer" : undefined}
                             className="flex flex-col items-start gap-0.5"
                           >
-                            <span className="flex items-center justify-between w-full gap-1 text-sm font-medium">
+                            <span className="flex w-full items-center justify-between gap-1 text-sm font-medium">
                               {item.label}
                               {item.external && (
                                 <RiExternalLinkLine className="text-muted-foreground" />

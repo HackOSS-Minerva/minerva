@@ -17,7 +17,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 export function ProfileDrawerTrigger({ name }: { name: string }) {
   return (
     <DrawerTrigger asChild>
-      <Button variant="link" className="text-foreground w-fit px-0 text-left">
+      <Button variant="link" className="w-fit px-0 text-left text-foreground">
         {name}
       </Button>
     </DrawerTrigger>
@@ -49,7 +49,7 @@ export function ProfileDrawer({
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <ProfileDrawerTrigger name={name} />
       <DrawerContent>
-        <div className="flex h-full flex-col px-4 py-5 gap-2">
+        <div className="flex h-full flex-col gap-2 px-4 py-5">
           <div className="flex items-start justify-between">
             <DrawerTitle>{title}</DrawerTitle>
             <ProfileDrawerCloseButton />

@@ -180,7 +180,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <RiSearchLine className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <RiSearchLine className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Search events..."
@@ -217,8 +217,8 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
         {filteredCurrent && (
           <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
             <div className="mb-1 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+              <span className="text-xs font-semibold tracking-wider text-primary uppercase">
                 Now
               </span>
             </div>
@@ -236,7 +236,7 @@ export function ScheduleSection({ initialData }: ScheduleSectionProps) {
           <div className="rounded-lg border p-4">
             <div className="mb-1 flex items-center gap-2">
               <RiTimeLine className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Up Next
               </span>
               {nextEventCountdown && (

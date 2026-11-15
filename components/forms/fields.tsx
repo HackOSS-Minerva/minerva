@@ -116,7 +116,7 @@ const Fields = () => {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter className="bg-transparent border-0">
+      <CardFooter className="border-0 bg-transparent">
         <Field orientation="horizontal" className="justify-center">
           <formInstance.Subscribe selector={(state) => state.isSubmitting}>
             {(isSubmitting) => (

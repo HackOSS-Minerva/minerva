@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       {/* Table */}
       <div className="overflow-hidden rounded-lg border">
         <Table>
-          <TableHeader className="bg-muted sticky top-0 z-10">
+          <TableHeader className="sticky top-0 z-10 bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -124,7 +124,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
       {/* Pagination */}
       <div className="flex items-center justify-between py-4">
-        <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+        <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>

@@ -282,7 +282,7 @@ export const DataTable = <T extends ApplicantRow>({
                   disabled={selectedIds.length === 0 || vetting}
                 >
                   <RiSwordLine />
-                  <span className="hidden lg:inline ml-1">
+                  <span className="ml-1 hidden lg:inline">
                     {vetting ? "Vetting..." : "Vet Projects"}
                   </span>
                 </Button>
@@ -300,7 +300,7 @@ export const DataTable = <T extends ApplicantRow>({
                   disabled={table.getFilteredRowModel().rows.length === 0}
                 >
                   <RiFileCopyLine />
-                  <span className="hidden lg:inline ml-1">Copy Emails</span>
+                  <span className="ml-1 hidden lg:inline">Copy Emails</span>
                 </Button>
               ))}
 
@@ -326,7 +326,7 @@ export const DataTable = <T extends ApplicantRow>({
                 disabled={table.getFilteredRowModel().rows.length === 0}
               >
                 <RiDownloadLine />
-                <span className="hidden lg:inline ml-1">Download CSV</span>
+                <span className="ml-1 hidden lg:inline">Download CSV</span>
               </Button>
             )}
 
@@ -372,7 +372,7 @@ export const DataTable = <T extends ApplicantRow>({
                 className="hover:bg-red-500 hover:text-white"
               >
                 <RiDeleteBinLine />
-                <span className="hidden lg:inline ml-1">Delete</span>
+                <span className="ml-1 hidden lg:inline">Delete</span>
               </Button>
             )}
           </div>
@@ -381,7 +381,7 @@ export const DataTable = <T extends ApplicantRow>({
       <TabsContent value="outline" className="relative flex flex-col gap-4 overflow-auto">
         <div className="overflow-hidden rounded-lg border">
           <Table className={isSubmissions ? "table-fixed" : undefined}>
-            <TableHeader className="bg-muted sticky top-0 z-10">
+            <TableHeader className="sticky top-0 z-10 bg-muted">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
@@ -391,7 +391,7 @@ export const DataTable = <T extends ApplicantRow>({
                         colSpan={header.colSpan}
                         className={cn(
                           submissionsColumnClass(header.column.id),
-                          isSubmissions && "overflow-hidden truncate",
+                          isSubmissions && "truncate",
                         )}
                       >
                         {header.isPlaceholder
@@ -435,7 +435,7 @@ export const DataTable = <T extends ApplicantRow>({
           </Table>
         </div>
         <div className="flex items-center justify-between">
-          <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
