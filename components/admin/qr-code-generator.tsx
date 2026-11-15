@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -38,45 +38,32 @@ export default function QRCodeGenerator() {
   const isEmpty = value.trim().length === 0;
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-6">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">QR Code Generator</h1>
-        <p className="text-sm text-muted-foreground">
-          Enter any text or URL to generate a QR code. Download it as a PNG instantly. Nothing is
-          saved.
-        </p>
-      </div>
+    <div className="w-full p-4 space-y-4">
+      <h1 className="text-2xl font-bold text-left">QR Code Generator</h1>
 
-      <div className="space-y-4">
+      {/* Input and download button side by side */}
+      <div className="flex gap-2">
         <Input
           value={value}
           onChange={(event) => setValue(event.target.value)}
           placeholder="https://example.com or any text"
         />
-      </div>
-
-      <div className="flex flex-col items-center gap-4">
-        <div className="rounded-lg border bg-white p-4">
-          {isEmpty ? (
-            <div className="flex h-45 w-45 items-center justify-center text-muted-foreground">
-              Enter text to preview
-            </div>
-          ) : (
-            <QRCodeSVG value={value} size={180} />
-          )}
-        </div>
-        <Button onClick={handleDownload} disabled={isEmpty} className="w-full sm:w-auto">
+        <Button onClick={handleDownload} disabled={isEmpty} className="sm:w-auto">
           Download PNG
         </Button>
       </div>
 
-      <div className="hidden">
-        <QRCodeCanvas
-          ref={canvasRef as React.RefObject<HTMLCanvasElement>}
-          value={value || " "}
-          size={512}
-          style={{ display: "none" }}
-        />
+      {/* Preview area - no border, left aligned */}
+      <div>
+        {isEmpty ? (
+          <div
+            className="h-48 flex items-center justify-center text-muted-foreground text-left"
+          >
+            Enter text to preview
+          </div>
+        ) : (
+          <QRCodeSVG value={value} size={200} className="mx-auto d-block" />
+        )}
       </div>
     </div>
   );
