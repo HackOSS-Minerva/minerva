@@ -147,7 +147,7 @@ const CheckinContent = () => {
     onError,
     paused: isPaused,
     constraints: {
-      video: { facingMode: "environment" },
+      video: { facingMode: "user" },
       audio: false,
     },
   });
@@ -209,7 +209,7 @@ const CheckinContent = () => {
             <span className="text-xs">Select an event to start scanning</span>
           </div>
         ) : (
-          <video ref={ref} className="aspect-4-3 w-full object-cover -scale-100" />
+          <video ref={ref} className="aspect-4-3 w-full object-cover transform-[scaleX(-1)]" />
         )}
       </div>
 
