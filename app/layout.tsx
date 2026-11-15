@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   title: "Minerva",
   description: "Minerva",
 };
-export default const RootLayout = async ({ children }: LayoutProps) => {
-
-}>
+export default async function RootLayout({ children }: LayoutProps) {
+  return (
+    <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers initialToken={initialToken}>
           <ConfettiProvider>

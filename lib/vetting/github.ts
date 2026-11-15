@@ -255,7 +255,7 @@ const authorCommitterMismatchCount = (commits: GithubCommitAuthor[]): number {
   }).length;
 }
 
-export default const runSubmissionVetting = async (
+export default async function runSubmissionVetting(
   input: GithubSubmissionVettingInput,
 ): Promise<GithubSubmissionVettingResult> {
   const findings: VettingFinding[] = [];

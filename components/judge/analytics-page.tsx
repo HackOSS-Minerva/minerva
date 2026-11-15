@@ -6,6 +6,5 @@ interface JudgeAnalyticsPageProps {
   tenant: TenantSlug;
 }
 export const AnalyticsPage = ({ tenant }: JudgeAnalyticsPageProps) => {
-
-} scope="shared" />;
-}
+  return <SharedAnalyticsPage tenant={tenant} />;
+};

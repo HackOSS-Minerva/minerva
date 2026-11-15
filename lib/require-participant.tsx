@@ -11,7 +11,7 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 // participants may view pages behind the locked `Resources` / `Participate`
 // dropdowns. `redirectPath` is the absolute path (e.g. `/${tenant}/live/...`)
 // used for the post-sign-in redirect.
-export default const guardParticipantPage = async (
+export default async function guardParticipantPage(
   tenant: TenantSlug,
   redirectPath: string,
 ): Promise<React.ReactNode | null> {

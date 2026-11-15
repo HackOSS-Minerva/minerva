@@ -34,18 +34,14 @@ export type ParseCheckinQrResult =
   | { ok: true; payload: CheckinQrPayload }
   | { ok: false; reason: "invalid" | "legacy-placeholder" };
 
-/** Split "Anna Marie Lopez" -> ["Anna", "Marie Lopez"] (multi-word last kept). */export const splitName = (name: string): => {
-
-  firstname: string;
-  lastname: string;
-
-}{
+/** Split "Anna Marie Lopez" -> ["Anna", "Marie Lopez"] (multi-word last kept). */
+export const splitName = (name: string): { firstname: string; lastname: string } => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   return {
     firstname: parts[0] ?? "",
     lastname: parts.slice(1).join(" "),
   };
-}
+};
 
 /**
  * Single builder for the `{id, firstname, lastname, email}` QR JSON shape.
@@ -55,14 +51,14 @@ export type ParseCheckinQrResult =
  * in (historically every attendee shared the `visitor` record). Returns `null`
  * when no usable identity is available, so callers render a loading or
  * signed-out state instead of a placeholder code.
- */export const buildCheckinQrPayload = (input: CheckinQrIdentity): string | null => {
+ */
+export const buildCheckinQrPayload = (input: CheckinQrIdentity): string | null => {
 
   const id = input.id?.trim();
   const email = input.email?.trim();
   if (!id || !email) return null;
 
-  const { firstname, lastname 
-}= splitName(input.name ?? "");
+  const { firstname, lastname } = splitName(input.name ?? "");
   // The email local-part keeps the code scannable for users without a real
   // name — it is derived from the signed-in user, not a hardcoded placeholder.
   const resolvedFirstname = firstname || email.split("@")[0];
@@ -74,20 +70,20 @@ export type ParseCheckinQrResult =
     lastname,
     email,
   } satisfies CheckinQrPayload);
-}
+};
 
 /**
  * Parse + validate a scanned check-in QR. Never throws; reports why a code
  * was rejected so the scanner can show an accurate message — including
  * explicitly flagging legacy placeholder codes so they are never written to
  * the database.
- */export const parseCheckinQr = (raw: string): ParseCheckinQrResult => {
+ */
+export const parseCheckinQr = (raw: string): ParseCheckinQrResult => {
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
-  
-}catch {
+  } catch {
     return { ok: false, reason: "invalid" };
   }
 
@@ -119,17 +115,18 @@ export type ParseCheckinQrResult =
       email,
     },
   };
-}
+};
 
-/** Storage path helper — `crypto.randomUUID()` with a collision-safe fallback. */export const newUploadId = (): string => {
+/** Storage path helper — `crypto.randomUUID()` with a collision-safe fallback. */
+export const newUploadId = (): string => {
 
   try {
     return crypto.randomUUID();
-  
-}catch {
+  } catch {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
   }
-}
+};
+
 export const uploadPath = (
   tenant: TenantSlug,
   kind: "resumes" | "pictures",
@@ -137,6 +134,5 @@ export const uploadPath = (
   ext = "",
 ): string => {
 
-  return `${tenant
-}/${role}/${kind}/${newUploadId()}${ext}`;
-}
+  return `${tenant}/${role}/${kind}/${newUploadId()}${ext}`;
+};

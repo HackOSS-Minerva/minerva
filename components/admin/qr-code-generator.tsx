@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-export default const QRCodeGenerator = () => {
+export default function QRCodeGenerator() {
 
 }
         const url = URL.createObjectURL(blob);
@@ -13,16 +13,6 @@ export default const QRCodeGenerator = () => {
         a.href = url;
         a.download = "qrcode.png";
         document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        toast.success("QR code downloaded");
-      },
-      "image/png",
-      1.0,
-    );
-  }, [value]);
-
   const isEmpty = value.trim().length === 0;
 
   return (

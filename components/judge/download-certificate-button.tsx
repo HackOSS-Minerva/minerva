@@ -14,15 +14,15 @@ interface DownloadCertificateButtonProps {
 }
 
 // Client island: `html2pdf` + iframe rendering + toast are browser-only.
-// Receives all display values as props from the server `CertificatePage`.export const DownloadCertificateButton = ({
-  judgeName,
-  tenantName,
-  organization,
-  certificateId,
-  eventDate,
+export const DownloadCertificateButton = (
+  { judgeName, tenantName, organization, certificateId, eventDate },
 }: DownloadCertificateButtonProps) => {
+  const [downloading, setDownloading] = useState(false);
 
-} body { font-family:Georgia,serif; background:#fff; }</style>
+  async function handleDownload() {
+    setDownloading(true);
+
+    const certHTML = `
         </head><body>
         <div id="cert" style="background:#faf8f2;border:3px solid #c9a84c;padding:8px;font-family:Georgia,serif;">
           <div style="border:1px solid #c9a84c;padding:3.5rem 4rem;text-align:center;">
@@ -55,57 +55,55 @@ interface DownloadCertificateButtonProps {
           </div>
         </div>
         </body></html>`;
+    `;
 
-      const iframe = document.createElement("iframe");
-      iframe.style.cssText =
-        "position:absolute;left:-9999px;top:0;width:297mm;height:210mm;border:0;";
-      document.body.appendChild(iframe);
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText =
+      "position:absolute;left:-9999px;top:0;width:297mm;height:210mm;border:0;";
+    document.body.appendChild(iframe);
 
-      await new Promise<void>((resolve) => {
-        iframe.onload = () => resolve();
-        iframe.srcdoc = certHTML;
+    await new Promise<void>((resolve) => {
+      iframe.onload = () => resolve();
+      iframe.srcdoc = certHTML;
+    });
+
+    const certElement = iframe.contentDocument!.getElementById("cert") as HTMLElement;
+
+    // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
+    // getComputedStyle and replace any unsupported color values with a safe fallback
+    const origGetComputedStyle = window.getComputedStyle;
+    window.getComputedStyle = (element, pseudoElt) => {
+      const styles = origGetComputedStyle.call(window, element, pseudoElt);
+      return new Proxy(styles, {
+        get(target, prop) {
+          const val: unknown = Reflect.get(target, prop);
+          if (typeof val === "string" && (val.includes("lab(") || val.includes("oklch("))) {
+            return "rgba(0,0,0,0)";
+          }
+          if (typeof val === "function") return val.bind(target);
+          return val;
+        },
       });
+    };
 
-      const certElement = iframe.contentDocument!.getElementById("cert") as HTMLElement;
-
-      // html2canvas can't parse Tailwind v4's oklch()/lab() colors — intercept
-      // getComputedStyle and replace any unsupported color values with a safe fallback
-      const origGetComputedStyle = window.getComputedStyle;
-      window.getComputedStyle = (element, pseudoElt) => {
-        const styles = origGetComputedStyle.call(window, element, pseudoElt);
-        return new Proxy(styles, {
-          get(target, prop) {
-            const val: unknown = Reflect.get(target, prop);
-            if (typeof val === "string" && (val.includes("lab(") || val.includes("oklch("))) {
-              return "rgba(0,0,0,0)";
-            }
-            if (typeof val === "function") return val.bind(target);
-            return val;
-          },
-        });
-      };
-
-      try {
-        await html2pdf()
-          .set({
-            margin: 10,
-            filename: `certificate-${judgeName.toLowerCase().replace(/\s+/g, "-")}.pdf`,
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
-            jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
-          })
-          .from(certElement)
-          .save();
-      } finally {
-        window.getComputedStyle = origGetComputedStyle;
-      }
-
-      document.body.removeChild(iframe);
-      toast.success("Certificate downloaded as PDF!");
+    try {
+      await html2pdf()
+        .set({
+          margin: 10,
+          filename: `certificate-${judgeName.toLowerCase().replace(/\s+/g, "-")}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+        })
+        .from(certElement)
+        .save();
     } finally {
-      setDownloading(false);
+      window.getComputedStyle = origGetComputedStyle;
     }
-  };
+
+    document.body.removeChild(iframe);
+    toast.success("Certificate downloaded as PDF!");
+  }
 
   return (
     <Button onClick={handleDownload} className="w-full" disabled={downloading}>
@@ -113,4 +111,4 @@ interface DownloadCertificateButtonProps {
       {downloading ? "Preparing PDF…" : "Download Certificate"}
     </Button>
   );
-}
+};

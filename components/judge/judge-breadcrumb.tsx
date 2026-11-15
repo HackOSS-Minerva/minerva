@@ -29,9 +29,9 @@ interface JudgeBreadcrumbProps {
 }
 
 // Server Component: the page route passes `tenant` + labels explicitly, so
-// no `usePathname()`/`useParams()` client hooks are needed.export const JudgeBreadcrumb = ({ tenant, page, section }: JudgeBreadcrumbProps) => {
-
-}/judge/dashboard`;
+// no `usePathname()`/`useParams()` client hooks are needed.
+export const JudgeBreadcrumb = ({ tenant, page, section }: JudgeBreadcrumbProps) => {
+  const dashboardHref = `/${tenant}/judge/dashboard`;
 
   return (
     <Breadcrumb>
@@ -53,12 +53,8 @@ interface JudgeBreadcrumbProps {
 }
 
 // Lookup helper for pages that still resolve the breadcrumb from a path.
-// Prefer passing `tenant`/`page`/`section` directly from the server route.export const resolveJudgeBreadcrumb = (pathname: string): => {
-
-  page: string;
-  section: "Resources" | "Participate";
-
-}| null {
+// Prefer passing `tenant`/`page`/`section` directly from the server route.
+export const resolveJudgeBreadcrumb = (pathname: string): { page: string; section: "Resources" | "Participate" } | null => {
   const resourceKey = Object.keys(resourcePaths).find((k) => pathname.includes(k));
   if (resourceKey) {
     return { page: resourcePaths[resourceKey], section: "Resources" };
@@ -68,4 +64,4 @@ interface JudgeBreadcrumbProps {
     return { page: participatePaths[participateKey], section: "Participate" };
   }
   return null;
-}
+};

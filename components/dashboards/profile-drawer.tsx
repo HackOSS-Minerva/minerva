@@ -13,23 +13,29 @@ import { RiCloseLine } from "@remixicon/react";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useIsMobile } from "@/hooks/use-mobile";
-export const ProfileDrawerTrigger = ({ name }: { name: string }) => {
 
-}
+export const ProfileDrawerTrigger = ({ name }: { name: string }) => {
+  return (
+    <DrawerTrigger>
+      <Button variant="ghost" className="w-full justify-start">
+        {name}
       </Button>
     </DrawerTrigger>
   );
-}
-export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: string }) => {
+};
 
-}>
+export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: string }) => {
+  return (
+    <DrawerClose>
+      <Button variant="ghost" className="p-0 hover:bg-transparent">
         <RiCloseLine className="h-4 w-4" />
       </Button>
     </DrawerClose>
   );
-}
+};
 
-/** Shared applicant drawer shell (mobile bottom / desktop right). */export const ProfileDrawer = ({
+/** Shared applicant drawer shell (mobile bottom / desktop right). */
+export const ProfileDrawer = ({
   name,
   title = "Profile",
   children,
@@ -38,8 +44,9 @@ export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: 
   title?: string;
   children: ReactNode;
 }) => {
-
-}>
+  const isMobile = useIsMobile();
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
       <ProfileDrawerTrigger name={name} />
       <DrawerContent>
         <div className="flex h-full flex-col gap-2 px-4 py-5">
@@ -52,22 +59,21 @@ export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: 
       </DrawerContent>
     </Drawer>
   );
-}
+};
 
-/** Drawer direction shared by every dashboard profile viewer. */export const useDrawerDirection = () => {
+/** Drawer direction shared by every dashboard profile viewer. */
+export const useDrawerDirection = () => {
+  return "left";
+};
 
-}
-
-/** Shared row-selection column used by every dashboard table. */export const selectColumn = <T>(): ColumnDef<T> => {
-
+/** Shared row-selection column used by every dashboard table. */
+export const selectColumn = <T>(): ColumnDef<T> => {
   return {
     id: "select",
-    header: ({ table 
-}) => (
+    header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
+          checked={table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
@@ -87,4 +93,4 @@ export const ProfileDrawerCloseButton = ({ label = "Close profile" }: { label?: 
     enableSorting: false,
     enableHiding: false,
   };
-}
+};

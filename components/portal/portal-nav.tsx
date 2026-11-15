@@ -40,16 +40,8 @@ export interface PortalNavProps {
 
 // Server Component shell: resolves tenant config + feature flags on the
 // server and renders the logo. Active-link highlighting and the Radix
-// dropdown interaction live in the `PortalNavItems` client island.export const PortalNav = ({
-  tenant,
-  dashboardPath,
-  navItems,
-  dropdowns,
-  isAuthorized,
-  registerHref,
-}: PortalNavProps) => {
-
-} = getTenant(tenant);
+// dropdown interaction live in the `PortalNavItems` client island.export const PortalNav = ({ tenant, dashboardPath, navItems, dropdowns, isAuthorized, registerHref }: PortalNavProps) => {
+  const { config } = getTenant(tenant);
   const logo = config?.logo;
 
   // Flags are compile-time constants (see `lib/feature-flags.ts`), so

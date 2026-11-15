@@ -21,15 +21,8 @@ interface DashboardPageProps {
 }
 
 // Server Component shell: tenant config lookup is sync + server-safe.
-// Interactive children (countdown, QR, schedule filters) are client islands.export const DashboardPage = ({
-  tenant,
-  participantStatus,
-  userName,
-  checkinUser,
-  initialSchedule,
-}: DashboardPageProps) => {
-
-} = getTenant(tenant);
+// Interactive children (countdown, QR, schedule filters) are client islands.export const DashboardPage = ({ tenant, participantStatus, userName, checkinUser, initialSchedule }: DashboardPageProps) => {
+  const { config } = getTenant(tenant);
   const live = config?.event ?? null;
 
   // Check-in QR and project submission are participant-only perks: anyone who

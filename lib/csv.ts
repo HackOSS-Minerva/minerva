@@ -1,4 +1,4 @@
-export const convertToCSV<T extends object>(data: T[], fields: string[]): Blob => {
+export const convertToCSV = <T extends object>(data: T[], fields: string[]): Blob => {
   if (data.length === 0) {
     return new Blob([fields.join(",")], { type: "text/csv" });
   }

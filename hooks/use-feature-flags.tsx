@@ -11,12 +11,11 @@ export interface UseFeatureFlagResult<K extends FeatureFlagKey> {
   isEnabled: boolean;
 }
 
-// Resolve one feature flag. `flag` is compile-time checked against the registry
-// in `@/lib/feature-flags`; server components/routes use `getFeatureFlag` instead.export const useFeatureFlag = <K extends FeatureFlagKey>(flag: K): UseFeatureFlagResult<K> => {
-
-  return { flag, isEnabled: getFeatureFlag(flag) 
+/** Resolve one feature flag. `flag` is compile-time checked against the registry
+ * in `@/lib/feature-flags`; server components/routes use `getFeatureFlag` instead. */
+export const useFeatureFlag = <K extends FeatureFlagKey>(flag: K): UseFeatureFlagResult<K> => {
+  return { flag, isEnabled: getFeatureFlag(flag) };
 };
-}
 
 // Resolve every flag in one order-stable call. Use this instead of
 // {@link useFeatureFlag} in a loop: hook order must be identical on every

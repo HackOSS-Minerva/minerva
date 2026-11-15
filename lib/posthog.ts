@@ -158,7 +158,7 @@ const toCount = (value: HogQLScalar) => {
   return Number.isFinite(count) ? count : 0;
 };
 
-export default const getPostHogAnalytics = async (tenant: string): Promise<AnalyticsData> {
+export default async function getPostHogAnalytics(tenant: string): Promise<AnalyticsData> {
   if (!/^[a-z0-9-]+$/.test(tenant)) {
     throw new AppError("TENANT_INVALID");
   }

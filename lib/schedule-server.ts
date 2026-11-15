@@ -7,7 +7,7 @@ import { buildScheduleUrl, SCHEDULE_REVALIDATE_SECONDS } from "@/lib/schedule";
  * of waterfalling it client-side. Prefers a server-only key but falls back
  * to the (already public) `NEXT_PUBLIC_*` key — zero env changes required;
  * to fully un-expose the key, set `GOOGLE_CALENDAR_API_KEY` server-side. */
-export default const fetchScheduleServer = async (tenant: TenantSlug): Promise<CalendarResponse> {
+export default async function fetchScheduleServer(tenant: TenantSlug): Promise<CalendarResponse> {
   const { config } = getTenant(tenant);
   if (!config) {
     throw new AppError("TENANT_INVALID");

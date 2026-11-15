@@ -56,11 +56,11 @@ const participantDemographicKeys: ParticipantDemographicKey[] = [
   "shirt",
   "school",
   "major",
-  "grade",
-];
-const MetricCard = ({ label, value, description }: MetricCardProps) => {
+  );
+}
 
-}</CardTitle>
+type ParticipantDemographicCardProps = {
+  label: string;
         {description ? <CardDescription>{description}</CardDescription> : null}
       </CardHeader>
       <CardContent>

@@ -3,15 +3,12 @@ import { FeatureGateModal } from "@/components/feature-flags/feature-gate-modal"
 import { AdminShell } from "@/components/dashboards/admin-shell";
 import { getFeatureFlag } from "@/lib/feature-flags";
 import type { TenantSlug } from "@/hooks/get-tenant";
-export default const AdminAnalyticsPage = async ({
-  params,
-}: {
+
+export default async function AdminAnalyticsPage({ params }: {
   params: Promise<{
     tenant: TenantSlug;
   }>;
 }) => {
-
-} = await params;
 
   return (
     <AdminShell title="Analytics">

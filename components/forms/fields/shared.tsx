@@ -63,21 +63,14 @@ const CharCounter = ({ value, max }: { value: string; max: number }) => (
   </span>
 );
 
-/** Text input; `maxLength` also enables the live character counter. */export const textField = ( => {
-
-  name,
-  label,
-  placeholder,
-  maxLength,
-  required = true,
-
-}: {
+/** Text input; `maxLength` also enables the live character counter. */
+export const textField = ({ name, label, placeholder, maxLength, required = true }: {
   name: string;
   label: string;
   placeholder: string;
   maxLength?: number;
   required?: boolean;
-}): FieldDef {
+}): FieldDef => {
   return {
     name,
     children: (field: AnyFieldApi) => {

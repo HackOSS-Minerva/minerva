@@ -12,8 +12,7 @@ interface DeadlineBadgeProps {
 
 // Client island: renders the live "Xh Ym remaining" / "Deadline Passed"
 // badge. The surrounding card + deadline text stay server-rendered.export const DeadlineBadge = ({ deadline, isPastDeadline: ssrPastDeadline }: DeadlineBadgeProps) => {
-
-}
+  const { timeLeft } = useCountdown(deadline);
 
   if (!timeLeft) return null;
 
