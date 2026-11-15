@@ -40,8 +40,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/cpp-hackpack",
     category: ["General"],
     featured: false,
-    instructions:
-      "Install build-essential & clang tools → make build → make run.",
+    instructions: "Install build-essential & clang tools → make build → make run.",
   },
   {
     id: "discord-python-hackpack",
@@ -64,8 +63,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/vite-hackpack",
     category: ["Web Development"],
     featured: true,
-    instructions:
-      "Use This Template → bun install → bun run dev (localhost:5173).",
+    instructions: "Use This Template → bun install → bun run dev (localhost:5173).",
   },
   {
     id: "typescript-hackpack",
@@ -76,8 +74,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/typescript-hackpack",
     category: ["General"],
     featured: false,
-    instructions:
-      "Use This Template → bun install → bun run src/index.ts.",
+    instructions: "Use This Template → bun install → bun run src/index.ts.",
   },
   {
     id: "python-hackpack",
@@ -88,8 +85,7 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/python-hackpack",
     category: ["General"],
     featured: false,
-    instructions:
-      "Use This Template → uv sync --locked → uv run calculator.",
+    instructions: "Use This Template → uv sync --locked → uv run calculator.",
   },
   {
     id: "nextjs-hackpack",
@@ -100,7 +96,6 @@ export const hackpacks: Hackpack[] = [
     link: "https://github.com/HackOSS-Minerva/nextjs-hackpack",
     category: ["Web Development"],
     featured: true,
-    instructions:
-      "Use This Template → bun install → bun dev (localhost:3000).",
+    instructions: "Use This Template → bun install → bun dev (localhost:3000).",
   },
 ];
