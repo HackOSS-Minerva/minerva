@@ -1,6 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RiCheckLine } from "@remixicon/react";
-import { Badge } from "@/components/ui/badge";
 import { QRCodeSVG } from "qrcode.react";
 import { buildCheckinQrPayload, type CheckinQrIdentity } from "@/lib/checkin";
 
@@ -12,7 +10,6 @@ interface CheckinSectionProps {
 // Server Component: static card + copy; the QR is built from the server
 // session props so no hardcoded guest identity can ever leak into a code.
 export const CheckinSection = ({ user, compact = false }: CheckinSectionProps) => {
-  const hasCheckedIn = false; // TODO: wire up real check-in status
   const qrValue = user ? buildCheckinQrPayload(user) : null;
 
   if (compact) {
@@ -20,15 +17,6 @@ export const CheckinSection = ({ user, compact = false }: CheckinSectionProps) =
       <section className="space-y-3 lg:pr-5">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-sm font-semibold">Check-in</h2>
-          {hasCheckedIn && (
-            <Badge
-              variant="secondary"
-              className="flex items-center gap-1 border-emerald-500/20 bg-emerald-500/10 font-semibold text-emerald-500 hover:bg-emerald-500/20"
-            >
-              <RiCheckLine className="h-3 w-3" />
-              Checked in
-            </Badge>
-          )}
         </div>
         <div className="flex items-center gap-3">
           {qrValue ? (
@@ -49,15 +37,6 @@ export const CheckinSection = ({ user, compact = false }: CheckinSectionProps) =
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle>Check-in</CardTitle>
-        {hasCheckedIn && (
-          <Badge
-            variant="secondary"
-            className="flex items-center gap-1 border-emerald-500/20 bg-emerald-500/10 font-semibold text-emerald-500 hover:bg-emerald-500/20"
-          >
-            <RiCheckLine className="h-3 w-3" />
-            Checked in
-          </Badge>
-        )}
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
