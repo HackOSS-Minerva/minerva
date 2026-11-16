@@ -11,6 +11,7 @@ import type { CheckinQrIdentity } from "@/lib/checkin";
 import { HackCreditsCard } from "@/components/live/checkin/hack-credits-card";
 import { DevModeSwitcher } from "@/components/dev/dev-mode-switcher";
 import { Suspense } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface DashboardPageProps {
   tenant: TenantSlug;
@@ -64,16 +65,17 @@ export const DashboardPage = ({
         <>
           <Separator className="my-6" />
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            <CheckinSection user={checkinUser ?? null} />
-
-            <HackCreditsCard compact />
-
-            <SubmissionSection
-              tenant={tenant}
-              submissionDeadline={new Date(live.deadline).getTime()}
-            />
-          </div>
+          <Card>
+            <CardContent className="grid gap-5 p-4 sm:p-6 lg:grid-cols-3 lg:gap-0">
+              <CheckinSection user={checkinUser ?? null} compact />
+              <HackCreditsCard compact />
+              <SubmissionSection
+                tenant={tenant}
+                submissionDeadline={new Date(live.deadline).getTime()}
+                compact
+              />
+            </CardContent>
+          </Card>
         </>
       )}
 

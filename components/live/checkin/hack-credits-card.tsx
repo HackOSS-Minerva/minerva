@@ -15,16 +15,27 @@ export function HackCreditsCard({ compact = false }: { compact?: boolean }) {
 
   if (compact) {
     return (
-      <p className="text-sm" aria-live="polite" aria-busy={pending}>
-        <span className="text-muted-foreground">Hack credits: </span>
+      <section
+        className="space-y-2 border-t pt-4 lg:border-t-0 lg:border-l lg:px-5 lg:pt-0"
+        aria-live="polite"
+        aria-busy={pending}
+      >
+        <h2 className="text-sm font-semibold">Hack credits</h2>
         {pending ? (
-          <span className="text-muted-foreground">Loading…</span>
+          <p className="text-sm text-muted-foreground">Loading…</p>
         ) : credits ? (
-          <span className="font-semibold">{credits.balance}</span>
+          <>
+            <p className="text-lg font-semibold">
+              {credits.balance} <span className="text-sm font-normal">credits</span>
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {credits.checkinCount} {credits.checkinCount === 1 ? "check-in" : "check-ins"}
+            </p>
+          </>
         ) : (
-          <span className="text-muted-foreground">Sign in to view</span>
+          <p className="text-sm text-muted-foreground">Sign in to view</p>
         )}
-      </p>
+      </section>
     );
   }
 
