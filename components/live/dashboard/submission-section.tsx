@@ -22,7 +22,7 @@ export function SubmissionSection({ tenant, submissionDeadline }: SubmissionSect
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle>Submission</CardTitle>
         {hasSubmitted && (
           <Badge
@@ -35,8 +35,8 @@ export function SubmissionSection({ tenant, submissionDeadline }: SubmissionSect
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        <div>
-          <div>
+        <div className="space-y-2">
+          <div className="space-y-1">
             <p className="text-sm text-muted-foreground">Submission Deadline</p>
             <p className="font-medium">
               {new Date(submissionDeadline).toLocaleDateString("en-US", {

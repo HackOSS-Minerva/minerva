@@ -8,6 +8,7 @@ import { ApplicationStatusBadge } from "@/components/portal/dashboard/applicatio
 import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
 import type { CalendarResponse } from "@/types/calendar";
 import type { CheckinQrIdentity } from "@/lib/checkin";
+import { HackCreditsCard } from "@/components/live/checkin/hack-credits-card";
 
 interface DashboardPageProps {
   tenant: TenantSlug;
@@ -66,8 +67,10 @@ export function DashboardPage({
         <>
           <Separator className="my-6" />
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             <CheckinSection user={checkinUser ?? null} />
+
+            <HackCreditsCard />
 
             <SubmissionSection
               tenant={tenant}

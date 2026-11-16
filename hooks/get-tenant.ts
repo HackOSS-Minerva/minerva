@@ -1,7 +1,8 @@
-import { tenantConfigs, tenantContent, tenantSlugs } from "@/tenants/generated";
+import { tenantContent } from "@/tenants/generated";
+import { tenantConfigs, tenantSlugs, type TenantSlug } from "@/tenants/config";
 
-export { tenantSlugs };
-export type TenantSlug = (typeof tenantSlugs)[number];
+export { tenantSlugs, isTenantSlug } from "@/tenants/config";
+export type { TenantSlug } from "@/tenants/config";
 
 export interface TenantConfig {
   slug: TenantSlug;
@@ -15,6 +16,7 @@ export interface TenantConfig {
   heart: string;
   logo: string;
   calendarid: string;
+  hackCreditsPerCheckin: number;
   event: {
     name: string;
     startTime: string;
@@ -34,9 +36,6 @@ type TenantContent = {
     -readonly [Key in keyof RegistryContent[Section]]: RegistryContent[Section][Key];
   };
 };
-
-export const isTenantSlug = (slug: string): slug is TenantSlug =>
-  tenantSlugs.includes(slug as TenantSlug);
 
 export interface TenantData {
   config: TenantConfig;

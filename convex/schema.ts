@@ -123,6 +123,7 @@ export default defineSchema({
     tenant: v.string(),
   })
     .index("by_user_event", ["userid", "eventid"])
+    .index("by_user_tenant_event", ["userid", "tenant", "eventid"])
     .index("by_event_tenant", ["eventid", "tenant"]),
 
   volunteers: defineTable({
