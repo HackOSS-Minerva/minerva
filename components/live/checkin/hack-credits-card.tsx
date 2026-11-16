@@ -6,12 +6,27 @@ import { api } from "@/convex/_generated/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 
-export function HackCreditsCard() {
+export function HackCreditsCard({ compact = false }: { compact?: boolean }) {
   const { tenant } = useParams<{ tenant: TenantSlug }>();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const credits = useQuery(api.checkins.getHackCredits, isAuthenticated ? { tenant } : "skip");
   const { config } = getTenant(tenant);
   const pending = isLoading || (isAuthenticated && credits === undefined);
+
+  if (compact) {
+    return (
+      <p className="text-sm" aria-live="polite" aria-busy={pending}>
+        <span className="text-muted-foreground">Hack credits: </span>
+        {pending ? (
+          <span className="text-muted-foreground">Loading…</span>
+        ) : credits ? (
+          <span className="font-semibold">{credits.balance}</span>
+        ) : (
+          <span className="text-muted-foreground">Sign in to view</span>
+        )}
+      </p>
+    );
+  }
 
   return (
     <Card>

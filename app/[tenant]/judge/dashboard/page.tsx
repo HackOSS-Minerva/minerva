@@ -3,19 +3,25 @@ import { JudgeDashboardPage } from "@/components/judge/judge-dashboard-page";
 import { fetchScheduleServer } from "@/lib/schedule-server";
 import { api } from "@/convex/_generated/api";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
+import { getDevStatusOverride } from "@/lib/dev-status";
 
 interface JudgeDashboardRouteProps {
   params: Promise<{
     tenant: TenantSlug;
   }>;
+  searchParams: Promise<{
+    devJudgeStatus?: string;
+  }>;
 }
 
-const JudgeDashboardRoute = async ({ params }: JudgeDashboardRouteProps) => {
-  const { tenant } = await params;
+const JudgeDashboardRoute = async ({ params, searchParams }: JudgeDashboardRouteProps) => {
+  const [{ tenant }, query] = await Promise.all([params, searchParams]);
 
   // Judge access state: the dashboard shows the application status. This is the
   // secure session check; the proxy only did an optimistic cookie redirect.
   const access = await fetchAuthQuery(api.auth.getJudgeAccess, { tenant });
+  const judgeStatus: ApplicationStatus = getDevStatusOverride(query.devJudgeStatus, access.status);
 
   // Display name for the greeting; avoids a client-side `useSession()` hook.
   const authUser = await fetchAuthQuery(api.auth.getCurrentUser, {});
@@ -36,7 +42,7 @@ const JudgeDashboardRoute = async ({ params }: JudgeDashboardRouteProps) => {
   return (
     <JudgeDashboardPage
       tenant={tenant}
-      judgeStatus={access.status}
+      judgeStatus={judgeStatus}
       userName={userName}
       checkinUser={checkinUser}
       initialSchedule={schedule ?? undefined}

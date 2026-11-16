@@ -7,6 +7,8 @@ import { ApplicationStatusBadge } from "@/components/portal/dashboard/applicatio
 import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
 import type { CalendarResponse } from "@/types/calendar";
 import type { CheckinQrIdentity } from "@/lib/checkin";
+import { DevModeSwitcher } from "@/components/dev/dev-mode-switcher";
+import { Suspense } from "react";
 
 interface JudgeDashboardPageProps {
   tenant: TenantSlug;
@@ -43,6 +45,9 @@ export const JudgeDashboardPage = ({
           />
         </div>
         <p className="mt-4 text-muted-foreground">Live event information is not available yet.</p>
+        <Suspense fallback={null}>
+          <DevModeSwitcher role="judge" status={judgeStatus} />
+        </Suspense>
       </div>
     );
   }
@@ -63,6 +68,9 @@ export const JudgeDashboardPage = ({
       <Separator className="my-6" />
 
       <ScheduleSection initialData={initialSchedule} />
+      <Suspense fallback={null}>
+        <DevModeSwitcher role="judge" status={judgeStatus} />
+      </Suspense>
     </div>
   );
 };

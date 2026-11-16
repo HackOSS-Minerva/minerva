@@ -9,20 +9,17 @@ import type { ApplicationStatus } from "@/components/portal/dashboard/applicatio
 import type { CalendarResponse } from "@/types/calendar";
 import type { CheckinQrIdentity } from "@/lib/checkin";
 import { HackCreditsCard } from "@/components/live/checkin/hack-credits-card";
+import { DevModeSwitcher } from "@/components/dev/dev-mode-switcher";
+import { Suspense } from "react";
 
 interface DashboardPageProps {
   tenant: TenantSlug;
   participantStatus?: ApplicationStatus;
-  /** Display name from the server session. */
   userName?: string;
-  /** Real session identity for the check-in QR; null when signed out. */
   checkinUser?: CheckinQrIdentity | null;
-  /** SSR'd calendar payload; forwarded as the schedule island's initialData. */
   initialSchedule?: CalendarResponse;
 }
 
-// Server Component shell: tenant config lookup is sync + server-safe.
-// Interactive children (countdown, QR, schedule filters) are client islands.
 export const DashboardPage = ({
   tenant,
   participantStatus,
@@ -33,8 +30,6 @@ export const DashboardPage = ({
   const { config } = getTenant(tenant);
   const live = config?.event ?? null;
 
-  // Check-in QR and project submission are participant-only perks: anyone who
-  // isn't accepted (pending, rejected, or no application) never sees the cards.
   const isAccepted = participantStatus === "ACCEPTANCE";
 
   if (!live) {
@@ -49,6 +44,9 @@ export const DashboardPage = ({
           />
         </div>
         <p className="mt-4 text-muted-foreground">Live event information is not available yet.</p>
+        <Suspense fallback={null}>
+          <DevModeSwitcher role="participant" status={participantStatus ?? null} />
+        </Suspense>
       </div>
     );
   }
@@ -61,7 +59,6 @@ export const DashboardPage = ({
         applyHref={`/${tenant}/forms/participant`}
         applyLabel="Apply to be a Participant"
       />
-
       <HeroSection startTime={live.startTime} endTime={live.endTime} />
       {isAccepted && (
         <>
@@ -70,7 +67,7 @@ export const DashboardPage = ({
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             <CheckinSection user={checkinUser ?? null} />
 
-            <HackCreditsCard />
+            <HackCreditsCard compact />
 
             <SubmissionSection
               tenant={tenant}
@@ -83,6 +80,9 @@ export const DashboardPage = ({
       <Separator className="my-6" />
 
       <ScheduleSection initialData={initialSchedule} />
+      <Suspense fallback={null}>
+        <DevModeSwitcher role="participant" status={participantStatus ?? null} />
+      </Suspense>
     </div>
   );
 };

@@ -8,12 +8,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QRCodeSVG } from "qrcode.react";
 import { authClient } from "@/lib/auth-client";
 import { buildCheckinQrPayload } from "@/lib/checkin";
 import type { TenantSlug } from "@/hooks/get-tenant";
-import { HackCreditsCard } from "./hack-credits-card";
 
 interface CheckinPageProps {
   tenant: TenantSlug;
@@ -32,8 +30,6 @@ export const CheckinPage = ({ tenant }: CheckinPageProps) => {
         email: user.email,
       })
     : null;
-  const displayName = user?.name ?? user?.email ?? null;
-
   return (
     <div className="space-y-6">
       <Breadcrumb>
@@ -57,34 +53,28 @@ export const CheckinPage = ({ tenant }: CheckinPageProps) => {
           Show your QR code at the event check-in desk to verify your attendance.
         </p>
       </div>
-      <HackCreditsCard />
-      <Card className="border-none">
-        <CardHeader>
-          <CardTitle className="text-center text-primary">
-            {isPending ? "\u00A0" : (displayName ?? "Check-in")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-center">
-            {isPending ? (
-              <div className="h-40 w-40 animate-pulse rounded-lg bg-muted" />
-            ) : qrValue ? (
-              <div className="rounded-lg bg-white p-4 shadow-sm">
-                <QRCodeSVG value={qrValue} />
-              </div>
-            ) : user ? (
-              <p className="max-w-xs text-center text-sm text-muted-foreground">
-                Your account is missing the email or id needed to build a check-in code. Sign out
-                and back in, or contact an organizer.
-              </p>
-            ) : (
-              <p className="max-w-xs text-center text-sm text-muted-foreground">
-                Sign in to view your check-in QR code.
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex justify-center">
+        {isPending ? (
+          <div className="aspect-square w-80 max-w-full animate-pulse rounded-lg bg-muted" />
+        ) : qrValue ? (
+          <QRCodeSVG
+            value={qrValue}
+            size={360}
+            bgColor="#fff"
+            fgColor="#000"
+            className="h-auto w-80 max-w-full"
+          />
+        ) : user ? (
+          <p className="max-w-xs text-center text-sm text-muted-foreground">
+            Your account is missing the email or id needed to build a check-in code. Sign out and
+            back in, or contact an organizer.
+          </p>
+        ) : (
+          <p className="max-w-xs text-center text-sm text-muted-foreground">
+            Sign in to view your check-in QR code.
+          </p>
+        )}
+      </div>
     </div>
   );
 };

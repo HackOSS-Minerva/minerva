@@ -6,6 +6,8 @@ import { SignOutButton } from "@/components/profile/sign-out-button";
 import { BYPASS_AUTH_IN_DEV } from "@/lib/dev-bypass";
 import { isTenantSlug } from "@/hooks/get-tenant";
 import { tenantConfigs } from "@/tenants/generated";
+import { DevModeSwitcher } from "@/components/dev/dev-mode-switcher";
+import { Suspense } from "react";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -53,7 +55,16 @@ const Layout = async ({ children, params }: AdminLayoutProps) => {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {BYPASS_AUTH_IN_DEV && (
+        <Suspense fallback={null}>
+          <DevModeSwitcher role="superadmin" status={access.status} />
+        </Suspense>
+      )}
+    </>
+  );
 };
 
 export default Layout;

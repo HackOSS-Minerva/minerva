@@ -3,21 +3,26 @@ import { fetchAuthQuery } from "@/lib/auth-server";
 import { fetchScheduleServer } from "@/lib/schedule-server";
 import { api } from "@/convex/_generated/api";
 import type { TenantSlug } from "@/hooks/get-tenant";
+import { getDevStatusOverride } from "@/lib/dev-status";
 
 interface DashboardRouteProps {
   params: Promise<{
     tenant: TenantSlug;
   }>;
+  searchParams: Promise<{
+    devParticipantStatus?: string;
+  }>;
 }
 
-const DashboardRoute = async ({ params }: DashboardRouteProps) => {
-  const { tenant } = await params;
+const DashboardRoute = async ({ params, searchParams }: DashboardRouteProps) => {
+  const [{ tenant }, query] = await Promise.all([params, searchParams]);
 
   // Fetch the participant's application status so the dashboard can show their
   // registration state (not registered / pending / accepted / rejected).
   const access = await fetchAuthQuery(api.auth.getParticipantAccess, {
     tenant,
   });
+  const participantStatus = getDevStatusOverride(query.devParticipantStatus, access.status);
 
   // Display name for the greeting; avoids a client-side `useSession()` hook.
   const authUser = await fetchAuthQuery(api.auth.getCurrentUser, {});
@@ -38,7 +43,7 @@ const DashboardRoute = async ({ params }: DashboardRouteProps) => {
   return (
     <DashboardPage
       tenant={tenant}
-      participantStatus={access.status}
+      participantStatus={participantStatus}
       userName={userName}
       checkinUser={checkinUser}
       initialSchedule={schedule ?? undefined}
