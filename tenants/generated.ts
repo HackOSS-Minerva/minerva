@@ -1,3 +1,4 @@
+import tenant_cutiehack_config from "@/tenants/cutiehack/cutiehack.json";
 import tenant_cutiehack_participants from "@/tenants/cutiehack/descriptions/participants.mdx";
 import tenant_cutiehack_judges from "@/tenants/cutiehack/descriptions/judges.mdx";
 import tenant_cutiehack_speakers from "@/tenants/cutiehack/descriptions/speakers.mdx";
@@ -8,6 +9,7 @@ import tenant_cutiehack_submission from "@/tenants/cutiehack/descriptions/submis
 import tenant_cutiehack_rules from "@/tenants/cutiehack/descriptions/rules.mdx";
 import tenant_cutiehack_venue from "@/tenants/cutiehack/descriptions/venue.mdx";
 import tenant_cutiehack_code_of_conduct from "@/tenants/cutiehack/descriptions/code-of-conduct.mdx";
+import tenant_designverse_config from "@/tenants/designverse/designverse.json";
 import tenant_designverse_participants from "@/tenants/designverse/descriptions/participants.mdx";
 import tenant_designverse_judges from "@/tenants/designverse/descriptions/judges.mdx";
 import tenant_designverse_speakers from "@/tenants/designverse/descriptions/speakers.mdx";
@@ -18,6 +20,7 @@ import tenant_designverse_submission from "@/tenants/designverse/descriptions/su
 import tenant_designverse_rules from "@/tenants/designverse/descriptions/rules.mdx";
 import tenant_designverse_venue from "@/tenants/designverse/descriptions/venue.mdx";
 import tenant_designverse_code_of_conduct from "@/tenants/designverse/descriptions/code-of-conduct.mdx";
+import tenant_rosehack_config from "@/tenants/rosehack/rosehack.json";
 import tenant_rosehack_participants from "@/tenants/rosehack/descriptions/participants.mdx";
 import tenant_rosehack_judges from "@/tenants/rosehack/descriptions/judges.mdx";
 import tenant_rosehack_speakers from "@/tenants/rosehack/descriptions/speakers.mdx";
@@ -29,7 +32,13 @@ import tenant_rosehack_rules from "@/tenants/rosehack/descriptions/rules.mdx";
 import tenant_rosehack_venue from "@/tenants/rosehack/descriptions/venue.mdx";
 import tenant_rosehack_code_of_conduct from "@/tenants/rosehack/descriptions/code-of-conduct.mdx";
 
-export { tenantConfigs, tenantSlugs } from "./config";
+export const tenantSlugs = ["cutiehack", "designverse", "rosehack"] as const;
+
+export const tenantConfigs = {
+  cutiehack: tenant_cutiehack_config,
+  designverse: tenant_designverse_config,
+  rosehack: tenant_rosehack_config,
+};
 
 export const tenantContent = {
   cutiehack: {
