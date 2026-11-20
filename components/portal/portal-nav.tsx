@@ -4,6 +4,8 @@ import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { getFeatureFlag, type FeatureFlagKey } from "@/lib/feature-flags";
 import { PortalNavItems } from "@/components/portal/portal-nav-items";
 
+type Portal = "live" | "judge";
+
 export interface NavItem {
   href: string;
   label: string;
@@ -25,6 +27,7 @@ export interface DropdownConfig {
 
 export interface PortalNavProps {
   tenant: TenantSlug;
+  portal: Portal;
   dashboardPath: string;
   navItems: NavItem[];
   dropdowns: DropdownConfig[];
@@ -37,6 +40,7 @@ export interface PortalNavProps {
 // dropdown interaction live in the `PortalNavItems` client island.
 export const PortalNav = ({
   tenant,
+  portal,
   dashboardPath,
   navItems,
   dropdowns,
@@ -45,6 +49,7 @@ export const PortalNav = ({
 }: PortalNavProps) => {
   const { config } = getTenant(tenant);
   const logo = config?.logo;
+  const portalLabel = portal === "live" ? "Hacker" : "Judge";
 
   // Flags are compile-time constants (see `lib/feature-flags.ts`), so
   // filtering here is hydration-safe and identical on server + client.
@@ -60,17 +65,25 @@ export const PortalNav = ({
 
   return (
     <nav className="mx-auto flex w-full max-w-4xl items-center justify-between gap-1">
-      {logo && (
-        <Link href={`/${tenant}${dashboardPath}`} className="flex items-center">
-          <Image
-            src={logo}
-            alt="Logo"
-            width={120}
-            height={48}
-            className="h-16 w-auto object-contain"
-          />
-        </Link>
-      )}
+      <Link href={`/${tenant}${dashboardPath}`} className="flex shrink-0 items-center gap-2">
+        {logo && (
+          <span className="flex items-center">
+            <Image
+              src={logo}
+              alt="Logo"
+              width={120}
+              height={48}
+              className="h-16 w-auto object-contain"
+            />
+          </span>
+        )}
+        {logo && (
+          <span aria-hidden="true" className="text-lg text-muted-foreground">
+            |
+          </span>
+        )}
+        <span className="text-lg font-semibold text-foreground">{portalLabel}</span>
+      </Link>
 
       <PortalNavItems
         tenant={tenant}

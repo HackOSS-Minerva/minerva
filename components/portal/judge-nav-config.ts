@@ -1,7 +1,7 @@
 import type { NavItem, DropdownConfig } from "./portal-nav";
 import type { FeatureFlagKey } from "@/lib/feature-flags";
 
-export const judgeNavItems: NavItem[] = [{ href: "/judge/dashboard", label: "Dashboard" }];
+export const judgeNavItems: NavItem[] = [{ href: "/judge/checkin", label: "Check-in" }];
 
 export const judgeDropdowns: DropdownConfig[] = [
   {
@@ -27,11 +27,6 @@ export const judgeDropdowns: DropdownConfig[] = [
   {
     label: "Participate",
     items: [
-      {
-        href: "/live/checkin",
-        label: "Check-in",
-        description: "Show your QR code to check in at the event.",
-      },
       {
         href: "/judge/assignments",
         label: "View Assignments",

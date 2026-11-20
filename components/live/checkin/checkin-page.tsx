@@ -15,9 +15,13 @@ import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface CheckinPageProps {
   tenant: TenantSlug;
+  dashboardHref?: string;
 }
 
-export const CheckinPage = ({ tenant }: CheckinPageProps) => {
+export const CheckinPage = ({
+  tenant,
+  dashboardHref = `/${tenant}/live/dashboard`,
+}: CheckinPageProps) => {
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
 
@@ -35,11 +39,7 @@ export const CheckinPage = ({ tenant }: CheckinPageProps) => {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/dashboard`}>Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/${tenant}/live/checkin`}>Participate</BreadcrumbLink>
+            <BreadcrumbLink href={dashboardHref}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

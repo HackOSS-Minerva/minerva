@@ -37,6 +37,7 @@ const Layout = async ({ children, params }: LayoutProps) => {
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 md:py-10">
       <PortalNav
         tenant={tenant}
+        portal="judge"
         dashboardPath="/judge/dashboard"
         navItems={judgeNavItems}
         dropdowns={judgeDropdowns}

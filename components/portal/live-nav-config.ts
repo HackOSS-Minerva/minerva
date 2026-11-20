@@ -1,6 +1,6 @@
 import type { NavItem, DropdownConfig } from "./portal-nav";
 
-export const liveNavItems: NavItem[] = [{ href: "/live/dashboard", label: "Dashboard" }];
+export const liveNavItems: NavItem[] = [{ href: "/live/checkin", label: "Check-in" }];
 
 export const liveDropdowns: DropdownConfig[] = [
   {
@@ -41,11 +41,6 @@ export const liveDropdowns: DropdownConfig[] = [
   {
     label: "Participate",
     items: [
-      {
-        href: "/live/checkin",
-        label: "Check-in",
-        description: "Show your QR code to check in at the event.",
-      },
       {
         href: "/forms/participant",
         label: "Register",

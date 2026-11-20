@@ -16,7 +16,7 @@ export function HackCreditsCard({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
       <section
-        className="space-y-2 border-t pt-4 lg:border-t-0 lg:border-l lg:px-5 lg:pt-0"
+        className="space-y-2 border-t pt-4 lg:border-t-0  lg:px-2 lg:pt-0"
         aria-live="polite"
         aria-busy={pending}
       >

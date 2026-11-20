@@ -2,12 +2,10 @@ import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { HeroSection } from "@/components/portal/dashboard/hero-section";
 import { ScheduleSection } from "@/components/portal/dashboard/schedule-section";
 import { SubmissionSection } from "@/components/live/dashboard/submission-section";
-import { CheckinSection } from "@/components/portal/dashboard/checkin-section";
 import { Separator } from "@/components/ui/separator";
 import { ApplicationStatusBadge } from "@/components/portal/dashboard/application-status-badge";
 import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
 import type { CalendarResponse } from "@/types/calendar";
-import type { CheckinQrIdentity } from "@/lib/checkin";
 import { HackCreditsCard } from "@/components/live/checkin/hack-credits-card";
 import { DevModeSwitcher } from "@/components/dev/dev-mode-switcher";
 import { Suspense } from "react";
@@ -17,7 +15,6 @@ interface DashboardPageProps {
   tenant: TenantSlug;
   participantStatus?: ApplicationStatus;
   userName?: string;
-  checkinUser?: CheckinQrIdentity | null;
   initialSchedule?: CalendarResponse;
 }
 
@@ -25,7 +22,6 @@ export const DashboardPage = ({
   tenant,
   participantStatus,
   userName,
-  checkinUser,
   initialSchedule,
 }: DashboardPageProps) => {
   const { config } = getTenant(tenant);
@@ -66,8 +62,7 @@ export const DashboardPage = ({
           <Separator className="my-6" />
 
           <Card>
-            <CardContent className="grid gap-5 p-4 sm:p-6 lg:grid-cols-3 lg:gap-0">
-              <CheckinSection user={checkinUser ?? null} compact />
+            <CardContent className="grid gap-5 p-4 sm:p-6 lg:grid-cols-2 lg:gap-0">
               <HackCreditsCard compact />
               <SubmissionSection
                 tenant={tenant}
