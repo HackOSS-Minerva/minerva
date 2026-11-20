@@ -6,8 +6,6 @@
 export const PLACEHOLDER_DISPLAY_NAME = "Guest User";
 export const PLACEHOLDER_DISPLAY_EMAIL = "guest@example.com";
 
-export const LEGACY_GUEST_QR_ID = "visitor";
-
 export interface CheckinQrPayload {
   id: string;
   firstname: string;
@@ -25,7 +23,7 @@ export interface CheckinQrIdentity {
 /** Result of parsing a scanned QR: a real attendee code, or why it was rejected. */
 export type ParseCheckinQrResult =
   | { ok: true; payload: CheckinQrPayload }
-  | { ok: false; reason: "invalid" | "legacy-placeholder" };
+  | { ok: false; reason: "invalid" };
 
 /** Split "Anna Marie Lopez" -> ["Anna", "Marie Lopez"] (multi-word last kept). */
 export const splitName = (
@@ -85,9 +83,6 @@ export const parseCheckinQr = (raw: string): ParseCheckinQrResult => {
 
   if (typeof id !== "string" || !id) {
     return { ok: false, reason: "invalid" };
-  }
-  if (id === LEGACY_GUEST_QR_ID) {
-    return { ok: false, reason: "legacy-placeholder" };
   }
   if (typeof firstname !== "string" || !firstname) {
     return { ok: false, reason: "invalid" };

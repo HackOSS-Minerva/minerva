@@ -175,6 +175,7 @@ export const DataTable = <T extends ApplicantRow>({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     meta: {
+      readOnly,
       onDelete: (id: string) => {
         setDeleteTarget({ type: "single", id });
         setDeleteDialogOpen(true);

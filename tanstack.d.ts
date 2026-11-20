@@ -5,6 +5,7 @@ declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
     onDelete: (id: string) => void;
     setStatusMany: (args: { ids: string[]; status: ApplicationStatus }) => Promise<void>;
+    readOnly?: boolean;
   }
 }
 

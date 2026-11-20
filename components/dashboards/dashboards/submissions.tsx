@@ -93,7 +93,13 @@ const LinkList = ({ links, fallback = "None" }: { links: string[]; fallback?: st
   );
 };
 
-const TableCellViewer = ({ item }: { item: SubmissionRecord }) => {
+const TableCellViewer = ({
+  item,
+  readOnly,
+}: {
+  item: SubmissionRecord;
+  readOnly?: boolean;
+}) => {
   const isMobile = useIsMobile();
 
   return (
@@ -133,6 +139,7 @@ const TableCellViewer = ({ item }: { item: SubmissionRecord }) => {
                 submissionId={item._id}
                 currentStatus={item.vetted}
                 vettingStatus={normalizeVettingStatus(item.vettingStatus)}
+                readOnly={readOnly}
               />
 
               <div className="flex flex-col gap-1">
@@ -315,8 +322,8 @@ export const columns: ColumnDef<SubmissionRecord>[] = [
   {
     accessorKey: "teamName",
     header: "Team",
-    cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />;
+    cell: ({ row, table }) => {
+      return <TableCellViewer item={row.original} readOnly={table.options.meta?.readOnly} />;
     },
     enableHiding: false,
   },

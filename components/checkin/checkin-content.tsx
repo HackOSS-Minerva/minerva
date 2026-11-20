@@ -54,15 +54,8 @@ const CheckinContent = () => {
         const decoded = parseCheckinQr(raw);
 
         if (!decoded.ok) {
-          if (decoded.reason === "legacy-placeholder") {
-            toast.error("Placeholder QR code", {
-              description: "Ask the attendee to reopen their live check-in page for a valid code.",
-            });
-            setScanError("Placeholder QR code");
-          } else {
-            toast.error("Invalid QR code format");
-            setScanError("Invalid QR code format");
-          }
+          toast.error("Invalid QR code format");
+          setScanError("Invalid QR code format");
           return;
         }
 
@@ -144,10 +137,6 @@ const CheckinContent = () => {
     onDecodeError,
     onError,
     paused: isPaused,
-    constraints: {
-      video: { facingMode: "user" },
-      audio: false,
-    },
   });
 
   if (isLoading) {

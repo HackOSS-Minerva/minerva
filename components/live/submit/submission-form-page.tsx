@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { RiLoaderLine } from "@remixicon/react";
+import { useStore } from "@tanstack/react-form";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -41,6 +42,7 @@ interface SubmissionFormPageProps {
 export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
   const router = useRouter();
   const { form } = useSubmissions({ tenant });
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
   return (
     <div className="space-y-8">
@@ -105,7 +107,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_NAME_LENGTH}
                       placeholder="Enter your team name"
-                      disabled={form.state.isSubmitting}
+                      disabled={isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -144,7 +146,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_NAME_LENGTH}
                       placeholder="Enter your project name"
-                      disabled={form.state.isSubmitting}
+                      disabled={isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -190,7 +192,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                       placeholder="Describe your project..."
                       rows={4}
                       maxLength={300}
-                      disabled={form.state.isSubmitting}
+                      disabled={isSubmitting}
                       className="w-full"
                       aria-invalid={isInvalid}
                     />
@@ -229,7 +231,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                       onBlur={field.handleBlur}
                       maxLength={MAX_SUBMISSION_URL_LENGTH}
                       placeholder="https://devpost.com/..."
-                      disabled={form.state.isSubmitting}
+                      disabled={isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -269,7 +271,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                           size="sm"
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
-                          disabled={!canAddMore || form.state.isSubmitting}
+                          disabled={!canAddMore || isSubmitting}
                           title={
                             canAddMore
                               ? "Add repository link"
@@ -293,7 +295,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                           onBlur={field.handleBlur}
                           placeholder="https://github.com/..."
                           className="text-sm text-primary"
-                          disabled={form.state.isSubmitting}
+                          disabled={isSubmitting}
                           autoComplete="off"
                           maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
@@ -315,7 +317,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                             onClick={() => {
                               field.handleChange(links.filter((_, i) => i !== idx));
                             }}
-                            disabled={form.state.isSubmitting}
+                            disabled={isSubmitting}
                           >
                             <RiDeleteBinLine className="h-4 w-4" />
                           </Button>
@@ -358,7 +360,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                           size="sm"
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
-                          disabled={!canAddMore || form.state.isSubmitting}
+                          disabled={!canAddMore || isSubmitting}
                           title={
                             canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
@@ -380,7 +382,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                           onBlur={field.handleBlur}
                           placeholder="https://figma.com/..."
                           className="text-sm text-primary"
-                          disabled={form.state.isSubmitting}
+                          disabled={isSubmitting}
                           autoComplete="off"
                           maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
@@ -402,7 +404,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                             onClick={() => {
                               field.handleChange(links.filter((_, i) => i !== idx));
                             }}
-                            disabled={form.state.isSubmitting}
+                            disabled={isSubmitting}
                           >
                             <RiDeleteBinLine className="h-4 w-4" />
                           </Button>
@@ -445,7 +447,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                           size="sm"
                           className="h-7 px-2 text-xs"
                           onClick={() => field.handleChange([...links, ""])}
-                          disabled={!canAddMore || form.state.isSubmitting}
+                          disabled={!canAddMore || isSubmitting}
                           title={
                             canAddMore ? "Add design link" : `Maximum ${MAX_LINKS_PER_TYPE} links`
                           }
@@ -467,7 +469,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                           onBlur={field.handleBlur}
                           placeholder="https://canva.com/..."
                           className="text-sm text-primary"
-                          disabled={form.state.isSubmitting}
+                          disabled={isSubmitting}
                           autoComplete="off"
                           maxLength={MAX_SUBMISSION_URL_LENGTH}
                         />
@@ -489,7 +491,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                             onClick={() => {
                               field.handleChange(links.filter((_, i) => i !== idx));
                             }}
-                            disabled={form.state.isSubmitting}
+                            disabled={isSubmitting}
                           >
                             <RiDeleteBinLine className="h-4 w-4" />
                           </Button>
@@ -528,8 +530,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                       </span>
                     </div>
                     <FieldDescription>
-                      Optional link to slides or demo video (max {MAX_SUBMISSION_URL_LENGTH}
-                      characters).
+                      Optional link to slides or demo video.
                     </FieldDescription>
                     <Input
                       id={field.name}
@@ -542,7 +543,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                       maxLength={MAX_SUBMISSION_URL_LENGTH}
                       placeholder="https://slides.com/..."
                       className="mt-1 text-primary"
-                      disabled={form.state.isSubmitting}
+                      disabled={isSubmitting}
                       autoComplete="off"
                       aria-invalid={isInvalid}
                     />
@@ -576,7 +577,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                         size="sm"
                         className="h-7 px-2 text-xs"
                         onClick={() => field.handleChange([...emails, ""])}
-                        disabled={form.state.isSubmitting}
+                        disabled={isSubmitting}
                       >
                         <RiAddLine className="mr-1 h-3 w-3" /> Add Member
                       </Button>
@@ -594,7 +595,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                           onBlur={field.handleBlur}
                           placeholder={`member${idx + 2}@email.com`}
                           className="text-sm text-primary"
-                          disabled={form.state.isSubmitting}
+                          disabled={isSubmitting}
                           autoComplete="off"
                         />
                         {emails.length > 1 && (
@@ -606,7 +607,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                             onClick={() => {
                               field.handleChange(emails.filter((_, i) => i !== idx));
                             }}
-                            disabled={form.state.isSubmitting}
+                            disabled={isSubmitting}
                           >
                             <RiDeleteBinLine className="h-4 w-4" />
                           </Button>

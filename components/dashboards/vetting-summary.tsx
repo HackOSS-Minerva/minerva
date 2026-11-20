@@ -93,10 +93,12 @@ export const VettingSummary = ({
   submissionId,
   currentStatus,
   vettingStatus,
+  readOnly = false,
 }: {
   submissionId: string;
   currentStatus: SubmissionReviewStatus;
   vettingStatus: VettingStatus;
+  readOnly?: boolean;
 }) => {
   const { runVetting } = useSubmissionVetting();
   const [result, setResult] = useState<SubmissionVettingResult | null>(null);
@@ -140,20 +142,22 @@ export const VettingSummary = ({
             <Badge variant="outline" className={status.badgeClass}>
               {status.label}
             </Badge>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => void runVettingAction()}
-              disabled={isBusy}
-            >
-              <RiRefreshLine className={cn("h-4 w-4", isBusy && "animate-spin")} />
-              {isBusy
-                ? "Vetting..."
-                : result || vettingStatus === "completed"
-                  ? "Refresh"
-                  : "Run vetting"}
-            </Button>
+            {!readOnly && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => void runVettingAction()}
+                disabled={isBusy}
+              >
+                <RiRefreshLine className={cn("h-4 w-4", isBusy && "animate-spin")} />
+                {isBusy
+                  ? "Vetting..."
+                  : result || vettingStatus === "completed"
+                    ? "Refresh"
+                    : "Run vetting"}
+              </Button>
+            )}
           </div>
         </div>
         {repositoryExplanation ? (
@@ -165,11 +169,15 @@ export const VettingSummary = ({
 
       {!result ? (
         <p className="text-sm text-muted-foreground">
-          {isBusy
-            ? "Project vetting is in progress."
-            : vettingStatus === "completed"
-              ? "Refresh vetting to load current repository and contributor evidence."
-              : "Run vetting to load repository and contributor evidence."}
+          {readOnly
+            ? vettingStatus === "completed"
+              ? "Repository and contributor evidence is available."
+              : "Repository and contributor evidence has not been vetted yet."
+            : isBusy
+              ? "Project vetting is in progress."
+              : vettingStatus === "completed"
+                ? "Refresh vetting to load current repository and contributor evidence."
+                : "Run vetting to load repository and contributor evidence."}
         </p>
       ) : (
         <>
