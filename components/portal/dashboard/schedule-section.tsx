@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSchedule } from "@/hooks/use-schedule";
 import type { CalendarResponse } from "@/types/calendar";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,11 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
   const [selectedDay, setSelectedDay] = useState<string>("all");
   const [showPastEvents, setShowPastEvents] = useState(false);
 
-  const [now] = useState(Date.now);
+  const [now, setNow] = useState(0);
+
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
 
   const getEventTimestamp = (point?: { dateTime?: string; date?: string }, isEnd = false) => {
     if (!point) return 0;
