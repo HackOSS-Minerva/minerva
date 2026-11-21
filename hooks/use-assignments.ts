@@ -20,18 +20,21 @@ export interface SubmissionDisplay {
   projectName: string;
 }
 
-export interface AssignmentData {
+export interface AssignmentInput {
   judgeId: Id<"judges">;
   submissionId: Id<"submissions">;
-  room?: string;
   status?: "assigned" | "completed" | "no_show";
+}
+
+export interface AssignmentData extends AssignmentInput {
+  tableNumber: number;
 }
 
 export interface EnrichedAssignment {
   id: Id<"assignments">;
   projectName: string;
   teamName: string;
-  room?: string;
+  tableNumber: number;
   status?: string;
   judgeName: string;
 }
@@ -50,11 +53,11 @@ export const shuffleArray = <T>(arr: T[]): T[] => {
 export const generateAssignments = (
   judges: JudgeDisplay[],
   submissions: SubmissionDisplay[],
-): AssignmentData[] => {
+): AssignmentInput[] => {
   if (judges.length === 0 || submissions.length === 0) return [];
 
   const shuffledTeams = shuffleArray(submissions);
-  const assignments: AssignmentData[] = [];
+  const assignments: AssignmentInput[] = [];
 
   // Distribute teams evenly among judges (round-robin)
   shuffledTeams.forEach((submission, index) => {
@@ -127,10 +130,16 @@ export const useAssignments = (tenant: TenantSlug) => {
       (rawAssignments ?? []).map((a) => ({
         judgeId: a.judgeId as Id<"judges">,
         submissionId: a.submissionId as Id<"submissions">,
-        room: a.room,
+        tableNumber: a.tableNumber,
         status: a.status as "assigned" | "completed" | "no_show" | undefined,
       })),
     [rawAssignments],
+  );
+
+  const tableNumbersBySubmission = useMemo(
+    () =>
+      new Map(assignments.map((assignment) => [assignment.submissionId, assignment.tableNumber])),
+    [assignments],
   );
 
   const judgesById = useMemo(() => new Map(judges.map((j) => [j._id, j])), [judges]);
@@ -169,7 +178,7 @@ export const useAssignments = (tenant: TenantSlug) => {
         id: a._id as Id<"assignments">,
         projectName: sub?.projectName ?? "Unknown Project",
         teamName: sub?.teamName ?? "Unknown Team",
-        room: a.room,
+        tableNumber: a.tableNumber,
         status: a.status ?? "assigned",
         judgeName,
       };
@@ -182,7 +191,7 @@ export const useAssignments = (tenant: TenantSlug) => {
   const hasAssignments = assignments.length > 0;
 
   const saveAssignments = useCallback(
-    async (newAssignments: AssignmentData[]) => {
+    async (newAssignments: AssignmentInput[]) => {
       setIsSaving(true);
       try {
         await setAssignmentsMut({
@@ -206,6 +215,7 @@ export const useAssignments = (tenant: TenantSlug) => {
     assignments,
     judgesById,
     submissionsById,
+    tableNumbersBySubmission,
     teamsByJudge,
     judgesByTeam,
     enrichedAssignments,

@@ -2,6 +2,7 @@ import { getTenant, type TenantSlug } from "@/hooks/get-tenant";
 import { HeroSection } from "@/components/portal/dashboard/hero-section";
 import { ScheduleSection } from "@/components/portal/dashboard/schedule-section";
 import { SubmissionSection } from "@/components/live/dashboard/submission-section";
+import { TeamTableNumber } from "@/components/live/dashboard/team-table-number";
 import { Separator } from "@/components/ui/separator";
 import { ApplicationStatusBadge } from "@/components/portal/dashboard/application-status-badge";
 import type { ApplicationStatus } from "@/components/portal/dashboard/application-status-badge";
@@ -71,6 +72,7 @@ export const DashboardPage = ({
               />
             </CardContent>
           </Card>
+          <TeamTableNumber tenant={tenant} />
         </>
       )}
 

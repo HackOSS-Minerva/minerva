@@ -529,9 +529,7 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                         {field.state.value.length}/{MAX_SUBMISSION_URL_LENGTH}
                       </span>
                     </div>
-                    <FieldDescription>
-                      Optional link to slides or demo video.
-                    </FieldDescription>
+                    <FieldDescription>Optional link to slides or demo video.</FieldDescription>
                     <Input
                       id={field.name}
                       name={field.name}

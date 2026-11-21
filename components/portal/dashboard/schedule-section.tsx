@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import { RiTimeLine, RiSearchLine } from "@remixicon/react";
+import { FALLBACK_EVENT_TIME_ZONE } from "@/lib/schedule";
 
 interface ScheduleSectionProps {
   /** SSR'd calendar payload from the server page — used as React Query
@@ -77,7 +78,7 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
     return new Date(dateTime).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-      timeZone: timeZone || undefined,
+      timeZone: timeZone || FALLBACK_EVENT_TIME_ZONE,
     });
   };
 
@@ -86,10 +87,10 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
     end?: { dateTime?: string; date?: string; timeZone?: string },
   ) => {
     if (!start?.dateTime) return "All Day";
-    return `${formatTime(start.dateTime, start.timeZone)} – ${formatTime(end?.dateTime, end?.timeZone)}`;
+    return `${formatTime(start.dateTime, start.timeZone)} – ${formatTime(end?.dateTime, end?.timeZone ?? start.timeZone)}`;
   };
 
-  const getEventDayLabel = (dateTime?: string) => {
+  const getEventDayLabel = (dateTime?: string, timeZone?: string) => {
     if (!dateTime) return "Unknown";
     const isDateOnly = !dateTime.includes("T");
     const date = new Date(dateTime);
@@ -98,11 +99,11 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
       weekday: "short",
       month: "short",
       day: "numeric",
-      timeZone: isDateOnly ? "UTC" : undefined,
+      timeZone: isDateOnly ? "UTC" : timeZone || FALLBACK_EVENT_TIME_ZONE,
     });
   };
 
-  const formatDayButtonLabel = (dateTime?: string) => {
+  const formatDayButtonLabel = (dateTime?: string, timeZone?: string) => {
     if (!dateTime) return "Unknown";
     const isDateOnly = !dateTime.includes("T");
     const date = new Date(dateTime);
@@ -110,14 +111,18 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      timeZone: isDateOnly ? "UTC" : undefined,
+      timeZone: isDateOnly ? "UTC" : timeZone || FALLBACK_EVENT_TIME_ZONE,
     });
   };
 
   const uniqueDays = useMemo(() => {
     if (!data?.items) return [];
     const days = [
-      ...new Set(data.items.map((e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date))),
+      ...new Set(
+        data.items.map((event) =>
+          getEventDayLabel(event.start?.dateTime ?? event.start?.date, event.start?.timeZone),
+        ),
+      ),
     ];
     return days;
   }, [data]);
@@ -132,7 +137,8 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
 
       const matchesDay =
         selectedDay === "all" ||
-        getEventDayLabel(event.start?.dateTime ?? event.start?.date) === selectedDay;
+        getEventDayLabel(event.start?.dateTime ?? event.start?.date, event.start?.timeZone) ===
+          selectedDay;
 
       return matchesSearch && matchesDay;
     });
@@ -201,19 +207,23 @@ export const ScheduleSection = ({ initialData }: ScheduleSectionProps) => {
               <TabsTrigger value="all" className="text-xs">
                 All
               </TabsTrigger>
-              {uniqueDays.map((day) => (
-                <TabsTrigger key={day} value={day} className="text-xs">
-                  {formatDayButtonLabel(
-                    data?.items.find(
-                      (e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date) === day,
-                    )?.start?.dateTime ??
-                      data?.items.find(
-                        (e) => getEventDayLabel(e.start?.dateTime ?? e.start?.date) === day,
-                      )?.start?.date ??
-                      day,
-                  )}
-                </TabsTrigger>
-              ))}
+              {uniqueDays.map((day) => {
+                const eventForDay = data?.items.find(
+                  (event) =>
+                    getEventDayLabel(
+                      event.start?.dateTime ?? event.start?.date,
+                      event.start?.timeZone,
+                    ) === day,
+                );
+                return (
+                  <TabsTrigger key={day} value={day} className="text-xs">
+                    {formatDayButtonLabel(
+                      eventForDay?.start?.dateTime ?? eventForDay?.start?.date ?? day,
+                      eventForDay?.start?.timeZone,
+                    )}
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
           </Tabs>
         )}

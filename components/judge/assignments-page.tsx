@@ -2,8 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RiMapPinLine, RiUser2Line, RiClipboardLine, RiBuildingLine } from "@remixicon/react";
-import { useAssignments, getStatusBadgeVariant, formatStatus } from "@/hooks/use-assignments";
+import { RiUser2Line, RiClipboardLine } from "@remixicon/react";
+import { useAssignments } from "@/hooks/use-assignments";
 import type { TenantSlug } from "@/hooks/get-tenant";
 
 interface AssignmentsPageProps {
@@ -62,31 +62,12 @@ export const AssignmentsPage = ({ tenant }: AssignmentsPageProps) => {
                     {assignment.teamName}
                   </p>
                 </div>
-                <Badge variant={getStatusBadgeVariant(assignment.status)}>
-                  {formatStatus(assignment.status)}
+                <Badge variant="default" className="text-sm font-bold">
+                  Table {assignment.tableNumber}
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                {assignment.room && (
-                  <span className="flex items-center gap-1">
-                    <RiMapPinLine className="h-3 w-3" />
-                    {assignment.room}
-                  </span>
-                )}
-                <span className="flex items-center gap-1">
-                  <RiBuildingLine className="h-3 w-3" />
-                  {assignment.judgeName}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <RiClipboardLine className="h-3 w-3 self-center text-muted-foreground" />
-                <Badge variant="outline">Innovation</Badge>
-                <Badge variant="outline">Technical Complexity</Badge>
-                <Badge variant="outline">Presentation</Badge>
-              </div>
-            </CardContent>
+            <CardContent className="space-y-3"></CardContent>
           </Card>
         ))}
       </div>

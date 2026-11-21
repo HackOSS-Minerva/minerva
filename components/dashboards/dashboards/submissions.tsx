@@ -93,13 +93,7 @@ const LinkList = ({ links, fallback = "None" }: { links: string[]; fallback?: st
   );
 };
 
-const TableCellViewer = ({
-  item,
-  readOnly,
-}: {
-  item: SubmissionRecord;
-  readOnly?: boolean;
-}) => {
+const TableCellViewer = ({ item, readOnly }: { item: SubmissionRecord; readOnly?: boolean }) => {
   const isMobile = useIsMobile();
 
   return (

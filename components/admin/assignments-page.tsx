@@ -38,6 +38,7 @@ const AssignmentsContent = () => {
     assignments,
     judgesById,
     submissionsById,
+    tableNumbersBySubmission,
     teamsByJudge,
     judgesByTeam,
     isLoading,
@@ -233,6 +234,9 @@ const AssignmentsContent = () => {
                               >
                                 <RiClipboardLine className="h-4 w-4 shrink-0 text-muted-foreground" />
                                 <span className="truncate font-medium">{sub.teamName}</span>
+                                <span className="shrink-0 text-xs text-muted-foreground">
+                                  Table {tableNumbersBySubmission.get(submissionId)}
+                                </span>
                               </li>
                             );
                           })}
@@ -261,6 +265,9 @@ const AssignmentsContent = () => {
                         </div>
                         <div className="min-w-0">
                           <CardTitle className="truncate text-sm">{submission.teamName}</CardTitle>
+                          <p className="text-xs text-muted-foreground">
+                            Table {tableNumbersBySubmission.get(submission._id)}
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             {judgeIds.length} judge
                             {judgeIds.length !== 1 ? "s" : ""} assigned

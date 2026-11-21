@@ -183,10 +183,12 @@ export default defineSchema({
     judgeId: v.id("judges"),
     submissionId: v.id("submissions"),
     tenant: v.string(),
-    room: v.optional(v.string()),
+    tableNumber: v.number(),
     status: v.optional(
       v.union(v.literal("assigned"), v.literal("completed"), v.literal("no_show")),
     ),
     assignedAt: v.number(),
-  }).index("by_tenant", ["tenant"]),
+  })
+    .index("by_tenant", ["tenant"])
+    .index("by_tenant_submission", ["tenant", "submissionId"]),
 });
