@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { DeadlineBadge } from "@/components/live/dashboard/deadline-badge";
 import type { TenantSlug } from "@/hooks/get-tenant";
 import { FALLBACK_EVENT_TIME_ZONE } from "@/lib/schedule";
 
@@ -9,8 +8,6 @@ interface SubmissionSectionProps {
   submissionDeadline: number;
 }
 
-// Server Component: deadline text renders on the server; the ticking badge is
-// a `DeadlineBadge` client island.
 export const SubmissionSection = ({ tenant, submissionDeadline }: SubmissionSectionProps) => {
   const isPastDeadline = Date.now() > submissionDeadline;
 
@@ -34,7 +31,7 @@ export const SubmissionSection = ({ tenant, submissionDeadline }: SubmissionSect
         </div>
         {!isPastDeadline && (
           <Button asChild size="sm">
-            <Link href={`/${tenant}/live/submit`}>Submit project</Link>
+            <Link href={`/${tenant}/live/submit`}>Submit or edit project</Link>
           </Button>
         )}
       </div>

@@ -41,8 +41,9 @@ interface SubmissionFormPageProps {
 
 export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
   const router = useRouter();
-  const { form } = useSubmissions({ tenant });
+  const { form, existingSubmission, isLoadingSubmission } = useSubmissions({ tenant });
   const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+  const isEditing = Boolean(existingSubmission);
 
   return (
     <div className="space-y-8">
@@ -55,13 +56,19 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
           <BreadcrumbItem>Participate</BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Submit Project</BreadcrumbPage>
+            <BreadcrumbPage>{isEditing ? "Edit Project" : "Submit Project"}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <div>
-        <h1 className="text-2xl font-bold md:text-3xl">Submit Project</h1>
-        <p className="mt-1 text-muted-foreground">Submit your hackathon project details below.</p>
+        <h1 className="text-2xl font-bold md:text-3xl">
+          {isEditing ? "Edit Project Submission" : "Submit Project"}
+        </h1>
+        <p className="mt-1 text-muted-foreground">
+          {isEditing
+            ? "Update your hackathon project details below."
+            : "Submit your hackathon project details below."}
+        </p>
       </div>
 
       <Card>
@@ -70,8 +77,15 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
           <CardDescription>Provide your team and project information.</CardDescription>
         </CardHeader>
         <CardContent>
+          {isLoadingSubmission && (
+            <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
+              <RiLoaderLine className="size-4 animate-spin" />
+              Loading your submission...
+            </div>
+          )}
           <form
             id="submission-form"
+            hidden={isLoadingSubmission}
             onSubmit={(e) => {
               e.preventDefault();
               form.handleSubmit();
@@ -634,8 +648,10 @@ export const SubmissionFormPage = ({ tenant }: SubmissionFormPageProps) => {
                       {isSubmitting ? (
                         <>
                           <RiLoaderLine className="size-4 animate-spin" />
-                          Submitting...
+                          {isEditing ? "Saving..." : "Submitting..."}
                         </>
+                      ) : isEditing ? (
+                        "Save Changes"
                       ) : (
                         "Submit Project"
                       )}

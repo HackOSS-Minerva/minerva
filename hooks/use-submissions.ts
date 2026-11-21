@@ -1,8 +1,8 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { useAction, useMutation } from "convex/react";
-import { useCallback } from "react";
+import { useAction, useMutation, useQuery } from "convex/react";
+import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -81,7 +81,9 @@ interface UseSubmissionsOptions {
 export const useSubmissions = ({ tenant }: UseSubmissionsOptions) => {
   const { triggerConfetti } = useTriggerConfetti();
   const router = useRouter();
+  const existingSubmission = useQuery(api.submissions.getMine, { tenant });
   const addSubmission = useMutation(api.submissions.add);
+  const updateSubmission = useMutation(api.submissions.update);
 
   const form = useForm({
     defaultValues,
@@ -113,8 +115,7 @@ export const useSubmissions = ({ tenant }: UseSubmissionsOptions) => {
       }
 
       try {
-        const result = await addSubmission({
-          tenant,
+        const submissionValues = {
           teamName: value.teamName,
           projectName: value.projectName,
           description: value.description,
@@ -124,15 +125,25 @@ export const useSubmissions = ({ tenant }: UseSubmissionsOptions) => {
           canva: cleanCanva,
           presentation: value.presentation || undefined,
           invites: team.normalizedInvites,
-        });
+        };
+        const result = existingSubmission
+          ? await updateSubmission({
+              ...submissionValues,
+              tenant,
+              id: existingSubmission._id,
+            })
+          : await addSubmission({ ...submissionValues, tenant });
 
-        captureAnalyticsEvent("submission_created", {
-          tenant,
-          entity_id: String(result.id),
-        });
-
-        toast.success("Project submitted successfully!");
-        triggerConfetti();
+        if (existingSubmission) {
+          toast.success("Project submission updated successfully!");
+        } else {
+          captureAnalyticsEvent("submission_created", {
+            tenant,
+            entity_id: String(result.id),
+          });
+          toast.success("Project submitted successfully!");
+          triggerConfetti();
+        }
         router.push(`/${tenant}/live/dashboard`);
       } catch (error) {
         logAppError({ route: "submission-form", error, requestId: "client" });
@@ -141,8 +152,27 @@ export const useSubmissions = ({ tenant }: UseSubmissionsOptions) => {
     },
   });
 
+  const didPrefill = useRef(false);
+  useEffect(() => {
+    if (!existingSubmission || didPrefill.current) return;
+    form.reset({
+      teamName: existingSubmission.teamName,
+      projectName: existingSubmission.projectName,
+      description: existingSubmission.description,
+      devpost: existingSubmission.devpost,
+      github: existingSubmission.github.length ? existingSubmission.github : [""],
+      figma: existingSubmission.figma.length ? existingSubmission.figma : [""],
+      canva: existingSubmission.canva.length ? existingSubmission.canva : [""],
+      presentation: existingSubmission.presentation ?? "",
+      invites: existingSubmission.invites.length ? existingSubmission.invites : [""],
+    });
+    didPrefill.current = true;
+  }, [existingSubmission, form]);
+
   return {
     form,
+    existingSubmission,
+    isLoadingSubmission: existingSubmission === undefined,
   };
 };
 

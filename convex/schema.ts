@@ -178,7 +178,7 @@ export default defineSchema({
     vetted: v.union(v.literal("verified"), v.literal("needs_review"), v.literal("disqualified")),
     // Keep this open for legacy values already stored in existing deployments.
     vettingStatus: v.optional(v.string()),
-  }),
+  }).index("by_tenant_submitter", ["tenant", "submitterEmail"]),
   assignments: defineTable({
     judgeId: v.id("judges"),
     submissionId: v.id("submissions"),
