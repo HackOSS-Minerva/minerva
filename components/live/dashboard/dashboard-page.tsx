@@ -68,7 +68,6 @@ export const DashboardPage = ({
               <SubmissionSection
                 tenant={tenant}
                 submissionDeadline={new Date(live.deadline).getTime()}
-                compact
               />
             </CardContent>
           </Card>

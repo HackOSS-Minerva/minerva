@@ -10,13 +10,7 @@ import { RiSearchLine, RiExternalLinkLine, RiStarFill } from "@remixicon/react";
 import type { Hackpack } from "@/data/hackpacks";
 import Link from "next/link";
 
-const CATEGORIES = [
-  "All",
-  "Web Development",
-  "AI/ML",
-  "Bots",
-  "General",
-] as const;
+const CATEGORIES = ["All", "Web Development", "AI/ML", "Bots", "General"] as const;
 
 export const HackpacksContent = () => {
   const [search, setSearch] = useState("");
@@ -30,10 +24,7 @@ export const HackpacksContent = () => {
       return false;
     if (search) {
       const q = search.toLowerCase();
-      return (
-        h.name.toLowerCase().includes(q) ||
-        h.description.toLowerCase().includes(q)
-      );
+      return h.name.toLowerCase().includes(q) || h.description.toLowerCase().includes(q);
     }
     return true;
   });

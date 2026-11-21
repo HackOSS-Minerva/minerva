@@ -3,12 +3,7 @@ export interface Hackpack {
   name: string;
   description: string;
   link: string;
-  category: (
-    | "Web Development"
-    | "AI/ML"
-    | "Bots"
-    | "General"
-  )[];
+  category: ("Web Development" | "AI/ML" | "Bots" | "General")[];
   featured: boolean;
   instructions?: string;
 }
