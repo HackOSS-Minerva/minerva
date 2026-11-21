@@ -13,12 +13,8 @@ import Link from "next/link";
 const CATEGORIES = [
   "All",
   "Web Development",
-  "Mobile",
-  "Backend & Database",
   "AI/ML",
   "Bots",
-  "Hardware",
-  "Game Dev",
   "General",
 ] as const;
 
@@ -36,7 +32,6 @@ export const HackpacksContent = () => {
       const q = search.toLowerCase();
       return (
         h.name.toLowerCase().includes(q) ||
-        h.sponsor.toLowerCase().includes(q) ||
         h.description.toLowerCase().includes(q)
       );
     }
@@ -79,7 +74,6 @@ export const HackpacksContent = () => {
                       {hackpack.featured && <RiStarFill className="h-3 w-3 text-yellow-500" />}
                     </div>
                     <h3 className="font-semibold">{hackpack.name}</h3>
-                    <p className="text-xs text-muted-foreground">by {hackpack.sponsor}</p>
                     <p className="text-sm">{hackpack.description}</p>
                     {hackpack.instructions && (
                       <p className="text-xs text-muted-foreground">{hackpack.instructions}</p>
